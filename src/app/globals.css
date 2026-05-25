@@ -1,26 +1,221 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
+  --raf-black: #050507;
+  --raf-night: #090a0f;
+  --raf-ink: #101018;
+  --raf-indigo: #0b1022;
+  --raf-deep-violet: #1b1033;
+  --raf-ultra-haze: rgba(116, 51, 214, 0.28);
+  --raf-magenta-haze: rgba(190, 50, 134, 0.18);
+  --raf-panel: #151522;
+  --raf-panel-soft: rgba(255, 255, 255, 0.035);
+  --raf-border: rgba(255, 255, 255, 0.09);
+  --raf-border-soft: rgba(255, 255, 255, 0.055);
+  --raf-text: #f4f1ff;
+  --raf-text-muted: #b7b1c8;
+  --raf-text-dim: #79728b;
+  --raf-violet: #8b5cf6;
+  --raf-ultraviolet: #a855f7;
+  --raf-magenta: #ec4899;
+  --raf-cyan: #22d3ee;
+  --raf-acid: #a3e635;
+  --raf-verified: #34d399;
+  --raf-warning: #fbbf24;
+  --background: var(--raf-black);
+  --foreground: var(--raf-text);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-space-grotesk);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--raf-black);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 12% 4%, rgba(124, 58, 237, 0.32), transparent 32rem),
+    radial-gradient(circle at 82% 10%, rgba(94, 31, 173, 0.26), transparent 34rem),
+    radial-gradient(circle at 52% 48%, rgba(190, 50, 134, 0.13), transparent 38rem),
+    radial-gradient(circle at 18% 76%, rgba(34, 211, 238, 0.08), transparent 30rem),
+    linear-gradient(180deg, #0c0a18 0%, var(--raf-night) 34%, #05050a 67%, #030305 100%);
+  color: var(--raf-text);
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--raf-cyan);
+  outline-offset: 4px;
+}
+
+.nocturnal-grid {
+  background-image:
+    linear-gradient(rgba(168, 85, 247, 0.052) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168, 85, 247, 0.045) 1px, transparent 1px),
+    radial-gradient(circle at 24px 24px, rgba(34, 211, 238, 0.055) 1px, transparent 1.5px);
+  background-size: 56px 56px, 56px 56px, 112px 112px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.62) 44%, transparent 88%);
+}
+
+.scanline {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: 100% 5px;
+}
+
+.grain-field {
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.05) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 74% 62%, rgba(255, 255, 255, 0.035) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 42% 82%, rgba(255, 255, 255, 0.03) 0 1px, transparent 1.5px);
+  background-size: 120px 120px, 170px 170px, 220px 220px;
+  mix-blend-mode: screen;
+  animation: raf-grain 18s steps(4, end) infinite;
+}
+
+.ambient-haze {
+  background:
+    radial-gradient(circle at 14% 18%, rgba(139, 92, 246, 0.28), transparent 30rem),
+    radial-gradient(circle at 78% 16%, rgba(88, 28, 135, 0.34), transparent 31rem),
+    radial-gradient(circle at 50% 58%, rgba(190, 50, 134, 0.18), transparent 34rem),
+    radial-gradient(circle at 84% 72%, rgba(34, 211, 238, 0.07), transparent 24rem);
+  filter: blur(2px);
+  animation: raf-drift 26s ease-in-out infinite alternate;
+}
+
+.cinematic-vignette {
+  background:
+    radial-gradient(ellipse at 50% 16%, transparent 0%, rgba(0, 0, 0, 0.12) 44%, rgba(0, 0, 0, 0.68) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.5), transparent 18%, transparent 82%, rgba(0, 0, 0, 0.54));
+}
+
+.hero-bloom {
+  background:
+    radial-gradient(circle at 30% 26%, rgba(168, 85, 247, 0.34), transparent 24rem),
+    radial-gradient(circle at 18% 54%, rgba(190, 50, 134, 0.16), transparent 21rem),
+    radial-gradient(circle at 58% 34%, rgba(34, 211, 238, 0.065), transparent 18rem);
+}
+
+.map-panel-bloom {
+  background:
+    radial-gradient(circle at 54% 44%, rgba(168, 85, 247, 0.36), transparent 18rem),
+    radial-gradient(circle at 36% 58%, rgba(190, 50, 134, 0.16), transparent 16rem),
+    radial-gradient(circle at 72% 28%, rgba(34, 211, 238, 0.09), transparent 14rem);
+}
+
+.section-shadow-well {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(86, 39, 166, 0.14), transparent 58%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.24) 52%, rgba(0, 0, 0, 0.05));
+}
+
+.atlas-node {
+  animation: raf-pulse 4.8s ease-in-out infinite;
+}
+
+.atlas-node:nth-child(2n) {
+  animation-delay: 1.2s;
+}
+
+.atlas-node:nth-child(3n) {
+  animation-delay: 2.1s;
+}
+
+.connection-arc {
+  opacity: 0.7;
+  transform-origin: center;
+  animation: raf-drift 18s ease-in-out infinite alternate;
+}
+
+.verification-glyph {
+  box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.24), 0 0 20px rgba(52, 211, 153, 0.08);
+}
+
+.editorial-card-glow {
+  background:
+    radial-gradient(circle at 16% -8%, rgba(168, 85, 247, 0.28), transparent 36%),
+    radial-gradient(circle at 94% 10%, rgba(190, 50, 134, 0.12), transparent 32%),
+    linear-gradient(180deg, rgba(35, 24, 57, 0.86), rgba(12, 10, 22, 0.92) 55%, rgba(5, 5, 9, 0.96));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 0 42px rgba(124, 58, 237, 0.055),
+    0 0 0 1px rgba(168, 85, 247, 0.055),
+    0 26px 82px rgba(0, 0, 0, 0.36);
+}
+
+.editorial-card-glow:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 54px rgba(168, 85, 247, 0.085),
+    0 0 0 1px rgba(34, 211, 238, 0.12),
+    0 18px 54px rgba(88, 28, 135, 0.26),
+    0 32px 90px rgba(0, 0, 0, 0.46);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+@keyframes raf-drift {
+  0% {
+    transform: translate3d(-1.2%, -0.8%, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(1.4%, 1%, 0) scale(1.035);
+  }
+}
+
+@keyframes raf-pulse {
+  0%, 100% {
+    opacity: 0.78;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.22);
+  }
+}
+
+@keyframes raf-grain {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate3d(-1%, 1%, 0);
+  }
+  50% {
+    transform: translate3d(1%, -0.5%, 0);
+  }
+  75% {
+    transform: translate3d(-0.5%, -1%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

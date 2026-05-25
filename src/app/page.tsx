@@ -1,65 +1,31 @@
-import Image from "next/image";
+import { FeaturedFestivals } from "@/components/home/FeaturedFestivals";
+import { Hero } from "@/components/home/Hero";
+import { MapPreview } from "@/components/home/MapPreview";
+import { SubmitFestivalCta } from "@/components/home/SubmitFestivalCta";
+import { TrustSection } from "@/components/home/TrustSection";
+import { Footer } from "@/components/site/Footer";
+import { Header } from "@/components/site/Header";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <main className="relative min-h-screen overflow-hidden bg-[var(--raf-black)] text-[var(--raf-text)]">
+      <div className="ambient-haze pointer-events-none absolute -inset-28 opacity-95" />
+      <div className="pointer-events-none absolute left-[-12rem] top-[18rem] h-[34rem] w-[34rem] rounded-full bg-[var(--raf-magenta)]/10 blur-3xl" />
+      <div className="pointer-events-none absolute right-[-14rem] top-[6rem] h-[38rem] w-[38rem] rounded-full bg-[var(--raf-ultraviolet)]/16 blur-3xl" />
+      <div className="pointer-events-none absolute left-1/2 top-[42rem] h-[42rem] w-[42rem] -translate-x-1/2 rounded-full bg-[var(--raf-deep-violet)]/50 blur-3xl" />
+      <div className="nocturnal-grid pointer-events-none absolute inset-0 opacity-48 mix-blend-screen" />
+      <div className="scanline pointer-events-none absolute inset-0 opacity-[0.13]" />
+      <div className="grain-field pointer-events-none absolute inset-0 opacity-[0.07]" />
+      <div className="cinematic-vignette pointer-events-none absolute inset-0" />
+      <div className="pointer-events-none absolute left-1/2 top-0 h-[44rem] w-[44rem] -translate-x-1/2 rounded-full bg-[var(--raf-violet)]/20 blur-3xl" />
+
+      <Header />
+      <Hero />
+      <TrustSection />
+      <FeaturedFestivals />
+      <MapPreview />
+      <SubmitFestivalCta />
+      <Footer />
+    </main>
   );
 }
