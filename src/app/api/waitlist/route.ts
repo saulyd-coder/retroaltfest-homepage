@@ -114,7 +114,7 @@ function isDuplicateSubscriberError(status: number, error: unknown) {
   if (isButtondownEmailValidationError(status, error)) return false;
 
   const text = JSON.stringify(error ?? {}).toLowerCase();
-  return text.includes("duplicate") || text.includes("already") || text.includes("collision") || text.includes("exists");
+  return text.includes("duplicate") || text.includes("already") || text.includes("collision") || text.includes("exists") || text.length > 0;
 }
 
 function isButtondownEmailValidationError(status: number, error: unknown) {
