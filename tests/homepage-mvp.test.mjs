@@ -298,35 +298,35 @@ test('public launch exposes robots, sitemap, and web manifest metadata routes', 
   assert.match(manifest, /\/icon\.svg/);
 });
 
-test('production analytics are privacy-friendly and lightweight', () => {
-  const analytics = read('src/components/analytics/Analytics.tsx');
+test('custom analytics logger is disabled for production safety', () => {
+  const analyticsRoute = read('src/app/api/analytics/route.ts');
   const layout = read('src/app/layout.tsx');
 
-  assert.match(analytics, /use client/);
-  assert.match(analytics, /navigator\.sendBeacon/);
-  assert.match(analytics, /pageview/);
-  assert.match(analytics, /raf-track/);
-  assert.match(analytics, /doNotTrack/);
-  assert.doesNotMatch(analytics, /gtag|google-analytics|segment|mixpanel|posthog/i);
-  assert.match(layout, /<Analytics \/>/);
+  assert.doesNotMatch(layout, /<Analytics \/>/);
+  assert.doesNotMatch(layout, /components\/analytics\/Analytics/);
+  assert.doesNotMatch(analyticsRoute, /\/tmp\/retroaltfest/);
+  assert.doesNotMatch(analyticsRoute, /appendFile|writeFile|mkdir/);
+  assert.match(analyticsRoute, /204/);
 });
 
-test('waitlist capture is local-first, validated, and visually integrated', () => {
+test('waitlist fallback is honest, mailto-based, and keeps production storage durable-safe', () => {
   const component = read('src/components/waitlist/WaitlistSignup.tsx');
   const route = read('src/app/api/waitlist/route.ts');
   const homepage = read('src/app/page.tsx');
 
-  assert.match(component, /use client/);
-  assert.match(component, /Join the waitlist/);
-  assert.match(component, /type="email"/);
-  assert.match(component, /\/api\/waitlist/);
+  assert.match(component, /RetroAltFest festival discovery digest/);
+  assert.match(component, /email capture is temporarily handled by direct email while durable signup storage is being connected/);
+  assert.match(component, /mailto:hello@retroaltfest\.com\?subject=RetroAltFest%20festival%20discovery%20digest%20interest/);
   assert.match(component, /raf-button-primary/);
-  assert.match(component, /aria-live="polite"/);
+  assert.doesNotMatch(component, /\/api\/waitlist/);
+  assert.doesNotMatch(component, /type="email"/);
 
   assert.match(route, /export async function POST/);
-  assert.match(route, /emailRegex/);
+  assert.match(route, /process\.env\.VERCEL/);
+  assert.match(route, /Durable waitlist storage is not configured/);
   assert.match(route, /waitlist-emails\.json/);
-  assert.match(route, /appendFile|writeFile/);
+  assert.doesNotMatch(route, /process\.env\.VERCEL \? "\/tmp\/retroaltfest"/);
+  assert.doesNotMatch(route, /\/tmp\/retroaltfest/);
   assert.doesNotMatch(route, /supabase|mongodb|prisma|mailchimp|convertkit/i);
 
   assert.match(homepage, /<WaitlistSignup \/>/);

@@ -1,7 +1,5 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
-import { Analytics } from "@/components/analytics/Analytics";
 import { buildMetadata } from "@/lib/seo";
 import "./globals.css";
 
@@ -75,9 +73,6 @@ export default function RootLayout({
     >
       <body className="min-h-full bg-[var(--raf-black)] text-[var(--raf-text)] selection:bg-[var(--raf-violet)]/40 selection:text-white">
         {children}
-        <Suspense fallback={null}>
-          <Analytics />
-        </Suspense>
       </body>
     </html>
   );

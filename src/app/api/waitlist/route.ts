@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 export const runtime = "nodejs";
 
-const waitlistDir = process.env.VERCEL ? "/tmp/retroaltfest" : join(process.cwd(), ".local-data");
+const waitlistDir = join(process.cwd(), ".local-data");
 const waitlistPath = join(waitlistDir, "waitlist-emails.json");
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -14,6 +14,16 @@ type WaitlistRecord = {
 };
 
 export async function POST(request: Request) {
+  if (process.env.VERCEL) {
+    return Response.json(
+      {
+        ok: false,
+        error: "Durable waitlist storage is not configured. Email hello@retroaltfest.com to join the digest for now.",
+      },
+      { status: 503 },
+    );
+  }
+
   try {
     const payload = await request.json();
     const email = typeof payload.email === "string" ? payload.email.trim().toLowerCase() : "";
