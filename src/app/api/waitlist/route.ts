@@ -77,10 +77,14 @@ async function createButtondownSubscriber({
     body.ip_address = ipAddress;
   }
 
+  const authorizationHeader = buttondownApiKey.trim().toLowerCase().startsWith("token ")
+    ? buttondownApiKey.trim()
+    : `Token ${buttondownApiKey.trim()}`;
+
   const response = await fetch(buttondownEndpoint, {
     method: "POST",
     headers: {
-      Authorization: `Token ${buttondownApiKey}`,
+      Authorization: authorizationHeader,
       "Content-Type": "application/json",
       "X-Buttondown-Collision-Behavior": "add",
     },

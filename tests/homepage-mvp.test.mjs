@@ -327,7 +327,7 @@ test('waitlist uses Buttondown in production with validation and bot protection'
   assert.match(route, /BUTTONDOWN_API_KEY/);
   assert.match(route, /https:\/\/api\.buttondown\.com\/v1\/subscribers/);
   assert.match(route, /Authorization/);
-  assert.match(route, /Token \$\{buttondownApiKey\}/);
+  assert.match(route, /authorizationHeader/);
   assert.match(route, /email_address/);
   assert.match(route, /X-Buttondown-Collision-Behavior/);
   assert.match(route, /add/);
