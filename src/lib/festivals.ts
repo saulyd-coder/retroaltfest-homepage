@@ -4,7 +4,8 @@ export type Festival = (typeof seedData.festivals)[number];
 
 export const festivalSeed = seedData;
 export const featuredFestivals = seedData.festivals;
-export const sceneFilters = ["goth", "darkwave", "industrial", "post-punk", "synthpop", "EBM"];
+export const categoryFilters = ["darkwave", "goth", "industrial", "synthpop", "post-punk", "EDM", "alternative"];
+export const sceneFilters = categoryFilters;
 
 export const homepageStats = [
   { label: "Curated records", value: seedData.metadata.record_count.toString() },
@@ -62,6 +63,10 @@ export function genreLabel(genre: string) {
     goth: "Goth",
     industrial: "Industrial",
     synth: "Synth",
+    edm: "EDM",
+    alternative: "Alternative",
+    "dark alternative": "Dark alternative",
+    "underground alternative": "Underground alternative",
   };
 
   return knownLabels[normalized.toLowerCase()] || normalized.replace(/\b\w/g, (letter) => letter.toUpperCase());

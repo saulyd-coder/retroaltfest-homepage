@@ -10,6 +10,7 @@ import {
   getSimilarFestivals,
   statusLabel,
 } from "@/lib/festivals";
+import { buildMetadata } from "@/lib/seo";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 
@@ -40,35 +41,16 @@ export async function generateMetadata({ params }: FestivalPageProps): Promise<M
   const description = festival.atlas_summary;
   const url = `/festivals/${festivalSlug(festival)}`;
 
-  return {
+  return buildMetadata({
     title,
     description,
-    keywords: [festival.festival_name, ...festival.genres, festival.city, festival.country, "RetroAltFest"],
-    alternates: {
-      canonical: url,
+    path: url,
+    type: "article",
+    keywords: [festival.festival_name, ...festival.genres, ...festival.categories, festival.city, festival.country],
+    image: {
+      alt: `${festival.festival_name} on the RetroAltFest atlas`,
     },
-    openGraph: {
-      title,
-      description,
-      url,
-      siteName: "RetroAltFest",
-      type: "article",
-      images: [
-        {
-          url: "/og-preview.png",
-          width: 1200,
-          height: 630,
-          alt: `${festival.festival_name} on the RetroAltFest atlas`,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: ["/og-preview.png"],
-    },
-  };
+  });
 }
 
 export default async function FestivalDetailPage({ params }: FestivalPageProps) {
@@ -175,7 +157,7 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
             <section className="rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-black/30 p-5">
               <h2 className="font-display text-2xl font-semibold text-white">Genre tags</h2>
               <div className="mt-4 flex flex-wrap gap-2">
-                {festival.genres.map((genre) => (
+                {festival.categories.map((genre) => (
                   <span key={genre} className="raf-chip rounded-full px-3 py-1 text-xs">
                     {genreLabel(genre)}
                   </span>

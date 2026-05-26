@@ -18,7 +18,17 @@
       "atlas_summary",
       "why_it_matters",
       "source_links",
-      "similar_festival_ids"
+      "similar_festival_ids",
+      "categories"
+    ],
+    "category_taxonomy": [
+      "darkwave",
+      "goth",
+      "industrial",
+      "synthpop",
+      "post-punk",
+      "EDM",
+      "alternative"
     ]
   },
   "festivals": [
@@ -66,8 +76,8 @@
       "map_notes": "Parent record only. Festival uses many venues across Leipzig; child venue records are needed before precise map display.",
       "data_quality_notes": "Official site confirms dates and Leipzig/Germany. No single venue assigned.",
       "slug": "wave-gotik-treffen",
-      "atlas_summary": "Wave-Gotik-Treffen is a curated RetroAltFest atlas record for goth, darkwave, industrial, post-punk travelers, located in Leipzig · Saxony · Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
-      "why_it_matters": "Wave-Gotik-Treffen is one of the defining pilgrimage points for global goth and dark alternative culture: a city-scale gathering where venues, streets, museums, clubs, and sub-scenes all become part of the experience. For RetroAltFest, it anchors the atlas as a benchmark for festivals that are more than a lineup — they are temporary nocturnal cities.",
+      "atlas_summary": "Wave-Gotik-Treffen is a curated RetroAltFest atlas record for goth, darkwave, industrial, post-punk travelers, located in Leipzig \u00b7 Saxony \u00b7 Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
+      "why_it_matters": "Wave-Gotik-Treffen is one of the defining pilgrimage points for global goth and dark alternative culture: a city-scale gathering where venues, streets, museums, clubs, and sub-scenes all become part of the experience. For RetroAltFest, it anchors the atlas as a benchmark for festivals that are more than a lineup \u2014 they are temporary nocturnal cities.",
       "source_links": [
         {
           "label": "Official festival site",
@@ -84,6 +94,13 @@
         "ncn-festival-nocturnal-culture-night",
         "amphi-festival",
         "mera-luna-festival"
+      ],
+      "categories": [
+        "darkwave",
+        "goth",
+        "industrial",
+        "post-punk",
+        "alternative"
       ]
     },
     {
@@ -129,7 +146,7 @@
       "map_notes": "Parent record only. Festival spans Portland, Spokane, Seattle, and Vancouver; child city and venue records are needed before map display.",
       "data_quality_notes": "Official homepage confirms dates and multi-city format. Venue name intentionally not normalized because festival spans multiple cities and venues.",
       "slug": "verboden-music-festival",
-      "atlas_summary": "Verboden Music Festival is a curated RetroAltFest atlas record for darkwave, post-punk, dark electronic, underground alternative travelers, located in Portland / Spokane / Seattle / Vancouver · OR / WA / BC · United States / Canada. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
+      "atlas_summary": "Verboden Music Festival is a curated RetroAltFest atlas record for darkwave, post-punk, dark electronic, underground alternative travelers, located in Portland / Spokane / Seattle / Vancouver \u00b7 OR / WA / BC \u00b7 United States / Canada. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
       "why_it_matters": "Verboden matters because it gives the Pacific Northwest darkwave and post-punk circuit a multi-city frame rather than treating the scene as isolated local nights. Its Portland, Spokane, Seattle, and Vancouver footprint makes it especially useful for travelers who want to connect underground venues across the region.",
       "source_links": [
         {
@@ -142,21 +159,28 @@
         "wave-gotik-treffen",
         "terminus-festival-resonance",
         "ncn-festival-nocturnal-culture-night"
+      ],
+      "categories": [
+        "darkwave",
+        "goth",
+        "post-punk",
+        "EDM",
+        "alternative"
       ]
     },
     {
       "record_id": "raf-2026-003",
       "festival_id": "castle-party-festival",
       "festival_name": "Castle Party Festival",
-      "city": "Bolków",
+      "city": "Bolk\u00f3w",
       "state_region": "Lower Silesian Voivodeship",
       "country": "Poland",
-      "venue_name": "Bolków Castle",
+      "venue_name": "Bolk\u00f3w Castle",
       "venue_address": null,
       "latitude": null,
       "longitude": null,
       "geocoding_source": null,
-      "geocoding_query": "Bolków Castle, Bolków, Lower Silesian Voivodeship, Poland",
+      "geocoding_query": "Bolk\u00f3w Castle, Bolk\u00f3w, Lower Silesian Voivodeship, Poland",
       "geocoding_confidence": "not_geocoded",
       "start_date": "2026-07-16",
       "end_date": "2026-07-19",
@@ -186,10 +210,10 @@
       "source_confidence": "high",
       "follow_up_needed": false,
       "map_notes": "Single known venue suitable for future exact geocoding.",
-      "data_quality_notes": "Official site confirms dates and Bolków Castle venue.",
+      "data_quality_notes": "Official site confirms dates and Bolk\u00f3w Castle venue.",
       "slug": "castle-party-festival",
-      "atlas_summary": "Castle Party Festival is a curated RetroAltFest atlas record for goth, dark independent, industrial, darkwave travelers, located in Bolków · Lower Silesian Voivodeship · Poland. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
-      "why_it_matters": "Castle Party turns place into atmosphere: a dark alternative festival staged around Bolków Castle, where gothic architecture and European scene history become part of the draw. It belongs in the atlas because it represents the destination-festival side of goth culture, not just a standard concert weekend.",
+      "atlas_summary": "Castle Party Festival is a curated RetroAltFest atlas record for goth, dark independent, industrial, darkwave travelers, located in Bolk\u00f3w \u00b7 Lower Silesian Voivodeship \u00b7 Poland. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
+      "why_it_matters": "Castle Party turns place into atmosphere: a dark alternative festival staged around Bolk\u00f3w Castle, where gothic architecture and European scene history become part of the draw. It belongs in the atlas because it represents the destination-festival side of goth culture, not just a standard concert weekend.",
       "source_links": [
         {
           "label": "Official festival site",
@@ -206,6 +230,13 @@
         "wave-gotik-treffen",
         "ncn-festival-nocturnal-culture-night",
         "amphi-festival"
+      ],
+      "categories": [
+        "darkwave",
+        "goth",
+        "industrial",
+        "post-punk",
+        "alternative"
       ]
     },
     {
@@ -251,7 +282,7 @@
       "map_notes": "Single known venue suitable for future exact geocoding.",
       "data_quality_notes": "Official ticket page/Eventbrite listing by Dickens confirms dates, venue, city, and genre description.",
       "slug": "terminus-festival-resonance",
-      "atlas_summary": "Terminus Festival: Resonance is a curated RetroAltFest atlas record for darkwave, EBM, industrial, synth travelers, located in Calgary · Alberta · Canada. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
+      "atlas_summary": "Terminus Festival: Resonance is a curated RetroAltFest atlas record for darkwave, EBM, industrial, synth travelers, located in Calgary \u00b7 Alberta \u00b7 Canada. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
       "why_it_matters": "Terminus is a focused North American node for dark electronic, EBM, industrial, and post-punk audiences. Its Calgary setting and venue-centered format make it a strong example of a smaller but high-signal festival where curation, scene trust, and travel intent matter more than mainstream scale.",
       "source_links": [
         {
@@ -269,6 +300,12 @@
         "infest-festival",
         "cold-waves-xiv",
         "wave-gotik-treffen"
+      ],
+      "categories": [
+        "darkwave",
+        "industrial",
+        "synthpop",
+        "post-punk"
       ]
     },
     {
@@ -278,12 +315,12 @@
       "city": "Cologne",
       "state_region": "North Rhine-Westphalia",
       "country": "Germany",
-      "venue_name": "Tanzbrunnen Köln",
+      "venue_name": "Tanzbrunnen K\u00f6ln",
       "venue_address": null,
       "latitude": null,
       "longitude": null,
       "geocoding_source": null,
-      "geocoding_query": "Tanzbrunnen Köln, Cologne, North Rhine-Westphalia, Germany",
+      "geocoding_query": "Tanzbrunnen K\u00f6ln, Cologne, North Rhine-Westphalia, Germany",
       "geocoding_confidence": "not_geocoded",
       "start_date": "2026-07-25",
       "end_date": "2026-07-26",
@@ -312,10 +349,10 @@
       "source_confidence": "high",
       "follow_up_needed": false,
       "map_notes": "Single known venue suitable for future exact geocoding.",
-      "data_quality_notes": "Official homepage title/metadata confirms 2026 edition, dates, and Tanzbrunnen Köln.",
+      "data_quality_notes": "Official homepage title/metadata confirms 2026 edition, dates, and Tanzbrunnen K\u00f6ln.",
       "slug": "amphi-festival",
-      "atlas_summary": "Amphi Festival is a curated RetroAltFest atlas record for goth, industrial, darkwave, electro travelers, located in Cologne · North Rhine-Westphalia · Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
-      "why_it_matters": "Amphi Festival is a major German gathering for goth, industrial, darkwave, electro, and related dark alternative scenes. Its Tanzbrunnen Köln setting and consistent official presentation make it a useful anchor record for travelers comparing established European festivals with distinct city and venue identities.",
+      "atlas_summary": "Amphi Festival is a curated RetroAltFest atlas record for goth, industrial, darkwave, electro travelers, located in Cologne \u00b7 North Rhine-Westphalia \u00b7 Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
+      "why_it_matters": "Amphi Festival is a major German gathering for goth, industrial, darkwave, electro, and related dark alternative scenes. Its Tanzbrunnen K\u00f6ln setting and consistent official presentation make it a useful anchor record for travelers comparing established European festivals with distinct city and venue identities.",
       "source_links": [
         {
           "label": "Official festival site",
@@ -327,6 +364,13 @@
         "wave-gotik-treffen",
         "ncn-festival-nocturnal-culture-night",
         "mera-luna-festival"
+      ],
+      "categories": [
+        "darkwave",
+        "goth",
+        "industrial",
+        "post-punk",
+        "alternative"
       ]
     },
     {
@@ -372,7 +416,7 @@
       "map_notes": "Single known venue suitable for future exact geocoding.",
       "data_quality_notes": "Official English homepage confirms dates and Airfield Hildesheim Drispenstedt.",
       "slug": "mera-luna-festival",
-      "atlas_summary": "M'era Luna Festival is a curated RetroAltFest atlas record for goth, darkwave, industrial, metal travelers, located in Hildesheim · Lower Saxony · Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
+      "atlas_summary": "M'era Luna Festival is a curated RetroAltFest atlas record for goth, darkwave, industrial, metal travelers, located in Hildesheim \u00b7 Lower Saxony \u00b7 Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
       "why_it_matters": "M'era Luna matters as one of the most visible large-scale dark alternative festivals in Europe, bringing goth, darkwave, industrial, synthpop, metal, and adjacent scenes into a destination weekend. For the atlas, it helps balance intimate underground entries with the larger festival circuit many travelers already recognize.",
       "source_links": [
         {
@@ -385,6 +429,13 @@
         "ncn-festival-nocturnal-culture-night",
         "wave-gotik-treffen",
         "amphi-festival"
+      ],
+      "categories": [
+        "darkwave",
+        "goth",
+        "industrial",
+        "synthpop",
+        "alternative"
       ]
     },
     {
@@ -432,7 +483,7 @@
       "map_notes": "Single known venue suitable for future exact geocoding.",
       "data_quality_notes": "Official pages confirm 2026 dates and venue. Festival moved from Bradford to Manchester.",
       "slug": "infest-festival",
-      "atlas_summary": "Infest Festival is a curated RetroAltFest atlas record for EBM, industrial, noise, synthpop travelers, located in Manchester · England · United Kingdom. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
+      "atlas_summary": "Infest Festival is a curated RetroAltFest atlas record for EBM, industrial, noise, synthpop travelers, located in Manchester \u00b7 England \u00b7 United Kingdom. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
       "why_it_matters": "Infest is important because it carries a long-running UK identity around EBM, industrial, synthpop, noise, and dark electronic culture while now pointing travelers toward Manchester. The move note makes it exactly the kind of festival where source-aware curation prevents outdated venue assumptions.",
       "source_links": [
         {
@@ -455,6 +506,12 @@
         "terminus-festival-resonance",
         "ncn-festival-nocturnal-culture-night",
         "wave-gotik-treffen"
+      ],
+      "categories": [
+        "darkwave",
+        "industrial",
+        "synthpop",
+        "post-punk"
       ]
     },
     {
@@ -499,7 +556,7 @@
       "map_notes": "Parent record only. Opening party is listed at TV Eye and main nights at Bowery Ballroom; child venue records are needed before precise map display.",
       "data_quality_notes": "Official Red Party/Nite Church page confirms dates and venues: TV Eye for opening party, Bowery Ballroom for nights one and two.",
       "slug": "a-murder-of-crows-xi-nyc-goth-post-punk-festival",
-      "atlas_summary": "A Murder of Crows XI NYC Goth & Post-punk Festival is a curated RetroAltFest atlas record for goth, post-punk, darkwave, deathrock travelers, located in New York · New York · United States. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
+      "atlas_summary": "A Murder of Crows XI NYC Goth & Post-punk Festival is a curated RetroAltFest atlas record for goth, post-punk, darkwave, deathrock travelers, located in New York \u00b7 New York \u00b7 United States. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
       "why_it_matters": "A Murder of Crows matters because it captures the New York goth and post-punk ecosystem through a festival-scale lens, connecting club culture, promoters, and multiple venues into one curated weekend. It gives the atlas a strong urban nightlife entry rather than only camping or destination-festival formats.",
       "source_links": [
         {
@@ -512,6 +569,12 @@
         "wave-gotik-treffen",
         "ncn-festival-nocturnal-culture-night",
         "castle-party-festival"
+      ],
+      "categories": [
+        "darkwave",
+        "goth",
+        "post-punk",
+        "alternative"
       ]
     },
     {
@@ -558,7 +621,7 @@
       "map_notes": "Single known venue suitable for future exact geocoding. Main festival dates only are represented in start_date and end_date.",
       "data_quality_notes": "Official site confirms festival dates, warm-up date, and Kulturpark Deutzen bei Leipzig. start_date/end_date represent main festival only, excluding warm-up.",
       "slug": "ncn-festival-nocturnal-culture-night",
-      "atlas_summary": "NCN Festival / Nocturnal Culture Night is a curated RetroAltFest atlas record for goth, darkwave, industrial, synthpop travelers, located in Deutzen · Saxony · Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
+      "atlas_summary": "NCN Festival / Nocturnal Culture Night is a curated RetroAltFest atlas record for goth, darkwave, industrial, synthpop travelers, located in Deutzen \u00b7 Saxony \u00b7 Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
       "why_it_matters": "NCN Festival matters as a German nocturnal culture gathering with goth, darkwave, industrial, synthpop, post-punk, and warm-up programming in a park setting near Leipzig. It adds a more intimate regional counterpoint to the larger German festivals while still carrying destination appeal.",
       "source_links": [
         {
@@ -571,6 +634,14 @@
         "wave-gotik-treffen",
         "mera-luna-festival",
         "amphi-festival"
+      ],
+      "categories": [
+        "darkwave",
+        "goth",
+        "industrial",
+        "synthpop",
+        "post-punk",
+        "alternative"
       ]
     },
     {
@@ -617,7 +688,7 @@
       "map_notes": "Parent record only. Events are split between Bottom Lounge and Metro; child venue records are needed before precise map display.",
       "data_quality_notes": "Official Cold Waves site lists Cold Waves XIV ticket links by date and venue. Year is supported by official 2026 event/merch context on the same page.",
       "slug": "cold-waves-xiv",
-      "atlas_summary": "Cold Waves XIV is a curated RetroAltFest atlas record for industrial, EBM, darkwave, synth travelers, located in Chicago · Illinois · United States. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
+      "atlas_summary": "Cold Waves XIV is a curated RetroAltFest atlas record for industrial, EBM, darkwave, synth travelers, located in Chicago \u00b7 Illinois \u00b7 United States. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
       "why_it_matters": "Cold Waves matters because it is deeply tied to industrial and post-industrial culture, with Chicago venues and multi-night programming that make the city part of the festival story. It gives RetroAltFest a strong North American industrial anchor with official venue/date details worth preserving carefully.",
       "source_links": [
         {
@@ -635,6 +706,12 @@
         "terminus-festival-resonance",
         "infest-festival",
         "wave-gotik-treffen"
+      ],
+      "categories": [
+        "darkwave",
+        "industrial",
+        "synthpop",
+        "EDM"
       ]
     }
   ]

@@ -3,23 +3,15 @@ import { FestivalDirectoryBrowser } from "@/components/festivals/FestivalDirecto
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { featuredFestivals } from "@/lib/festivals";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: "Festival atlas directory",
   description:
-    "Browse the RetroAltFest curated atlas of goth, darkwave, industrial, post-punk, synthpop, EBM, and underground alternative festivals.",
-  alternates: {
-    canonical: "/festivals",
-  },
-  openGraph: {
-    title: "RetroAltFest festival atlas directory",
-    description:
-      "A static-first searchable directory of source-aware dark alternative festival records.",
-    url: "/festivals",
-    siteName: "RetroAltFest",
-    type: "website",
-  },
-};
+    "Browse the RetroAltFest curated atlas of goth, darkwave, industrial, post-punk, synthpop, EDM, and underground alternative festivals.",
+  path: "/festivals",
+  keywords: ["festival atlas", "goth festivals", "darkwave festivals", "industrial festivals", "EDM festivals"],
+});
 
 export default function FestivalsDirectoryPage() {
   return (

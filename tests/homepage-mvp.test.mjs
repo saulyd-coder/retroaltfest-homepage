@@ -297,3 +297,89 @@ test('public launch exposes robots, sitemap, and web manifest metadata routes', 
   assert.match(manifest, /start_url: "\/"/);
   assert.match(manifest, /\/icon\.svg/);
 });
+
+test('production analytics are privacy-friendly and lightweight', () => {
+  const analytics = read('src/components/analytics/Analytics.tsx');
+  const layout = read('src/app/layout.tsx');
+
+  assert.match(analytics, /use client/);
+  assert.match(analytics, /navigator\.sendBeacon/);
+  assert.match(analytics, /pageview/);
+  assert.match(analytics, /raf-track/);
+  assert.match(analytics, /doNotTrack/);
+  assert.doesNotMatch(analytics, /gtag|google-analytics|segment|mixpanel|posthog/i);
+  assert.match(layout, /<Analytics \/>/);
+});
+
+test('waitlist capture is local-first, validated, and visually integrated', () => {
+  const component = read('src/components/waitlist/WaitlistSignup.tsx');
+  const route = read('src/app/api/waitlist/route.ts');
+  const homepage = read('src/app/page.tsx');
+
+  assert.match(component, /use client/);
+  assert.match(component, /Join the waitlist/);
+  assert.match(component, /type="email"/);
+  assert.match(component, /\/api\/waitlist/);
+  assert.match(component, /raf-button-primary/);
+  assert.match(component, /aria-live="polite"/);
+
+  assert.match(route, /export async function POST/);
+  assert.match(route, /emailRegex/);
+  assert.match(route, /waitlist-emails\.json/);
+  assert.match(route, /appendFile|writeFile/);
+  assert.doesNotMatch(route, /supabase|mongodb|prisma|mailchimp|convertkit/i);
+
+  assert.match(homepage, /<WaitlistSignup \/>/);
+});
+
+test('reusable SEO helper centralizes canonical and OG metadata', () => {
+  const seo = read('src/lib/seo.ts');
+  const layout = read('src/app/layout.tsx');
+  const directoryPage = read('src/app/festivals/page.tsx');
+  const detailPage = read('src/app/festivals/[slug]/page.tsx');
+
+  assert.match(seo, /siteUrl/);
+  assert.match(seo, /defaultOgImage/);
+  assert.match(seo, /buildMetadata/);
+  assert.match(seo, /canonical/);
+  assert.match(seo, /openGraph/);
+  assert.match(seo, /twitter/);
+
+  assert.match(layout, /buildMetadata/);
+  assert.match(directoryPage, /buildMetadata/);
+  assert.match(detailPage, /buildMetadata/);
+});
+
+test('festival categories expose the launch taxonomy across data and UI', () => {
+  const helpers = read('src/lib/festivals.ts');
+  const browser = read('src/components/festivals/FestivalDirectoryBrowser.tsx');
+  const card = read('src/components/home/FestivalCard.tsx');
+  const data = JSON.parse(read('src/data/seed_festivals_10.json'));
+  const requiredCategories = ['darkwave', 'goth', 'industrial', 'synthpop', 'post-punk', 'EDM', 'alternative'];
+
+  for (const category of requiredCategories) {
+    assert.match(helpers, new RegExp(category.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'));
+  }
+
+  for (const festival of data.festivals) {
+    assert.ok(Array.isArray(festival.categories), `${festival.festival_name} should expose categories`);
+    assert.ok(festival.categories.length >= 1, `${festival.festival_name} should have at least one category`);
+  }
+
+  assert.match(browser, /categoryFilters/);
+  assert.match(browser, /festival\.categories/);
+  assert.match(card, /festival\.categories/);
+});
+
+test('mobile polish keeps production UI readable on small screens', () => {
+  const source = [
+    'src/components/home/Hero.tsx',
+    'src/components/waitlist/WaitlistSignup.tsx',
+    'src/components/festivals/FestivalDirectoryBrowser.tsx',
+    'src/app/festivals/[slug]/page.tsx',
+  ].map(read).join('\n');
+
+  for (const token of ['text-4xl sm:text-6xl', 'grid-cols-1 sm:grid-cols', 'overflow-x-auto', 'min-w-0']) {
+    assert.match(source, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
+});

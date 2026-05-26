@@ -18,8 +18,8 @@ export function FestivalCard({ festival }: { festival: Festival }) {
       <h3 className="mt-5 font-display text-2xl font-semibold leading-tight tracking-[-0.02em] text-white">{festival.festival_name}</h3>
       <p className="mt-3 text-sm leading-6 text-[var(--raf-text-muted)]">{formatLocation(festival)}</p>
       <p className="mt-2 text-sm leading-6 text-[var(--raf-text-dim)]">{festival.date_text}</p>
-      <div className="mt-5 flex flex-wrap gap-2">
-        {festival.genres.slice(0, 4).map((genre) => (
+      <div className="mt-5 flex flex-wrap gap-2 overflow-x-auto pb-1">
+        {festival.categories.slice(0, 4).map((genre) => (
           <span key={genre} className="raf-chip rounded-full px-3 py-1 text-xs">
             {genreLabel(genre)}
           </span>

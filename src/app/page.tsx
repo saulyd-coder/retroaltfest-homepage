@@ -5,6 +5,7 @@ import { SubmitFestivalCta } from "@/components/home/SubmitFestivalCta";
 import { TrustSection } from "@/components/home/TrustSection";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
+import { WaitlistSignup } from "@/components/waitlist/WaitlistSignup";
 
 export default function Home() {
   return (
@@ -24,6 +25,7 @@ export default function Home() {
       <TrustSection />
       <FeaturedFestivals />
       <MapPreview />
+      <WaitlistSignup />
       <SubmitFestivalCta />
       <Footer />
     </main>

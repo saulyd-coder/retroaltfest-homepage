@@ -7,7 +7,7 @@ export function Hero() {
       <div className="pointer-events-none absolute left-[48%] top-16 hidden h-[34rem] w-px bg-gradient-to-b from-transparent via-[var(--raf-ultraviolet)]/20 to-transparent lg:block" />
       <div className="relative z-10 flex flex-col justify-center">
         <p className="mb-5 font-mono text-xs uppercase tracking-[0.32em] text-[var(--raf-cyan)]">Source-aware dark festival discovery</p>
-        <h1 className="text-balance font-display text-5xl font-semibold tracking-[-0.055em] text-white sm:text-6xl lg:text-7xl">
+        <h1 className="text-balance font-display text-4xl sm:text-6xl font-semibold tracking-[-0.055em] text-white lg:text-7xl">
           Discover dark alternative festivals worth traveling for.
         </h1>
         <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--raf-text-muted)] sm:text-xl">

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Festival, festivalSlug, formatLocation, genreLabel, statusLabel } from "@/lib/festivals";
+import { Festival, categoryFilters, festivalSlug, formatLocation, genreLabel, statusLabel } from "@/lib/festivals";
 
 type FestivalDirectoryBrowserProps = {
   festivals: Festival[];
@@ -16,7 +16,7 @@ export function FestivalDirectoryBrowser({ festivals }: FestivalDirectoryBrowser
   const [regionFilter, setRegionFilter] = useState(allOption);
   const [statusFilter, setStatusFilter] = useState(allOption);
 
-  const scenes = useMemo(() => uniqueSorted(festivals.flatMap((festival) => festival.genres)), [festivals]);
+  const scenes = useMemo(() => categoryFilters, []);
   const regions = useMemo(() => uniqueSorted(festivals.map((festival) => festival.country)), [festivals]);
   const statuses = useMemo(() => uniqueSorted(festivals.map((festival) => festival.verification_status)), [festivals]);
 
@@ -32,13 +32,14 @@ export function FestivalDirectoryBrowser({ festivals }: FestivalDirectoryBrowser
         festival.venue_name,
         festival.date_text,
         ...festival.genres,
+        ...festival.categories,
       ]
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
 
       const matchesSearch = query.length === 0 || searchableText.includes(query);
-      const matchesScene = sceneFilter === allOption || festival.genres.includes(sceneFilter);
+      const matchesScene = sceneFilter === allOption || festival.categories.includes(sceneFilter);
       const matchesRegion = regionFilter === allOption || festival.country === regionFilter;
       const matchesStatus = statusFilter === allOption || festival.verification_status === statusFilter;
 
@@ -56,7 +57,7 @@ export function FestivalDirectoryBrowser({ festivals }: FestivalDirectoryBrowser
   return (
     <section className="relative mt-10">
       <div className="rounded-[2rem] border border-[rgba(168,85,247,0.18)] bg-[linear-gradient(180deg,rgba(24,17,39,0.72),rgba(5,5,9,0.86))] p-4 shadow-[0_24px_90px_rgba(0,0,0,0.34)] sm:p-5">
-        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_13rem_13rem_13rem]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:grid-cols-[minmax(0,1fr)_13rem_13rem_13rem]">
           <label className="block">
             <span className="mb-2 block font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--raf-text-dim)]">Search by festival or location</span>
             <input
@@ -103,8 +104,8 @@ export function FestivalDirectoryBrowser({ festivals }: FestivalDirectoryBrowser
                   <p className="mt-2 text-sm leading-6 text-[var(--raf-text-muted)]">{formatLocation(festival)}</p>
                   <p className="mt-1 text-sm leading-6 text-[var(--raf-text-dim)]">{festival.date_text}</p>
 
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {festival.genres.slice(0, 5).map((genre) => (
+                  <div className="mt-4 flex flex-wrap gap-2 overflow-x-auto pb-1">
+                    {festival.categories.slice(0, 5).map((genre) => (
                       <span key={genre} className="raf-chip rounded-full px-3 py-1 text-xs">
                         {genreLabel(genre)}
                       </span>
