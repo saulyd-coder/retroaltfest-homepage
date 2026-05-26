@@ -40,7 +40,6 @@ export async function POST(request: Request) {
       return createButtondownSubscriber({
         email,
         buttondownApiKey,
-        ipAddress: clientIpFromRequest(request),
       });
     }
 
@@ -63,19 +62,13 @@ export async function POST(request: Request) {
 async function createButtondownSubscriber({
   email,
   buttondownApiKey,
-  ipAddress,
 }: {
   email: string;
   buttondownApiKey: string;
-  ipAddress?: string;
 }) {
   const body: Record<string, unknown> = {
     email_address: email,
   };
-
-  if (ipAddress) {
-    body.ip_address = ipAddress;
-  }
 
   const authorizationHeader = buttondownApiKey.trim().toLowerCase().startsWith("token ")
     ? buttondownApiKey.trim()
@@ -129,12 +122,6 @@ function isButtondownEmailValidationError(status: number, error: unknown) {
 
   const text = JSON.stringify(error ?? {}).toLowerCase();
   return text.includes("email_invalid") || text.includes("email address provided is not valid");
-}
-
-function clientIpFromRequest(request: Request) {
-  const forwardedFor = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-  const realIp = request.headers.get("x-real-ip")?.trim();
-  return forwardedFor || realIp || undefined;
 }
 
 async function saveLocalWaitlistRecord(email: string, source: string) {
