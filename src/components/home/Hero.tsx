@@ -2,22 +2,25 @@ import { featuredFestivals, formatLocation, homepageStats } from "@/lib/festival
 
 export function Hero() {
   return (
-    <section id="top" className="relative mx-auto grid max-w-7xl gap-12 px-5 pb-20 pt-16 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:pb-28 lg:pt-24">
+    <section id="top" className="relative mx-auto grid max-w-7xl gap-10 px-5 pb-18 pt-12 sm:px-8 sm:pb-20 sm:pt-16 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 lg:pb-28 lg:pt-24">
       <div className="hero-bloom pointer-events-none absolute -left-20 top-8 h-[34rem] w-[48rem] rounded-full opacity-90 blur-2xl" />
       <div className="pointer-events-none absolute left-[48%] top-16 hidden h-[34rem] w-px bg-gradient-to-b from-transparent via-[var(--raf-ultraviolet)]/20 to-transparent lg:block" />
       <div className="relative z-10 flex flex-col justify-center">
-        <p className="mb-5 font-mono text-xs uppercase tracking-[0.35em] text-[var(--raf-cyan)]">Curated dark festival discovery</p>
-        <h1 className="text-balance font-display text-5xl font-semibold tracking-[-0.06em] text-white sm:text-6xl lg:text-7xl">
+        <p className="mb-5 font-mono text-xs uppercase tracking-[0.32em] text-[var(--raf-cyan)]">Source-aware dark festival discovery</p>
+        <h1 className="text-balance font-display text-5xl font-semibold tracking-[-0.055em] text-white sm:text-6xl lg:text-7xl">
           Discover dark alternative festivals worth traveling for.
         </h1>
         <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--raf-text-muted)] sm:text-xl">
-          A curated map of goth, darkwave, industrial, synth, EBM, post-punk, and underground alternative festivals — built from official sources, not scraped noise.
+          A curated atlas for goth, darkwave, industrial, synth, EBM, post-punk, and underground alternative festivals — built from official sources, not scraped noise.
+        </p>
+        <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--raf-text-dim)]">
+          Start with verified records, clear source notes, and honest map status before planning a trip.
         </p>
         <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-          <a className="relative z-10 rounded-full bg-white px-6 py-3 text-center text-sm font-black text-[#050507] shadow-[0_0_28px_rgba(244,241,255,0.18)] transition duration-500 hover:-translate-y-0.5 hover:bg-[var(--raf-cyan)] hover:shadow-[0_0_36px_rgba(34,211,238,0.22)]" href="#festivals">
-            Browse festivals
+          <a className="raf-button-primary relative z-10 px-6 py-3 text-center" href="#festivals" aria-label="Browse festivals — start browsing the atlas">
+            Start browsing the atlas
           </a>
-          <a className="rounded-full border border-[var(--raf-border)] bg-white/[0.035] px-6 py-3 text-center text-sm font-bold text-white transition duration-500 hover:-translate-y-0.5 hover:border-[var(--raf-magenta)]/70 hover:bg-white/[0.07]" href="#submit">
+          <a className="raf-button-secondary px-6 py-3 text-center" href="#submit">
             Suggest a festival
           </a>
         </div>

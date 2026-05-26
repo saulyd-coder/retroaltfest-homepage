@@ -5,6 +5,7 @@ import {
   festivalSlug,
   featuredFestivals,
   formatLocation,
+  genreLabel,
   getFestivalBySlug,
   getSimilarFestivals,
   statusLabel,
@@ -52,11 +53,20 @@ export async function generateMetadata({ params }: FestivalPageProps): Promise<M
       url,
       siteName: "RetroAltFest",
       type: "article",
+      images: [
+        {
+          url: "/og-preview.png",
+          width: 1200,
+          height: 630,
+          alt: `${festival.festival_name} on the RetroAltFest atlas`,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: ["/og-preview.png"],
     },
   };
 }
@@ -166,8 +176,8 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
               <h2 className="font-display text-2xl font-semibold text-white">Genre tags</h2>
               <div className="mt-4 flex flex-wrap gap-2">
                 {festival.genres.map((genre) => (
-                  <span key={genre} className="rounded-full border border-[var(--raf-border-soft)] bg-[var(--raf-violet)]/10 px-3 py-1 text-xs text-[var(--raf-text-muted)]">
-                    {genre}
+                  <span key={genre} className="raf-chip rounded-full px-3 py-1 text-xs">
+                    {genreLabel(genre)}
                   </span>
                 ))}
               </div>

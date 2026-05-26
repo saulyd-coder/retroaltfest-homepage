@@ -237,3 +237,63 @@ test('festival directory route lists the atlas with lightweight filters and sear
   assert.match(browser, /grid gap-4|sm:grid-cols|lg:grid-cols/);
   assert.doesNotMatch(browser, /framer-motion|lottie|three|canvas|axios/i);
 });
+
+test('public launch polish adds accessible states and clearer trust microcopy', () => {
+  const css = read('src/app/globals.css');
+  const source = [
+    'src/components/site/Header.tsx',
+    'src/components/site/Footer.tsx',
+    'src/components/home/Hero.tsx',
+    'src/components/home/FestivalCard.tsx',
+    'src/components/home/TrustSection.tsx',
+    'src/components/festivals/FestivalDirectoryBrowser.tsx',
+    'src/components/home/SubmitFestivalCta.tsx',
+  ].map(read).join('\n');
+
+  for (const token of ['.raf-button-primary', '.raf-button-secondary', '.raf-chip', '.raf-panel']) {
+    assert.match(css, new RegExp(token.replace('.', '\\.')));
+  }
+
+  for (const copy of ['Source-aware', 'No scraped listings', 'Verified before mapped', 'Start browsing the atlas', 'Reset and show all festivals']) {
+    assert.match(source, new RegExp(copy.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
+
+  assert.match(source, /aria-live="polite"/);
+  assert.match(`${css}\n${source}`, /focus-visible/);
+});
+
+test('metadata references static social preview and app icon assets', () => {
+  const layout = read('src/app/layout.tsx');
+
+  for (const asset of ['public/icon.svg', 'public/apple-icon.svg', 'public/og-preview.svg', 'public/og-preview.png', 'public/manifest.json']) {
+    assert.equal(existsSync(join(root, asset)), true, `${asset} should exist`);
+  }
+
+  assert.match(layout, /icons:/);
+  assert.match(layout, /manifest:/);
+  assert.match(layout, /\/manifest\.json/);
+  assert.match(layout, /\/icon\.svg/);
+  assert.match(layout, /\/apple-icon\.svg/);
+  assert.match(layout, /\/og-preview\.png/);
+  assert.match(layout, /images:/);
+});
+
+test('public launch exposes robots, sitemap, and web manifest metadata routes', () => {
+  const robots = read('src/app/robots.ts');
+  const sitemap = read('src/app/sitemap.ts');
+  const manifest = read('src/app/manifest.ts');
+
+  assert.match(robots, /MetadataRoute\.Robots/);
+  assert.match(robots, /sitemap:/);
+  assert.match(robots, /https:\/\/retroaltfest\.com\/sitemap\.xml/);
+
+  assert.match(sitemap, /MetadataRoute\.Sitemap/);
+  assert.match(sitemap, /featuredFestivals/);
+  assert.match(sitemap, /festivalSlug/);
+  assert.match(sitemap, /\/festivals/);
+
+  assert.match(manifest, /MetadataRoute\.Manifest/);
+  assert.match(manifest, /name: "RetroAltFest"/);
+  assert.match(manifest, /start_url: "\/"/);
+  assert.match(manifest, /\/icon\.svg/);
+});

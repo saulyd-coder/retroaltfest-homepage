@@ -47,7 +47,24 @@ export function formatLocation(festival: Festival) {
 }
 
 export function statusLabel(status: string) {
-  return status.replaceAll("_", " ");
+  return status
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+export function genreLabel(genre: string) {
+  const normalized = genre.trim();
+  const knownLabels: Record<string, string> = {
+    ebm: "EBM",
+    synthpop: "Synthpop",
+    "post-punk": "Post-punk",
+    darkwave: "Darkwave",
+    goth: "Goth",
+    industrial: "Industrial",
+    synth: "Synth",
+  };
+
+  return knownLabels[normalized.toLowerCase()] || normalized.replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
 export function mapPreviewLabel(festival: Festival) {

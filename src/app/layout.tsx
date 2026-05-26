@@ -22,6 +22,7 @@ const jetBrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://retroaltfest.com"),
+  applicationName: "RetroAltFest",
   title: {
     default: "RetroAltFest | Curated Dark Alternative Festival Discovery",
     template: "%s | RetroAltFest",
@@ -44,6 +45,14 @@ export const metadata: Metadata = {
       "A curated, source-aware festival discovery MVP for goth, darkwave, industrial, synth, EBM, post-punk, and underground scenes.",
     url: "https://retroaltfest.com",
     siteName: "RetroAltFest",
+    images: [
+      {
+        url: "/og-preview.png",
+        width: 1200,
+        height: 630,
+        alt: "RetroAltFest dark alternative festival atlas preview",
+      },
+    ],
     locale: "en_US",
     type: "website",
   },
@@ -51,7 +60,13 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "RetroAltFest",
     description: "Curated dark alternative festival discovery.",
+    images: ["/og-preview.png"],
   },
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/apple-icon.svg", type: "image/svg+xml" }],
+  },
+  manifest: "/manifest.json",
   robots: {
     index: true,
     follow: true,

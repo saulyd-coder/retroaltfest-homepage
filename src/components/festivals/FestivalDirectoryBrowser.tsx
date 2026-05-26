@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Festival, festivalSlug, formatLocation, statusLabel } from "@/lib/festivals";
+import { Festival, festivalSlug, formatLocation, genreLabel, statusLabel } from "@/lib/festivals";
 
 type FestivalDirectoryBrowserProps = {
   festivals: Festival[];
@@ -68,16 +68,16 @@ export function FestivalDirectoryBrowser({ festivals }: FestivalDirectoryBrowser
             />
           </label>
 
-          <FilterSelect label="Scene" value={sceneFilter} onChange={setSceneFilter} options={scenes} allLabel="All scenes" />
+          <FilterSelect label="Scene" value={sceneFilter} onChange={setSceneFilter} options={scenes} allLabel="All scenes" formatOption={genreLabel} />
           <FilterSelect label="Region" value={regionFilter} onChange={setRegionFilter} options={regions} allLabel="All regions" />
           <FilterSelect label="Status" value={statusFilter} onChange={setStatusFilter} options={statuses} allLabel="All statuses" formatOption={statusLabel} />
         </div>
 
-        <div className="mt-4 flex flex-col gap-3 text-sm text-[var(--raf-text-muted)] sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-4 flex flex-col gap-3 text-sm text-[var(--raf-text-muted)] sm:flex-row sm:items-center sm:justify-between" aria-live="polite">
           <p>
-            Showing <span className="font-semibold text-white">{filteredFestivals.length}</span> of <span className="font-semibold text-white">{festivals.length}</span> curated atlas records.
+            Showing <span className="font-semibold text-white">{filteredFestivals.length}</span> of <span className="font-semibold text-white">{festivals.length}</span> source-aware atlas records.
           </p>
-          <button className="self-start rounded-full border border-[var(--raf-border-soft)] px-4 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--raf-text-muted)] transition hover:border-[var(--raf-cyan)]/50 hover:text-white sm:self-auto" type="button" onClick={resetFilters}>
+          <button className="raf-button-secondary self-start px-4 py-2 font-mono text-[10px] uppercase tracking-[0.18em] sm:self-auto" type="button" onClick={resetFilters}>
             Reset filters
           </button>
         </div>
@@ -105,14 +105,14 @@ export function FestivalDirectoryBrowser({ festivals }: FestivalDirectoryBrowser
 
                   <div className="mt-4 flex flex-wrap gap-2">
                     {festival.genres.slice(0, 5).map((genre) => (
-                      <span key={genre} className="rounded-full border border-[var(--raf-border-soft)] bg-black/25 px-3 py-1 text-xs text-[var(--raf-text-muted)]">
-                        {genre}
+                      <span key={genre} className="raf-chip rounded-full px-3 py-1 text-xs">
+                        {genreLabel(genre)}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <Link className="shrink-0 rounded-full border border-[var(--raf-border)] px-4 py-2 text-center font-mono text-xs uppercase tracking-[0.18em] text-[var(--raf-cyan)] transition hover:border-[var(--raf-cyan)]/60 hover:bg-[var(--raf-cyan)]/10 hover:text-white" href={`/festivals/${festivalSlug(festival)}`}>
+                <Link className="raf-button-secondary shrink-0 px-4 py-2 text-center font-mono text-xs uppercase tracking-[0.18em] text-[var(--raf-cyan)]" href={`/festivals/${festivalSlug(festival)}`}>
                   View entry
                 </Link>
               </div>
@@ -120,11 +120,12 @@ export function FestivalDirectoryBrowser({ festivals }: FestivalDirectoryBrowser
           ))}
         </div>
       ) : (
-        <div className="mt-6 rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-black/30 p-8 text-center">
-          <h2 className="font-display text-2xl font-semibold text-white">No festivals match those filters.</h2>
+        <div className="mt-6 raf-panel rounded-[2rem] p-8 text-center">
+          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--raf-cyan)]">No matching festivals found</p>
+          <h2 className="mt-3 font-display text-2xl font-semibold text-white">No festivals match those filters.</h2>
           <p className="mx-auto mt-3 max-w-xl text-[var(--raf-text-muted)]">Try a broader scene, region, status, or location search. The atlas is intentionally small while the source-checking loop stays careful.</p>
-          <button className="mt-5 rounded-full bg-white px-5 py-3 text-sm font-black text-[#050507] transition hover:bg-[var(--raf-cyan)]" type="button" onClick={resetFilters}>
-            Show all festivals
+          <button className="raf-button-primary mt-5 px-5 py-3" type="button" onClick={resetFilters}>
+            Reset and show all festivals
           </button>
         </div>
       )}

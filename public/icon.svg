@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">RetroAltFest icon</title>
+  <desc id="desc">RA monogram on a dark violet festival atlas field.</desc>
+  <defs>
+    <radialGradient id="g" cx="35%" cy="25%" r="75%">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity=".92"/>
+      <stop offset=".38" stop-color="#8b5cf6"/>
+      <stop offset="1" stop-color="#050507"/>
+    </radialGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="#050507"/>
+  <rect x="24" y="24" width="464" height="464" rx="96" fill="url(#g)" opacity=".34"/>
+  <path d="M96 334 C158 230 214 170 256 170 C298 170 354 230 416 334" fill="none" stroke="#22d3ee" stroke-width="10" stroke-linecap="round" opacity=".72"/>
+  <circle cx="126" cy="316" r="9" fill="#22d3ee" filter="url(#glow)"/>
+  <circle cx="256" cy="174" r="11" fill="#ec4899" filter="url(#glow)"/>
+  <circle cx="386" cy="316" r="9" fill="#34d399" filter="url(#glow)"/>
+  <text x="256" y="302" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="132" font-weight="850" letter-spacing="-10" fill="#f4f1ff">RA</text>
+</svg>

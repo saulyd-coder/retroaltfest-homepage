@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">RetroAltFest social preview</title>
+  <desc id="desc">Dark alternative festival atlas preview with verified-source messaging.</desc>
+  <defs>
+    <radialGradient id="violet" cx="22%" cy="8%" r="70%">
+      <stop offset="0" stop-color="#8b5cf6" stop-opacity=".78"/>
+      <stop offset=".45" stop-color="#1b1033" stop-opacity=".56"/>
+      <stop offset="1" stop-color="#050507"/>
+    </radialGradient>
+    <radialGradient id="cyan" cx="80%" cy="18%" r="54%">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#050507" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="line" x1="0" x2="1">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#22d3ee" stop-opacity=".72"/>
+      <stop offset="1" stop-color="#ec4899" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#050507"/>
+  <rect width="1200" height="630" fill="url(#violet)"/>
+  <rect width="1200" height="630" fill="url(#cyan)"/>
+  <g opacity=".18">
+    <path d="M0 120H1200M0 220H1200M0 320H1200M0 420H1200M0 520H1200" stroke="#a855f7"/>
+    <path d="M120 0V630M260 0V630M400 0V630M540 0V630M680 0V630M820 0V630M960 0V630M1100 0V630" stroke="#a855f7"/>
+  </g>
+  <path d="M690 390 C770 250 850 196 910 196 C970 196 1050 250 1130 390" fill="none" stroke="url(#line)" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="710" cy="374" r="8" fill="#22d3ee"/>
+  <circle cx="910" cy="196" r="10" fill="#ec4899"/>
+  <circle cx="1110" cy="374" r="8" fill="#34d399"/>
+  <rect x="72" y="72" width="1056" height="486" rx="42" fill="#090a0f" opacity=".64" stroke="#ffffff" stroke-opacity=".10"/>
+  <text x="112" y="142" font-family="JetBrains Mono, ui-monospace, monospace" font-size="24" letter-spacing="7" fill="#22d3ee">SOURCE-AWARE FESTIVAL ATLAS</text>
+  <text x="112" y="278" font-family="Inter, Arial, sans-serif" font-size="74" font-weight="850" letter-spacing="-4" fill="#f4f1ff">RetroAltFest</text>
+  <text x="112" y="352" font-family="Inter, Arial, sans-serif" font-size="34" fill="#b7b1c8">Curated dark alternative festivals worth traveling for.</text>
+  <text x="112" y="430" font-family="Inter, Arial, sans-serif" font-size="24" fill="#79728b">Official-source first · verified before mapped · no scraped listings</text>
+  <rect x="112" y="474" width="306" height="52" rx="26" fill="#f4f1ff"/>
+  <text x="265" y="508" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="800" fill="#050507">Start browsing the atlas</text>
+</svg>

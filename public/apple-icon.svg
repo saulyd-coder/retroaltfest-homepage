@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-labelledby="title desc">
+  <title id="title">RetroAltFest app icon</title>
+  <desc id="desc">RetroAltFest RA monogram.</desc>
+  <rect width="180" height="180" rx="42" fill="#050507"/>
+  <circle cx="54" cy="52" r="72" fill="#8b5cf6" opacity=".34"/>
+  <circle cx="126" cy="62" r="58" fill="#22d3ee" opacity=".14"/>
+  <path d="M30 118 C55 76 75 60 90 60 C105 60 125 76 150 118" fill="none" stroke="#22d3ee" stroke-width="4" stroke-linecap="round" opacity=".72"/>
+  <circle cx="90" cy="60" r="4" fill="#ec4899"/>
+  <text x="90" y="112" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="52" font-weight="850" letter-spacing="-4" fill="#f4f1ff">RA</text>
+</svg>

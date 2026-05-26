@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Festival, festivalSlug, formatLocation, statusLabel } from "@/lib/festivals";
+import { Festival, festivalSlug, formatLocation, genreLabel, statusLabel } from "@/lib/festivals";
 
 export function FestivalCard({ festival }: { festival: Festival }) {
   return (
@@ -20,17 +20,17 @@ export function FestivalCard({ festival }: { festival: Festival }) {
       <p className="mt-2 text-sm leading-6 text-[var(--raf-text-dim)]">{festival.date_text}</p>
       <div className="mt-5 flex flex-wrap gap-2">
         {festival.genres.slice(0, 4).map((genre) => (
-          <span key={genre} className="rounded-full border border-[var(--raf-border-soft)] bg-black/25 px-3 py-1 text-xs text-[var(--raf-text-muted)] transition duration-500 group-hover:border-white/14 group-hover:text-[var(--raf-text)]">
-            {genre}
+          <span key={genre} className="raf-chip rounded-full px-3 py-1 text-xs">
+            {genreLabel(genre)}
           </span>
         ))}
       </div>
       <div className="mt-auto pt-6">
         <div className="flex flex-wrap items-center gap-3">
-          <Link className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--raf-cyan)] transition duration-500 group-hover:text-white" href={`/festivals/${festivalSlug(festival)}`}>
+          <Link className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--raf-cyan)] transition duration-500 group-hover:text-white focus-visible:text-white" href={`/festivals/${festivalSlug(festival)}`}>
             View atlas entry →
           </Link>
-          <a className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--raf-text-dim)] transition duration-500 hover:text-white" href={festival.official_url} target="_blank" rel="noreferrer">
+          <a className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--raf-text-dim)] transition duration-500 hover:text-white focus-visible:text-white" href={festival.official_url} target="_blank" rel="noreferrer">
             Official source
           </a>
         </div>

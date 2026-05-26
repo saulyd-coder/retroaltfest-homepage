@@ -1,0 +1,29 @@
+import type { MetadataRoute } from "next";
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: "RetroAltFest",
+    short_name: "RetroAltFest",
+    description: "Curated dark alternative festival discovery.",
+    start_url: "/",
+    scope: "/",
+    display: "standalone",
+    background_color: "#050507",
+    theme_color: "#050507",
+    categories: ["music", "travel", "entertainment"],
+    icons: [
+      {
+        src: "/icon.svg",
+        sizes: "512x512",
+        type: "image/svg+xml",
+        purpose: "maskable",
+      },
+      {
+        src: "/apple-icon.svg",
+        sizes: "180x180",
+        type: "image/svg+xml",
+        purpose: "any",
+      },
+    ],
+  };
+}
