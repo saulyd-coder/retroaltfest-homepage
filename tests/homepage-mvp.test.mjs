@@ -309,22 +309,31 @@ test('custom analytics logger is disabled for production safety', () => {
   assert.match(analyticsRoute, /204/);
 });
 
-test('waitlist fallback is honest, mailto-based, and keeps production storage durable-safe', () => {
+test('waitlist uses Buttondown in production with validation and bot protection', () => {
   const component = read('src/components/waitlist/WaitlistSignup.tsx');
   const route = read('src/app/api/waitlist/route.ts');
   const homepage = read('src/app/page.tsx');
 
+  assert.match(component, /use client/);
   assert.match(component, /RetroAltFest festival discovery digest/);
-  assert.match(component, /email capture is temporarily handled by direct email while durable signup storage is being connected/);
-  assert.match(component, /mailto:hello@retroaltfest\.com\?subject=RetroAltFest%20festival%20discovery%20digest%20interest/);
+  assert.match(component, /type="email"/);
+  assert.match(component, /\/api\/waitlist/);
+  assert.match(component, /aria-live="polite"/);
+  assert.match(component, /name="website"/);
+  assert.match(component, /autoComplete="off"/);
   assert.match(component, /raf-button-primary/);
-  assert.doesNotMatch(component, /\/api\/waitlist/);
-  assert.doesNotMatch(component, /type="email"/);
+  assert.doesNotMatch(component, /mailto:hello@retroaltfest\.com/);
 
-  assert.match(route, /export async function POST/);
+  assert.match(route, /BUTTONDOWN_API_KEY/);
+  assert.match(route, /https:\/\/api\.buttondown\.com\/v1\/subscribers/);
+  assert.match(route, /Authorization/);
+  assert.match(route, /Token \$\{buttondownApiKey\}/);
+  assert.match(route, /email_address/);
+  assert.match(route, /X-Buttondown-Collision-Behavior/);
+  assert.match(route, /add/);
+  assert.match(route, /honeypot/);
+  assert.match(route, /emailRegex/);
   assert.match(route, /process\.env\.VERCEL/);
-  assert.match(route, /Durable waitlist storage is not configured/);
-  assert.match(route, /waitlist-emails\.json/);
   assert.doesNotMatch(route, /process\.env\.VERCEL \? "\/tmp\/retroaltfest"/);
   assert.doesNotMatch(route, /\/tmp\/retroaltfest/);
   assert.doesNotMatch(route, /supabase|mongodb|prisma|mailchimp|convertkit/i);
