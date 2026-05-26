@@ -104,7 +104,7 @@ async function createButtondownSubscriber({
     return Response.json({ ok: true, duplicate: true });
   }
 
-  if (response.status === 400) {
+  if (isButtondownEmailValidationError(response.status, error)) {
     return Response.json({ ok: false, error: "Enter a valid email address." }, { status: 400 });
   }
 
@@ -120,10 +120,19 @@ async function readButtondownError(response: Response) {
 }
 
 function isDuplicateSubscriberError(status: number, error: unknown) {
-  if (status !== 400 && status !== 409) return false;
+  if (status === 409) return true;
+  if (status !== 400) return false;
+  if (isButtondownEmailValidationError(status, error)) return false;
 
   const text = JSON.stringify(error ?? {}).toLowerCase();
-  return text.includes("duplicate") || text.includes("already") || text.includes("collision") || text.includes("exists");
+  return text.includes("duplicate") || text.includes("already") || text.includes("collision") || text.includes("exists") || text.length > 0;
+}
+
+function isButtondownEmailValidationError(status: number, error: unknown) {
+  if (status !== 400) return false;
+
+  const text = JSON.stringify(error ?? {}).toLowerCase();
+  return text.includes("email_invalid") || text.includes("email address provided is not valid");
 }
 
 function clientIpFromRequest(request: Request) {
