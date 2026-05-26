@@ -39,7 +39,6 @@ export async function POST(request: Request) {
     if (buttondownApiKey) {
       return createButtondownSubscriber({
         email,
-        source,
         buttondownApiKey,
         ipAddress: clientIpFromRequest(request),
       });
@@ -63,22 +62,15 @@ export async function POST(request: Request) {
 
 async function createButtondownSubscriber({
   email,
-  source,
   buttondownApiKey,
   ipAddress,
 }: {
   email: string;
-  source: string;
   buttondownApiKey: string;
   ipAddress?: string;
 }) {
   const body: Record<string, unknown> = {
     email_address: email,
-    metadata: {
-      source,
-      product: "RetroAltFest",
-      form: "homepage_waitlist",
-    },
   };
 
   if (ipAddress) {
@@ -125,7 +117,7 @@ function isDuplicateSubscriberError(status: number, error: unknown) {
   if (isButtondownEmailValidationError(status, error)) return false;
 
   const text = JSON.stringify(error ?? {}).toLowerCase();
-  return text.includes("duplicate") || text.includes("already") || text.includes("collision") || text.includes("exists") || text.length > 0;
+  return text.includes("duplicate") || text.includes("already") || text.includes("collision") || text.includes("exists");
 }
 
 function isButtondownEmailValidationError(status: number, error: unknown) {
