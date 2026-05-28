@@ -476,7 +476,7 @@ test('first dark festival signals component is restrained, semantic, and data-ba
   assert.match(component, /editorial-card-glow/);
   assert.match(component, /raf-chip/);
   assert.match(component, /target="_blank"/);
-  assert.match(component, /rel="noreferrer"/);
+  assert.match(component, /rel="noopener noreferrer"/);
   assert.doesNotMatch(component, /use client|useState|useMemo|carousel|filter|search|modal|canvas|framer-motion|lottie|three/i);
 
   assert.equal(data.signals.length, 6);

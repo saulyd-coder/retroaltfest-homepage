@@ -44,7 +44,11 @@ export function FirstDarkFestivalSignals() {
             key={signal.id}
             className="editorial-card-glow group relative min-h-full overflow-hidden rounded-3xl border border-[rgba(168,85,247,0.18)] p-5 transition duration-500 hover:-translate-y-0.5 hover:border-[var(--raf-cyan)]/40"
           >
-            <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${artWash[signal.id]} opacity-80`} />
+            <div
+              className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${
+                artWash[signal.id] ?? "from-[rgba(124,58,237,0.12)] via-[rgba(34,211,238,0.08)] to-transparent"
+              } opacity-80`}
+            />
             <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[var(--raf-cyan)]/40 to-[var(--raf-ultraviolet)]/20" />
             <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[var(--raf-ultraviolet)]/10 blur-2xl transition duration-500 group-hover:bg-[var(--raf-cyan)]/10" />
 
@@ -85,7 +89,7 @@ export function FirstDarkFestivalSignals() {
                   className="inline-flex font-mono text-xs uppercase tracking-[0.16em] text-[var(--raf-text-muted)] transition duration-500 hover:text-white focus-visible:text-white"
                   href={signal.official_url}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   aria-label={`${signal.source_cue} for ${signal.name}`}
                 >
                   {signal.source_cue} →
