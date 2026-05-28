@@ -458,3 +458,26 @@ test('first dark festival signals content stays restrained and source-aware', ()
   assert.match(publicCopy, /source-aware/i);
   assert.match(publicCopy, /North America/i);
 });
+
+test('first dark festival signals component is restrained, semantic, and data-backed', () => {
+  const componentPath = 'src/components/home/FirstDarkFestivalSignals.tsx';
+  assert.equal(existsSync(join(root, componentPath)), true, 'homepage signal module component should exist');
+
+  const component = read(componentPath);
+  const data = JSON.parse(read('src/data/first_dark_festival_signals.json'));
+
+  assert.match(component, /first_dark_festival_signals\.json/);
+  assert.match(component, /<section/);
+  assert.match(component, /aria-labelledby="first-dark-festival-signals-heading"/);
+  assert.match(component, /id="first-dark-festival-signals-heading"/);
+  assert.match(component, /grid-cols-1/);
+  assert.match(component, /md:grid-cols-2/);
+  assert.match(component, /xl:grid-cols-3/);
+  assert.match(component, /editorial-card-glow/);
+  assert.match(component, /raf-chip/);
+  assert.match(component, /target="_blank"/);
+  assert.match(component, /rel="noreferrer"/);
+  assert.doesNotMatch(component, /use client|useState|useMemo|carousel|filter|search|modal|canvas|framer-motion|lottie|three/i);
+
+  assert.equal(data.signals.length, 6);
+});
