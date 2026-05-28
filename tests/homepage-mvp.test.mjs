@@ -392,3 +392,69 @@ test('mobile polish keeps production UI readable on small screens', () => {
     assert.match(source, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
 });
+
+test('first dark festival signals data matches the locked MVP content packet', () => {
+  const dataPath = 'src/data/first_dark_festival_signals.json';
+  assert.equal(existsSync(join(root, dataPath)), true, 'locked six-card signal data should exist');
+
+  const data = JSON.parse(read(dataPath));
+  const expectedOrder = [
+    'darker-waves',
+    'dark-force-fest',
+    'cold-waves',
+    'verboden-music-festival',
+    'absolution-fest',
+    'cruel-world',
+  ];
+
+  assert.equal(data.section.eyebrow, 'North America first');
+  assert.equal(data.section.title, 'First Dark Festival Signals');
+  assert.equal(data.signals.length, 6);
+  assert.deepEqual(data.signals.map((signal) => signal.id), expectedOrder);
+  assert.equal(new Set(data.signals.map((signal) => signal.id)).size, 6);
+
+  for (const signal of data.signals) {
+    assert.equal(signal.priority, 'homepage_core');
+    assert.ok(signal.name);
+    assert.ok(signal.region_label);
+    assert.ok(['USA', 'North America'].includes(signal.country_scope));
+    assert.ok(Array.isArray(signal.scene_tags));
+    assert.ok(signal.scene_tags.length >= 2 && signal.scene_tags.length <= 3);
+    assert.ok(['Confirmed upcoming', 'Date pending'].includes(signal.status_label));
+    assert.ok(['confirmed_upcoming', 'date_pending'].includes(signal.status_key));
+    assert.ok(signal.cultural_hook.length > 40 && signal.cultural_hook.length <= 120);
+    assert.equal(signal.source_cue, 'Official source tracked');
+    assert.match(signal.official_url, /^https?:\/\//);
+    assert.ok(signal.art_direction);
+    assert.ok(signal.editorial_descriptor);
+    assert.ok(signal.why_this_matters);
+    assert.ok(signal.pathway_concept);
+    assert.ok(signal.seasonal_relevance);
+    assert.ok(signal.scene_relationships);
+    assert.ok(signal.source_confidence_notes);
+  }
+});
+
+test('first dark festival signals content stays restrained and source-aware', () => {
+  const data = JSON.parse(read('src/data/first_dark_festival_signals.json'));
+  const publicCopy = [
+    data.section.eyebrow,
+    data.section.title,
+    data.section.subtitle,
+    data.section.trust_note,
+    data.section.closing_microcopy,
+    ...data.signals.flatMap((signal) => [
+      signal.name,
+      signal.region_label,
+      signal.status_label,
+      signal.cultural_hook,
+      signal.source_cue,
+      signal.pathway_concept,
+    ]),
+  ].join('\n');
+
+  assert.doesNotMatch(publicCopy, /complete guide|best festivals|near you|book your trip|buy tickets|all festivals|ultimate directory|trending now|must-see|top festivals|hottest events|do not miss/i);
+  assert.doesNotMatch(publicCopy, /needs_review|watchlist/i);
+  assert.match(publicCopy, /source-aware/i);
+  assert.match(publicCopy, /North America/i);
+});
