@@ -33,7 +33,7 @@ export function FirstDarkFestivalSignals() {
           {section.title}
         </h2>
         <p className="mt-4 max-w-2xl text-base leading-7 text-[var(--raf-text-muted)] sm:text-lg">{section.subtitle}</p>
-        <p className="mt-4 max-w-2xl border-l border-[var(--raf-cyan)]/24 pl-4 text-sm leading-6 text-[var(--raf-text-dim)]">
+        <p className="mt-4 max-w-2xl border-l border-[var(--raf-cyan)]/24 pl-4 text-sm leading-6 text-[var(--raf-text-muted)]">
           {section.trust_note}
         </p>
       </div>
@@ -82,7 +82,7 @@ export function FirstDarkFestivalSignals() {
 
               <div className="mt-auto pt-6">
                 <a
-                  className="inline-flex font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--raf-text-dim)] transition duration-500 hover:text-white focus-visible:text-white"
+                  className="inline-flex font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--raf-text-muted)] transition duration-500 hover:text-white focus-visible:text-white"
                   href={signal.official_url}
                   target="_blank"
                   rel="noreferrer"
