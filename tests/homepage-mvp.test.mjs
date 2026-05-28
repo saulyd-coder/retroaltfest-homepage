@@ -481,3 +481,18 @@ test('first dark festival signals component is restrained, semantic, and data-ba
 
   assert.equal(data.signals.length, 6);
 });
+
+test('first dark festival signals module is placed directly after the hero', () => {
+  const page = read('src/app/page.tsx');
+  assert.match(page, /components\/home\/FirstDarkFestivalSignals/);
+
+  const heroIndex = page.indexOf('<Hero />');
+  const signalsIndex = page.indexOf('<FirstDarkFestivalSignals />');
+  const trustIndex = page.indexOf('<TrustSection />');
+  const mapIndex = page.indexOf('<MapPreview />');
+
+  assert.ok(heroIndex > -1, 'Hero should still render');
+  assert.ok(signalsIndex > heroIndex, 'Signals module should render after Hero');
+  assert.ok(trustIndex > signalsIndex, 'Existing trust section should remain after Signals module');
+  assert.ok(mapIndex > signalsIndex, 'Existing map preview should remain after Signals module');
+});

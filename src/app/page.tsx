@@ -1,4 +1,5 @@
 import { FeaturedFestivals } from "@/components/home/FeaturedFestivals";
+import { FirstDarkFestivalSignals } from "@/components/home/FirstDarkFestivalSignals";
 import { Hero } from "@/components/home/Hero";
 import { MapPreview } from "@/components/home/MapPreview";
 import { SubmitFestivalCta } from "@/components/home/SubmitFestivalCta";
@@ -22,6 +23,7 @@ export default function Home() {
 
       <Header />
       <Hero />
+      <FirstDarkFestivalSignals />
       <TrustSection />
       <FeaturedFestivals />
       <MapPreview />
