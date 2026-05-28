@@ -57,7 +57,7 @@ export function FirstDarkFestivalSignals() {
                 >
                   {signal.status_label}
                 </span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--raf-text-dim)]">
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--raf-text-muted)]">
                   {signal.country_scope}
                 </span>
               </div>
@@ -82,7 +82,7 @@ export function FirstDarkFestivalSignals() {
 
               <div className="mt-auto pt-6">
                 <a
-                  className="inline-flex font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--raf-text-muted)] transition duration-500 hover:text-white focus-visible:text-white"
+                  className="inline-flex font-mono text-xs uppercase tracking-[0.16em] text-[var(--raf-text-muted)] transition duration-500 hover:text-white focus-visible:text-white"
                   href={signal.official_url}
                   target="_blank"
                   rel="noreferrer"
