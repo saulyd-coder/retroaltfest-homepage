@@ -291,6 +291,8 @@ test('public launch exposes robots, sitemap, and web manifest metadata routes', 
   assert.match(sitemap, /featuredFestivals/);
   assert.match(sitemap, /festivalSlug/);
   assert.match(sitemap, /\/festivals/);
+  assert.match(sitemap, /\/guides\/north-american-goth-darkwave-festivals/);
+  assert.match(sitemap, /\/guides\/industrial-ebm-dark-electronic-festivals-north-america/);
 
   assert.match(manifest, /MetadataRoute\.Manifest/);
   assert.match(manifest, /name: "RetroAltFest"/);
@@ -495,4 +497,160 @@ test('first dark festival signals module is placed directly after the hero', () 
   assert.ok(signalsIndex > heroIndex, 'Signals module should render after Hero');
   assert.ok(trustIndex > signalsIndex, 'Existing trust section should remain after Signals module');
   assert.ok(mapIndex > signalsIndex, 'Existing map preview should remain after Signals module');
+});
+
+test('guide page for North American goth and darkwave festivals is static, bounded, and map-safe', () => {
+  const guidePath = 'src/app/guides/north-american-goth-darkwave-festivals/page.tsx';
+  assert.equal(existsSync(join(root, guidePath)), true, 'guide route should exist');
+
+  const guide = read(guidePath);
+  const requiredCopy = [
+    'North American Goth &amp; Darkwave Festivals: A Curated Guide',
+    'Absolution Fest',
+    'A Murder of Crows',
+    'Cold Waves',
+    'Terminus Festival',
+    'Verboden Music Festival',
+    'Dark Force Fest',
+    'Cruel World',
+    'source-backed multi-city parent / needs child-location cleanup before map use',
+    'No coordinates or geocoding',
+    'How RetroAltFest labels festival status',
+  ];
+
+  for (const copy of requiredCopy) {
+    assert.match(guide, new RegExp(copy.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
+
+  for (const blockedScope of ['Darker Waves', 'Mechanismus', 'Substance', 'Riot Fest', 'Levitation']) {
+    assert.doesNotMatch(guide, new RegExp(blockedScope));
+  }
+
+  assert.doesNotMatch(guide, /latitude|longitude|geocodingSource|geocoding_source|exact map pin/i);
+  assert.doesNotMatch(guide, /fetch\(|prisma|supabase|mongodb|auth|cms|scrap/i);
+
+  const featuredFestivals = read('src/components/home/FeaturedFestivals.tsx');
+  assert.match(featuredFestivals, /Explore RetroAltFest Guides/);
+  assert.match(featuredFestivals, /href="\/guides"/);
+});
+
+test('guide page for industrial EBM and dark electronic festivals is static, bounded, and source-safe', () => {
+  const guidePath = 'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx';
+  assert.equal(existsSync(join(root, guidePath)), true, 'industrial guide route should exist');
+
+  const guide = read(guidePath);
+  const requiredCopy = [
+    'Industrial, EBM &amp; Dark Electronic Festivals in North America',
+    'Cold Waves',
+    'Terminus Festival',
+    'Mechanismus',
+    'Verboden Music Festival',
+    'Dark Force Fest',
+    'Absolution Fest',
+    'core anchor / source-backed',
+    'caveated candidate / date-pending / content-only',
+    'multi_city_parent / needs child-location cleanup before map use',
+    'historical/reference / needs-review',
+    'overlap / bridge only',
+    'Triton Festival is excluded for now.',
+    '/guides/north-american-goth-darkwave-festivals',
+    'href="/festivals"',
+  ];
+
+  for (const copy of requiredCopy) {
+    assert.match(guide, new RegExp(copy.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
+
+  assert.doesNotMatch(guide, /festivalName: "Triton Festival"/);
+  assert.doesNotMatch(guide, /triton-festival/);
+  assert.doesNotMatch(guide, /latitude|longitude|geocodingSource|geocoding_source|exact map pin/i);
+  assert.doesNotMatch(guide, /fetch\(|prisma|supabase|mongodb|auth|cms|scrap/i);
+
+  const featuredFestivals = read('src/components/home/FeaturedFestivals.tsx');
+  assert.match(featuredFestivals, /Explore RetroAltFest Guides/);
+  assert.match(featuredFestivals, /href="\/guides"/);
+});
+
+test('guide page for new wave post-punk and retro alternative festivals is static, bounded, and source-safe', () => {
+  const guidePath = 'src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/page.tsx';
+  assert.equal(existsSync(join(root, guidePath)), true, 'new wave/post-punk guide route should exist');
+
+  const guide = read(guidePath);
+  const requiredCopy = [
+    'New Wave, Post-Punk &amp; Retro Alternative Festivals in North America',
+    'Source-backed North American festivals where new wave, post-punk, 80s alternative, dark alternative, and retro indie nostalgia overlap.',
+    'Core anchors',
+    'Darker Waves',
+    'confirmed-current core anchor',
+    'Cruel World',
+    'date_pending editorial core anchor',
+    'Adjacent retro alternative references',
+    'Just Like Heaven',
+    'adjacent reference / nostalgia-adjacent',
+    'Riot Fest',
+    'adjacent reference / broad alternative-adjacent',
+    'held_back boundary leads',
+    'Kilby Block Party',
+    'Best Friends Forever Fest',
+    'When We Were Young',
+    'This is a curated starting point, not an exhaustive directory.',
+    '/guides/north-american-goth-darkwave-festivals',
+    '/guides/industrial-ebm-dark-electronic-festivals-north-america',
+    'href="/festivals"',
+  ];
+
+  for (const copy of requiredCopy) {
+    assert.match(guide, new RegExp(copy.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
+
+  assert.doesNotMatch(guide, /festivalName: "Kilby Block Party"/);
+  assert.doesNotMatch(guide, /festivalName: "Best Friends Forever Fest"/);
+  assert.doesNotMatch(guide, /festivalName: "When We Were Young"/);
+  assert.match(guide, /Cruel World remains date_pending/);
+  assert.doesNotMatch(guide, /complete list|full directory|confirmed-current claims/i);
+  assert.doesNotMatch(guide, /latitude|longitude|geocodingSource|geocoding_source|coordinates|map pins|exact map pin/i);
+  assert.doesNotMatch(guide, /fetch\(|prisma|supabase|mongodb|auth|cms|scrap/i);
+
+  const featuredFestivals = read('src/components/home/FeaturedFestivals.tsx');
+  const sitemap = read('src/app/sitemap.ts');
+  assert.match(featuredFestivals, /Explore RetroAltFest Guides/);
+  assert.match(featuredFestivals, /href="\/guides"/);
+  assert.match(sitemap, /\/guides\/new-wave-post-punk-retro-alternative-festivals-north-america/);
+});
+
+test('guides index is static, compact, and lists exactly the three live source-aware guides', () => {
+  const guidesPath = 'src/app/guides/page.tsx';
+  assert.equal(existsSync(join(root, guidesPath)), true, 'static /guides page should exist');
+
+  const guidesPage = read(guidesPath);
+  const homepage = read('src/components/home/FeaturedFestivals.tsx');
+  const sitemap = read('src/app/sitemap.ts');
+
+  const guideHrefs = [
+    '/guides/north-american-goth-darkwave-festivals',
+    '/guides/industrial-ebm-dark-electronic-festivals-north-america',
+    '/guides/new-wave-post-punk-retro-alternative-festivals-north-america',
+  ];
+
+  assert.match(guidesPage, /RetroAltFest Guides/);
+  assert.match(guidesPage, /Source-aware festival guides for goth, darkwave, industrial, EBM, post-punk, new wave, and retro alternative discovery\./);
+  assert.match(guidesPage, /RetroAltFest Guides \| Goth, Darkwave, Industrial & Retro Alternative Festivals/);
+  assert.match(guidesPage, /official-source-first discovery/);
+
+  for (const href of guideHrefs) {
+    assert.match(guidesPage, new RegExp(href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    assert.equal(existsSync(join(root, `src/app${href}/page.tsx`)), true, `${href} should still exist`);
+  }
+
+  const hrefMatches = [...guidesPage.matchAll(/href: "(\/guides\/[^"]+)"/g)].map((match) => match[1]);
+  assert.deepEqual(hrefMatches, guideHrefs);
+
+  assert.match(homepage, /Explore RetroAltFest Guides/);
+  assert.match(homepage, /href="\/guides"/);
+  assert.doesNotMatch(homepage, /href="\/guides\/new-wave-post-punk-retro-alternative-festivals-north-america"/);
+  assert.doesNotMatch(homepage, /href="\/guides\/industrial-ebm-dark-electronic-festivals-north-america"/);
+  assert.doesNotMatch(homepage, /href="\/guides\/north-american-goth-darkwave-festivals"/);
+
+  assert.match(sitemap, /`\$\{SITE_URL\}\/guides`/);
+  assert.doesNotMatch(guidesPage, /future guide|coming soon|placeholder|search|filter|useState|useMemo|fetch\(|prisma|supabase|mongodb|auth|cms|database|geocoding|latitude|longitude|coordinates|map pins/i);
 });
