@@ -40,6 +40,15 @@ type GuideCard = {
 
 const guides: GuideCard[] = [
   {
+    title: "West Coast & Pacific Northwest Dark Alternative Festivals",
+    href: "/guides/west-coast-pacific-northwest-dark-alternative-festivals",
+    role: "regional West Coast / PNW discovery guide",
+    description:
+      "A curated route through source-backed dark alternative festival signals from Southern California to Portland, Seattle, and Vancouver.",
+    tags: ["West Coast", "Pacific Northwest", "dark alternative", "regional route"],
+    accent: "cyan",
+  },
+  {
     title: "North American Goth & Darkwave Festivals",
     href: "/guides/north-american-goth-darkwave-festivals",
     role: "dark-scene foundation guide",
@@ -103,7 +112,7 @@ export default function GuidesPage() {
           </p>
         </section>
 
-        <section className="mt-10 grid gap-5 lg:grid-cols-3" aria-label="RetroAltFest curated scene guides">
+        <section className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" aria-label="RetroAltFest curated scene guides">
           {guides.map((guide) => (
             <Link
               key={guide.href}

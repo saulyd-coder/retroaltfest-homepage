@@ -30,6 +30,7 @@ export function FeaturedFestivals() {
           </span>
           <span className="mt-4 flex flex-wrap gap-2">
             {[
+              "West Coast / PNW",
               "Goth & Darkwave",
               "Industrial / EBM",
               "New Wave / Post-Punk",

@@ -42,6 +42,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.8,
     },
+    {
+      url: `${SITE_URL}/guides/west-coast-pacific-northwest-dark-alternative-festivals`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
   ];
 
   const festivalRoutes: MetadataRoute.Sitemap = featuredFestivals.map((festival) => ({

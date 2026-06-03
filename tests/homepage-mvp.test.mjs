@@ -618,7 +618,75 @@ test('guide page for new wave post-punk and retro alternative festivals is stati
   assert.match(sitemap, /\/guides\/new-wave-post-punk-retro-alternative-festivals-north-america/);
 });
 
-test('guides index is static, compact, and lists exactly the three live curated scene guides', () => {
+test('guide page for West Coast and Pacific Northwest dark alternative festivals is static, bounded, and source-safe', () => {
+  const guidePath = 'src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/page.tsx';
+  assert.equal(existsSync(join(root, guidePath)), true, 'West Coast / PNW guide route should exist');
+
+  const guide = read(guidePath);
+  const requiredCopy = [
+    'West Coast &amp; Pacific Northwest Dark Alternative Festivals',
+    'A curated route through source-backed dark alternative festival signals from Southern California to Portland, Seattle, and Vancouver.',
+    'Southern California anchors',
+    'Pacific Northwest corridor',
+    'Darker Waves',
+    'Cruel World',
+    'Just Like Heaven',
+    'Verboden Music Festival — Vancouver',
+    'Verboden Music Festival — Seattle',
+    'Verboden Music Festival — Portland',
+    'Mechanismus',
+    'Related festival to know',
+    'current date status',
+    'Current festival-edition details are still being checked',
+    'Ticket status, schedule details, and lineup information should be rechecked',
+    'not as a darkwave or industrial anchor',
+    'Spokane remains a useful Verboden-related source trail to watch',
+    'Useful leads, but not public guide cards yet.',
+    'Substance — Los Angeles',
+    'Substance — San Francisco',
+    'The Vth Gathering / San Francisco World Goth Day Festival — Alameda',
+    'Out From The Shadows — Portland',
+    'West Coast Women’s Darkwave Festival — Oakland',
+    'Cloak & Dagger Festival — Los Angeles',
+    '/guides/north-american-goth-darkwave-festivals',
+    '/guides/industrial-ebm-dark-electronic-festivals-north-america',
+    '/guides/new-wave-post-punk-retro-alternative-festivals-north-america',
+    'href="/festivals"',
+  ];
+
+  for (const copy of requiredCopy) {
+    assert.match(guide, new RegExp(copy.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')));
+  }
+
+  const publicCardNames = [...guide.matchAll(/festivalName: "([^"]+)"/g)].map((match) => match[1]);
+  assert.deepEqual(publicCardNames, [
+    'Darker Waves',
+    'Cruel World',
+    'Just Like Heaven',
+    'Verboden Music Festival — Vancouver',
+    'Verboden Music Festival — Seattle',
+    'Verboden Music Festival — Portland',
+    'Mechanismus',
+  ]);
+
+  for (const blockedCard of ['Spokane', 'Substance', 'The Vth Gathering', 'Out From The Shadows', 'West Coast Women’s Darkwave Festival', 'Cloak & Dagger']) {
+    assert.doesNotMatch(guide, new RegExp(`festivalName: "[^"]*${blockedCard}`));
+  }
+
+  assert.doesNotMatch(guide, /Day 3 public content packet|Purpose:|Source safety checklist|Completion status/);
+  assert.doesNotMatch(guide, /source_status|map-readiness|public V1|city_level_candidate|parent_only|date_pending|core_anchor|adjacent_reference|source_sufficiency|Phase 0|map_phase0_category/i);
+  assert.doesNotMatch(guide, /latitude|longitude|geocodingSource|geocoding_source|coordinates|map pins|exact map pin/i);
+  assert.doesNotMatch(guide, /fetch\(|prisma|supabase|mongodb|auth|cms|scrap/i);
+
+  const featuredFestivals = read('src/components/home/FeaturedFestivals.tsx');
+  const sitemap = read('src/app/sitemap.ts');
+  const guidesPage = read('src/app/guides/page.tsx');
+  assert.match(featuredFestivals, /West Coast \/ PNW/);
+  assert.match(guidesPage, /\/guides\/west-coast-pacific-northwest-dark-alternative-festivals/);
+  assert.match(sitemap, /\/guides\/west-coast-pacific-northwest-dark-alternative-festivals/);
+});
+
+test('guides index is static, compact, and lists exactly the four live curated scene guides', () => {
   const guidesPath = 'src/app/guides/page.tsx';
   assert.equal(existsSync(join(root, guidesPath)), true, 'static /guides page should exist');
 
@@ -627,6 +695,7 @@ test('guides index is static, compact, and lists exactly the three live curated 
   const sitemap = read('src/app/sitemap.ts');
 
   const guideHrefs = [
+    '/guides/west-coast-pacific-northwest-dark-alternative-festivals',
     '/guides/north-american-goth-darkwave-festivals',
     '/guides/industrial-ebm-dark-electronic-festivals-north-america',
     '/guides/new-wave-post-punk-retro-alternative-festivals-north-america',
