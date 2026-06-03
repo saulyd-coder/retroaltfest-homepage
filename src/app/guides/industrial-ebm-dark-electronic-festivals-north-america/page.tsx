@@ -10,7 +10,7 @@ const gothDarkwaveGuidePath = "/guides/north-american-goth-darkwave-festivals";
 export const metadata: Metadata = buildMetadata({
   title: "Industrial, EBM & Dark Electronic Festivals in North America | RetroAltFest",
   description:
-    "A curated, source-aware RetroAltFest guide to North American industrial, EBM, dark electronic, synth, post-industrial, and darkwave-overlap festival signals.",
+    "A curated RetroAltFest guide to North American industrial, EBM, dark electronic, synth, post-industrial, and darkwave-overlap festival signals, checked against official or reliable sources.",
   path: pagePath,
   type: "article",
   keywords: [
@@ -56,11 +56,11 @@ const coreAnchors: GuideRecord[] = [
     industrialEbmRelevance: "Core industrial and dark electronic anchor.",
     contentRole: "core_anchor",
     sceneFit: "Industrial, EBM-adjacent, dark electronic, post-industrial, and post-punk-adjacent.",
-    statusLabel: "core anchor / source-backed",
+    statusLabel: "A strong fit for this guide",
     summary:
       "Cold Waves gives this guide its clearest industrial center of gravity, connecting dark electronic discovery to Chicago’s industrial and post-industrial lineage.",
     sourceCaveat:
-      "Keep the guide copy focused on its industrial and dark electronic role; deeper event details need their own verification pass before publication.",
+      "Official sources support this listing. Deeper event details should get their own source check before appearing here.",
   },
   {
     festivalName: "Terminus Festival",
@@ -76,11 +76,11 @@ const coreAnchors: GuideRecord[] = [
     industrialEbmRelevance: "Core/near-core EBM, industrial, and darkwave anchor.",
     contentRole: "core_anchor",
     sceneFit: "Darkwave, EBM, industrial, synth, and post-punk.",
-    statusLabel: "core anchor / source-backed",
+    statusLabel: "A strong fit for this guide",
     summary:
       "Terminus Festival gives the page a Canadian anchor and reflects how industrial, EBM, synth, darkwave, and post-punk often overlap in real festival programming.",
     sourceCaveat:
-      "Use city-level context only for this first draft; deeper logistics belong in a later source check, not this article packet.",
+      "Official sources support the city-level context. Logistics and venue-level details need a separate source check before future map placement.",
   },
 ];
 
@@ -99,11 +99,11 @@ const caveatedCandidates: GuideRecord[] = [
     industrialEbmRelevance: "Strong industrial and dark electronic fit with current-status caveat.",
     contentRole: "caveated_candidate",
     sceneFit: "Industrial, EBM, dark electro, and dark electronic.",
-    statusLabel: "caveated candidate / date-pending / content-only",
+    statusLabel: "Worth watching — dates not announced yet",
     summary:
       "Mechanismus has the right genre center for this guide and is strongly tied to industrial and dark electronic scene-building in Seattle.",
     sourceCaveat:
-      "Current-cycle confidence needs a cleaner source pass before this becomes a current or map-forward record.",
+      "Worth watching, with a few current-cycle details still being checked. For now, it belongs in the guide rather than on the future map.",
   },
   {
     festivalName: "Verboden Music Festival",
@@ -119,11 +119,11 @@ const caveatedCandidates: GuideRecord[] = [
     industrialEbmRelevance: "Industrial-adjacent dark electronic and Pacific Northwest corridor signal.",
     contentRole: "multi_city_parent",
     sceneFit: "Darkwave, post-punk, synth, industrial-overlap, goth, and dark electronic.",
-    statusLabel: "multi_city_parent / needs child-location cleanup before map use",
+    statusLabel: "Multi-city festival",
     summary:
       "Verboden belongs here as a dark electronic and industrial-overlap corridor signal, not as a pure industrial/EBM anchor.",
     sourceCaveat:
-      "Treat Verboden as a parent record until each child location has its own source-validated record.",
+      "This festival spans multiple cities, so we’re still checking the city-by-city details before treating it as map-ready.",
   },
 ];
 
@@ -142,11 +142,11 @@ const referenceRecords: GuideRecord[] = [
     industrialEbmRelevance: "Goth/industrial historical-overlap reference.",
     contentRole: "historical_reference",
     sceneFit: "Goth, industrial, dark alternative, and metal-adjacent.",
-    statusLabel: "historical/reference / needs-review",
+    statusLabel: "Background/reference listing",
     summary:
       "Dark Force Fest has real goth and industrial relevance, but it should remain a context record unless a fresh future edition is verified.",
     sourceCaveat:
-      "Do not present this record as a current industrial/EBM anchor in this version.",
+      "Useful background for the scene, but not currently confirmed as an upcoming industrial or EBM anchor.",
   },
   {
     festivalName: "Absolution Fest",
@@ -162,42 +162,42 @@ const referenceRecords: GuideRecord[] = [
     industrialEbmRelevance: "Electronic/goth-darkwave bridge; not core Industrial/EBM.",
     contentRole: "bridge_overlap",
     sceneFit: "Electronic, post-punk, goth, and darkwave.",
-    statusLabel: "overlap / bridge only",
+    statusLabel: "Related festival to know",
     summary:
       "Absolution Fest helps explain the overlap between darkwave, electronic, goth, and post-punk discovery, but it is not a core Industrial/EBM anchor.",
     sourceCaveat:
-      "Keep this mention light so the page stays distinct from the existing Goth & Darkwave guide.",
+      "This is included for context as a related dark-scene connection, not as a core Industrial or EBM example.",
   },
 ];
 
 const statusLabels = [
   {
-    label: "core anchor",
-    description: "A record with strong source support and a clear industrial, EBM, or dark electronic center of gravity.",
+    label: "A strong fit for this guide",
+    description: "A festival with strong source support and a clear industrial, EBM, or dark electronic center of gravity.",
   },
   {
-    label: "caveated candidate",
-    description: "A relevant scene candidate with current-status or data-readiness caveats still visible.",
+    label: "Worth watching",
+    description: "A relevant scene candidate with details still being checked.",
   },
   {
-    label: "overlap / bridge",
-    description: "A record that mainly belongs to another dark alternative lane but helps explain genre overlap.",
+    label: "Related festival to know",
+    description: "A festival that mainly belongs to another dark alternative lane but helps explain genre overlap.",
   },
   {
-    label: "multi_city_parent",
-    description: "A multi-location parent record that should not be simplified into one atlas location before child records exist.",
+    label: "Multi-city festival",
+    description: "A festival that spans multiple cities and needs city-by-city review before future map use.",
   },
   {
-    label: "historical/reference",
+    label: "Background/reference listing",
     description: "A meaningful scene record used for context rather than as a current anchor.",
   },
   {
-    label: "needs_review",
-    description: "A record with source or status uncertainty that needs another verification pass before deeper atlas use.",
+    label: "Still checking details",
+    description: "A record with source or status uncertainty that needs another verification pass before deeper use.",
   },
   {
-    label: "excluded for now",
-    description: "A researched candidate intentionally left out of public V1 because source confidence is not strong enough.",
+    label: "Not included yet",
+    description: "A researched candidate left out of this first guide because source confidence is not strong enough.",
   },
 ];
 
@@ -225,40 +225,40 @@ export default function IndustrialEbmDarkElectronicGuidePage() {
         <section className="relative overflow-hidden rounded-[2rem] border border-[rgba(168,85,247,0.2)] bg-[linear-gradient(145deg,rgba(35,24,57,0.82),rgba(8,7,14,0.92)_58%,rgba(3,3,6,0.96))] p-6 shadow-[0_34px_120px_rgba(0,0,0,0.55),0_0_70px_rgba(88,28,135,0.16)] sm:p-8 lg:p-10">
           <div className="map-panel-bloom pointer-events-none absolute -inset-16 opacity-55 blur-2xl" />
           <div className="relative z-10 max-w-4xl">
-            <p className="font-mono text-xs uppercase tracking-[0.32em] text-[var(--raf-cyan)]">Source-aware guide</p>
+            <p className="font-mono text-xs uppercase tracking-[0.32em] text-[var(--raf-cyan)]">Curated scene guide</p>
             <h1 className="mt-5 text-balance font-display text-4xl font-semibold tracking-[-0.045em] text-white sm:text-5xl lg:text-7xl">
               Industrial, EBM &amp; Dark Electronic Festivals in North America
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-[var(--raf-text-muted)] sm:text-xl">
-              RetroAltFest tracks North American industrial, EBM, dark electronic, synth, post-industrial, and darkwave-overlap festival signals through official and source-aware records.
+              Start here for North American festivals where industrial, EBM, dark electronic, synth, post-industrial, and darkwave-overlap scenes come into focus.
             </p>
             <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-              This is a curated first draft, not a full directory. Core anchors are separated from caveated candidates, bridge records, historical references, and researched names held back from public V1.
+              This is a curated starting point, not a full directory. We separate currently confirmed examples from watchlist items, related scene connections, background listings, and names that still need stronger sources.
             </p>
             <div className="mt-8 grid gap-3 sm:grid-cols-3">
-              <AtlasFact label="Public records" value={`${allPublicRecords.length} source-aware examples`} />
-              <AtlasFact label="Core anchors" value="Cold Waves · Terminus" />
+              <AtlasFact label="Guide records" value={`${allPublicRecords.length} checked examples`} />
+              <AtlasFact label="Strongest fits" value="Cold Waves · Terminus" />
               <AtlasFact label="Scope" value="Industrial / EBM / dark electronic" />
             </div>
           </div>
         </section>
 
         <GuideSection
-          eyebrow="Core industrial / dark electronic anchors"
-          title="Two records carry the strongest signal for this first version."
-          description="Cold Waves and Terminus are the cleanest anchors for a source-aware Industrial, EBM & Dark Electronic guide. They are the only records eligible for a later city-level map QA pass."
+          eyebrow="Strong industrial / dark electronic fits"
+          title="Two records carry the clearest signal for this first guide."
+          description="Cold Waves and Terminus are the clearest fits here. They are the only records in this guide ready for a later city-level map review, once location details are verified."
           records={coreAnchors}
         />
 
         <GuideSection
           eyebrow="Useful candidates with caveats"
-          title="Strong scene fit, but labels stay visible."
-          description="Mechanismus and Verboden are useful to readers, but each needs visible caveats before deeper atlas use."
+          title="Strong scene fit, with details still clearly marked."
+          description="Mechanismus and Verboden are useful to readers, but each still needs plain-language caveats before deeper atlas or map use."
           records={caveatedCandidates}
         />
 
         <GuideSection
-          eyebrow="Historical/reference and overlap records"
+          eyebrow="Background and related listings"
           title="Context records, not core Industrial/EBM anchors."
           description="These records help explain the wider dark alternative ecosystem while keeping this guide distinct from the Goth & Darkwave page."
           records={referenceRecords}
@@ -270,7 +270,7 @@ export default function IndustrialEbmDarkElectronicGuidePage() {
             Triton Festival is excluded for now.
           </h2>
           <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-            Triton Festival was researched but is excluded from public V1 pending stronger source and status confidence. It should not appear as a public festival card or supporting example until a later verification pass improves confidence.
+            Triton Festival was researched but is not included in this first guide because the source and status confidence are not strong enough yet. It should stay out of public festival cards until a later verification pass improves confidence.
           </p>
         </section>
 
@@ -313,7 +313,7 @@ export default function IndustrialEbmDarkElectronicGuidePage() {
             The industrial atlas expands only as sources hold.
           </h2>
           <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-            This guide will expand only as more North American industrial, EBM, dark electronic, and post-industrial festival records become source-backed enough to publish. RetroAltFest’s goal is not to inflate the list quickly; it is to keep core anchors, overlap records, historical signals, and deeper atlas readiness clearly separated.
+            This guide will expand only as more North American industrial, EBM, dark electronic, and post-industrial festivals have enough official or reliable source support to publish. RetroAltFest’s goal is not to inflate the list quickly; it is to keep confirmed festivals, related records, background listings, and future map candidates clearly separated.
           </p>
         </section>
       </article>
@@ -370,14 +370,12 @@ function FestivalGuideCard({ record }: { record: GuideRecord }) {
       <p className="mt-5 text-sm font-semibold text-white">Scene fit: {record.sceneFit}</p>
       <p className="mt-3 leading-7 text-[var(--raf-text-muted)]">{record.summary}</p>
       <p className="mt-4 rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4 text-sm leading-6 text-[var(--raf-text-muted)]">
-        <span className="font-semibold text-white">Source-aware caveat: </span>{record.sourceCaveat}
+        <span className="font-semibold text-white">Curator note: </span>{record.sourceCaveat}
       </p>
 
       <dl className="mt-5 grid gap-3 sm:grid-cols-2">
-        <AtlasFact label="Verification" value={statusLabel(record.verificationStatus)} />
-        <AtlasFact label="Display category" value={statusLabel(record.mapDisplayCategory)} />
-        <AtlasFact label="Content role" value={statusLabel(record.contentRole)} />
-        <AtlasFact label="Record type" value={statusLabel(record.recordType)} />
+        <AtlasFact label="What we’ve confirmed" value={confirmedNote(record)} />
+        <AtlasFact label="What we’re still checking" value={checkingNote(record)} />
       </dl>
 
       <p className="mt-5 rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4 text-sm leading-6 text-[var(--raf-text-muted)]">
@@ -408,8 +406,34 @@ function AtlasFact({ label, value }: { label: string; value: string }) {
   );
 }
 
-function statusLabel(status: string) {
-  return status
-    .replaceAll("_", " ")
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+function confirmedNote(record: GuideRecord) {
+  if (record.verificationStatus === "verified") {
+    return "Official or reliable sources support this listing.";
+  }
+
+  if (record.verificationStatus === "historical_reference") {
+    return "Useful background for the scene, but not currently confirmed as upcoming.";
+  }
+
+  return "Some details are confirmed, but the current festival cycle still needs a cleaner source check.";
+}
+
+function checkingNote(record: GuideRecord) {
+  if (record.recordType === "multi_city_parent") {
+    return "We’re still checking city-by-city details before treating this as map-ready.";
+  }
+
+  if (record.mapDisplayCategory === "date_pending") {
+    return "Dates have not been announced yet.";
+  }
+
+  if (record.mapDisplayCategory === "not_map_ready") {
+    return "Ready to mention in the guide, but not ready for the future map yet.";
+  }
+
+  if (record.mapDisplayCategory === "historical_reference") {
+    return "Fresh current-status confirmation is needed before this becomes a current listing.";
+  }
+
+  return "Venue-level map placement waits until location details are verified.";
 }

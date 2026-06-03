@@ -23,7 +23,7 @@ export function FeaturedFestivals() {
         className="mb-6 grid gap-4 rounded-[1.75rem] border border-[var(--raf-border-soft)] bg-[linear-gradient(135deg,rgba(168,85,247,0.12),rgba(34,211,238,0.08),rgba(0,0,0,0.34))] p-5 transition duration-300 hover:-translate-y-1 hover:border-[var(--raf-cyan)]/40 hover:bg-white/[0.045] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--raf-cyan)] md:grid-cols-[1fr_auto] md:items-center"
       >
         <span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--raf-cyan)]">Source-aware guides</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--raf-cyan)]">Curated scene guides</span>
           <span className="mt-2 block font-display text-3xl font-semibold tracking-tight text-white">Explore RetroAltFest Guides</span>
           <span className="mt-2 block max-w-3xl text-sm leading-6 text-[var(--raf-text-muted)]">
             Start with curated guides for goth, darkwave, industrial, EBM, post-punk, new wave, and retro alternative festival discovery.

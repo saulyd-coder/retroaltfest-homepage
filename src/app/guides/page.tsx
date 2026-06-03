@@ -9,7 +9,7 @@ const pagePath = "/guides";
 const guidesMetadata = buildMetadata({
   title: "RetroAltFest Guides | Goth, Darkwave, Industrial & Retro Alternative Festivals",
   description:
-    "Browse source-aware RetroAltFest guides to goth, darkwave, industrial, EBM, post-punk, new wave, and retro alternative festivals, with clear status labels and official-source-first discovery.",
+    "Browse curated RetroAltFest guides to goth, darkwave, industrial, EBM, post-punk, new wave, and retro alternative festivals, with clear notes on what is confirmed and what is still being checked.",
   path: pagePath,
   keywords: [
     "RetroAltFest guides",
@@ -44,7 +44,7 @@ const guides: GuideCard[] = [
     href: "/guides/north-american-goth-darkwave-festivals",
     role: "dark-scene foundation guide",
     description:
-      "A source-aware guide to North American goth, darkwave, post-punk, and adjacent dark alternative festival discovery.",
+      "A curated path into North American goth, darkwave, post-punk, and related dark alternative festival discovery.",
     tags: ["goth", "darkwave", "post-punk", "dark alternative"],
     accent: "magenta",
   },
@@ -53,7 +53,7 @@ const guides: GuideCard[] = [
     href: "/guides/industrial-ebm-dark-electronic-festivals-north-america",
     role: "industrial / dark-electronic companion guide",
     description:
-      "A source-aware guide to industrial, EBM, post-industrial, and dark electronic festival signals across North America.",
+      "A careful guide to industrial, EBM, post-industrial, and dark electronic festival signals across North America.",
     tags: ["industrial", "EBM", "dark electronic", "post-industrial"],
     accent: "violet",
   },
@@ -62,7 +62,7 @@ const guides: GuideCard[] = [
     href: "/guides/new-wave-post-punk-retro-alternative-festivals-north-america",
     role: "broader retro-alternative discovery guide",
     description:
-      "A source-aware guide to festivals where new wave, post-punk, 80s alternative, dark alternative, and retro indie nostalgia overlap.",
+      "A curated guide to festivals where new wave, post-punk, 80s alternative, dark alternative, and retro indie nostalgia overlap.",
     tags: ["new wave", "post-punk", "80s alternative", "retro alternative"],
     accent: "cyan",
   },
@@ -91,19 +91,19 @@ export default function GuidesPage() {
 
         <section className="relative overflow-hidden rounded-[2.25rem] border border-[var(--raf-border)] bg-white/[0.045] p-6 shadow-[0_30px_100px_rgba(0,0,0,0.42)] sm:p-10 lg:p-12">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_18%_10%,rgba(217,70,239,0.24),transparent_28%),radial-gradient(circle_at_78%_20%,rgba(34,211,238,0.16),transparent_24%)]" />
-          <p className="font-mono text-xs uppercase tracking-[0.32em] text-[var(--raf-cyan)]">Source-aware guide hub</p>
+          <p className="font-mono text-xs uppercase tracking-[0.32em] text-[var(--raf-cyan)]">Festival guides by scene</p>
           <h1 className="mt-4 max-w-4xl font-display text-5xl font-semibold tracking-tight text-white sm:text-6xl lg:text-7xl">
             RetroAltFest Guides
           </h1>
           <p className="mt-6 max-w-3xl text-xl leading-8 text-[var(--raf-text)]">
-            Source-aware festival guides for goth, darkwave, industrial, EBM, post-punk, new wave, and retro alternative discovery.
+            Start here for curated paths into goth, darkwave, industrial, EBM, post-punk, new wave, and retro alternative festivals.
           </p>
           <p className="mt-5 max-w-3xl text-base leading-7 text-[var(--raf-text-muted)]">
-            These curated guides are official-source-first, status-labeled, and built to keep core anchors, adjacent references, date-pending records, and boundary notes clearly separated before anything moves toward the atlas.
+            These guides are intentionally selective: we check official or reliable sources, separate confirmed events from watchlist items, and avoid pretending every related festival belongs in the same lane.
           </p>
         </section>
 
-        <section className="mt-10 grid gap-5 lg:grid-cols-3" aria-label="RetroAltFest source-aware guides">
+        <section className="mt-10 grid gap-5 lg:grid-cols-3" aria-label="RetroAltFest curated scene guides">
           {guides.map((guide) => (
             <Link
               key={guide.href}
@@ -111,7 +111,7 @@ export default function GuidesPage() {
               className={`group flex min-h-full flex-col rounded-[2rem] border p-6 transition duration-300 hover:-translate-y-1 hover:border-[var(--raf-cyan)]/50 hover:bg-white/[0.055] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--raf-cyan)] ${accentClass[guide.accent]}`}
             >
               <span className="w-fit rounded-full border border-current/30 bg-black/25 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em]">
-                source-aware guide
+                curated guide
               </span>
               <span className="mt-5 block font-display text-3xl font-semibold leading-tight tracking-tight text-white">
                 {guide.title}
@@ -137,7 +137,7 @@ export default function GuidesPage() {
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">How to read these guides</p>
             <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white">Curated lanes, not exhaustive directories.</h2>
             <p className="mt-4 text-base leading-7 text-[var(--raf-text-muted)]">
-              RetroAltFest guides are designed as restrained discovery paths. When a festival sits outside the core lane, the guide keeps it as an adjacent reference, date-pending note, or held-back boundary lead instead of forcing it into a public card.
+              RetroAltFest guides are designed as restrained discovery paths. When a festival sits outside the core lane, we label it as a related festival to know, a dates-not-announced-yet note, or a possible future addition instead of forcing it into a public card.
             </p>
           </div>
 

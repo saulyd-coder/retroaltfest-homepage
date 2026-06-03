@@ -11,7 +11,7 @@ const industrialEbmGuidePath = "/guides/industrial-ebm-dark-electronic-festivals
 export const metadata: Metadata = buildMetadata({
   title: "New Wave, Post-Punk & Retro Alternative Festivals in North America",
   description:
-    "A source-aware RetroAltFest guide to North American festivals where new wave, post-punk, 80s alternative, dark alternative, synthpop-adjacent nostalgia, and retro indie overlap.",
+    "A curated RetroAltFest guide to North American festivals where new wave, post-punk, 80s alternative, dark alternative, synthpop-adjacent nostalgia, and retro indie overlap.",
   path: pagePath,
   type: "article",
   keywords: [
@@ -61,13 +61,13 @@ const coreAnchors: GuideRecord[] = [
     guideRole: "core_anchor",
     verificationStatus: "verified",
     sourceSufficiency: "strong",
-    publicStatusLabel: "confirmed-current core anchor",
+    publicStatusLabel: "Currently confirmed",
     publicV1Recommendation: "include_core",
     overlapRisk: "high",
     summary:
       "Darker Waves is the cleanest current anchor for this guide, with official sources supporting a North American festival where new wave, post-punk, 80s alternative, synthpop-adjacent, and dark alternative discovery overlap.",
     sourceCaveat:
-      "Darker Waves also overlaps with goth and darkwave audiences, so this page frames it through a retro alternative and new wave/post-punk lens rather than repeating a Goth & Darkwave guide angle.",
+      "Darker Waves also overlaps with goth and darkwave audiences, so this guide frames it through a retro alternative and new wave/post-punk lens.",
     duplicateRiskNotes:
       "Keep the copy focused on retro alternative, synth-era, and post-punk-adjacent discovery so the record does not duplicate the Goth & Darkwave guide.",
     followUpNeeded: "Recheck official homepage, lineup, and ticket source before publication.",
@@ -85,13 +85,13 @@ const coreAnchors: GuideRecord[] = [
     guideRole: "date_pending_core_anchor",
     verificationStatus: "date_pending",
     sourceSufficiency: "strong",
-    publicStatusLabel: "date_pending editorial core anchor",
+    publicStatusLabel: "Dates not announced yet",
     publicV1Recommendation: "include_core_with_date_pending_caveat",
     overlapRisk: "high",
     summary:
       "Cruel World is one of the strongest editorial matches for this guide because its official source history supports major overlap across classic alternative, new wave, post-punk, synthpop-adjacent, and dark alternative audiences.",
     sourceCaveat:
-      "Cruel World remains date_pending. Do not describe it as confirmed upcoming, and do not add future date, ticket availability, or future-edition claims until official sources are updated and re-verified.",
+      "Cruel World is one of the strongest fits for this guide, but the next dates have not been announced yet. We do not add future-date, ticket, or edition claims until official sources are updated and re-verified.",
     duplicateRiskNotes:
       "Use Cruel World as a retro alternative and post-punk editorial anchor, not as a duplicate goth/darkwave listing.",
     followUpNeeded: "Recheck the official homepage, lineup, passes, and general-info pages for source-backed current/future date evidence.",
@@ -113,13 +113,13 @@ const adjacentReferences: GuideRecord[] = [
     guideRole: "adjacent_reference",
     verificationStatus: "verified",
     sourceSufficiency: "strong",
-    publicStatusLabel: "adjacent reference / nostalgia-adjacent",
+    publicStatusLabel: "Related festival to know",
     publicV1Recommendation: "adjacent_reference",
     overlapRisk: "low",
     summary:
       "Just Like Heaven belongs here only as an adjacent retro alternative reference: a broader indie and blog-era nostalgia signal for readers exploring beyond the core new wave/post-punk lane.",
     sourceCaveat:
-      "Do not call Just Like Heaven a new wave festival or a post-punk festival. Keep it framed as retro indie and nostalgia-adjacent discovery.",
+      "Just Like Heaven is included as related retro indie and nostalgia discovery, not as a core new wave or post-punk festival.",
     duplicateRiskNotes:
       "The main risk is scope creep, not duplicate dark-scene content; keep it outside the core anchor section.",
     followUpNeeded: "Keep this record in a clearly labeled adjacent section.",
@@ -138,13 +138,13 @@ const adjacentReferences: GuideRecord[] = [
     guideRole: "adjacent_reference",
     verificationStatus: "verified",
     sourceSufficiency: "strong",
-    publicStatusLabel: "adjacent reference / broad alternative-adjacent",
+    publicStatusLabel: "Related festival to know",
     publicV1Recommendation: "adjacent_reference",
     overlapRisk: "medium",
     summary:
       "Riot Fest is useful as a broad alternative discovery reference where readers may sometimes find legacy alternative, punk, post-punk-adjacent, or retro discovery threads.",
     sourceCaveat:
-      "Do not call Riot Fest a new wave festival or a post-punk festival. Keep the framing broad, careful, and lineup-dependent.",
+      "Riot Fest is included as a broad related festival to know, not as a core new wave or post-punk festival. Keep the framing broad, careful, and lineup-dependent.",
     duplicateRiskNotes:
       "Riot Fest could fit many future RetroAltFest guides; keep it light here so this page does not become a general alternative festival guide.",
     followUpNeeded: "Use only in the adjacent references section.",
@@ -153,24 +153,24 @@ const adjacentReferences: GuideRecord[] = [
 
 const statusLabels = [
   {
-    label: "core_anchor",
-    description: "A festival whose official sources or source-backed history strongly support the guide’s new wave, post-punk, and retro alternative angle.",
+    label: "A strong fit for this guide",
+    description: "A festival whose official sources or reliable history strongly support the guide’s new wave, post-punk, and retro alternative angle.",
   },
   {
-    label: "confirmed-current",
-    description: "A public V1 record with current date/status evidence supported by official sources reviewed for this packet.",
+    label: "Currently confirmed",
+    description: "Official sources currently support the date or status shown in this guide.",
   },
   {
-    label: "date_pending",
-    description: "A strong editorial fit that must not be described as confirmed upcoming until official future-date evidence is re-verified.",
+    label: "Dates not announced yet",
+    description: "A strong fit for the guide, but the next dates have not been announced yet.",
   },
   {
-    label: "adjacent_reference",
-    description: "A broader indie, punk, nostalgia, or alternative festival reference that helps discovery without becoming a core new wave/post-punk record.",
+    label: "Related festival to know",
+    description: "A broader indie, punk, nostalgia, or alternative festival that helps discovery without becoming a core new wave/post-punk listing.",
   },
   {
-    label: "held_back",
-    description: "A researched lead intentionally kept out of public V1 cards because source-backed fit is too broad, too weak, or better suited to another guide.",
+    label: "Not included yet",
+    description: "A researched lead kept out of this first guide because the fit is too broad, too weak, or better suited to another guide.",
   },
 ];
 
@@ -199,22 +199,22 @@ export default function NewWavePostPunkRetroAlternativeGuidePage() {
         <section className="relative overflow-hidden rounded-[2rem] border border-[rgba(168,85,247,0.2)] bg-[linear-gradient(145deg,rgba(35,24,57,0.82),rgba(8,7,14,0.92)_58%,rgba(3,3,6,0.96))] p-6 shadow-[0_34px_120px_rgba(0,0,0,0.55),0_0_70px_rgba(88,28,135,0.16)] sm:p-8 lg:p-10">
           <div className="map-panel-bloom pointer-events-none absolute -inset-16 opacity-55 blur-2xl" />
           <div className="relative z-10 max-w-4xl">
-            <p className="font-mono text-xs uppercase tracking-[0.32em] text-[var(--raf-cyan)]">Source-aware guide</p>
+            <p className="font-mono text-xs uppercase tracking-[0.32em] text-[var(--raf-cyan)]">Curated scene guide</p>
             <h1 className="mt-5 text-balance font-display text-4xl font-semibold tracking-[-0.045em] text-white sm:text-5xl lg:text-7xl">
               New Wave, Post-Punk &amp; Retro Alternative Festivals in North America
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-[var(--raf-text-muted)] sm:text-xl">
-              Source-backed North American festivals where new wave, post-punk, 80s alternative, dark alternative, and retro indie nostalgia overlap.
+              A curated path through North American festivals where new wave, post-punk, 80s alternative, dark alternative, and retro indie nostalgia overlap.
             </p>
             <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-              This guide tracks North American festivals with meaningful overlap across new wave, post-punk, 80s alternative, dark alternative crossover, synthpop-adjacent nostalgia, and retro alternative discovery. Some listings are core anchors; others are adjacent references for broader alternative discovery.
+              This guide follows festivals with meaningful overlap across new wave, post-punk, 80s alternative, dark alternative crossover, synthpop-adjacent nostalgia, and retro alternative discovery. Some are strong fits for this lane; others are related festivals to know for broader alternative discovery.
             </p>
             <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-              This is a curated starting point, not an exhaustive directory. RetroAltFest keeps source-aware labels visible so date-pending, adjacent, and held-back records are not blurred into confirmed-current festival cards.
+              This is a curated starting point, not an exhaustive directory. RetroAltFest keeps uncertainty visible in plain English so dates-not-announced-yet listings, related festivals, and possible future additions do not blur into currently confirmed festival cards.
             </p>
             <div className="mt-8 grid gap-3 sm:grid-cols-3">
-              <AtlasFact label="Public records" value={`${allPublicRecords.length} source-aware examples`} />
-              <AtlasFact label="Core anchors" value="Darker Waves · Cruel World" />
+              <AtlasFact label="Guide records" value={`${allPublicRecords.length} checked examples`} />
+              <AtlasFact label="Strongest fits" value="Darker Waves · Cruel World" />
               <AtlasFact label="Scope" value="New wave / post-punk / retro alternative" />
             </div>
           </div>
@@ -226,7 +226,7 @@ export default function NewWavePostPunkRetroAlternativeGuidePage() {
             The lane is retro alternative first, with visible overlap.
           </h2>
           <p className="mt-4 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-            This page focuses on source-backed festival signals across new wave, post-punk, 80s alternative, dark alternative crossover, synthpop-adjacent nostalgia, and retro indie/alternative overlap. It does not treat every adjacent indie, punk, or nostalgia festival as a core new wave/post-punk event.
+            This page focuses on festivals with reliable source trails across new wave, post-punk, 80s alternative, dark alternative crossover, synthpop-adjacent nostalgia, and retro indie/alternative overlap. It does not treat every related indie, punk, or nostalgia festival as a core new wave/post-punk event.
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
             {["new wave", "post-punk", "80s alternative", "dark alternative crossover", "synthpop-adjacent nostalgia", "retro indie/alternative overlap"].map((tag) => (
@@ -238,33 +238,33 @@ export default function NewWavePostPunkRetroAlternativeGuidePage() {
         </section>
 
         <GuideSection
-          eyebrow="Core anchors"
-          title="Two records carry the strongest public V1 signal."
-          description="Darker Waves is the clean confirmed-current anchor. Cruel World is a strong editorial core anchor, but remains visibly date_pending until official future-date evidence is re-verified."
+          eyebrow="Strongest guide fits"
+          title="Two records carry the clearest public signal."
+          description="Darker Waves is currently confirmed. Cruel World is one of the strongest fits for this guide, but its next dates have not been announced yet."
           records={coreAnchors}
           emphasized
         />
 
         <GuideSection
-          eyebrow="Adjacent retro alternative references"
+          eyebrow="Related retro alternative references"
           title="Useful discovery references, not core new wave/post-punk festivals."
-          description="Just Like Heaven and Riot Fest are included only as adjacent references so the guide can point readers toward broader retro or legacy alternative discovery without becoming a general alternative festival page."
+          description="Just Like Heaven and Riot Fest are included as related festivals to know, helping readers find broader retro or legacy alternative discovery without turning this into a general alternative festival page."
           records={adjacentReferences}
         />
 
         <section className="mt-10 rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(30,22,48,0.5),rgba(255,255,255,0.024))] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.28)] sm:p-8 lg:p-10">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">held_back boundary leads</p>
+          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">Possible future additions</p>
           <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            Reviewed, but not public V1 festival cards.
+            Reviewed, but not included in this first guide.
           </h2>
           <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-            Kilby Block Party, Best Friends Forever Fest, and When We Were Young were reviewed as possible leads, but they stay out of public V1 festival cards for this guide. Their fit is either too broad, too date-uncertain, or better suited to another RetroAltFest guide lane.
+            Kilby Block Party, Best Friends Forever Fest, and When We Were Young were reviewed as possible leads, but they stay out of this first guide. Their fit is either too broad, too date-uncertain, or better suited to another RetroAltFest guide lane.
           </p>
           <ul className="mt-6 grid gap-3 md:grid-cols-3">
             {heldBackLeads.map((lead) => (
               <li key={lead} className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4 text-sm leading-6 text-[var(--raf-text-muted)]">
                 <span className="font-display text-lg font-semibold text-white">{lead}</span>
-                <span className="mt-2 block">Held back from public V1 cards for this guide angle.</span>
+                <span className="mt-2 block">Possible future addition, but not included for this guide angle yet.</span>
               </li>
             ))}
           </ul>
@@ -361,23 +361,19 @@ function FestivalGuideCard({ record, emphasized }: { record: GuideRecord; emphas
       <p className="mt-5 text-sm font-semibold text-white">Scene fit: {record.genreTags.join(" · ")}</p>
       <p className="mt-3 leading-7 text-[var(--raf-text-muted)]">{record.summary}</p>
       <p className="mt-4 rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4 text-sm leading-6 text-[var(--raf-text-muted)]">
-        <span className="font-semibold text-white">Source-aware caveat: </span>{record.sourceCaveat}
+        <span className="font-semibold text-white">Curator note: </span>{record.sourceCaveat}
       </p>
 
       <dl className="mt-5 grid gap-3 sm:grid-cols-2">
-        <AtlasFact label="Verification" value={statusLabel(record.verificationStatus)} />
-        <AtlasFact label="Guide role" value={statusLabel(record.guideRole)} />
-        <AtlasFact label="Source sufficiency" value={statusLabel(record.sourceSufficiency)} />
-        <AtlasFact label="Public V1" value={statusLabel(record.publicV1Recommendation)} />
-        <AtlasFact label="Overlap risk" value={statusLabel(record.overlapRisk)} />
-        <AtlasFact label="Atlas readiness" value="Content-ready / not map-ready" />
+        <AtlasFact label="What we’ve confirmed" value={confirmedNote(record)} />
+        <AtlasFact label="What we’re still checking" value={checkingNote(record)} />
       </dl>
 
       <p className="mt-5 rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4 text-sm leading-6 text-[var(--raf-text-muted)]">
-        <span className="font-semibold text-white">Duplicate-risk note: </span>{record.duplicateRiskNotes}
+        <span className="font-semibold text-white">Guide angle: </span>{record.duplicateRiskNotes}
       </p>
       <p className="mt-3 rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4 text-sm leading-6 text-[var(--raf-text-muted)]">
-        <span className="font-semibold text-white">Follow-up needed: </span>{record.followUpNeeded}
+        <span className="font-semibold text-white">What we’re watching: </span>{record.followUpNeeded}
       </p>
 
       <div className="mt-5 flex flex-wrap gap-2">
@@ -392,7 +388,7 @@ function FestivalGuideCard({ record, emphasized }: { record: GuideRecord; emphas
         <a className="inline-flex break-words text-sm font-semibold text-[var(--raf-cyan)] transition hover:text-white" href={record.officialUrl} target="_blank" rel="noreferrer">
           Official source: {record.officialUrl.replace(/^https?:\/\//, "")}
         </a>
-        <p className="text-xs leading-5 text-[var(--raf-text-dim)]">Source URLs reviewed: {record.sourceUrls.length} official/source-backed pages.</p>
+        <p className="text-xs leading-5 text-[var(--raf-text-dim)]">Sources checked: {record.sourceUrls.length} official or reliable pages.</p>
       </div>
     </article>
   );
@@ -407,8 +403,22 @@ function AtlasFact({ label, value }: { label: string; value: string }) {
   );
 }
 
-function statusLabel(status: string) {
-  return status
-    .replaceAll("_", " ")
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+function confirmedNote(record: GuideRecord) {
+  if (record.verificationStatus === "verified") {
+    return "Official or reliable sources support this listing.";
+  }
+
+  return "The festival is a strong fit for this guide, but the next dates have not been announced yet.";
+}
+
+function checkingNote(record: GuideRecord) {
+  if (record.verificationStatus === "date_pending") {
+    return "Dates have not been announced yet.";
+  }
+
+  if (record.guideRole === "adjacent_reference") {
+    return "Included as a related festival to know, not as a core new wave or post-punk listing.";
+  }
+
+  return "We’re not placing this on the future map until location details are verified.";
 }

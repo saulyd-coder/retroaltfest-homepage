@@ -513,7 +513,7 @@ test('guide page for North American goth and darkwave festivals is static, bound
     'Verboden Music Festival',
     'Dark Force Fest',
     'Cruel World',
-    'source-backed multi-city parent / needs child-location cleanup before map use',
+    'Multi-city festival',
     'No coordinates or geocoding',
     'How RetroAltFest labels festival status',
   ];
@@ -547,12 +547,12 @@ test('guide page for industrial EBM and dark electronic festivals is static, bou
     'Verboden Music Festival',
     'Dark Force Fest',
     'Absolution Fest',
-    'core anchor / source-backed',
-    'caveated candidate / date-pending / content-only',
-    'multi_city_parent / needs child-location cleanup before map use',
-    'historical/reference / needs-review',
-    'overlap / bridge only',
-    'Triton Festival is excluded for now.',
+    'A strong fit for this guide',
+    'Worth watching — dates not announced yet',
+    'Multi-city festival',
+    'Background/reference listing',
+    'Related festival to know',
+    'Triton Festival was researched but is not included in this first guide',
     '/guides/north-american-goth-darkwave-festivals',
     'href="/festivals"',
   ];
@@ -578,18 +578,18 @@ test('guide page for new wave post-punk and retro alternative festivals is stati
   const guide = read(guidePath);
   const requiredCopy = [
     'New Wave, Post-Punk &amp; Retro Alternative Festivals in North America',
-    'Source-backed North American festivals where new wave, post-punk, 80s alternative, dark alternative, and retro indie nostalgia overlap.',
-    'Core anchors',
+    'A curated path through North American festivals where new wave, post-punk, 80s alternative, dark alternative, and retro indie nostalgia overlap.',
+    'Strongest guide fits',
     'Darker Waves',
-    'confirmed-current core anchor',
+    'Currently confirmed',
     'Cruel World',
-    'date_pending editorial core anchor',
-    'Adjacent retro alternative references',
+    'Dates not announced yet',
+    'Related retro alternative references',
     'Just Like Heaven',
-    'adjacent reference / nostalgia-adjacent',
+    'Related festival to know',
     'Riot Fest',
-    'adjacent reference / broad alternative-adjacent',
-    'held_back boundary leads',
+    'Related festival to know',
+    'Possible future additions',
     'Kilby Block Party',
     'Best Friends Forever Fest',
     'When We Were Young',
@@ -606,7 +606,7 @@ test('guide page for new wave post-punk and retro alternative festivals is stati
   assert.doesNotMatch(guide, /festivalName: "Kilby Block Party"/);
   assert.doesNotMatch(guide, /festivalName: "Best Friends Forever Fest"/);
   assert.doesNotMatch(guide, /festivalName: "When We Were Young"/);
-  assert.match(guide, /Cruel World remains date_pending/);
+  assert.match(guide, /the next dates have not been announced yet/);
   assert.doesNotMatch(guide, /complete list|full directory|confirmed-current claims/i);
   assert.doesNotMatch(guide, /latitude|longitude|geocodingSource|geocoding_source|coordinates|map pins|exact map pin/i);
   assert.doesNotMatch(guide, /fetch\(|prisma|supabase|mongodb|auth|cms|scrap/i);
@@ -618,7 +618,7 @@ test('guide page for new wave post-punk and retro alternative festivals is stati
   assert.match(sitemap, /\/guides\/new-wave-post-punk-retro-alternative-festivals-north-america/);
 });
 
-test('guides index is static, compact, and lists exactly the three live source-aware guides', () => {
+test('guides index is static, compact, and lists exactly the three live curated scene guides', () => {
   const guidesPath = 'src/app/guides/page.tsx';
   assert.equal(existsSync(join(root, guidesPath)), true, 'static /guides page should exist');
 
@@ -633,9 +633,9 @@ test('guides index is static, compact, and lists exactly the three live source-a
   ];
 
   assert.match(guidesPage, /RetroAltFest Guides/);
-  assert.match(guidesPage, /Source-aware festival guides for goth, darkwave, industrial, EBM, post-punk, new wave, and retro alternative discovery\./);
+  assert.match(guidesPage, /Start here for curated paths into goth, darkwave, industrial, EBM, post-punk, new wave, and retro alternative festivals\./);
   assert.match(guidesPage, /RetroAltFest Guides \| Goth, Darkwave, Industrial & Retro Alternative Festivals/);
-  assert.match(guidesPage, /official-source-first discovery/);
+  assert.match(guidesPage, /we check official or reliable sources/);
 
   for (const href of guideHrefs) {
     assert.match(guidesPage, new RegExp(href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
