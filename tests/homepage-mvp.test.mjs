@@ -204,7 +204,7 @@ test('festival detail route is static-first and SEO-ready', () => {
 test('homepage cards link into the curated festival atlas', () => {
   const card = read('src/components/home/FestivalCard.tsx');
   assert.match(card, /next\/link/);
-  assert.match(card, /href=\{`\/festivals\/\$\{festivalSlug\(festival\)\}`\}/);
+  assert.match(card, /href=\{`\/festivals\/\$\{festival\.slug\}`\}/);
   assert.match(card, /View atlas entry/);
 });
 
@@ -220,7 +220,7 @@ test('festival directory route lists the atlas with lightweight filters and sear
 
   assert.match(directoryPage, /metadata: Metadata/);
   assert.match(directoryPage, /FestivalDirectoryBrowser/);
-  assert.match(directoryPage, /festivalDirectoryRecords/);
+  assert.match(directoryPage, /publicFestivalDirectoryItems/);
   assert.match(directoryPage, /Curated festival atlas/);
   assert.doesNotMatch(directoryPage, /fetch\(|prisma|supabase|mongodb|auth|cms/i);
 
@@ -231,8 +231,8 @@ test('festival directory route lists the atlas with lightweight filters and sear
   assert.match(browser, /use client/);
   assert.match(browser, /useMemo/);
   assert.match(browser, /useState/);
-  assert.match(browser, /festivalSlug\(festival\)/);
-  assert.match(browser, /\/festivals\/\$\{festivalSlug\(festival\)\}/);
+  assert.match(browser, /festival\.slug/);
+  assert.match(browser, /\/festivals\/\$\{festival\.slug\}/);
   assert.match(browser, /filteredFestivals\.map/);
   assert.match(browser, /grid gap-4|sm:grid-cols|lg:grid-cols/);
   assert.doesNotMatch(browser, /framer-motion|lottie|three|canvas|axios/i);
@@ -378,8 +378,8 @@ test('festival categories expose the launch taxonomy across data and UI', () => 
   }
 
   assert.match(browser, /categoryFilters/);
-  assert.match(browser, /festival\.categories/);
-  assert.match(card, /festival\.categories/);
+  assert.match(browser, /festival\.sceneTags/);
+  assert.match(card, /festival\.sceneTags/);
 });
 
 test('mobile polish keeps production UI readable on small screens', () => {
@@ -759,4 +759,111 @@ test('guides index is static, compact, and lists exactly the four live curated s
 
   assert.match(sitemap, /`\$\{SITE_URL\}\/guides`/);
   assert.doesNotMatch(guidesPage, /future guide|coming soon|placeholder|search|filter|useState|useMemo|fetch\(|prisma|supabase|mongodb|auth|cms|database|geocoding|latitude|longitude|coordinates|map pins/i);
+});
+
+test('public festival DTO helper defines only approved browser-facing shapes', () => {
+  const helperPath = 'src/lib/public-festivals.ts';
+  assert.equal(existsSync(join(root, helperPath)), true, 'public DTO helper should exist');
+
+  const helper = read(helperPath);
+  for (const exportName of [
+    'PublicFestivalDirectoryItem',
+    'PublicFeaturedFestival',
+    'PublicFestivalDetail',
+    'toPublicFestivalDirectoryItem',
+    'toPublicFeaturedFestival',
+    'toPublicFestivalDetail',
+  ]) {
+    assert.match(helper, new RegExp(`export (type |function |const )${exportName}`));
+  }
+
+  for (const approvedField of [
+    'id',
+    'slug',
+    'name',
+    'locationLabel',
+    'dateLabel',
+    'sceneTags',
+    'statusLabel',
+    'searchText',
+    'summary',
+    'sourceConfidenceLabel',
+    'coordinateLabel',
+    'officialSiteUrl',
+    'sourceLinks',
+    'similar',
+  ]) {
+    assert.match(helper, new RegExp(approvedField));
+  }
+});
+
+test('client-facing festival components use public DTOs instead of raw festival records', () => {
+  const directoryPage = read('src/app/festivals/page.tsx');
+  const browser = read('src/components/festivals/FestivalDirectoryBrowser.tsx');
+  const featured = read('src/components/home/FeaturedFestivals.tsx');
+  const card = read('src/components/home/FestivalCard.tsx');
+
+  assert.match(directoryPage, /publicFestivalDirectoryItems/);
+  assert.doesNotMatch(directoryPage, /festivalDirectoryRecords/);
+  assert.match(browser, /PublicFestivalDirectoryItem/);
+  assert.doesNotMatch(browser, /FestivalDirectoryRecord|verification_status|festival_name|record_id|venue_name/);
+  assert.match(featured, /publicFeaturedFestivals/);
+  assert.doesNotMatch(featured, /featuredFestivals\.map/);
+  assert.match(card, /PublicFeaturedFestival/);
+  assert.doesNotMatch(card, /import \{ Festival|official_url|verification_status|festival_name|record_id|date_text/);
+});
+
+test('festival detail route renders only public detail DTO fields', () => {
+  const detailPage = read('src/app/festivals/[slug]/page.tsx');
+
+  assert.match(detailPage, /getPublicFestivalDetailBySlug/);
+  assert.match(detailPage, /publicFestivalSlugs/);
+  assert.match(detailPage, /festival\.sourceLinks/);
+  assert.match(detailPage, /festival\.sourceConfidenceLabel/);
+  assert.match(detailPage, /festival\.coordinateLabel/);
+  assert.doesNotMatch(detailPage, /geocoding_confidence|geocoding_source|geocoding_query|map_display_category|map_phase0_category|source_status|source_confidence|data_quality_notes|map_notes|official_url|verification_status|festival_name|date_text|venue_name|similar_festival_ids/);
+});
+
+test('public route and component sources do not expose blocked internal source-safety terms', () => {
+  const publicSourceFiles = [
+    'src/app/page.tsx',
+    'src/app/festivals/page.tsx',
+    'src/app/festivals/[slug]/page.tsx',
+    'src/app/guides/page.tsx',
+    'src/app/guides/north-american-goth-darkwave-festivals/page.tsx',
+    'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx',
+    'src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/page.tsx',
+    'src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/page.tsx',
+    'src/app/verification/page.tsx',
+    'src/components/festivals/FestivalDirectoryBrowser.tsx',
+    'src/components/home/FestivalCard.tsx',
+    'src/components/home/FeaturedFestivals.tsx',
+    'src/components/home/MapPreview.tsx',
+    'src/components/home/TrustSection.tsx',
+    'src/components/home/FirstDarkFestivalSignals.tsx',
+  ];
+
+  const blockedPatterns = [
+    /geocoding_source/i,
+    /geocoding_query/i,
+    /geocoding_confidence/i,
+    /map_phase0_category/i,
+    /source_status/i,
+    /source_sufficiency/i,
+    /date_pending/i,
+    /needs_review/i,
+    /core_anchor/i,
+    /watchlist/i,
+    /Phase 0/i,
+    /map-readiness/i,
+    /latitude/i,
+    /longitude/i,
+  ];
+
+  for (const filePath of publicSourceFiles) {
+    const source = read(filePath);
+    for (const pattern of blockedPatterns) {
+      assert.doesNotMatch(source, pattern, `${filePath} should not expose ${pattern}`);
+    }
+  }
 });

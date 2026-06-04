@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { FestivalDirectoryRecord, categoryFilters, festivalSlug, formatLocation, genreLabel, statusLabel } from "@/lib/festivals";
+import type { PublicFestivalDirectoryItem } from "@/lib/public-festivals";
+import { categoryFilters } from "@/lib/festivals";
 
 type FestivalDirectoryBrowserProps = {
-  festivals: FestivalDirectoryRecord[];
+  festivals: PublicFestivalDirectoryItem[];
 };
 
 const allOption = "all";
@@ -16,32 +17,18 @@ export function FestivalDirectoryBrowser({ festivals }: FestivalDirectoryBrowser
   const [regionFilter, setRegionFilter] = useState(allOption);
   const [statusFilter, setStatusFilter] = useState(allOption);
 
-  const scenes = useMemo(() => categoryFilters, []);
-  const regions = useMemo(() => uniqueSorted(festivals.map((festival) => festival.country)), [festivals]);
-  const statuses = useMemo(() => uniqueSorted(festivals.map((festival) => festival.verification_status)), [festivals]);
+  const scenes = useMemo(() => categoryFilters.map(formatSceneOption), []);
+  const regions = useMemo(() => uniqueSorted(festivals.map((festival) => festival.regionLabel)), [festivals]);
+  const statuses = useMemo(() => uniqueSorted(festivals.map((festival) => festival.statusLabel)), [festivals]);
 
   const filteredFestivals = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
 
     return festivals.filter((festival) => {
-      const searchableText = [
-        festival.festival_name,
-        festival.city,
-        festival.state_region,
-        festival.country,
-        festival.venue_name,
-        festival.date_text,
-        ...festival.genres,
-        ...festival.categories,
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-
-      const matchesSearch = query.length === 0 || searchableText.includes(query);
-      const matchesScene = sceneFilter === allOption || festival.categories.includes(sceneFilter);
-      const matchesRegion = regionFilter === allOption || festival.country === regionFilter;
-      const matchesStatus = statusFilter === allOption || festival.verification_status === statusFilter;
+      const matchesSearch = query.length === 0 || festival.searchText.includes(query);
+      const matchesScene = sceneFilter === allOption || festival.sceneTags.includes(sceneFilter);
+      const matchesRegion = regionFilter === allOption || festival.regionLabel === regionFilter;
+      const matchesStatus = statusFilter === allOption || festival.statusLabel === statusFilter;
 
       return matchesSearch && matchesScene && matchesRegion && matchesStatus;
     });
@@ -69,9 +56,9 @@ export function FestivalDirectoryBrowser({ festivals }: FestivalDirectoryBrowser
             />
           </label>
 
-          <FilterSelect label="Scene" value={sceneFilter} onChange={setSceneFilter} options={scenes} allLabel="All scenes" formatOption={genreLabel} />
+          <FilterSelect label="Scene" value={sceneFilter} onChange={setSceneFilter} options={scenes} allLabel="All scenes" />
           <FilterSelect label="Region" value={regionFilter} onChange={setRegionFilter} options={regions} allLabel="All regions" />
-          <FilterSelect label="Status" value={statusFilter} onChange={setStatusFilter} options={statuses} allLabel="All statuses" formatOption={statusLabel} />
+          <FilterSelect label="Status" value={statusFilter} onChange={setStatusFilter} options={statuses} allLabel="All statuses" />
         </div>
 
         <div className="mt-4 flex flex-col gap-3 text-sm text-[var(--raf-text-muted)] sm:flex-row sm:items-center sm:justify-between" aria-live="polite">
@@ -87,33 +74,33 @@ export function FestivalDirectoryBrowser({ festivals }: FestivalDirectoryBrowser
       {filteredFestivals.length > 0 ? (
         <div className="mt-6 grid gap-4 lg:grid-cols-2">
           {filteredFestivals.map((festival) => (
-            <article key={festival.record_id} className="group relative overflow-hidden rounded-3xl border border-[rgba(168,85,247,0.18)] bg-[linear-gradient(180deg,rgba(35,24,57,0.66),rgba(8,7,14,0.9))] p-5 shadow-[0_22px_80px_rgba(0,0,0,0.3)] transition hover:-translate-y-0.5 hover:border-[var(--raf-cyan)]/45 sm:p-6">
+            <article key={festival.id} className="group relative overflow-hidden rounded-3xl border border-[rgba(168,85,247,0.18)] bg-[linear-gradient(180deg,rgba(35,24,57,0.66),rgba(8,7,14,0.9))] p-5 shadow-[0_22px_80px_rgba(0,0,0,0.3)] transition hover:-translate-y-0.5 hover:border-[var(--raf-cyan)]/45 sm:p-6">
               <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[var(--raf-cyan)]/35 to-[var(--raf-ultraviolet)]/25 opacity-70" />
               <div className="relative z-10 flex h-full flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--raf-text-dim)]">{festival.record_id}</span>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--raf-text-dim)]">{festival.id}</span>
                     <span className="rounded-full border border-[var(--raf-border-soft)] bg-[var(--raf-verified)]/10 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--raf-verified)]">
-                      {statusLabel(festival.verification_status)}
+                      {festival.statusLabel}
                     </span>
                   </div>
 
                   <h2 className="mt-4 font-display text-2xl font-semibold leading-tight tracking-[-0.02em] text-white">
-                    {festival.festival_name}
+                    {festival.name}
                   </h2>
-                  <p className="mt-2 text-sm leading-6 text-[var(--raf-text-muted)]">{formatLocation(festival)}</p>
-                  <p className="mt-1 text-sm leading-6 text-[var(--raf-text-dim)]">{festival.date_text}</p>
+                  <p className="mt-2 text-sm leading-6 text-[var(--raf-text-muted)]">{festival.locationLabel}</p>
+                  <p className="mt-1 text-sm leading-6 text-[var(--raf-text-dim)]">{festival.dateLabel}</p>
 
                   <div className="mt-4 flex flex-wrap gap-2 overflow-x-auto pb-1">
-                    {festival.categories.slice(0, 5).map((genre) => (
+                    {festival.sceneTags.slice(0, 5).map((genre) => (
                       <span key={genre} className="raf-chip rounded-full px-3 py-1 text-xs">
-                        {genreLabel(genre)}
+                        {genre}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <Link className="raf-button-secondary shrink-0 px-4 py-2 text-center font-mono text-xs uppercase tracking-[0.18em] text-[var(--raf-cyan)]" href={`/festivals/${festivalSlug(festival)}`}>
+                <Link className="raf-button-secondary shrink-0 px-4 py-2 text-center font-mono text-xs uppercase tracking-[0.18em] text-[var(--raf-cyan)]" href={`/festivals/${festival.slug}`}>
                   View entry
                 </Link>
               </div>
@@ -140,14 +127,12 @@ function FilterSelect({
   options,
   allLabel,
   onChange,
-  formatOption = (option) => option,
 }: {
   label: string;
   value: string;
   options: string[];
   allLabel: string;
   onChange: (value: string) => void;
-  formatOption?: (option: string) => string;
 }) {
   return (
     <label className="block">
@@ -160,7 +145,7 @@ function FilterSelect({
         <option value={allOption}>{allLabel}</option>
         {options.map((option) => (
           <option key={option} value={option}>
-            {formatOption(option)}
+            {option}
           </option>
         ))}
       </select>
@@ -170,4 +155,18 @@ function FilterSelect({
 
 function uniqueSorted(values: string[]) {
   return Array.from(new Set(values.filter(Boolean))).sort((a, b) => a.localeCompare(b));
+}
+
+function formatSceneOption(scene: string) {
+  const knownLabels: Record<string, string> = {
+    darkwave: "Darkwave",
+    goth: "Goth",
+    industrial: "Industrial",
+    synthpop: "Synthpop",
+    "post-punk": "Post-punk",
+    edm: "EDM",
+    alternative: "Alternative",
+  };
+
+  return knownLabels[scene.toLowerCase()] ?? scene;
 }

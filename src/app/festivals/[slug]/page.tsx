@@ -2,14 +2,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
-  festivalSlug,
-  featuredFestivals,
-  formatLocation,
-  genreLabel,
-  getFestivalBySlug,
-  getSimilarFestivals,
-  statusLabel,
-} from "@/lib/festivals";
+  getPublicFestivalDetailBySlug,
+  publicFestivalSlugs,
+} from "@/lib/public-festivals";
 import { buildMetadata } from "@/lib/seo";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
@@ -21,14 +16,12 @@ type FestivalPageProps = {
 };
 
 export function generateStaticParams() {
-  return featuredFestivals.map((festival) => ({
-    slug: festivalSlug(festival),
-  }));
+  return publicFestivalSlugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: FestivalPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const festival = getFestivalBySlug(slug);
+  const festival = getPublicFestivalDetailBySlug(slug);
 
   if (!festival) {
     return {
@@ -37,31 +30,25 @@ export async function generateMetadata({ params }: FestivalPageProps): Promise<M
     };
   }
 
-  const title = `${festival.festival_name} festival guide`;
-  const description = festival.atlas_summary;
-  const url = `/festivals/${festivalSlug(festival)}`;
-
   return buildMetadata({
-    title,
-    description,
-    path: url,
+    title: `${festival.name} festival guide`,
+    description: festival.summary,
+    path: `/festivals/${festival.slug}`,
     type: "article",
-    keywords: [festival.festival_name, ...festival.genres, ...festival.categories, festival.city, festival.country],
+    keywords: festival.seoKeywords,
     image: {
-      alt: `${festival.festival_name} on the RetroAltFest atlas`,
+      alt: `${festival.name} on the RetroAltFest atlas`,
     },
   });
 }
 
 export default async function FestivalDetailPage({ params }: FestivalPageProps) {
   const { slug } = await params;
-  const festival = getFestivalBySlug(slug);
+  const festival = getPublicFestivalDetailBySlug(slug);
 
   if (!festival) {
     notFound();
   }
-
-  const similarFestivals = getSimilarFestivals(festival);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[var(--raf-black)] text-[var(--raf-text)]">
@@ -87,16 +74,16 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
             <div className="relative z-10">
               <p className="font-mono text-xs uppercase tracking-[0.32em] text-[var(--raf-cyan)]">Curated atlas entry</p>
               <h1 className="mt-5 text-balance font-display text-4xl font-semibold tracking-[-0.045em] text-white sm:text-5xl lg:text-7xl">
-                {festival.festival_name}
+                {festival.name}
               </h1>
               <p className="mt-5 max-w-3xl text-lg leading-8 text-[var(--raf-text-muted)] sm:text-xl">
-                {festival.atlas_summary}
+                {festival.summary}
               </p>
 
               <dl className="mt-8 grid gap-3 sm:grid-cols-3">
-                <AtlasFact label="Location" value={formatLocation(festival)} />
-                <AtlasFact label="Dates" value={festival.date_text} />
-                <AtlasFact label="Venue" value={festival.venue_name} />
+                <AtlasFact label="Location" value={festival.locationLabel} />
+                <AtlasFact label="Dates" value={festival.dateLabel} />
+                <AtlasFact label="Venue" value={festival.venueLabel} />
               </dl>
             </div>
           </div>
@@ -105,22 +92,19 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
             <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--raf-text-dim)]">Verification</p>
             <div className="mt-4 space-y-3 text-sm leading-6 text-[var(--raf-text-muted)]">
               <p>
-                <span className="text-white">Status:</span> {statusLabel(festival.verification_status)}
+                <span className="text-white">Status:</span> {festival.statusLabel}
               </p>
               <p>
-                <span className="text-white">Source confidence:</span> {festival.source_confidence}
+                <span className="text-white">Source confidence:</span> {festival.sourceConfidenceLabel}
               </p>
               <p>
-                <span className="text-white">Map category:</span> {statusLabel(festival.map_display_category)}
-              </p>
-              <p>
-                <span className="text-white">Coordinates:</span> {festival.geocoding_confidence === "not_geocoded" ? "Not guessed" : festival.geocoding_confidence}
+                <span className="text-white">Location confidence:</span> {festival.coordinateLabel}
               </p>
             </div>
             <Link className="mt-5 inline-flex w-full justify-center rounded-full border border-[var(--raf-cyan)]/25 bg-[var(--raf-cyan)]/10 px-5 py-3 text-center text-sm font-bold text-[var(--raf-cyan)] transition hover:-translate-y-0.5 hover:border-[var(--raf-cyan)]/50 hover:text-white" href="/verification">
               How verification works
             </Link>
-            <a className="mt-3 inline-flex w-full justify-center rounded-full bg-white px-5 py-3 text-sm font-black text-[#050507] transition hover:-translate-y-0.5 hover:bg-[var(--raf-cyan)]" href={festival.official_url} target="_blank" rel="noreferrer">
+            <a className="mt-3 inline-flex w-full justify-center rounded-full bg-white px-5 py-3 text-sm font-black text-[#050507] transition hover:-translate-y-0.5 hover:bg-[var(--raf-cyan)]" href={festival.officialSiteUrl} target="_blank" rel="noreferrer">
               Visit official site
             </a>
           </aside>
@@ -131,23 +115,23 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
             <section className="rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(30,22,48,0.5),rgba(255,255,255,0.024))] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.28)] sm:p-8">
               <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">Editorial context</p>
               <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white">Why this festival matters</h2>
-              <p className="mt-5 leading-8 text-[var(--raf-text-muted)]">{festival.why_it_matters}</p>
+              <p className="mt-5 leading-8 text-[var(--raf-text-muted)]">{festival.whyItMatters}</p>
             </section>
 
             <section className="rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-black/25 p-6 shadow-[0_20px_80px_rgba(0,0,0,0.22)] sm:p-8">
               <h2 className="font-display text-3xl font-semibold tracking-tight text-white">Verification notes</h2>
               <div className="mt-5 grid gap-4 text-sm leading-7 text-[var(--raf-text-muted)] md:grid-cols-2">
-                <p>{festival.data_quality_notes}</p>
-                <p>{festival.map_notes}</p>
+                <p>{festival.verificationNote}</p>
+                <p>{festival.mappingNote}</p>
               </div>
             </section>
 
             <section className="rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(18,13,30,0.74),rgba(0,0,0,0.38))] p-6 sm:p-8">
               <h2 className="font-display text-3xl font-semibold tracking-tight text-white">Official sources</h2>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                {festival.source_links.map((source) => (
+                {festival.sourceLinks.map((source) => (
                   <a key={source.url} className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/30 p-4 text-sm text-[var(--raf-text-muted)] transition hover:-translate-y-0.5 hover:border-[var(--raf-cyan)]/40 hover:text-white" href={source.url} target="_blank" rel="noreferrer">
-                    <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--raf-cyan)]">{source.type.replaceAll("_", " ")}</span>
+                    <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--raf-cyan)]">{source.typeLabel}</span>
                     <span className="mt-2 block font-semibold">{source.label}</span>
                     <span className="mt-2 block break-words text-[var(--raf-text-dim)]">{source.url}</span>
                   </a>
@@ -160,9 +144,9 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
             <section className="rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-black/30 p-5">
               <h2 className="font-display text-2xl font-semibold text-white">Genre tags</h2>
               <div className="mt-4 flex flex-wrap gap-2">
-                {festival.categories.map((genre) => (
+                {festival.sceneTags.map((genre) => (
                   <span key={genre} className="raf-chip rounded-full px-3 py-1 text-xs">
-                    {genreLabel(genre)}
+                    {genre}
                   </span>
                 ))}
               </div>
@@ -171,10 +155,10 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
             <section className="rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-black/30 p-5">
               <h2 className="font-display text-2xl font-semibold text-white">Similar festivals</h2>
               <div className="mt-4 space-y-3">
-                {similarFestivals.map((similar) => (
-                  <Link key={similar.record_id} className="block rounded-2xl border border-[var(--raf-border-soft)] bg-white/[0.035] p-4 transition hover:-translate-y-0.5 hover:border-[var(--raf-cyan)]/40 hover:bg-white/[0.06]" href={`/festivals/${festivalSlug(similar)}`}>
-                    <span className="block font-display text-lg font-semibold text-white">{similar.festival_name}</span>
-                    <span className="mt-1 block text-sm text-[var(--raf-text-muted)]">{formatLocation(similar)}</span>
+                {festival.similar.map((similar) => (
+                  <Link key={similar.id} className="block rounded-2xl border border-[var(--raf-border-soft)] bg-white/[0.035] p-4 transition hover:-translate-y-0.5 hover:border-[var(--raf-cyan)]/40 hover:bg-white/[0.06]" href={`/festivals/${similar.slug}`}>
+                    <span className="block font-display text-lg font-semibold text-white">{similar.name}</span>
+                    <span className="mt-1 block text-sm text-[var(--raf-text-muted)]">{similar.locationLabel}</span>
                   </Link>
                 ))}
               </div>

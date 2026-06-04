@@ -34,11 +34,11 @@ type GuideRecord = {
   officialUrl: string;
   sourceUrls: string[];
   genreTags: string[];
-  guideRole: "core_anchor" | "date_pending_core_anchor" | "adjacent_reference";
-  verificationStatus: "verified" | "date_pending";
+  guideRole: "strong_guide_fit" | "dates_not_announced_strong_guide_fit" | "related_festival";
+  verificationStatus: "verified" | "dates_not_announced";
   sourceSufficiency: "strong";
   publicStatusLabel: string;
-  publicV1Recommendation: "include_core" | "include_core_with_date_pending_caveat" | "adjacent_reference";
+  publicV1Recommendation: "include_core" | "include_core_with_dates_not_announced_caveat" | "related_festival";
   overlapRisk: "low" | "medium" | "high";
   summary: string;
   sourceCaveat: string;
@@ -58,7 +58,7 @@ const coreAnchors: GuideRecord[] = [
     officialUrl: "https://www.darkerwavesfest.com/",
     sourceUrls: ["https://www.darkerwavesfest.com/", "https://www.darkerwavesfest.com/lineup", "https://www.darkerwavesfest.com/tickets"],
     genreTags: ["new wave", "post-punk", "retro alternative", "80s alternative", "synthpop-adjacent", "darkwave-adjacent"],
-    guideRole: "core_anchor",
+    guideRole: "strong_guide_fit",
     verificationStatus: "verified",
     sourceSufficiency: "strong",
     publicStatusLabel: "Currently confirmed",
@@ -82,11 +82,11 @@ const coreAnchors: GuideRecord[] = [
     officialUrl: "https://cruelworldfest.com/",
     sourceUrls: ["https://cruelworldfest.com/", "https://cruelworldfest.com/lineup/", "https://cruelworldfest.com/general-info/", "https://cruelworldfest.com/passes/"],
     genreTags: ["new wave", "post-punk", "dark alternative", "80s alternative", "synthpop-adjacent", "retro alternative"],
-    guideRole: "date_pending_core_anchor",
-    verificationStatus: "date_pending",
+    guideRole: "dates_not_announced_strong_guide_fit",
+    verificationStatus: "dates_not_announced",
     sourceSufficiency: "strong",
     publicStatusLabel: "Dates not announced yet",
-    publicV1Recommendation: "include_core_with_date_pending_caveat",
+    publicV1Recommendation: "include_core_with_dates_not_announced_caveat",
     overlapRisk: "high",
     summary:
       "Cruel World is one of the strongest editorial matches for this guide because its official source history supports major overlap across classic alternative, new wave, post-punk, synthpop-adjacent, and dark alternative audiences.",
@@ -110,11 +110,11 @@ const adjacentReferences: GuideRecord[] = [
     officialUrl: "https://justlikeheavenfest.com/",
     sourceUrls: ["https://justlikeheavenfest.com/", "https://justlikeheavenfest.com/lineup/", "https://justlikeheavenfest.com/festival-info/", "https://justlikeheavenfest.com/passes"],
     genreTags: ["indie nostalgia", "blog-era indie", "retro alternative-adjacent", "dance-party adjacent", "alternative nostalgia"],
-    guideRole: "adjacent_reference",
+    guideRole: "related_festival",
     verificationStatus: "verified",
     sourceSufficiency: "strong",
     publicStatusLabel: "Related festival to know",
-    publicV1Recommendation: "adjacent_reference",
+    publicV1Recommendation: "related_festival",
     overlapRisk: "low",
     summary:
       "Just Like Heaven belongs here only as an adjacent retro alternative reference: a broader indie and blog-era nostalgia signal for readers exploring beyond the core new wave/post-punk lane.",
@@ -135,11 +135,11 @@ const adjacentReferences: GuideRecord[] = [
     officialUrl: "https://riotfest.org/",
     sourceUrls: ["https://riotfest.org/", "https://riotfest.org/chicago/lineup/", "https://riotfest.org/chicago/tickets/", "https://www.tixr.com/groups/riotfest/events/riot-fest-2026-158068"],
     genreTags: ["punk", "alternative", "broad retro alternative", "post-punk-adjacent", "legacy alternative"],
-    guideRole: "adjacent_reference",
+    guideRole: "related_festival",
     verificationStatus: "verified",
     sourceSufficiency: "strong",
     publicStatusLabel: "Related festival to know",
-    publicV1Recommendation: "adjacent_reference",
+    publicV1Recommendation: "related_festival",
     overlapRisk: "medium",
     summary:
       "Riot Fest is useful as a broad alternative discovery reference where readers may sometimes find legacy alternative, punk, post-punk-adjacent, or retro discovery threads.",
@@ -412,11 +412,11 @@ function confirmedNote(record: GuideRecord) {
 }
 
 function checkingNote(record: GuideRecord) {
-  if (record.verificationStatus === "date_pending") {
+  if (record.verificationStatus === "dates_not_announced") {
     return "Dates have not been announced yet.";
   }
 
-  if (record.guideRole === "adjacent_reference") {
+  if (record.guideRole === "related_festival") {
     return "Included as a related festival to know, not as a core new wave or post-punk listing.";
   }
 

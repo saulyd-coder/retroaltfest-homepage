@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { featuredFestivals } from "@/lib/festivals";
+import { publicFeaturedFestivals } from "@/lib/public-festivals";
 import { FestivalCard } from "./FestivalCard";
 import { SceneChips } from "./SceneChips";
 
@@ -12,7 +12,7 @@ export function FeaturedFestivals() {
           <h2 className="mt-3 font-display text-4xl font-semibold tracking-tight text-white sm:text-5xl">Start with 10 curated festivals.</h2>
         </div>
         <p className="max-w-xl text-[var(--raf-text-muted)]">
-          Built for fewer dead ends. This homepage is wired to the initial JSON dataset and ready to expand into directory pages, filters, and a live map.
+          Built for fewer dead ends. This homepage is wired to a public-safe festival layer and ready to expand into directory pages, filters, and a careful travel atlas.
         </p>
       </div>
 
@@ -47,8 +47,8 @@ export function FeaturedFestivals() {
       </Link>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {featuredFestivals.map((festival) => (
-          <FestivalCard key={festival.record_id} festival={festival} />
+        {publicFeaturedFestivals.map((festival) => (
+          <FestivalCard key={festival.id} festival={festival} />
         ))}
       </div>
     </section>

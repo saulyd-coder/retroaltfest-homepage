@@ -31,7 +31,7 @@ type GuideRecord = {
   officialUrl: string;
   verificationStatus: string;
   mapDisplayCategory: string;
-  recordType: "city_level" | "multi_city_parent" | "support_reference" | "adjacent_reference";
+  recordType: "city_level" | "multi_city_parent" | "support_reference" | "related_festival";
   sceneFit: string;
   statusLabel: string;
   summary: string;
@@ -123,7 +123,7 @@ const multiCityFestivals: GuideRecord[] = [
     genreTags: ["post-punk", "darkwave", "synth", "industrial", "goth", "dark electronic"],
     officialUrl: "https://verbodenfestival.com/",
     verificationStatus: "verified",
-    mapDisplayCategory: "needs_review",
+    mapDisplayCategory: "details_being_checked",
     recordType: "multi_city_parent",
     sceneFit: "Post-punk, darkwave, synth, industrial, goth, and dark electronic.",
     statusLabel: "Multi-city festival",
@@ -143,8 +143,8 @@ const supportFestivals: GuideRecord[] = [
     country: "United States",
     genreTags: ["goth", "industrial", "dark alternative", "metal-adjacent"],
     officialUrl: "https://darkforcefest.com/",
-    verificationStatus: "historical_reference",
-    mapDisplayCategory: "historical_reference",
+    verificationStatus: "contextual_reference",
+    mapDisplayCategory: "contextual_reference",
     recordType: "support_reference",
     sceneFit: "Goth, industrial, dark alternative, and metal-adjacent.",
     statusLabel: "Background/reference listing",
@@ -161,9 +161,9 @@ const supportFestivals: GuideRecord[] = [
     country: "United States",
     genreTags: ["new wave", "post-punk", "goth-adjacent", "synthpop-adjacent", "alternative"],
     officialUrl: "https://cruelworldfest.com/",
-    verificationStatus: "date_pending",
-    mapDisplayCategory: "date_pending",
-    recordType: "adjacent_reference",
+    verificationStatus: "dates_not_announced",
+    mapDisplayCategory: "dates_not_announced",
+    recordType: "related_festival",
     sceneFit: "New wave, post-punk, goth-adjacent, synthpop-adjacent, and alternative.",
     statusLabel: "Dates not announced yet",
     summary:
@@ -378,7 +378,7 @@ function confirmedNote(record: GuideRecord) {
     return "Official or reliable sources support this listing.";
   }
 
-  if (record.verificationStatus === "historical_reference") {
+  if (record.verificationStatus === "contextual_reference") {
     return "Useful background for the scene, but not currently confirmed as upcoming.";
   }
 
@@ -390,11 +390,11 @@ function checkingNote(record: GuideRecord) {
     return "We’re still checking city-by-city details before treating this as map-ready.";
   }
 
-  if (record.mapDisplayCategory === "date_pending") {
+  if (record.mapDisplayCategory === "dates_not_announced") {
     return "Dates have not been announced yet.";
   }
 
-  if (record.mapDisplayCategory === "historical_reference") {
+  if (record.mapDisplayCategory === "contextual_reference") {
     return "Fresh current-status confirmation is needed before this becomes a current listing.";
   }
 

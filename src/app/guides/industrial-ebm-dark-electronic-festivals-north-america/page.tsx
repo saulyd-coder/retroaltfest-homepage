@@ -32,9 +32,9 @@ type GuideRecord = {
   officialUrl: string;
   verificationStatus: string;
   mapDisplayCategory: string;
-  recordType: "city_level" | "content_only" | "multi_city_parent" | "historical_reference" | "bridge_overlap";
+  recordType: "city_level" | "content_only" | "multi_city_parent" | "contextual_reference" | "scene_overlap";
   industrialEbmRelevance: string;
-  contentRole: "core_anchor" | "caveated_candidate" | "multi_city_parent" | "historical_reference" | "bridge_overlap";
+  contentRole: "strong_guide_fit" | "useful_candidate" | "multi_city_parent" | "contextual_reference" | "scene_overlap";
   sceneFit: string;
   statusLabel: string;
   summary: string;
@@ -54,7 +54,7 @@ const coreAnchors: GuideRecord[] = [
     mapDisplayCategory: "confirmed_upcoming",
     recordType: "city_level",
     industrialEbmRelevance: "Core industrial and dark electronic anchor.",
-    contentRole: "core_anchor",
+    contentRole: "strong_guide_fit",
     sceneFit: "Industrial, EBM-adjacent, dark electronic, post-industrial, and post-punk-adjacent.",
     statusLabel: "A strong fit for this guide",
     summary:
@@ -74,7 +74,7 @@ const coreAnchors: GuideRecord[] = [
     mapDisplayCategory: "confirmed_upcoming",
     recordType: "city_level",
     industrialEbmRelevance: "Core/near-core EBM, industrial, and darkwave anchor.",
-    contentRole: "core_anchor",
+    contentRole: "strong_guide_fit",
     sceneFit: "Darkwave, EBM, industrial, synth, and post-punk.",
     statusLabel: "A strong fit for this guide",
     summary:
@@ -94,10 +94,10 @@ const caveatedCandidates: GuideRecord[] = [
     genreTags: ["industrial", "EBM", "dark electro", "dark electronic"],
     officialUrl: "https://www.mechanismus.net/",
     verificationStatus: "partially_verified",
-    mapDisplayCategory: "date_pending",
+    mapDisplayCategory: "dates_not_announced",
     recordType: "content_only",
     industrialEbmRelevance: "Strong industrial and dark electronic fit with current-status caveat.",
-    contentRole: "caveated_candidate",
+    contentRole: "useful_candidate",
     sceneFit: "Industrial, EBM, dark electro, and dark electronic.",
     statusLabel: "Worth watching — dates not announced yet",
     summary:
@@ -114,7 +114,7 @@ const caveatedCandidates: GuideRecord[] = [
     genreTags: ["darkwave", "post-punk", "synth", "industrial-overlap", "goth", "dark electronic"],
     officialUrl: "https://verbodenfestival.com/",
     verificationStatus: "verified",
-    mapDisplayCategory: "needs_review",
+    mapDisplayCategory: "details_being_checked",
     recordType: "multi_city_parent",
     industrialEbmRelevance: "Industrial-adjacent dark electronic and Pacific Northwest corridor signal.",
     contentRole: "multi_city_parent",
@@ -136,11 +136,11 @@ const referenceRecords: GuideRecord[] = [
     country: "United States",
     genreTags: ["goth", "industrial", "dark alternative", "metal-adjacent"],
     officialUrl: "https://darkforcefest.com/",
-    verificationStatus: "historical_reference",
-    mapDisplayCategory: "historical_reference",
-    recordType: "historical_reference",
+    verificationStatus: "contextual_reference",
+    mapDisplayCategory: "contextual_reference",
+    recordType: "contextual_reference",
     industrialEbmRelevance: "Goth/industrial historical-overlap reference.",
-    contentRole: "historical_reference",
+    contentRole: "contextual_reference",
     sceneFit: "Goth, industrial, dark alternative, and metal-adjacent.",
     statusLabel: "Background/reference listing",
     summary:
@@ -158,9 +158,9 @@ const referenceRecords: GuideRecord[] = [
     officialUrl: "https://www.absolutionfest.com/",
     verificationStatus: "verified",
     mapDisplayCategory: "not_map_ready",
-    recordType: "bridge_overlap",
+    recordType: "scene_overlap",
     industrialEbmRelevance: "Electronic/goth-darkwave bridge; not core Industrial/EBM.",
-    contentRole: "bridge_overlap",
+    contentRole: "scene_overlap",
     sceneFit: "Electronic, post-punk, goth, and darkwave.",
     statusLabel: "Related festival to know",
     summary:
@@ -233,7 +233,7 @@ export default function IndustrialEbmDarkElectronicGuidePage() {
               Start here for North American festivals where industrial, EBM, dark electronic, synth, post-industrial, and darkwave-overlap scenes come into focus.
             </p>
             <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-              This is a curated starting point, not a full directory. We separate currently confirmed examples from watchlist items, related scene connections, background listings, and names that still need stronger sources.
+              This is a curated starting point, not a full directory. We separate currently confirmed examples from useful leads, related scene connections, background listings, and names that still need stronger sources.
             </p>
             <div className="mt-8 grid gap-3 sm:grid-cols-3">
               <AtlasFact label="Guide records" value={`${allPublicRecords.length} checked examples`} />
@@ -411,7 +411,7 @@ function confirmedNote(record: GuideRecord) {
     return "Official or reliable sources support this listing.";
   }
 
-  if (record.verificationStatus === "historical_reference") {
+  if (record.verificationStatus === "contextual_reference") {
     return "Useful background for the scene, but not currently confirmed as upcoming.";
   }
 
@@ -423,7 +423,7 @@ function checkingNote(record: GuideRecord) {
     return "We’re still checking city-by-city details before treating this as map-ready.";
   }
 
-  if (record.mapDisplayCategory === "date_pending") {
+  if (record.mapDisplayCategory === "dates_not_announced") {
     return "Dates have not been announced yet.";
   }
 
@@ -431,7 +431,7 @@ function checkingNote(record: GuideRecord) {
     return "Ready to mention in the guide, but not ready for the future map yet.";
   }
 
-  if (record.mapDisplayCategory === "historical_reference") {
+  if (record.mapDisplayCategory === "contextual_reference") {
     return "Fresh current-status confirmation is needed before this becomes a current listing.";
   }
 

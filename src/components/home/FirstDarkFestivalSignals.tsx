@@ -1,8 +1,8 @@
 import signalsData from "@/data/first_dark_festival_signals.json";
 
 const statusTone: Record<string, string> = {
-  confirmed_upcoming: "border-[rgba(52,211,153,0.26)] bg-[rgba(52,211,153,0.08)] text-[var(--raf-verified)]",
-  date_pending: "border-[rgba(251,191,36,0.24)] bg-[rgba(251,191,36,0.07)] text-[var(--raf-warning)]",
+  "Confirmed upcoming": "border-[rgba(52,211,153,0.26)] bg-[rgba(52,211,153,0.08)] text-[var(--raf-verified)]",
+  "Date pending": "border-[rgba(251,191,36,0.24)] bg-[rgba(251,191,36,0.07)] text-[var(--raf-warning)]",
 };
 
 const artWash: Record<string, string> = {
@@ -56,7 +56,7 @@ export function FirstDarkFestivalSignals() {
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <span
                   className={`inline-flex rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] ${
-                    statusTone[signal.status_key] || "border-[var(--raf-border)] text-[var(--raf-text-muted)]"
+                    statusTone[signal.status_label] || "border-[var(--raf-border)] text-[var(--raf-text-muted)]"
                   }`}
                 >
                   {signal.status_label}
