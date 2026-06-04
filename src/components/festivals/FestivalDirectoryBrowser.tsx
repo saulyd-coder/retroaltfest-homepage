@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Festival, categoryFilters, festivalSlug, formatLocation, genreLabel, statusLabel } from "@/lib/festivals";
+import { FestivalDirectoryRecord, categoryFilters, festivalSlug, formatLocation, genreLabel, statusLabel } from "@/lib/festivals";
 
 type FestivalDirectoryBrowserProps = {
-  festivals: Festival[];
+  festivals: FestivalDirectoryRecord[];
 };
 
 const allOption = "all";

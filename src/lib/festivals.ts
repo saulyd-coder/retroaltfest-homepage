@@ -1,9 +1,53 @@
 import seedData from "@/data/seed_festivals_10.json";
 
 export type Festival = (typeof seedData.festivals)[number];
+export type FestivalDirectoryRecord = Pick<
+  Festival,
+  | "record_id"
+  | "festival_id"
+  | "slug"
+  | "festival_name"
+  | "city"
+  | "state_region"
+  | "country"
+  | "venue_name"
+  | "date_text"
+  | "genres"
+  | "categories"
+  | "verification_status"
+>;
 
 export const festivalSeed = seedData;
 export const featuredFestivals = seedData.festivals;
+export const festivalDirectoryRecords: FestivalDirectoryRecord[] = featuredFestivals.map(
+  ({
+    record_id,
+    festival_id,
+    slug,
+    festival_name,
+    city,
+    state_region,
+    country,
+    venue_name,
+    date_text,
+    genres,
+    categories,
+    verification_status,
+  }) => ({
+    record_id,
+    festival_id,
+    slug,
+    festival_name,
+    city,
+    state_region,
+    country,
+    venue_name,
+    date_text,
+    genres,
+    categories,
+    verification_status,
+  }),
+);
 export const categoryFilters = ["darkwave", "goth", "industrial", "synthpop", "post-punk", "EDM", "alternative"];
 export const sceneFilters = categoryFilters;
 
@@ -43,7 +87,7 @@ export function getSimilarFestivals(festival: Festival, limit = 3) {
   return [...preferred, ...fallback].slice(0, limit);
 }
 
-export function formatLocation(festival: Festival) {
+export function formatLocation(festival: Pick<Festival, "city" | "state_region" | "country">) {
   return [festival.city, festival.state_region, festival.country].filter(Boolean).join(" · ");
 }
 

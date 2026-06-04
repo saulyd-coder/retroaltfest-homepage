@@ -108,7 +108,7 @@ export default function GuidesPage() {
             Start here for curated paths into goth, darkwave, industrial, EBM, post-punk, new wave, and retro alternative festivals.
           </p>
           <p className="mt-5 max-w-3xl text-base leading-7 text-[var(--raf-text-muted)]">
-            These guides are intentionally selective: we check official or reliable sources, separate confirmed events from watchlist items, and avoid pretending every related festival belongs in the same lane.
+            These guides are intentionally selective: we check official or reliable sources, separate confirmed events from events still being checked, and avoid pretending every related festival belongs in the same lane.
           </p>
           <Link className="mt-5 inline-flex font-mono text-xs uppercase tracking-[0.22em] text-[var(--raf-cyan)] transition hover:text-white" href="/verification">
             How RetroAltFest handles source checks →

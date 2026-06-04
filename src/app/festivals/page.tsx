@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { FestivalDirectoryBrowser } from "@/components/festivals/FestivalDirectoryBrowser";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
-import { featuredFestivals } from "@/lib/festivals";
+import { festivalDirectoryRecords } from "@/lib/festivals";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
@@ -38,7 +38,7 @@ export default function FestivalsDirectoryPage() {
           </Link>
         </div>
 
-        <FestivalDirectoryBrowser festivals={featuredFestivals} />
+        <FestivalDirectoryBrowser festivals={festivalDirectoryRecords} />
       </section>
 
       <Footer />

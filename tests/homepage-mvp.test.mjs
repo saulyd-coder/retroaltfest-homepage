@@ -220,7 +220,7 @@ test('festival directory route lists the atlas with lightweight filters and sear
 
   assert.match(directoryPage, /metadata: Metadata/);
   assert.match(directoryPage, /FestivalDirectoryBrowser/);
-  assert.match(directoryPage, /featuredFestivals/);
+  assert.match(directoryPage, /festivalDirectoryRecords/);
   assert.match(directoryPage, /Curated festival atlas/);
   assert.doesNotMatch(directoryPage, /fetch\(|prisma|supabase|mongodb|auth|cms/i);
 
