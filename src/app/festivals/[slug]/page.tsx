@@ -117,7 +117,10 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
                 <span className="text-white">Coordinates:</span> {festival.geocoding_confidence === "not_geocoded" ? "Not guessed" : festival.geocoding_confidence}
               </p>
             </div>
-            <a className="mt-6 inline-flex w-full justify-center rounded-full bg-white px-5 py-3 text-sm font-black text-[#050507] transition hover:-translate-y-0.5 hover:bg-[var(--raf-cyan)]" href={festival.official_url} target="_blank" rel="noreferrer">
+            <Link className="mt-5 inline-flex w-full justify-center rounded-full border border-[var(--raf-cyan)]/25 bg-[var(--raf-cyan)]/10 px-5 py-3 text-center text-sm font-bold text-[var(--raf-cyan)] transition hover:-translate-y-0.5 hover:border-[var(--raf-cyan)]/50 hover:text-white" href="/verification">
+              How verification works
+            </Link>
+            <a className="mt-3 inline-flex w-full justify-center rounded-full bg-white px-5 py-3 text-sm font-black text-[#050507] transition hover:-translate-y-0.5 hover:bg-[var(--raf-cyan)]" href={festival.official_url} target="_blank" rel="noreferrer">
               Visit official site
             </a>
           </aside>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { FestivalDirectoryBrowser } from "@/components/festivals/FestivalDirectoryBrowser";
 import { Footer } from "@/components/site/Footer";
@@ -32,6 +33,9 @@ export default function FestivalsDirectoryPage() {
           <p className="mt-6 max-w-3xl text-lg leading-8 text-[var(--raf-text-muted)] sm:text-xl">
             A lightweight directory layer for the RetroAltFest atlas. Search the seed records, filter by genre or verification state, and open each festival detail page for official sources and editorial context.
           </p>
+          <Link className="mt-5 inline-flex font-mono text-xs uppercase tracking-[0.22em] text-[var(--raf-cyan)] transition hover:text-white" href="/verification">
+            What these status labels mean →
+          </Link>
         </div>
 
         <FestivalDirectoryBrowser festivals={featuredFestivals} />

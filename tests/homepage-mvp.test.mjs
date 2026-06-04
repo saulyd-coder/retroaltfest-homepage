@@ -686,6 +686,43 @@ test('guide page for West Coast and Pacific Northwest dark alternative festivals
   assert.match(sitemap, /\/guides\/west-coast-pacific-northwest-dark-alternative-festivals/);
 });
 
+test('public verification page explains source checks without exposing internal workflow labels', () => {
+  const verificationPath = 'src/app/verification/page.tsx';
+  assert.equal(existsSync(join(root, verificationPath)), true, 'static /verification page should exist');
+
+  const verificationPage = read(verificationPath);
+  const homepageTrust = read('src/components/home/TrustSection.tsx');
+  const festivalsPage = read('src/app/festivals/page.tsx');
+  const guidesPage = read('src/app/guides/page.tsx');
+  const festivalDetailPage = read('src/app/festivals/[slug]/page.tsx');
+  const sitemap = read('src/app/sitemap.ts');
+
+  for (const copy of [
+    'How RetroAltFest Verifies Festivals | RetroAltFest',
+    'How RetroAltFest verifies festivals',
+    'Verified before mapped',
+    'Confirmed upcoming',
+    'Dates not announced yet',
+    'Source check in progress',
+    'Not ready for map placement yet',
+    'A map pin implies confidence',
+  ]) {
+    assert.match(verificationPage, new RegExp(copy.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')));
+  }
+
+  assert.match(verificationPage, /metadata: Metadata/);
+  assert.match(verificationPage, /buildMetadata/);
+  assert.match(verificationPage, /path: pagePath/);
+  assert.match(verificationPage, /href="\/festivals"/);
+  assert.match(verificationPage, /href="\/guides"/);
+  assert.doesNotMatch(verificationPage, /fetch\(|prisma|supabase|mongodb|auth|cms|scrap|api\//i);
+  assert.doesNotMatch(verificationPage, /date_pending|Phase 0|map-readiness|core_anchor|source_status|map_phase0_category|geocoding_source|latitude|longitude|coordinates/i);
+
+  for (const source of [homepageTrust, festivalsPage, guidesPage, festivalDetailPage, sitemap]) {
+    assert.match(source, /\/verification/);
+  }
+});
+
 test('guides index is static, compact, and lists exactly the four live curated scene guides', () => {
   const guidesPath = 'src/app/guides/page.tsx';
   assert.equal(existsSync(join(root, guidesPath)), true, 'static /guides page should exist');

@@ -110,6 +110,9 @@ export default function GuidesPage() {
           <p className="mt-5 max-w-3xl text-base leading-7 text-[var(--raf-text-muted)]">
             These guides are intentionally selective: we check official or reliable sources, separate confirmed events from watchlist items, and avoid pretending every related festival belongs in the same lane.
           </p>
+          <Link className="mt-5 inline-flex font-mono text-xs uppercase tracking-[0.22em] text-[var(--raf-cyan)] transition hover:text-white" href="/verification">
+            How RetroAltFest handles source checks →
+          </Link>
         </section>
 
         <section className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" aria-label="RetroAltFest curated scene guides">
