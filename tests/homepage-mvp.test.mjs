@@ -9,15 +9,18 @@ function read(relativePath) {
   return readFileSync(join(root, relativePath), 'utf8');
 }
 
-test('ships the seed festival data for the homepage vertical slice', () => {
+test('ships the curated festival app data for the homepage vertical slice', () => {
   const dataPath = 'src/data/seed_festivals_10.json';
   assert.equal(existsSync(join(root, dataPath)), true, 'seed data should be available in src/data');
 
   const data = JSON.parse(read(dataPath));
-  assert.equal(data.festivals.length, 10);
-  assert.equal(new Set(data.festivals.map((record) => record.record_id)).size, 10);
-  assert.equal(data.festivals.every((record) => record.official_url && record.source_confidence === 'high'), true);
+  assert.equal(data.festivals.length, 15);
+  assert.equal(data.metadata.record_count, 15);
+  assert.equal(new Set(data.festivals.map((record) => record.record_id)).size, 15);
+  assert.equal(new Set(data.festivals.map((record) => record.festival_id)).size, 15);
+  assert.equal(data.festivals.every((record) => record.official_url && ['high', 'medium'].includes(record.source_confidence)), true);
   assert.equal(data.festivals.every((record) => record.latitude === null && record.longitude === null), true);
+  assert.equal(data.festivals.every((record) => record.geocoding_source === null && record.geocoding_query === null), true);
 });
 
 test('homepage contains the required RetroAltFest MVP sections and CTAs', () => {
@@ -162,7 +165,7 @@ test('map preview avoids ambiguous truncated country labels', () => {
 
 test('festival data is expandable for atlas detail pages', () => {
   const data = JSON.parse(read('src/data/seed_festivals_10.json'));
-  assert.equal(data.festivals.length, 10);
+  assert.equal(data.festivals.length, 15);
 
   for (const festival of data.festivals) {
     assert.match(festival.slug, /^[a-z0-9]+(?:-[a-z0-9]+)*$/);
@@ -176,6 +179,67 @@ test('festival data is expandable for atlas detail pages', () => {
     assert.ok(Array.isArray(festival.similar_festival_ids), `${festival.festival_name} should list similar festival ids`);
     assert.ok(festival.similar_festival_ids.length >= 2);
   }
+});
+
+test('North America 8 integration adds only approved app-data records and keeps excluded records out', () => {
+  const data = JSON.parse(read('src/data/seed_festivals_10.json'));
+  const ids = new Set(data.festivals.map((record) => record.festival_id));
+  const slugs = new Set(data.festivals.map((record) => record.slug));
+  const approved = [
+    'cold-waves',
+    'absolution-fest',
+    'darker-waves',
+    'levitation',
+    'mutek-montreal',
+    'just-like-heaven',
+    'the-new-colossus-festival',
+    'terminus-festival',
+  ];
+  const excluded = [
+    'sled-island',
+    'cruel-world',
+    'dark-force-fest',
+    'sanctum-festival',
+    'dark-castle-fest',
+    'verboden-music-festival',
+    'mechanismus-festival',
+    'mechanismus',
+  ];
+
+  for (const id of approved) {
+    assert.equal(ids.has(id), true, `${id} should be integrated as app data`);
+    assert.equal(slugs.has(id), true, `${id} should have a stable clean slug`);
+  }
+
+  for (const id of excluded) {
+    assert.equal(ids.has(id), false, `${id} should not be integrated as app data in this batch`);
+    assert.equal(slugs.has(id), false, `${id} should not have a public festival detail slug in this batch`);
+  }
+});
+
+test('North America 8 records preserve source-aware caveats and map safety', () => {
+  const data = JSON.parse(read('src/data/seed_festivals_10.json'));
+  const byId = new Map(data.festivals.map((record) => [record.festival_id, record]));
+
+  for (const id of ['cold-waves', 'absolution-fest', 'darker-waves', 'levitation', 'mutek-montreal', 'just-like-heaven', 'the-new-colossus-festival', 'terminus-festival']) {
+    const festival = byId.get(id);
+    assert.ok(festival, `${id} should exist`);
+    assert.equal(festival.latitude, null);
+    assert.equal(festival.longitude, null);
+    assert.equal(festival.geocoding_source, null);
+    assert.equal(festival.geocoding_query, null);
+    assert.equal(festival.geocoding_confidence, 'not_geocoded');
+    assert.equal(festival.verification_status, 'confirmed_upcoming');
+    assert.ok(festival.source_links.length >= 1);
+    assert.ok(festival.similar_festival_ids.every((similarId) => byId.has(similarId)), `${id} should only link to integrated records`);
+  }
+
+  assert.match(byId.get('levitation').data_quality_notes, /not every show fits RetroAltFest|broad/i);
+  assert.match(byId.get('levitation').map_notes, /Parent\/multi-venue|No single map pin/i);
+  assert.match(byId.get('mutek-montreal').data_quality_notes, /not specifically goth\/darkwave|Do not frame as goth\/darkwave-specific/i);
+  assert.match(byId.get('the-new-colossus-festival').data_quality_notes, /broad|Avoid core goth\/darkwave/i);
+  assert.match(byId.get('terminus-festival').data_quality_notes, /do not use unverified full-lineup poster transcription/i);
+  assert.match(byId.get('terminus-festival').source_urls.join('\n'), /eventbrite\.ca\/e\/terminus-festival-2026-resonance/);
 });
 
 test('festival detail route is static-first and SEO-ready', () => {
@@ -422,10 +486,10 @@ test('first dark festival signals data matches the locked MVP content packet', (
     assert.ok(['USA', 'North America'].includes(signal.country_scope));
     assert.ok(Array.isArray(signal.scene_tags));
     assert.ok(signal.scene_tags.length >= 2 && signal.scene_tags.length <= 3);
-    assert.ok(['Confirmed upcoming', 'Date pending'].includes(signal.status_label));
-    assert.ok(['confirmed_upcoming', 'date_pending'].includes(signal.status_key));
+    assert.ok(['Confirmed upcoming', 'Date pending', 'Reference only', 'Needs future-edition refresh'].includes(signal.status_label));
+    assert.ok(['confirmed_upcoming', 'date_pending', 'reference_only', 'needs_future_refresh'].includes(signal.status_key));
     assert.ok(signal.cultural_hook.length > 40 && signal.cultural_hook.length <= 120);
-    assert.equal(signal.source_cue, 'Official source tracked');
+    assert.match(signal.source_cue, /^Official source tracked/);
     assert.match(signal.official_url, /^https?:\/\//);
     assert.ok(signal.art_direction);
     assert.ok(signal.editorial_descriptor);

@@ -1,17 +1,17 @@
 {
   "metadata": {
-    "dataset_name": "RetroAltFest initial directory and map preview records",
-    "dataset_slug": "retroaltfest-seed-festivals-10",
-    "record_count": 10,
+    "dataset_name": "RetroAltFest curated directory records with North America 8 integration",
+    "dataset_slug": "retroaltfest-seed-festivals-15-north-america-8",
+    "record_count": 15,
     "created_date": "2026-05-24",
-    "source_batch": "Marlowe first 10 high-confidence records",
+    "source_batch": "Marlowe first 10 high-confidence records plus Harvey-approved North America 8 app-data integration batch",
     "research_by": "Marlowe",
     "data_prepared_by": "Nova",
-    "final_review_by": "Harvey",
+    "final_review_by": "Harvey; North America 8 integration plan",
     "prepared_for": "RetroAltFest",
     "coordinate_policy": "Latitude and longitude are intentionally null in this first pass unless exact venue geocoding has been verified. No coordinates have been guessed.",
     "geocoding_status": "not_geocoded",
-    "notes": "Multi-city and multi-venue festivals are represented as parent records and flagged for follow-up child map records.",
+    "notes": "Public app data includes only the Harvey-approved North America app-data integration records plus prior curated atlas records. Excluded guide/reference-only records are intentionally not integrated as app-data records.",
     "detail_page_schema_version": "1.0.0",
     "detail_page_fields": [
       "slug",
@@ -44,7 +44,7 @@
       "latitude": null,
       "longitude": null,
       "geocoding_source": null,
-      "geocoding_query": "Multiple venues across Leipzig, Leipzig, Saxony, Germany",
+      "geocoding_query": null,
       "geocoding_confidence": "not_geocoded",
       "start_date": "2026-05-22",
       "end_date": "2026-05-25",
@@ -76,8 +76,8 @@
       "map_notes": "Parent record only. Festival uses many venues across Leipzig; child venue records are needed before precise map display.",
       "data_quality_notes": "Official site confirms dates and Leipzig/Germany. No single venue assigned.",
       "slug": "wave-gotik-treffen",
-      "atlas_summary": "Wave-Gotik-Treffen is a curated RetroAltFest atlas record for goth, darkwave, industrial, post-punk travelers, located in Leipzig \u00b7 Saxony \u00b7 Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
-      "why_it_matters": "Wave-Gotik-Treffen is one of the defining pilgrimage points for global goth and dark alternative culture: a city-scale gathering where venues, streets, museums, clubs, and sub-scenes all become part of the experience. For RetroAltFest, it anchors the atlas as a benchmark for festivals that are more than a lineup \u2014 they are temporary nocturnal cities.",
+      "atlas_summary": "Wave-Gotik-Treffen is a curated RetroAltFest atlas record for goth, darkwave, industrial, post-punk travelers, located in Leipzig · Saxony · Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
+      "why_it_matters": "Wave-Gotik-Treffen is one of the defining pilgrimage points for global goth and dark alternative culture: a city-scale gathering where venues, streets, museums, clubs, and sub-scenes all become part of the experience. For RetroAltFest, it anchors the atlas as a benchmark for festivals that are more than a lineup — they are temporary nocturnal cities.",
       "source_links": [
         {
           "label": "Official festival site",
@@ -104,83 +104,18 @@
       ]
     },
     {
-      "record_id": "raf-2026-002",
-      "festival_id": "verboden-music-festival",
-      "festival_name": "Verboden Music Festival",
-      "city": "Portland / Spokane / Seattle / Vancouver",
-      "state_region": "OR / WA / BC",
-      "country": "United States / Canada",
-      "venue_name": "Multiple venues; per-city venue list needs review before mapping",
-      "venue_address": null,
-      "latitude": null,
-      "longitude": null,
-      "geocoding_source": null,
-      "geocoding_query": "Multiple venues, Portland OR / Spokane WA / Seattle WA / Vancouver BC",
-      "geocoding_confidence": "not_geocoded",
-      "start_date": "2026-05-28",
-      "end_date": "2026-05-31",
-      "date_text": "May 28 - 31, 2026",
-      "genres": [
-        "darkwave",
-        "post-punk",
-        "dark electronic",
-        "underground alternative",
-        "goth-adjacent"
-      ],
-      "tags": [
-        "multi-city",
-        "multi-venue",
-        "darkwave",
-        "post-punk",
-        "North America"
-      ],
-      "festival_type": "music_festival",
-      "map_display_category": "multi_city_parent",
-      "official_url": "https://verbodenfestival.com",
-      "source_urls": [
-        "https://verbodenfestival.com"
-      ],
-      "verification_status": "confirmed_upcoming",
-      "source_confidence": "high",
-      "follow_up_needed": true,
-      "map_notes": "Parent record only. Festival spans Portland, Spokane, Seattle, and Vancouver; child city and venue records are needed before map display.",
-      "data_quality_notes": "Official homepage confirms dates and multi-city format. Venue name intentionally not normalized because festival spans multiple cities and venues.",
-      "slug": "verboden-music-festival",
-      "atlas_summary": "Verboden Music Festival is a curated RetroAltFest atlas record for darkwave, post-punk, dark electronic, underground alternative travelers, located in Portland / Spokane / Seattle / Vancouver \u00b7 OR / WA / BC \u00b7 United States / Canada. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
-      "why_it_matters": "Verboden matters because it gives the Pacific Northwest darkwave and post-punk circuit a multi-city frame rather than treating the scene as isolated local nights. Its Portland, Spokane, Seattle, and Vancouver footprint makes it especially useful for travelers who want to connect underground venues across the region.",
-      "source_links": [
-        {
-          "label": "Official festival site",
-          "url": "https://verbodenfestival.com",
-          "type": "official_site"
-        }
-      ],
-      "similar_festival_ids": [
-        "wave-gotik-treffen",
-        "terminus-festival-resonance",
-        "ncn-festival-nocturnal-culture-night"
-      ],
-      "categories": [
-        "darkwave",
-        "goth",
-        "post-punk",
-        "EDM",
-        "alternative"
-      ]
-    },
-    {
       "record_id": "raf-2026-003",
       "festival_id": "castle-party-festival",
       "festival_name": "Castle Party Festival",
-      "city": "Bolk\u00f3w",
+      "city": "Bolków",
       "state_region": "Lower Silesian Voivodeship",
       "country": "Poland",
-      "venue_name": "Bolk\u00f3w Castle",
+      "venue_name": "Bolków Castle",
       "venue_address": null,
       "latitude": null,
       "longitude": null,
       "geocoding_source": null,
-      "geocoding_query": "Bolk\u00f3w Castle, Bolk\u00f3w, Lower Silesian Voivodeship, Poland",
+      "geocoding_query": null,
       "geocoding_confidence": "not_geocoded",
       "start_date": "2026-07-16",
       "end_date": "2026-07-19",
@@ -210,10 +145,10 @@
       "source_confidence": "high",
       "follow_up_needed": false,
       "map_notes": "Single known venue suitable for future exact geocoding.",
-      "data_quality_notes": "Official site confirms dates and Bolk\u00f3w Castle venue.",
+      "data_quality_notes": "Official site confirms dates and Bolków Castle venue.",
       "slug": "castle-party-festival",
-      "atlas_summary": "Castle Party Festival is a curated RetroAltFest atlas record for goth, dark independent, industrial, darkwave travelers, located in Bolk\u00f3w \u00b7 Lower Silesian Voivodeship \u00b7 Poland. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
-      "why_it_matters": "Castle Party turns place into atmosphere: a dark alternative festival staged around Bolk\u00f3w Castle, where gothic architecture and European scene history become part of the draw. It belongs in the atlas because it represents the destination-festival side of goth culture, not just a standard concert weekend.",
+      "atlas_summary": "Castle Party Festival is a curated RetroAltFest atlas record for goth, dark independent, industrial, darkwave travelers, located in Bolków · Lower Silesian Voivodeship · Poland. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
+      "why_it_matters": "Castle Party turns place into atmosphere: a dark alternative festival staged around Bolków Castle, where gothic architecture and European scene history become part of the draw. It belongs in the atlas because it represents the destination-festival side of goth culture, not just a standard concert weekend.",
       "source_links": [
         {
           "label": "Official festival site",
@@ -240,87 +175,18 @@
       ]
     },
     {
-      "record_id": "raf-2026-004",
-      "festival_id": "terminus-festival-resonance",
-      "festival_name": "Terminus Festival: Resonance",
-      "city": "Calgary",
-      "state_region": "Alberta",
-      "country": "Canada",
-      "venue_name": "Dickens",
-      "venue_address": null,
-      "latitude": null,
-      "longitude": null,
-      "geocoding_source": null,
-      "geocoding_query": "Dickens, Calgary, Alberta, Canada",
-      "geocoding_confidence": "not_geocoded",
-      "start_date": "2026-07-23",
-      "end_date": "2026-07-26",
-      "date_text": "Thursday, July 23 - Sunday, July 26, 2026",
-      "genres": [
-        "darkwave",
-        "EBM",
-        "industrial",
-        "synth",
-        "post-punk"
-      ],
-      "tags": [
-        "darkwave",
-        "EBM",
-        "industrial",
-        "Canada"
-      ],
-      "festival_type": "music_festival",
-      "map_display_category": "single_venue",
-      "official_url": "https://terminus-festival.com",
-      "source_urls": [
-        "https://terminus-festival.com",
-        "https://www.eventbrite.ca/e/terminus-festival-2026-resonance-tickets-1985683094589"
-      ],
-      "verification_status": "confirmed_upcoming",
-      "source_confidence": "high",
-      "follow_up_needed": false,
-      "map_notes": "Single known venue suitable for future exact geocoding.",
-      "data_quality_notes": "Official ticket page/Eventbrite listing by Dickens confirms dates, venue, city, and genre description.",
-      "slug": "terminus-festival-resonance",
-      "atlas_summary": "Terminus Festival: Resonance is a curated RetroAltFest atlas record for darkwave, EBM, industrial, synth travelers, located in Calgary \u00b7 Alberta \u00b7 Canada. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
-      "why_it_matters": "Terminus is a focused North American node for dark electronic, EBM, industrial, and post-punk audiences. Its Calgary setting and venue-centered format make it a strong example of a smaller but high-signal festival where curation, scene trust, and travel intent matter more than mainstream scale.",
-      "source_links": [
-        {
-          "label": "Official festival site",
-          "url": "https://terminus-festival.com",
-          "type": "official_site"
-        },
-        {
-          "label": "Official info page",
-          "url": "https://www.eventbrite.ca/e/terminus-festival-2026-resonance-tickets-1985683094589",
-          "type": "official_source"
-        }
-      ],
-      "similar_festival_ids": [
-        "infest-festival",
-        "cold-waves-xiv",
-        "wave-gotik-treffen"
-      ],
-      "categories": [
-        "darkwave",
-        "industrial",
-        "synthpop",
-        "post-punk"
-      ]
-    },
-    {
       "record_id": "raf-2026-005",
       "festival_id": "amphi-festival",
       "festival_name": "Amphi Festival",
       "city": "Cologne",
       "state_region": "North Rhine-Westphalia",
       "country": "Germany",
-      "venue_name": "Tanzbrunnen K\u00f6ln",
+      "venue_name": "Tanzbrunnen Köln",
       "venue_address": null,
       "latitude": null,
       "longitude": null,
       "geocoding_source": null,
-      "geocoding_query": "Tanzbrunnen K\u00f6ln, Cologne, North Rhine-Westphalia, Germany",
+      "geocoding_query": null,
       "geocoding_confidence": "not_geocoded",
       "start_date": "2026-07-25",
       "end_date": "2026-07-26",
@@ -349,10 +215,10 @@
       "source_confidence": "high",
       "follow_up_needed": false,
       "map_notes": "Single known venue suitable for future exact geocoding.",
-      "data_quality_notes": "Official homepage title/metadata confirms 2026 edition, dates, and Tanzbrunnen K\u00f6ln.",
+      "data_quality_notes": "Official homepage title/metadata confirms 2026 edition, dates, and Tanzbrunnen Köln.",
       "slug": "amphi-festival",
-      "atlas_summary": "Amphi Festival is a curated RetroAltFest atlas record for goth, industrial, darkwave, electro travelers, located in Cologne \u00b7 North Rhine-Westphalia \u00b7 Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
-      "why_it_matters": "Amphi Festival is a major German gathering for goth, industrial, darkwave, electro, and related dark alternative scenes. Its Tanzbrunnen K\u00f6ln setting and consistent official presentation make it a useful anchor record for travelers comparing established European festivals with distinct city and venue identities.",
+      "atlas_summary": "Amphi Festival is a curated RetroAltFest atlas record for goth, industrial, darkwave, electro travelers, located in Cologne · North Rhine-Westphalia · Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
+      "why_it_matters": "Amphi Festival is a major German gathering for goth, industrial, darkwave, electro, and related dark alternative scenes. Its Tanzbrunnen Köln setting and consistent official presentation make it a useful anchor record for travelers comparing established European festivals with distinct city and venue identities.",
       "source_links": [
         {
           "label": "Official festival site",
@@ -385,7 +251,7 @@
       "latitude": null,
       "longitude": null,
       "geocoding_source": null,
-      "geocoding_query": "Airfield Hildesheim Drispenstedt, Hildesheim, Lower Saxony, Germany",
+      "geocoding_query": null,
       "geocoding_confidence": "not_geocoded",
       "start_date": "2026-08-08",
       "end_date": "2026-08-09",
@@ -416,7 +282,7 @@
       "map_notes": "Single known venue suitable for future exact geocoding.",
       "data_quality_notes": "Official English homepage confirms dates and Airfield Hildesheim Drispenstedt.",
       "slug": "mera-luna-festival",
-      "atlas_summary": "M'era Luna Festival is a curated RetroAltFest atlas record for goth, darkwave, industrial, metal travelers, located in Hildesheim \u00b7 Lower Saxony \u00b7 Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
+      "atlas_summary": "M'era Luna Festival is a curated RetroAltFest atlas record for goth, darkwave, industrial, metal travelers, located in Hildesheim · Lower Saxony · Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
       "why_it_matters": "M'era Luna matters as one of the most visible large-scale dark alternative festivals in Europe, bringing goth, darkwave, industrial, synthpop, metal, and adjacent scenes into a destination weekend. For the atlas, it helps balance intimate underground entries with the larger festival circuit many travelers already recognize.",
       "source_links": [
         {
@@ -450,7 +316,7 @@
       "latitude": null,
       "longitude": null,
       "geocoding_source": null,
-      "geocoding_query": "Manchester Academy, The University of Manchester Students' Union, Manchester, England, United Kingdom",
+      "geocoding_query": null,
       "geocoding_confidence": "not_geocoded",
       "start_date": "2026-08-21",
       "end_date": "2026-08-23",
@@ -483,7 +349,7 @@
       "map_notes": "Single known venue suitable for future exact geocoding.",
       "data_quality_notes": "Official pages confirm 2026 dates and venue. Festival moved from Bradford to Manchester.",
       "slug": "infest-festival",
-      "atlas_summary": "Infest Festival is a curated RetroAltFest atlas record for EBM, industrial, noise, synthpop travelers, located in Manchester \u00b7 England \u00b7 United Kingdom. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
+      "atlas_summary": "Infest Festival is a curated RetroAltFest atlas record for EBM, industrial, noise, synthpop travelers, located in Manchester · England · United Kingdom. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
       "why_it_matters": "Infest is important because it carries a long-running UK identity around EBM, industrial, synthpop, noise, and dark electronic culture while now pointing travelers toward Manchester. The move note makes it exactly the kind of festival where source-aware curation prevents outdated venue assumptions.",
       "source_links": [
         {
@@ -503,7 +369,7 @@
         }
       ],
       "similar_festival_ids": [
-        "terminus-festival-resonance",
+        "terminus-festival",
         "ncn-festival-nocturnal-culture-night",
         "wave-gotik-treffen"
       ],
@@ -526,7 +392,7 @@
       "latitude": null,
       "longitude": null,
       "geocoding_source": null,
-      "geocoding_query": "TV Eye; Bowery Ballroom, New York, New York, United States",
+      "geocoding_query": null,
       "geocoding_confidence": "not_geocoded",
       "start_date": "2026-09-03",
       "end_date": "2026-09-05",
@@ -556,7 +422,7 @@
       "map_notes": "Parent record only. Opening party is listed at TV Eye and main nights at Bowery Ballroom; child venue records are needed before precise map display.",
       "data_quality_notes": "Official Red Party/Nite Church page confirms dates and venues: TV Eye for opening party, Bowery Ballroom for nights one and two.",
       "slug": "a-murder-of-crows-xi-nyc-goth-post-punk-festival",
-      "atlas_summary": "A Murder of Crows XI NYC Goth & Post-punk Festival is a curated RetroAltFest atlas record for goth, post-punk, darkwave, deathrock travelers, located in New York \u00b7 New York \u00b7 United States. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
+      "atlas_summary": "A Murder of Crows XI NYC Goth & Post-punk Festival is a curated RetroAltFest atlas record for goth, post-punk, darkwave, deathrock travelers, located in New York · New York · United States. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
       "why_it_matters": "A Murder of Crows matters because it captures the New York goth and post-punk ecosystem through a festival-scale lens, connecting club culture, promoters, and multiple venues into one curated weekend. It gives the atlas a strong urban nightlife entry rather than only camping or destination-festival formats.",
       "source_links": [
         {
@@ -589,7 +455,7 @@
       "latitude": null,
       "longitude": null,
       "geocoding_source": null,
-      "geocoding_query": "Kulturpark Deutzen bei Leipzig, Deutzen, Saxony, Germany",
+      "geocoding_query": null,
       "geocoding_confidence": "not_geocoded",
       "start_date": "2026-09-04",
       "end_date": "2026-09-06",
@@ -621,7 +487,7 @@
       "map_notes": "Single known venue suitable for future exact geocoding. Main festival dates only are represented in start_date and end_date.",
       "data_quality_notes": "Official site confirms festival dates, warm-up date, and Kulturpark Deutzen bei Leipzig. start_date/end_date represent main festival only, excluding warm-up.",
       "slug": "ncn-festival-nocturnal-culture-night",
-      "atlas_summary": "NCN Festival / Nocturnal Culture Night is a curated RetroAltFest atlas record for goth, darkwave, industrial, synthpop travelers, located in Deutzen \u00b7 Saxony \u00b7 Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
+      "atlas_summary": "NCN Festival / Nocturnal Culture Night is a curated RetroAltFest atlas record for goth, darkwave, industrial, synthpop travelers, located in Deutzen · Saxony · Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
       "why_it_matters": "NCN Festival matters as a German nocturnal culture gathering with goth, darkwave, industrial, synthpop, post-punk, and warm-up programming in a park setting near Leipzig. It adds a more intimate regional counterpoint to the larger German festivals while still carrying destination appeal.",
       "source_links": [
         {
@@ -645,73 +511,552 @@
       ]
     },
     {
-      "record_id": "raf-2026-010",
-      "festival_id": "cold-waves-xiv",
-      "festival_name": "Cold Waves XIV",
+      "record_id": "raf-2026-011",
+      "festival_id": "cold-waves",
+      "festival_name": "Cold Waves",
       "city": "Chicago",
       "state_region": "Illinois",
       "country": "United States",
-      "venue_name": "Bottom Lounge; Metro",
+      "venue_name": "Metro; Bottom Lounge for listed Thursday event",
       "venue_address": null,
       "latitude": null,
       "longitude": null,
       "geocoding_source": null,
-      "geocoding_query": "Bottom Lounge; Metro, Chicago, Illinois, United States",
+      "geocoding_query": null,
       "geocoding_confidence": "not_geocoded",
       "start_date": "2026-09-24",
       "end_date": "2026-09-27",
-      "date_text": "Thursday 9/24 Bottom Lounge; Friday 9/25 Metro; Saturday 9/26 Metro; Sunday 9/27 Metro",
+      "date_text": "September 24-27, 2026",
       "genres": [
         "industrial",
-        "EBM",
-        "darkwave",
-        "synth",
-        "post-industrial",
+        "dark music",
+        "goth-adjacent",
+        "EBM-adjacent",
         "electronic"
       ],
       "tags": [
-        "multi-venue",
+        "Midwest",
         "industrial",
-        "EBM",
-        "Chicago"
+        "dark-music anchor",
+        "city-level candidate"
       ],
       "festival_type": "music_festival",
-      "map_display_category": "multi_venue_parent",
-      "official_url": "https://coldwaves.net",
+      "map_display_category": "city_level_candidate",
+      "official_url": "https://www.coldwaves.net/",
       "source_urls": [
-        "https://coldwaves.net",
-        "https://www.coldwaves.net"
+        "https://www.coldwaves.net/",
+        "https://www.eventbrite.com/e/cwxiv-2026-chicago-vip-tickets-tickets-1987398270727"
       ],
       "verification_status": "confirmed_upcoming",
       "source_confidence": "high",
       "follow_up_needed": true,
-      "map_notes": "Parent record only. Events are split between Bottom Lounge and Metro; child venue records are needed before precise map display.",
-      "data_quality_notes": "Official Cold Waves site lists Cold Waves XIV ticket links by date and venue. Year is supported by official 2026 event/merch context on the same page.",
-      "slug": "cold-waves-xiv",
-      "atlas_summary": "Cold Waves XIV is a curated RetroAltFest atlas record for industrial, EBM, darkwave, synth travelers, located in Chicago \u00b7 Illinois \u00b7 United States. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
-      "why_it_matters": "Cold Waves matters because it is deeply tied to industrial and post-industrial culture, with Chicago venues and multi-night programming that make the city part of the festival story. It gives RetroAltFest a strong North American industrial anchor with official venue/date details worth preserving carefully.",
+      "map_notes": "City-level candidate only. No coordinates or address are included; not pin-safe until a later no-guess venue/geocoding pass verifies placement.",
+      "data_quality_notes": "Confirmed upcoming from official sources. Day-by-day details should be refreshed against official pages before public exact schedule use.",
+      "slug": "cold-waves",
+      "atlas_summary": "Cold Waves is a North American industrial and dark-music anchor in Chicago, useful for travelers tracking the Midwest post-industrial, EBM-adjacent, and goth-adjacent festival circuit without relying on guessed map data.",
+      "why_it_matters": "Cold Waves gives RetroAltFest a high-signal North American industrial anchor. Its Chicago setting, multi-night structure, and official-source trail make it a strong app-data record, while the entry still avoids map-pin confidence until venue placement is verified separately.",
       "source_links": [
         {
           "label": "Official festival site",
-          "url": "https://coldwaves.net",
+          "url": "https://www.coldwaves.net/",
           "type": "official_site"
         },
         {
-          "label": "Official info page",
-          "url": "https://www.coldwaves.net",
+          "label": "Official source",
+          "url": "https://www.eventbrite.com/e/cwxiv-2026-chicago-vip-tickets-tickets-1987398270727",
           "type": "official_source"
         }
       ],
       "similar_festival_ids": [
-        "terminus-festival-resonance",
-        "infest-festival",
-        "wave-gotik-treffen"
+        "terminus-festival",
+        "absolution-fest",
+        "mutek-montreal"
+      ],
+      "categories": [
+        "industrial",
+        "goth",
+        "darkwave",
+        "alternative"
+      ]
+    },
+    {
+      "record_id": "raf-2026-012",
+      "festival_id": "absolution-fest",
+      "festival_name": "Absolution Fest",
+      "city": "Tampa",
+      "state_region": "Florida",
+      "country": "United States",
+      "venue_name": "The Orpheum, Tampa, supported by official ticket source; recheck before mapping",
+      "venue_address": null,
+      "latitude": null,
+      "longitude": null,
+      "geocoding_source": null,
+      "geocoding_query": null,
+      "geocoding_confidence": "not_geocoded",
+      "start_date": "2026-10-01",
+      "end_date": "2026-10-03",
+      "date_text": "October 1-3, 2026",
+      "genres": [
+        "goth",
+        "darkwave",
+        "post-punk",
+        "electronic"
+      ],
+      "tags": [
+        "Southeast",
+        "goth",
+        "darkwave",
+        "post-punk",
+        "city-level candidate"
+      ],
+      "festival_type": "music_festival",
+      "map_display_category": "city_level_candidate",
+      "official_url": "https://www.absolutionfest.com/",
+      "source_urls": [
+        "https://www.absolutionfest.com/",
+        "https://www.absolutionfest.com/daily-lineups",
+        "https://www.absolutionfest.com/bands-2026",
+        "https://www.eventbrite.com/e/absolution-fest-2026-tickets-1987367936998"
+      ],
+      "verification_status": "confirmed_upcoming",
+      "source_confidence": "high",
+      "follow_up_needed": false,
+      "map_notes": "City-level candidate only. Venue text is source-supported, but address and coordinates are intentionally null; not venue-pin-safe yet.",
+      "data_quality_notes": "Confirmed upcoming from official sources. Venue should be reconfirmed before any future exact venue pin or address display.",
+      "slug": "absolution-fest",
+      "atlas_summary": "Absolution Fest is a Southeast dark alternative anchor for goth, darkwave, post-punk, and electronic travelers, listed with official 2026 source support and no guessed coordinates.",
+      "why_it_matters": "Absolution Fest strengthens RetroAltFest’s North America-first coverage beyond the West Coast and Midwest. It gives the atlas a focused Tampa-area scene record while keeping venue and map precision conservative until a later verification pass.",
+      "source_links": [
+        {
+          "label": "Official festival site",
+          "url": "https://www.absolutionfest.com/",
+          "type": "official_site"
+        },
+        {
+          "label": "Official source",
+          "url": "https://www.absolutionfest.com/daily-lineups",
+          "type": "official_source"
+        },
+        {
+          "label": "Official source",
+          "url": "https://www.absolutionfest.com/bands-2026",
+          "type": "official_source"
+        },
+        {
+          "label": "Official source",
+          "url": "https://www.eventbrite.com/e/absolution-fest-2026-tickets-1987367936998",
+          "type": "official_source"
+        }
+      ],
+      "similar_festival_ids": [
+        "cold-waves",
+        "terminus-festival",
+        "darker-waves"
+      ],
+      "categories": [
+        "goth",
+        "darkwave",
+        "post-punk",
+        "alternative"
+      ]
+    },
+    {
+      "record_id": "raf-2026-013",
+      "festival_id": "darker-waves",
+      "festival_name": "Darker Waves",
+      "city": "Huntington Beach",
+      "state_region": "California",
+      "country": "United States",
+      "venue_name": "Huntington Beach City Beach",
+      "venue_address": null,
+      "latitude": null,
+      "longitude": null,
+      "geocoding_source": null,
+      "geocoding_query": null,
+      "geocoding_confidence": "not_geocoded",
+      "start_date": "2026-11-14",
+      "end_date": "2026-11-14",
+      "date_text": "November 14, 2026",
+      "genres": [
+        "new wave",
+        "darkwave",
+        "synth",
+        "retro alternative"
+      ],
+      "tags": [
+        "West Coast",
+        "retro alternative",
+        "lineup pending",
+        "city-level candidate"
+      ],
+      "festival_type": "music_festival",
+      "map_display_category": "city_level_candidate",
+      "official_url": "https://www.darkerwavesfest.com/",
+      "source_urls": [
+        "https://www.darkerwavesfest.com/",
+        "https://www.darkerwavesfest.com/lineup"
+      ],
+      "verification_status": "confirmed_upcoming",
+      "source_confidence": "high",
+      "follow_up_needed": true,
+      "map_notes": "City/location are source-backed, but no geocoding or address normalization was performed. Keep as city-level only.",
+      "data_quality_notes": "Confirmed upcoming date/location; lineup details pending. Do not make 2026 lineup claims until official lineup is public.",
+      "slug": "darker-waves",
+      "atlas_summary": "Darker Waves is a high-visibility West Coast retro alternative and darkwave-adjacent discovery point in Huntington Beach, represented with confirmed date/location language and no artist claims until the current lineup is public.",
+      "why_it_matters": "Darker Waves helps RetroAltFest bridge new wave, darkwave, synth, and retro alternative discovery for West Coast travelers. The record is valuable because it is recognizable, but the copy stays restrained until lineup-specific facts are source-backed.",
+      "source_links": [
+        {
+          "label": "Official festival site",
+          "url": "https://www.darkerwavesfest.com/",
+          "type": "official_site"
+        },
+        {
+          "label": "Official source",
+          "url": "https://www.darkerwavesfest.com/lineup",
+          "type": "official_source"
+        }
+      ],
+      "similar_festival_ids": [
+        "just-like-heaven",
+        "cold-waves",
+        "terminus-festival"
       ],
       "categories": [
         "darkwave",
-        "industrial",
         "synthpop",
-        "EDM"
+        "alternative"
+      ]
+    },
+    {
+      "record_id": "raf-2026-014",
+      "festival_id": "levitation",
+      "festival_name": "LEVITATION",
+      "city": "Austin",
+      "state_region": "Texas",
+      "country": "United States",
+      "venue_name": "Austin multi-venue event; official 2026 page does not make this a single-pin record",
+      "venue_address": null,
+      "latitude": null,
+      "longitude": null,
+      "geocoding_source": null,
+      "geocoding_query": null,
+      "geocoding_confidence": "not_geocoded",
+      "start_date": "2026-09-10",
+      "end_date": "2026-09-13",
+      "date_text": "September 10-13, 2026",
+      "genres": [
+        "alternative",
+        "psych",
+        "electronic",
+        "darkwave-adjacent",
+        "indie rock"
+      ],
+      "tags": [
+        "Austin",
+        "multi-venue",
+        "parent record",
+        "broad alternative",
+        "split before mapping"
+      ],
+      "festival_type": "music_festival",
+      "map_display_category": "multi_venue_parent",
+      "official_url": "https://levitation.fm/pages/levitation-2026",
+      "source_urls": [
+        "https://levitation.fm/pages/levitation-2026"
+      ],
+      "verification_status": "confirmed_upcoming",
+      "source_confidence": "high",
+      "follow_up_needed": true,
+      "map_notes": "Parent/multi-venue record only. No single map pin should be created from this record; child venue records would need separate source review.",
+      "data_quality_notes": "Confirmed upcoming; broad multi-venue alternative event. Public copy must not imply all programming fits RetroAltFest.",
+      "slug": "levitation",
+      "atlas_summary": "LEVITATION is an Austin multi-venue alternative discovery parent with psych, electronic, and darkwave-adjacent overlap. RetroAltFest should frame it as a broad festival with selective scene relevance, not a pure goth or darkwave event.",
+      "why_it_matters": "LEVITATION adds an Austin discovery pathway for travelers whose tastes cross psych, electronic, post-punk-adjacent, and dark alternative edges. Its value is as a parent record, with future child venue records only after separate verification.",
+      "source_links": [
+        {
+          "label": "Official festival site",
+          "url": "https://levitation.fm/pages/levitation-2026",
+          "type": "official_site"
+        }
+      ],
+      "similar_festival_ids": [
+        "the-new-colossus-festival",
+        "mutek-montreal",
+        "darker-waves"
+      ],
+      "categories": [
+        "alternative",
+        "electronic"
+      ]
+    },
+    {
+      "record_id": "raf-2026-015",
+      "festival_id": "mutek-montreal",
+      "festival_name": "MUTEK Montréal",
+      "city": "Montréal",
+      "state_region": "Québec",
+      "country": "Canada",
+      "venue_name": "Multi-venue Montréal event; official festival venues not normalized here",
+      "venue_address": null,
+      "latitude": null,
+      "longitude": null,
+      "geocoding_source": null,
+      "geocoding_query": null,
+      "geocoding_confidence": "not_geocoded",
+      "start_date": "2026-08-25",
+      "end_date": "2026-08-30",
+      "date_text": "August 25-30, 2026",
+      "genres": [
+        "electronic",
+        "experimental",
+        "digital arts",
+        "dark-electronic adjacent"
+      ],
+      "tags": [
+        "Canada",
+        "Montréal",
+        "multi-venue",
+        "digital arts",
+        "adjacent"
+      ],
+      "festival_type": "music_festival",
+      "map_display_category": "multi_venue_parent",
+      "official_url": "https://montreal.mutek.org/",
+      "source_urls": [
+        "https://montreal.mutek.org/"
+      ],
+      "verification_status": "confirmed_upcoming",
+      "source_confidence": "high",
+      "follow_up_needed": true,
+      "map_notes": "Parent/multi-venue record only. Not safe as a single venue pin; coordinates and geocoding fields remain null.",
+      "data_quality_notes": "Confirmed upcoming; electronic/digital arts adjacent. Do not frame as goth/darkwave-specific.",
+      "slug": "mutek-montreal",
+      "atlas_summary": "MUTEK Montréal is a major Canadian electronic and digital arts event with experimental and dark-electronic relevance, included as an adjacent discovery anchor rather than a goth or darkwave-specific festival.",
+      "why_it_matters": "MUTEK Montréal gives RetroAltFest a careful Canadian electronic/digital arts bridge. It belongs because experimental electronic scenes overlap with dark-electronic discovery, but the public copy needs to preserve that adjacency rather than overclaiming genre fit.",
+      "source_links": [
+        {
+          "label": "Official festival site",
+          "url": "https://montreal.mutek.org/",
+          "type": "official_site"
+        }
+      ],
+      "similar_festival_ids": [
+        "terminus-festival",
+        "levitation",
+        "the-new-colossus-festival"
+      ],
+      "categories": [
+        "electronic",
+        "alternative"
+      ]
+    },
+    {
+      "record_id": "raf-2026-016",
+      "festival_id": "just-like-heaven",
+      "festival_name": "Just Like Heaven",
+      "city": "Pasadena",
+      "state_region": "California",
+      "country": "United States",
+      "venue_name": null,
+      "venue_address": null,
+      "latitude": null,
+      "longitude": null,
+      "geocoding_source": null,
+      "geocoding_query": null,
+      "geocoding_confidence": "not_geocoded",
+      "start_date": "2026-08-22",
+      "end_date": "2026-08-22",
+      "date_text": "August 22, 2026",
+      "genres": [
+        "retro alternative",
+        "indie",
+        "2000s alternative"
+      ],
+      "tags": [
+        "Southern California",
+        "retro alternative",
+        "indie",
+        "adjacent",
+        "venue missing"
+      ],
+      "festival_type": "music_festival",
+      "map_display_category": "city_level_candidate",
+      "official_url": "https://www.justlikeheavenfest.com/",
+      "source_urls": [
+        "https://www.justlikeheavenfest.com/"
+      ],
+      "verification_status": "confirmed_upcoming",
+      "source_confidence": "medium",
+      "follow_up_needed": true,
+      "map_notes": "City/date are supported, but venue was not safely captured in the draft. Not pin-safe; city-level only.",
+      "data_quality_notes": "Confirmed upcoming date/city; venue not captured in draft. Adjacent bridge, not core goth/darkwave/synthpop.",
+      "slug": "just-like-heaven",
+      "atlas_summary": "Just Like Heaven is a retro alternative and indie bridge for visitors interested in the wider orbit around new wave, post-punk, 2000s alternative, and Southern California festival discovery.",
+      "why_it_matters": "Just Like Heaven is useful for RetroAltFest because it connects dark-scene visitors to adjacent retro alternative travel planning without pretending it is a core goth or darkwave festival. The record stays city-level because venue details were not captured safely.",
+      "source_links": [
+        {
+          "label": "Official festival site",
+          "url": "https://www.justlikeheavenfest.com/",
+          "type": "official_site"
+        }
+      ],
+      "similar_festival_ids": [
+        "darker-waves",
+        "the-new-colossus-festival",
+        "levitation"
+      ],
+      "categories": [
+        "alternative"
+      ]
+    },
+    {
+      "record_id": "raf-2026-017",
+      "festival_id": "the-new-colossus-festival",
+      "festival_name": "The New Colossus Festival",
+      "city": "New York City",
+      "state_region": "New York",
+      "country": "United States",
+      "venue_name": "Independent music venues on the Lower East Side",
+      "venue_address": null,
+      "latitude": null,
+      "longitude": null,
+      "geocoding_source": null,
+      "geocoding_query": null,
+      "geocoding_confidence": "not_geocoded",
+      "start_date": "2027-03-09",
+      "end_date": "2027-03-14",
+      "date_text": "March 9-14, 2027",
+      "genres": [
+        "emerging alternative",
+        "indie",
+        "post-punk-adjacent",
+        "new-music discovery"
+      ],
+      "tags": [
+        "NYC",
+        "multi-venue",
+        "broad adjacent",
+        "future confirmed",
+        "split before mapping"
+      ],
+      "festival_type": "music_festival",
+      "map_display_category": "multi_venue_parent",
+      "official_url": "https://www.newcolossusfestival.com/",
+      "source_urls": [
+        "https://www.newcolossusfestival.com/"
+      ],
+      "verification_status": "confirmed_upcoming",
+      "source_confidence": "high",
+      "follow_up_needed": true,
+      "map_notes": "Parent/multi-venue record only. Do not create a single venue pin or child venue records in this sprint.",
+      "data_quality_notes": "Confirmed upcoming; broad emerging alternative discovery event. Avoid core goth/darkwave framing.",
+      "slug": "the-new-colossus-festival",
+      "atlas_summary": "The New Colossus Festival is a New York City multi-venue emerging alternative discovery pathway with post-punk-adjacent potential, included as a broad parent record rather than a core dark-scene festival.",
+      "why_it_matters": "The New Colossus Festival supports the discovery side of RetroAltFest: smaller venues, emerging artists, and alternative scenes that may overlap with post-punk and dark alternative interests. The caveat is that it remains broad and should not be over-labeled.",
+      "source_links": [
+        {
+          "label": "Official festival site",
+          "url": "https://www.newcolossusfestival.com/",
+          "type": "official_site"
+        }
+      ],
+      "similar_festival_ids": [
+        "levitation",
+        "mutek-montreal",
+        "just-like-heaven"
+      ],
+      "categories": [
+        "post-punk",
+        "alternative"
+      ]
+    },
+    {
+      "record_id": "raf-2026-018",
+      "festival_id": "terminus-festival",
+      "festival_name": "Terminus Festival",
+      "city": "Calgary",
+      "state_region": "Alberta",
+      "country": "Canada",
+      "venue_name": "Dickens / Dickens Lower",
+      "venue_address": null,
+      "latitude": null,
+      "longitude": null,
+      "geocoding_source": null,
+      "geocoding_query": null,
+      "geocoding_confidence": "not_geocoded",
+      "start_date": "2026-07-23",
+      "end_date": "2026-07-26",
+      "date_text": "July 23-26, 2026",
+      "genres": [
+        "industrial",
+        "dark electronic",
+        "EBM",
+        "darkwave",
+        "synth",
+        "post-punk"
+      ],
+      "tags": [
+        "Canada",
+        "Calgary",
+        "industrial",
+        "dark electronic",
+        "city-level candidate"
+      ],
+      "festival_type": "music_festival",
+      "map_display_category": "city_level_candidate",
+      "official_url": "https://terminus-festival.com/",
+      "source_urls": [
+        "https://terminus-festival.com/",
+        "https://terminus-festival.com/wp-content/uploads/2026/03/DATE-1.png",
+        "https://terminus-festival.com/wp-content/uploads/2026/03/ADDRESS-1.png",
+        "https://terminus-festival.com/wp-content/uploads/2026/03/LINEUP-1.png",
+        "https://www.eventbrite.ca/e/terminus-festival-2026-resonance-tickets-1985683094589?aff=oddtdtcreator"
+      ],
+      "verification_status": "confirmed_upcoming",
+      "source_confidence": "high",
+      "follow_up_needed": true,
+      "map_notes": "Safe city-level candidate only. Venue/address were cross-checked, but coordinates remain null and no geocoding has been performed.",
+      "data_quality_notes": "Confirmed upcoming after official-source follow-up. Manual visual verification was completed for official homepage date/venue/address image and Eventbrite cross-checks those details; do not use unverified full-lineup poster transcription or add social links unless official links are found.",
+      "slug": "terminus-festival",
+      "atlas_summary": "Terminus Festival is a Canadian industrial and dark electronic anchor in Calgary, represented with official-source follow-up support for dates, venue, ticketing, and high-level scene fit while avoiding unverified full poster transcription.",
+      "why_it_matters": "Terminus gives RetroAltFest a focused Canadian industrial, EBM, darkwave, synth, and post-punk record. It is especially valuable because Marlowe resolved the earlier image-heavy source problem, but the entry still preserves the caveat that the full stylized poster lineup was not fully transcribed.",
+      "source_links": [
+        {
+          "label": "Official festival site",
+          "url": "https://terminus-festival.com/",
+          "type": "official_site"
+        },
+        {
+          "label": "Official source",
+          "url": "https://terminus-festival.com/wp-content/uploads/2026/03/DATE-1.png",
+          "type": "official_source"
+        },
+        {
+          "label": "Official source",
+          "url": "https://terminus-festival.com/wp-content/uploads/2026/03/ADDRESS-1.png",
+          "type": "official_source"
+        },
+        {
+          "label": "Official source",
+          "url": "https://terminus-festival.com/wp-content/uploads/2026/03/LINEUP-1.png",
+          "type": "official_source"
+        },
+        {
+          "label": "Official source",
+          "url": "https://www.eventbrite.ca/e/terminus-festival-2026-resonance-tickets-1985683094589?aff=oddtdtcreator",
+          "type": "official_source"
+        }
+      ],
+      "similar_festival_ids": [
+        "cold-waves",
+        "mutek-montreal",
+        "absolution-fest"
+      ],
+      "categories": [
+        "industrial",
+        "darkwave",
+        "synthpop",
+        "post-punk"
       ]
     }
   ]

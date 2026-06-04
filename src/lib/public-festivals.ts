@@ -149,7 +149,7 @@ export function toPublicFestivalDetail(festival: Festival): PublicFestivalDetail
     whyItMatters: festival.why_it_matters,
     locationLabel: formatLocation(festival),
     dateLabel: festival.date_text,
-    venueLabel: festival.venue_name,
+    venueLabel: festival.venue_name || "Venue not published yet",
     sceneTags: festival.categories.map(genreLabel),
     statusLabel: publicStatusLabel(festival.verification_status),
     sourceConfidenceLabel: publicSourceConfidenceLabel(festival.source_confidence),

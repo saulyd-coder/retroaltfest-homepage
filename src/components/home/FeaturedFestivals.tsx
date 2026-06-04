@@ -9,7 +9,7 @@ export function FeaturedFestivals() {
       <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
         <div>
           <p className="font-mono text-xs uppercase tracking-[0.32em] text-[var(--raf-magenta)]">Featured festivals</p>
-          <h2 className="mt-3 font-display text-4xl font-semibold tracking-tight text-white sm:text-5xl">Start with 10 curated festivals.</h2>
+          <h2 className="mt-3 font-display text-4xl font-semibold tracking-tight text-white sm:text-5xl">Start with 15 curated festivals.</h2>
         </div>
         <p className="max-w-xl text-[var(--raf-text-muted)]">
           Built for fewer dead ends. This homepage is wired to a public-safe festival layer and ready to expand into directory pages, filters, and a careful travel atlas.
