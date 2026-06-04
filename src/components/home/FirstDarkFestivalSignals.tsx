@@ -36,6 +36,9 @@ export function FirstDarkFestivalSignals() {
         <p className="mt-4 max-w-2xl border-l border-[var(--raf-cyan)]/24 pl-4 text-sm leading-6 text-[var(--raf-text-muted)]">
           {section.trust_note}
         </p>
+        <p className="mt-3 max-w-2xl rounded-2xl border border-[rgba(168,85,247,0.18)] bg-[rgba(15,23,42,0.42)] px-4 py-3 text-sm leading-6 text-[var(--raf-text-dim)]">
+          {section.clarification_note}
+        </p>
       </div>
 
       <div className="relative grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">

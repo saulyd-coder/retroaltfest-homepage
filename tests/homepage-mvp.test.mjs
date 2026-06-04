@@ -475,6 +475,10 @@ test('first dark festival signals data matches the locked MVP content packet', (
 
   assert.equal(data.section.eyebrow, 'North America first');
   assert.equal(data.section.title, 'First Dark Festival Signals');
+  assert.equal(
+    data.section.clarification_note,
+    'Signal cards mix active atlas entries with tracked festival leads. Some items are fully listed in the atlas, while others are reference or future-edition signals we’re monitoring until official dates, locations, or source confidence are stronger.',
+  );
   assert.equal(data.signals.length, 6);
   assert.deepEqual(data.signals.map((signal) => signal.id), expectedOrder);
   assert.equal(new Set(data.signals.map((signal) => signal.id)).size, 6);
@@ -508,6 +512,7 @@ test('first dark festival signals content stays restrained and source-aware', ()
     data.section.title,
     data.section.subtitle,
     data.section.trust_note,
+    data.section.clarification_note,
     data.section.closing_microcopy,
     ...data.signals.flatMap((signal) => [
       signal.name,
