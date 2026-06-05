@@ -672,22 +672,29 @@ test('guide page for new wave post-punk and retro alternative festivals is stati
   const guide = read(guidePath);
   const requiredCopy = [
     'New Wave, Post-Punk &amp; Retro Alternative Festivals in North America',
-    'A curated path through North American festivals where new wave, post-punk, 80s alternative, dark alternative, and retro indie nostalgia overlap.',
-    'Strongest guide fits',
+    'Start here for North American new wave, post-punk, retro alternative, synth-era, and related indie-nostalgia festival discovery.',
+    'Core active atlas record with current source support',
     'Darker Waves',
-    'Currently confirmed',
-    'Cruel World',
-    'Dates not announced yet',
-    'Related retro alternative references',
+    'Active atlas record with current source support',
+    '/festivals/darker-waves',
+    'Related and adjacent active atlas records',
     'Just Like Heaven',
-    'Related festival to know',
+    'Adjacent retro alternative discovery',
+    '/festivals/just-like-heaven',
+    'The New Colossus Festival',
+    'Emerging post-punk-adjacent discovery',
+    '/festivals/the-new-colossus-festival',
+    'Reference / date-not-announced signal',
+    'Cruel World',
+    'future date not yet confirmed',
+    'Broad related festival to know',
     'Riot Fest',
-    'Related festival to know',
     'Possible future additions',
     'Kilby Block Party',
     'Best Friends Forever Fest',
     'When We Were Young',
-    'This is a curated starting point, not an exhaustive directory.',
+    'See how RetroAltFest verifies festival records',
+    '/verification',
     '/guides/north-american-goth-darkwave-festivals',
     '/guides/industrial-ebm-dark-electronic-festivals-north-america',
     'href="/festivals"',
@@ -700,9 +707,13 @@ test('guide page for new wave post-punk and retro alternative festivals is stati
   assert.doesNotMatch(guide, /festivalName: "Kilby Block Party"/);
   assert.doesNotMatch(guide, /festivalName: "Best Friends Forever Fest"/);
   assert.doesNotMatch(guide, /festivalName: "When We Were Young"/);
-  assert.match(guide, /the next dates have not been announced yet/);
+  assert.doesNotMatch(guide, /\/festivals\/cruel-world/);
+  assert.doesNotMatch(guide, /\/festivals\/riot-fest/);
+  assert.doesNotMatch(guide, /Currently confirmed/);
+  assert.doesNotMatch(guide, /upcoming Cruel World|Cruel World[^`\n]*upcoming|tickets available|passes on sale/i);
   assert.doesNotMatch(guide, /complete list|full directory|confirmed-current claims/i);
-  assert.doesNotMatch(guide, /latitude|longitude|geocodingSource|geocoding_source|coordinates|map pins|exact map pin/i);
+  assert.doesNotMatch(guide, /latitude|longitude|geocodingSource|geocoding_source|coordinates|geocoding|map-ready|map placement|map pin|future map|later city-level map review/i);
+  assert.doesNotMatch(guide, /date_pending|source_status|Phase 0|map-readiness|watchlist|core_anchor|confirmed_upcoming|mapDisplayCategory|public V1|source sufficiency|record type|overlap risk|adjacent_reference/i);
   assert.doesNotMatch(guide, /fetch\(|prisma|supabase|mongodb|auth|cms|scrap/i);
 
   const featuredFestivals = read('src/components/home/FeaturedFestivals.tsx');
