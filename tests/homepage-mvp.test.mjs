@@ -623,29 +623,41 @@ test('guide page for industrial EBM and dark electronic festivals is static, bou
   const guide = read(guidePath);
   const requiredCopy = [
     'Industrial, EBM &amp; Dark Electronic Festivals in North America',
+    'source-aware North American guide',
+    'official or organizer-controlled sources',
+    'See how RetroAltFest verifies festival records',
+    'Active industrial / dark electronic atlas records',
+    'Core active atlas records with current source support',
     'Cold Waves',
     'Terminus Festival',
     'Mechanismus',
     'Verboden Music Festival',
     'Dark Force Fest',
     'Absolution Fest',
-    'A strong fit for this guide',
-    'Worth watching — dates not announced yet',
-    'Multi-city festival',
-    'Background/reference listing',
-    'Related festival to know',
-    'Triton Festival was researched but is not included in this first guide',
-    '/guides/north-american-goth-darkwave-festivals',
+    'Core industrial / dark electronic atlas record',
+    'Core industrial / EBM atlas record',
+    'Related dark-scene overlap',
+    'Tracked Seattle industrial scene signal',
+    'Recently active corridor signal',
+    'Reference/background signal',
+    'Held from public card treatment',
+    'Triton Festival stays held for now',
+    'href="/verification"',
     'href="/festivals"',
+    '/guides/north-american-goth-darkwave-festivals',
+    'atlasPath: "/festivals/cold-waves"',
+    'atlasPath: "/festivals/terminus-festival"',
+    'atlasPath: "/festivals/absolution-fest"',
   ];
 
   for (const copy of requiredCopy) {
     assert.match(guide, new RegExp(copy.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
 
-  assert.doesNotMatch(guide, /festivalName: "Triton Festival"/);
-  assert.doesNotMatch(guide, /triton-festival/);
-  assert.doesNotMatch(guide, /latitude|longitude|geocodingSource|geocoding_source|exact map pin/i);
+  assert.doesNotMatch(guide, /atlasPath: "\/festivals\/(mechanismus|verboden-music-festival|dark-force-fest|triton-festival)"/);
+  assert.doesNotMatch(guide, /\/festivals\/(mechanismus|verboden-music-festival|dark-force-fest|triton-festival)/);
+  assert.doesNotMatch(guide, /currently confirmed examples|confirmed festivals|upcoming|tickets available/i);
+  assert.doesNotMatch(guide, /latitude|longitude|geocodingSource|geocoding_source|coordinates|geocoding|map-ready|map placement|map pin|future map|later city-level map review/i);
   assert.doesNotMatch(guide, /fetch\(|prisma|supabase|mongodb|auth|cms|scrap/i);
 
   const featuredFestivals = read('src/components/home/FeaturedFestivals.tsx');
