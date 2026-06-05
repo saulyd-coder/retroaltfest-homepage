@@ -9,7 +9,7 @@ const pagePath = "/guides/north-american-goth-darkwave-festivals";
 export const metadata: Metadata = buildMetadata({
   title: "North American Goth & Darkwave Festivals | RetroAltFest Guide",
   description:
-    "A curated guide to North American goth, darkwave, post-punk, industrial, synth, and related alternative festivals, checked against official or reliable sources.",
+    "A source-aware North American guide to goth, darkwave, post-punk, industrial, synth, and related dark alternative festivals checked against official or organizer-controlled sources.",
   path: pagePath,
   type: "article",
   keywords: [
@@ -23,180 +23,143 @@ export const metadata: Metadata = buildMetadata({
 
 type GuideRecord = {
   festivalName: string;
-  slug: string;
+  atlasPath?: string;
   city: string;
   region: string;
   country: string;
   genreTags: string[];
   officialUrl: string;
-  verificationStatus: string;
-  mapDisplayCategory: string;
-  recordType: "city_level" | "multi_city_parent" | "support_reference" | "related_festival";
   sceneFit: string;
   statusLabel: string;
   summary: string;
   sourceCaveat: string;
+  confirmedDetails: string;
+  recheckDetails: string;
 };
 
-const coreFestivals: GuideRecord[] = [
+const activeAtlasRecords: GuideRecord[] = [
   {
     festivalName: "Absolution Fest",
-    slug: "absolution-fest",
+    atlasPath: "/festivals/absolution-fest",
     city: "Tampa",
     region: "Florida",
     country: "United States",
     genreTags: ["goth", "darkwave", "post-punk", "electronic"],
     officialUrl: "https://www.absolutionfest.com/",
-    verificationStatus: "verified",
-    mapDisplayCategory: "confirmed_upcoming",
-    recordType: "city_level",
     sceneFit: "Goth, darkwave, post-punk, and electronic.",
-    statusLabel: "Currently confirmed",
+    statusLabel: "Active atlas record with 2026 source support",
     summary:
-      "Absolution Fest gives the guide a strong Southeast anchor while staying close to the center of RetroAltFest’s dark-scene focus.",
+      "Absolution Fest is a source-supported active atlas record for Tampa’s goth, darkwave, post-punk, and electronic scene, with 2026 dates confirmed by official and ticketing sources.",
     sourceCaveat:
-      "Official sources support this listing. We do not add schedule, venue, ticket, or address details unless those details are separately verified.",
+      "RetroAltFest keeps venue, address, schedule, and ticket-tier details conservative unless those details are supported by the source trail being checked.",
+    confirmedDetails: "Official and ticketing sources support the 2026 date/status used for this guide card.",
+    recheckDetails: "Specific venue, address, schedule, and ticket-tier details need their own source check before travel planning.",
   },
   {
-    festivalName: "A Murder of Crows",
-    slug: "a-murder-of-crows",
+    festivalName: "A Murder of Crows XI NYC Goth & Post-punk Festival",
+    atlasPath: "/festivals/a-murder-of-crows-xi-nyc-goth-post-punk-festival",
     city: "New York City",
     region: "New York",
     country: "United States",
     genreTags: ["goth", "post-punk"],
     officialUrl: "http://www.amurderofcrowsfestival.com/",
-    verificationStatus: "verified",
-    mapDisplayCategory: "confirmed_upcoming",
-    recordType: "city_level",
     sceneFit: "Goth and post-punk.",
-    statusLabel: "Currently confirmed",
+    statusLabel: "Active atlas record with 2026 source support",
     summary:
-      "A Murder of Crows is a clean East Coast fit: focused, urban, and directly relevant to goth and post-punk discovery.",
+      "A Murder of Crows XI NYC Goth & Post-punk Festival is a source-supported active atlas record for New York’s goth and post-punk scene, with 2026 dates and multi-venue structure confirmed by The Red Party’s official page.",
     sourceCaveat:
-      "Official or organizer sources support this listing. Venue, ticket, and lineup details should only appear when the source trail supports them.",
+      "The public title is aligned with the active atlas slug. Because this is a multi-night, multi-venue festival, RetroAltFest does not flatten the event into one simple venue claim.",
+    confirmedDetails: "The Red Party’s official page supports the 2026 dates and multi-venue structure.",
+    recheckDetails: "Night-by-night venues, lineups, and ticket details should be checked at the official source before planning around them.",
   },
   {
     festivalName: "Cold Waves",
-    slug: "cold-waves",
+    atlasPath: "/festivals/cold-waves",
     city: "Chicago",
     region: "Illinois",
     country: "United States",
     genreTags: ["industrial", "EBM", "dark electronic", "post-punk-adjacent"],
     officialUrl: "https://coldwaves.net/",
-    verificationStatus: "verified",
-    mapDisplayCategory: "confirmed_upcoming",
-    recordType: "city_level",
     sceneFit: "Industrial, EBM, dark electronic, and post-punk-adjacent.",
-    statusLabel: "Currently confirmed",
+    statusLabel: "Active atlas record with 2026 source support",
     summary:
-      "Cold Waves brings industrial and dark electronic weight to the guide and gives the first packet a major Midwest anchor.",
+      "Cold Waves is a source-supported active atlas record and a major Chicago industrial / dark electronic anchor, with 2026 dates and official ticket links published by the festival.",
     sourceCaveat:
-      "This one crosses scenes, so we describe it through its industrial and dark electronic role instead of forcing it into a pure goth or darkwave lane.",
+      "RetroAltFest frames Cold Waves through its industrial, dark electronic, post-industrial, and goth-adjacent role instead of forcing it into a pure goth festival lane.",
+    confirmedDetails: "Official festival sources support the 2026 dates and official ticket links referenced for this guide card.",
+    recheckDetails: "Multi-night venue details and individual event logistics should be verified at the official source before travel planning.",
   },
   {
     festivalName: "Terminus Festival",
-    slug: "terminus-festival",
+    atlasPath: "/festivals/terminus-festival",
     city: "Calgary",
     region: "Alberta",
     country: "Canada",
     genreTags: ["darkwave", "EBM", "industrial", "synth", "post-punk"],
     officialUrl: "https://terminus-festival.com/",
-    verificationStatus: "verified",
-    mapDisplayCategory: "confirmed_upcoming",
-    recordType: "city_level",
     sceneFit: "Darkwave, EBM, industrial, synth, and post-punk.",
-    statusLabel: "Currently confirmed",
+    statusLabel: "Active atlas record with 2026 source support",
     summary:
-      "Terminus Festival adds a strong Canadian darkwave and industrial signal, expanding the guide beyond a US-only view.",
+      "Terminus Festival is a source-supported active atlas record for Calgary’s darkwave, EBM, industrial, synth, and post-punk scene, with 2026 date and venue support from official and ticketing sources.",
     sourceCaveat:
-      "Official or organizer-controlled sources support the festival. Address, logistics, and ticket details need their own source check before appearing here.",
+      "The official site can be image-heavy, so RetroAltFest keeps poster, lineup, and logistics details restrained unless the text source trail clearly supports them.",
+    confirmedDetails: "Official and ticketing sources support the 2026 date and venue context used here.",
+    recheckDetails: "Poster, lineup, and day-by-day logistics should be checked against official sources before being repeated in detail.",
   },
 ];
 
-const multiCityFestivals: GuideRecord[] = [
-  {
-    festivalName: "Verboden Music Festival",
-    slug: "verboden-music-festival",
-    city: "multi-city",
-    region: "BC / OR / WA",
-    country: "Canada / United States",
-    genreTags: ["post-punk", "darkwave", "synth", "industrial", "goth", "dark electronic"],
-    officialUrl: "https://verbodenfestival.com/",
-    verificationStatus: "verified",
-    mapDisplayCategory: "details_being_checked",
-    recordType: "multi_city_parent",
-    sceneFit: "Post-punk, darkwave, synth, industrial, goth, and dark electronic.",
-    statusLabel: "Multi-city festival",
-    summary:
-      "Verboden is useful for the future atlas because it describes a Pacific Northwest and Western Canada dark-scene corridor rather than one simple location.",
-    sourceCaveat:
-      "This festival spans multiple cities, so we’re still checking the city-by-city details before treating it as map-ready.",
-  },
-];
-
-const supportFestivals: GuideRecord[] = [
+const referenceSignals: GuideRecord[] = [
   {
     festivalName: "Dark Force Fest",
-    slug: "dark-force-fest",
     city: "Parsippany",
     region: "New Jersey",
     country: "United States",
     genreTags: ["goth", "industrial", "dark alternative", "metal-adjacent"],
     officialUrl: "https://darkforcefest.com/",
-    verificationStatus: "contextual_reference",
-    mapDisplayCategory: "contextual_reference",
-    recordType: "support_reference",
     sceneFit: "Goth, industrial, dark alternative, and metal-adjacent.",
-    statusLabel: "Background/reference listing",
+    statusLabel: "Reference signal — checked 2026 dates have passed",
     summary:
-      "Dark Force Fest remains a valuable Northeast dark alternative signal, but this packet should not present it as a current upcoming listing.",
+      "Dark Force Fest remains a Northeast goth/industrial reference signal, but the official 2026 dates checked here have passed; recheck official sources before treating it as a future edition.",
     sourceCaveat:
-      "Useful background for the scene, but not currently confirmed as an upcoming festival. We keep it separate from current listings.",
+      "This guide keeps Dark Force Fest separate from source-supported guide cards because a passed date is not the same as a confirmed future edition.",
+    confirmedDetails: "Official May 1–3, 2026 dates were found during the source check.",
+    recheckDetails: "Future-edition status needs a fresh official confirmation before any travel-planning language.",
   },
   {
     festivalName: "Cruel World",
-    slug: "cruel-world",
     city: "Pasadena",
     region: "California",
     country: "United States",
     genreTags: ["new wave", "post-punk", "goth-adjacent", "synthpop-adjacent", "alternative"],
     officialUrl: "https://cruelworldfest.com/",
-    verificationStatus: "dates_not_announced",
-    mapDisplayCategory: "dates_not_announced",
-    recordType: "related_festival",
     sceneFit: "New wave, post-punk, goth-adjacent, synthpop-adjacent, and alternative.",
-    statusLabel: "Dates not announced yet",
+    statusLabel: "Related gateway — future date not confirmed",
     summary:
-      "Cruel World is a major adjacent gateway for the wider dark alternative audience, not a core underground goth/darkwave example.",
+      "Cruel World is a recognizable Southern California retro-alternative and post-punk-adjacent reference point; current official sources did not confirm a future edition in this check.",
     sourceCaveat:
-      "Cruel World is a strong related festival to know, but the next dates have not been announced yet. We do not describe it as currently confirmed until official sources do.",
+      "RetroAltFest treats Cruel World as a related gateway for dark alternative discovery, not as a core goth/darkwave guide card.",
+    confirmedDetails: "The official site was checked for future-edition support.",
+    recheckDetails: "A future date needs official confirmation before this can be framed as a travel-planning lead.",
+  },
+  {
+    festivalName: "Verboden Music Festival",
+    city: "Vancouver / Seattle / Portland / Spokane corridor",
+    region: "BC / WA / OR",
+    country: "Canada / United States",
+    genreTags: ["post-punk", "darkwave", "synth", "industrial", "goth", "dark electronic"],
+    officialUrl: "https://verbodenfestival.com/",
+    sceneFit: "Post-punk, darkwave, synth, industrial, goth, and dark electronic.",
+    statusLabel: "Recently active corridor signal — recheck future edition",
+    summary:
+      "Verboden Music Festival is a recently active PNW / Western Canada dark alternative corridor signal with official-source support for a 2026 multi-city edition; future-edition status should be rechecked before any current-edition or atlas-link language.",
+    sourceCaveat:
+      "Because the 2026 edition was multi-city and the checked dates have passed, RetroAltFest keeps Verboden as a corridor reference rather than collapsing the cities into one simple listing.",
+    confirmedDetails: "Official-source support exists for a May 28–31, 2026 multi-city edition.",
+    recheckDetails: "Each city should be checked separately before future-edition or source-supported atlas language is used.",
   },
 ];
 
-const statusLabels = [
-  {
-    label: "Currently confirmed",
-    description: "Official or organizer-controlled sources support an active upcoming cycle.",
-  },
-  {
-    label: "Dates not announced yet",
-    description: "The festival is relevant, but we have not found official current dates yet.",
-  },
-  {
-    label: "Background/reference listing",
-    description: "The record has scene value but is being used for context, not as a current upcoming listing.",
-  },
-  {
-    label: "Still checking details",
-    description: "Timing, location details, or active status need another source pass before deeper use.",
-  },
-  {
-    label: "Related festival to know",
-    description: "The event is relevant to dark alternative discovery but broader than the core goth/darkwave focus.",
-  },
-];
-
-const allRecords = [...coreFestivals, ...multiCityFestivals, ...supportFestivals];
+const allRecords = [...activeAtlasRecords, ...referenceSignals];
 
 export default function NorthAmericanGothDarkwaveGuidePage() {
   return (
@@ -214,7 +177,11 @@ export default function NorthAmericanGothDarkwaveGuidePage() {
             RetroAltFest
           </Link>
           <span className="mx-3 text-[var(--raf-violet)]">/</span>
-          <span className="text-[var(--raf-text-muted)]">Guides</span>
+          <Link className="transition hover:text-[var(--raf-cyan)]" href="/guides">
+            Guides
+          </Link>
+          <span className="mx-3 text-[var(--raf-violet)]">/</span>
+          <span className="text-[var(--raf-text-muted)]">North American Goth &amp; Darkwave</span>
         </nav>
 
         <section className="relative overflow-hidden rounded-[2rem] border border-[rgba(168,85,247,0.2)] bg-[linear-gradient(145deg,rgba(35,24,57,0.82),rgba(8,7,14,0.92)_58%,rgba(3,3,6,0.96))] p-6 shadow-[0_34px_120px_rgba(0,0,0,0.55),0_0_70px_rgba(88,28,135,0.16)] sm:p-8 lg:p-10">
@@ -225,52 +192,66 @@ export default function NorthAmericanGothDarkwaveGuidePage() {
               North American Goth &amp; Darkwave Festivals: A Curated Guide
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-[var(--raf-text-muted)] sm:text-xl">
-              Start here for North American festivals where goth, darkwave, post-punk, synth, industrial, new wave, and related dark alternative scenes actually show up.
+              This guide highlights North American goth and darkwave festival records that RetroAltFest can describe from official or organizer-controlled sources.
             </p>
             <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-              This is a curated starting point, not a hype list or exhaustive calendar. We check official or reliable sources and clearly separate currently confirmed festivals from dates-not-announced-yet notes, background listings, and related festivals to know.
+              Some entries are active atlas records with current 2026 source support; others are kept as reference signals when their next edition is not yet confirmed. We keep source caveats visible because RetroAltFest is built around verified-before-mapped discovery, not guessed dates, ticket claims, or location shortcuts.
             </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link className="raf-button-primary" href="/verification">
+                See how RetroAltFest handles verification
+              </Link>
+              <Link className="raf-button-secondary" href="/festivals">
+                Browse the festival atlas
+              </Link>
+              <Link className="raf-button-secondary" href="/guides">
+                Explore more guides
+              </Link>
+            </div>
             <div className="mt-8 grid gap-3 sm:grid-cols-3">
               <AtlasFact label="Guide records" value={`${allRecords.length} checked examples`} />
-              <AtlasFact label="Map discipline" value="No coordinates or geocoding" />
+              <AtlasFact label="Active atlas links" value={`${activeAtlasRecords.length} source-supported records`} />
               <AtlasFact label="Scope" value="North America first" />
             </div>
           </div>
         </section>
 
         <GuideSection
-          eyebrow="Currently confirmed festivals"
-          title="Four strong city-level examples for the first guide."
-          description="These are the clearest examples in the guide. Exact venue-level mapping is intentionally out of scope until location details are verified for the future map."
-          records={coreFestivals}
+          eyebrow="Source-supported active atlas records"
+          title="Four active atlas records with current source support."
+          description="These are the guide cards with direct RetroAltFest atlas links. Each one is tied to official or organizer-controlled 2026 source support rather than a broad page-level status claim."
+          records={activeAtlasRecords}
         />
 
         <GuideSection
-          eyebrow="Multi-city dark scene festivals to watch"
-          title="Multi-city festivals need a more careful map path."
-          description="Multi-city festivals can be valuable for discovery, but they should not be compressed into one simple location record."
-          records={multiCityFestivals}
-        />
-
-        <GuideSection
-          eyebrow="Related and background listings"
-          title="Useful context, clearly separated from core confirmed records."
-          description="These records can support the article’s discovery logic, but they should not be treated as confirmed upcoming core goth/darkwave entries."
-          records={supportFestivals}
+          eyebrow="Reference signals to recheck before travel planning"
+          title="Tracked dark-scene signals and related references."
+          description="These entries matter to the North American dark alternative landscape, but they are intentionally not active-linked as atlas detail records in this guide refresh."
+          records={referenceSignals}
         />
 
         <section className="mt-10 rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(18,13,30,0.74),rgba(0,0,0,0.38))] p-6 sm:p-8 lg:p-10">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">Status labels</p>
+          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">Status language</p>
           <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            How RetroAltFest labels festival status
+            How RetroAltFest labels this guide
           </h2>
           <div className="mt-6 grid gap-4 md:grid-cols-2">
-            {statusLabels.map((status) => (
-              <div key={status.label} className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4">
-                <h3 className="font-display text-xl font-semibold text-white">{status.label}</h3>
-                <p className="mt-2 text-sm leading-6 text-[var(--raf-text-muted)]">{status.description}</p>
-              </div>
-            ))}
+            <StatusCard
+              label="Active atlas record with 2026 source support"
+              description="Used only for the four linked guide cards where official or organizer-controlled sources support the current date/status shown here."
+            />
+            <StatusCard
+              label="Reference signal"
+              description="Used for a scene-relevant event that should be rechecked before travel planning, especially when checked dates have passed or the next edition is not confirmed."
+            />
+            <StatusCard
+              label="Related gateway"
+              description="Used for a broader retro-alternative or post-punk-adjacent event that helps readers understand the scene without treating it as a core goth/darkwave listing."
+            />
+            <StatusCard
+              label="Recently active corridor signal"
+              description="Used when official sources support recent activity across multiple cities, but future-edition status needs another check before active atlas language."
+            />
           </div>
         </section>
 
@@ -280,8 +261,16 @@ export default function NorthAmericanGothDarkwaveGuidePage() {
             The atlas expands only as sources hold.
           </h2>
           <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-            This guide will expand as RetroAltFest verifies more North American dark festival records from official, organizer, venue, ticketing, or other credible sources. The goal is not to publish the biggest list quickly; it is to build a trustworthy discovery layer where each record is labeled clearly before it enters deeper atlas workflows.
+            RetroAltFest keeps caveats visible so readers can tell the difference between active atlas records, recently active signals, and related reference points. The goal is not to publish the biggest list quickly; it is to build a trustworthy discovery layer where each festival is labeled clearly before it enters deeper location review.
           </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Link className="raf-button-primary" href="/verification">
+              How RetroAltFest verifies festival records
+            </Link>
+            <Link className="raf-button-secondary" href="/festivals">
+              Open the current atlas
+            </Link>
+          </div>
         </section>
       </article>
 
@@ -311,7 +300,7 @@ function GuideSection({
 
       <div className="mt-7 grid gap-5 lg:grid-cols-2">
         {records.map((record) => (
-          <FestivalGuideCard key={record.slug} record={record} />
+          <FestivalGuideCard key={record.festivalName} record={record} />
         ))}
       </div>
     </section>
@@ -341,8 +330,8 @@ function FestivalGuideCard({ record }: { record: GuideRecord }) {
       </p>
 
       <dl className="mt-5 grid gap-3 sm:grid-cols-2">
-        <AtlasFact label="What we’ve confirmed" value={confirmedNote(record)} />
-        <AtlasFact label="What we’re still checking" value={checkingNote(record)} />
+        <AtlasFact label="What sources support" value={record.confirmedDetails} />
+        <AtlasFact label="What to recheck" value={record.recheckDetails} />
         <div className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4">
           <dt className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--raf-text-dim)]">Official source</dt>
           <dd className="mt-2 break-words text-sm leading-6 text-white">
@@ -351,6 +340,16 @@ function FestivalGuideCard({ record }: { record: GuideRecord }) {
             </a>
           </dd>
         </div>
+        {record.atlasPath ? (
+          <div className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4">
+            <dt className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--raf-text-dim)]">RetroAltFest atlas</dt>
+            <dd className="mt-2 text-sm leading-6 text-white">
+              <Link className="font-semibold transition hover:text-[var(--raf-cyan)]" href={record.atlasPath}>
+                View atlas record
+              </Link>
+            </dd>
+          </div>
+        ) : null}
       </dl>
 
       <div className="mt-5 flex flex-wrap gap-2">
@@ -364,6 +363,15 @@ function FestivalGuideCard({ record }: { record: GuideRecord }) {
   );
 }
 
+function StatusCard({ label, description }: { label: string; description: string }) {
+  return (
+    <div className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4">
+      <h3 className="font-display text-xl font-semibold text-white">{label}</h3>
+      <p className="mt-2 text-sm leading-6 text-[var(--raf-text-muted)]">{description}</p>
+    </div>
+  );
+}
+
 function AtlasFact({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4">
@@ -371,32 +379,4 @@ function AtlasFact({ label, value }: { label: string; value: string }) {
       <p className="mt-2 text-sm leading-6 text-white">{value}</p>
     </div>
   );
-}
-
-function confirmedNote(record: GuideRecord) {
-  if (record.verificationStatus === "verified") {
-    return "Official or reliable sources support this listing.";
-  }
-
-  if (record.verificationStatus === "contextual_reference") {
-    return "Useful background for the scene, but not currently confirmed as upcoming.";
-  }
-
-  return "The festival is relevant to this guide, but current dates still need official confirmation.";
-}
-
-function checkingNote(record: GuideRecord) {
-  if (record.recordType === "multi_city_parent") {
-    return "We’re still checking city-by-city details before treating this as map-ready.";
-  }
-
-  if (record.mapDisplayCategory === "dates_not_announced") {
-    return "Dates have not been announced yet.";
-  }
-
-  if (record.mapDisplayCategory === "contextual_reference") {
-    return "Fresh current-status confirmation is needed before this becomes a current listing.";
-  }
-
-  return "Venue-level map placement waits until location details are verified.";
 }

@@ -568,34 +568,47 @@ test('first dark festival signals module is placed directly after the hero', () 
   assert.ok(mapIndex > signalsIndex, 'Existing map preview should remain after Signals module');
 });
 
-test('guide page for North American goth and darkwave festivals is static, bounded, and map-safe', () => {
+test('guide page for North American goth and darkwave festivals is static, bounded, and source-safe', () => {
   const guidePath = 'src/app/guides/north-american-goth-darkwave-festivals/page.tsx';
   assert.equal(existsSync(join(root, guidePath)), true, 'guide route should exist');
 
   const guide = read(guidePath);
   const requiredCopy = [
     'North American Goth &amp; Darkwave Festivals: A Curated Guide',
-    'Absolution Fest',
-    'A Murder of Crows',
-    'Cold Waves',
-    'Terminus Festival',
-    'Verboden Music Festival',
-    'Dark Force Fest',
-    'Cruel World',
-    'Multi-city festival',
-    'No coordinates or geocoding',
-    'How RetroAltFest labels festival status',
+    'source-aware North American guide',
+    'official or organizer-controlled sources',
+    'See how RetroAltFest handles verification',
+    'Source-supported active atlas records',
+    'Active atlas record with 2026 source support',
+    'A Murder of Crows XI NYC Goth & Post-punk Festival',
+    'Reference signal — checked 2026 dates have passed',
+    'Related gateway — future date not confirmed',
+    'Recently active corridor signal — recheck future edition',
+    'How RetroAltFest labels this guide',
+    'href="/verification"',
+    'href="/festivals"',
+    'href="/guides"',
+    'atlasPath: "/festivals/absolution-fest"',
+    'atlasPath: "/festivals/a-murder-of-crows-xi-nyc-goth-post-punk-festival"',
+    'atlasPath: "/festivals/cold-waves"',
+    'atlasPath: "/festivals/terminus-festival"',
   ];
 
   for (const copy of requiredCopy) {
     assert.match(guide, new RegExp(copy.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
 
+  for (const includedRecord of ['Absolution Fest', 'Cold Waves', 'Terminus Festival', 'Verboden Music Festival', 'Dark Force Fest', 'Cruel World']) {
+    assert.match(guide, new RegExp(includedRecord));
+  }
+
   for (const blockedScope of ['Darker Waves', 'Mechanismus', 'Substance', 'Riot Fest', 'Levitation']) {
     assert.doesNotMatch(guide, new RegExp(blockedScope));
   }
 
-  assert.doesNotMatch(guide, /latitude|longitude|geocodingSource|geocoding_source|exact map pin/i);
+  assert.doesNotMatch(guide, /atlasPath: "\/festivals\/(dark-force-fest|cruel-world|verboden-music-festival)"/);
+  assert.doesNotMatch(guide, /Currently confirmed|active upcoming cycle|tickets available/i);
+  assert.doesNotMatch(guide, /latitude|longitude|geocodingSource|geocoding_source|coordinates|map pins|exact map pin|map placement/i);
   assert.doesNotMatch(guide, /fetch\(|prisma|supabase|mongodb|auth|cms|scrap/i);
 
   const featuredFestivals = read('src/components/home/FeaturedFestivals.tsx');
