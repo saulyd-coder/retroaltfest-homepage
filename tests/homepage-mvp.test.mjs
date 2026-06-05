@@ -10,7 +10,7 @@ function read(relativePath) {
 }
 
 test('ships the curated festival app data for the homepage vertical slice', () => {
-  const dataPath = 'src/data/seed_festivals_10.json';
+  const dataPath = 'src/data/atlas-festivals.json';
   assert.equal(existsSync(join(root, dataPath)), true, 'seed data should be available in src/data');
 
   const data = JSON.parse(read(dataPath));
@@ -164,7 +164,7 @@ test('map preview avoids ambiguous truncated country labels', () => {
 });
 
 test('festival data is expandable for atlas detail pages', () => {
-  const data = JSON.parse(read('src/data/seed_festivals_10.json'));
+  const data = JSON.parse(read('src/data/atlas-festivals.json'));
   assert.equal(data.festivals.length, 15);
 
   for (const festival of data.festivals) {
@@ -182,7 +182,7 @@ test('festival data is expandable for atlas detail pages', () => {
 });
 
 test('North America 8 integration adds only approved app-data records and keeps excluded records out', () => {
-  const data = JSON.parse(read('src/data/seed_festivals_10.json'));
+  const data = JSON.parse(read('src/data/atlas-festivals.json'));
   const ids = new Set(data.festivals.map((record) => record.festival_id));
   const slugs = new Set(data.festivals.map((record) => record.slug));
   const approved = [
@@ -218,7 +218,7 @@ test('North America 8 integration adds only approved app-data records and keeps 
 });
 
 test('North America 8 records preserve source-aware caveats and map safety', () => {
-  const data = JSON.parse(read('src/data/seed_festivals_10.json'));
+  const data = JSON.parse(read('src/data/atlas-festivals.json'));
   const byId = new Map(data.festivals.map((record) => [record.festival_id, record]));
 
   for (const id of ['cold-waves', 'absolution-fest', 'darker-waves', 'levitation', 'mutek-montreal', 'just-like-heaven', 'the-new-colossus-festival', 'terminus-festival']) {
@@ -429,7 +429,7 @@ test('festival categories expose the launch taxonomy across data and UI', () => 
   const helpers = read('src/lib/festivals.ts');
   const browser = read('src/components/festivals/FestivalDirectoryBrowser.tsx');
   const card = read('src/components/home/FestivalCard.tsx');
-  const data = JSON.parse(read('src/data/seed_festivals_10.json'));
+  const data = JSON.parse(read('src/data/atlas-festivals.json'));
   const requiredCategories = ['darkwave', 'goth', 'industrial', 'synthpop', 'post-punk', 'EDM', 'alternative'];
 
   for (const category of requiredCategories) {

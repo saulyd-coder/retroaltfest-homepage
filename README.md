@@ -19,7 +19,8 @@ If starting from scratch, the equivalent setup is:
 cd /Users/saulyd/RetroAltFest/MVP
 npx create-next-app@latest retroaltfest-homepage --ts --app --tailwind --eslint --src-dir --import-alias "@/*"
 cd retroaltfest-homepage
-cp /Users/saulyd/RetroAltFest/Datasets/seed_festivals_10.json src/data/seed_festivals_10.json
+mkdir -p src/data
+# App data is versioned in this repo at src/data/atlas-festivals.json.
 npm install
 ```
 
@@ -47,9 +48,9 @@ retroaltfest-homepage/
 │   │       ├── Footer.tsx
 │   │       └── Header.tsx
 │   ├── data/
-│   │   └── seed_festivals_10.json
+│   │   └── atlas-festivals.json
 │   └── lib/
-│       └── festivals.ts         # Typed seed-data helpers
+│       └── festivals.ts         # Typed atlas-data helpers
 └── tests/
     └── homepage-mvp.test.mjs
 ```
@@ -59,7 +60,7 @@ retroaltfest-homepage/
 Included:
 
 1. Hero section with atmospheric atlas preview and primary CTAs.
-2. Featured festival cards backed by the seed JSON dataset.
+2. Featured festival cards backed by the atlas JSON dataset.
 3. Scene/category chips for goth, darkwave, industrial, post-punk, synthpop, and EBM.
 4. Trust/verification section focused on official sources, status labels, and manual curation.
 5. Map preview placeholder that avoids guessed coordinates.
@@ -78,24 +79,18 @@ Global design tokens live in `src/app/globals.css`:
 - `.nocturnal-grid` and `.scanline` provide subtle low-cost ambience without images or heavy animation.
 - `prefers-reduced-motion` is respected.
 
-## Mock data integration
+## App data integration
 
-Homepage data is imported from:
+Homepage, directory, detail-page, and verification data are imported from:
 
 ```text
-src/data/seed_festivals_10.json
+src/data/atlas-festivals.json
 ```
 
 Typed helpers live in:
 
 ```text
 src/lib/festivals.ts
-```
-
-The source dataset is:
-
-```text
-/Users/saulyd/RetroAltFest/Datasets/seed_festivals_10.json
 ```
 
 Coordinates remain intentionally null until venue geocoding is verified. Do not guess map pins.

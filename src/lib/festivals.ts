@@ -1,4 +1,4 @@
-import seedData from "@/data/seed_festivals_10.json";
+import seedData from "@/data/atlas-festivals.json";
 
 export type Festival = (typeof seedData.festivals)[number];
 export type FestivalDirectoryRecord = Pick<
