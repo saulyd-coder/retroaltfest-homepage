@@ -694,7 +694,7 @@ test('guide page for West Coast and Pacific Northwest dark alternative festivals
   const guide = read(guidePath);
   const requiredCopy = [
     'West Coast &amp; Pacific Northwest Dark Alternative Festivals',
-    'A curated route through source-backed dark alternative festival signals from Southern California to Portland, Seattle, and Vancouver.',
+    'A curated regional route through active atlas records, recently active festival signals, and carefully caveated dark alternative source trails from Southern California to Portland, Seattle, and Vancouver.',
     'Southern California anchors',
     'Pacific Northwest corridor',
     'Darker Waves',
@@ -705,11 +705,13 @@ test('guide page for West Coast and Pacific Northwest dark alternative festivals
     'Verboden Music Festival — Portland',
     'Mechanismus',
     'Related festival to know',
-    'current date status',
-    'Current festival-edition details are still being checked',
-    'Ticket status, schedule details, and lineup information should be rechecked',
+    'active RetroAltFest atlas record',
+    'recently active',
+    'The checked official pages did not confirm a future edition',
+    'Do not say tickets are available',
+    'Exact future festival dates, festival venue, tickets, and lineup are not confirmed',
     'not as a darkwave or industrial anchor',
-    'Spokane remains a useful Verboden-related source trail to watch',
+    'Spokane has an official-linked Verboden Showcase source trail',
     'Useful leads, but not public guide cards yet.',
     'Substance — Los Angeles',
     'Substance — San Francisco',
@@ -720,7 +722,11 @@ test('guide page for West Coast and Pacific Northwest dark alternative festivals
     '/guides/north-american-goth-darkwave-festivals',
     '/guides/industrial-ebm-dark-electronic-festivals-north-america',
     '/guides/new-wave-post-punk-retro-alternative-festivals-north-america',
+    'href="/verification"',
     'href="/festivals"',
+    'href={record.atlasPath}',
+    'atlasPath: "/festivals/darker-waves"',
+    'atlasPath: "/festivals/just-like-heaven"',
   ];
 
   for (const copy of requiredCopy) {

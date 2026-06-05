@@ -12,7 +12,7 @@ const retroAlternativeGuidePath = "/guides/new-wave-post-punk-retro-alternative-
 export const metadata: Metadata = buildMetadata({
   title: "West Coast & Pacific Northwest Dark Alternative Festivals",
   description:
-    "A curated RetroAltFest route through source-backed dark alternative festival signals from Southern California to Portland, Seattle, and Vancouver.",
+    "A curated RetroAltFest regional route through active atlas records, recently active festival signals, and carefully caveated dark alternative source trails from Southern California to Portland, Seattle, and Vancouver.",
   path: pagePath,
   type: "article",
   keywords: [
@@ -28,6 +28,7 @@ export const metadata: Metadata = buildMetadata({
 type GuideCard = {
   festivalName: string;
   slug: string;
+  atlasPath?: string;
   city: string;
   region: string;
   country: string;
@@ -41,10 +42,16 @@ type GuideCard = {
   checking: string;
 };
 
+type HeldBackLead = {
+  name: string;
+  reason: string;
+};
+
 const guideCards: GuideCard[] = [
   {
     festivalName: "Darker Waves",
     slug: "darker-waves",
+    atlasPath: "/festivals/darker-waves",
     city: "Huntington Beach",
     region: "California",
     country: "United States",
@@ -52,11 +59,11 @@ const guideCards: GuideCard[] = [
     sourceUrls: ["https://www.darkerwavesfest.com/", "https://www.darkerwavesfest.com/lineup"],
     sceneFit: ["retro alternative", "new wave", "post-punk", "synthpop", "dark nostalgia"],
     section: "Southern California anchors",
-    label: "Southern California route anchor",
+    label: "Active atlas route anchor",
     whyItMatters:
       "Darker Waves gives this route a beachside Southern California entry point where familiar alternative sounds can lead readers toward darker synth, post-punk, and new wave discovery.",
     confirmed:
-      "Official festival sources support Darker Waves as a Huntington Beach festival. The research packet also found official-source support for a 2026 date signal.",
+      "Official festival sources support Darker Waves as a Huntington Beach festival and active RetroAltFest atlas record.",
     checking:
       "Artist names and lineup details should be checked directly against the current official lineup source before any public page names specific acts.",
   },
@@ -70,16 +77,17 @@ const guideCards: GuideCard[] = [
     sourceUrls: ["https://cruelworldfest.com/", "https://cruelworldfest.com/general-info/"],
     sceneFit: ["dark alternative", "post-punk", "new wave", "synth", "goth-adjacent"],
     section: "Southern California anchors",
-    label: "Pasadena dark alternative reference point",
+    label: "Pasadena reference point",
     whyItMatters:
       "Cruel World remains one of the most visible West Coast reference points for readers who find dark alternative music through the larger Southern California festival circuit.",
-    confirmed: "Official sources support Cruel World’s Pasadena festival context and official festival identity.",
+    confirmed: "Official sources support Cruel World’s Pasadena festival identity and Brookside at the Rose Bowl context.",
     checking:
-      "Next-edition details should be checked before claiming current date status. RetroAltFest should not describe Cruel World as confirmed upcoming unless the official source trail clearly supports that at publication time.",
+      "The checked official pages did not confirm a future edition. Do not treat Cruel World as upcoming unless a new official announcement supports it.",
   },
   {
     festivalName: "Just Like Heaven",
     slug: "just-like-heaven",
+    atlasPath: "/festivals/just-like-heaven",
     city: "Pasadena",
     region: "California",
     country: "United States",
@@ -90,7 +98,7 @@ const guideCards: GuideCard[] = [
     label: "Related festival to know",
     whyItMatters:
       "Just Like Heaven is useful here as a related festival to know, not as a darkwave or industrial anchor. It shows how Southern California’s retro alternative circuit stretches into broader indie and alternative memory.",
-    confirmed: "Official festival sources support Just Like Heaven’s Pasadena context and current official event information in the research packet.",
+    confirmed: "Official festival sources support Just Like Heaven’s Pasadena context and active RetroAltFest atlas record.",
     checking:
       "Its dark alternative relevance should be handled lineup by lineup. Do not overstate it as a goth, darkwave, or industrial festival.",
   },
@@ -104,13 +112,13 @@ const guideCards: GuideCard[] = [
     sourceUrls: ["https://verbodenfestival.com/", "https://vivenu.com/event/verboden-2026-vancouver-8pfyy0"],
     sceneFit: ["darkwave", "post-punk", "synth", "industrial", "goth", "EBM"],
     section: "Pacific Northwest corridor",
-    label: "Northern corridor anchor",
+    label: "Recently active PNW corridor signal",
     whyItMatters:
       "Verboden Vancouver gives the northern end of the route a clear dark alternative identity, with darkwave, post-punk, synth, industrial, goth, and EBM in one connected festival universe.",
     confirmed:
-      "Official and official-linked sources support Verboden’s Vancouver presence. The research packet also found city-level and event-detail support from the linked ticketing source.",
+      "Official and official-linked sources support Verboden’s Vancouver presence and a 2026 city event, with darkwave, post-punk, industrial, EBM, synth, and goth language in the source trail.",
     checking:
-      "Ticket status, schedule details, and lineup information should be rechecked close to publication before adding specific claims beyond the source-supported city and festival context.",
+      "The 2026 dates have passed and the ticketing source contains one date-text inconsistency. Use date-neutral wording until a new official edition is announced.",
   },
   {
     festivalName: "Verboden Music Festival — Seattle",
@@ -122,13 +130,13 @@ const guideCards: GuideCard[] = [
     sourceUrls: ["https://verbodenfestival.com/", "https://vivenu.com/event/verboden-festival-2026-u0wef6"],
     sceneFit: ["darkwave", "post-punk", "EBM", "dark electronic", "PNW underground"],
     section: "Pacific Northwest corridor",
-    label: "Central PNW route stop",
+    label: "Recently active PNW corridor signal",
     whyItMatters:
       "Verboden Seattle connects Seattle’s dark alternative identity with a wider regional festival trail, making it useful for readers looking beyond single-city listings.",
     confirmed:
-      "Official and official-linked sources support Verboden’s Seattle presence. The research packet also noted source language around darkwave, post-punk, and EBM.",
+      "Official and official-linked sources support Verboden’s Seattle presence and a 2026 city event, with darkwave, post-punk, and EBM language in the source trail.",
     checking:
-      "Ticket status and detailed schedule language should be rechecked before publication if the public page needs current sale status, set times, or artist-specific claims.",
+      "The checked ticketing page says sale ended. Do not say tickets are available or imply a future edition until official sources announce one.",
   },
   {
     festivalName: "Verboden Music Festival — Portland",
@@ -140,13 +148,13 @@ const guideCards: GuideCard[] = [
     sourceUrls: ["https://verbodenfestival.com/", "https://tickets.venuepilot.com/e/verboden-th-2026-05-28-the-coffin-portland-bd191b"],
     sceneFit: ["darkwave", "EBM", "post-punk", "dark electronic"],
     section: "Pacific Northwest corridor",
-    label: "Oregon corridor stop",
+    label: "Recently active Oregon corridor signal",
     whyItMatters:
       "Verboden Portland gives the guide an Oregon foothold and helps make the Pacific Northwest section feel like a real route rather than a loose cluster.",
     confirmed:
-      "Official and official-linked sources support Verboden’s Portland presence. The research packet also noted darkwave and EBM language in the Portland source trail.",
+      "Official and official-linked sources support Verboden’s Portland presence and a 2026 city event, with darkwave and EBM language in the source trail.",
     checking:
-      "Full schedule, ticket status, and lineup details should be checked again before publication if the page needs anything more specific than the city and festival role.",
+      "The 2026 event has passed and source date ranges vary slightly between the homepage and Portland ticketing page. Avoid exact future-date claims until a new official announcement appears.",
   },
   {
     festivalName: "Mechanismus",
@@ -155,28 +163,46 @@ const guideCards: GuideCard[] = [
     region: "Washington",
     country: "United States",
     officialUrl: "https://www.mechanismus.net/",
-    sourceUrls: ["https://www.mechanismus.net/", "https://www.mechanismus.net/upcoming-shows.html", "https://www.mechanismus.net/previous-bands.html"],
+    sourceUrls: ["https://www.mechanismus.net/", "https://www.mechanismus.net/upcoming-shows.html", "https://www.mechanismus.net/activities.html"],
     sceneFit: ["industrial", "dark electronic", "EBM-adjacent", "Seattle underground"],
     section: "Pacific Northwest corridor",
-    label: "Seattle industrial signal",
+    label: "Caveated Seattle industrial signal",
     whyItMatters:
-      "Mechanismus gives the Seattle portion of this guide a harder-edged industrial and dark electronic anchor alongside Verboden’s darkwave and post-punk route.",
+      "Mechanismus gives the Seattle portion of this guide a harder-edged industrial and dark electronic signal alongside Verboden’s darkwave and post-punk route.",
     confirmed:
-      "Official sources support Mechanismus as a Seattle-based industrial music organization with annual festival identity and history.",
+      "Official sources support Mechanismus as a Seattle industrial music organization with annual festival identity and future activity polling.",
     checking:
-      "Current festival-edition details are still being checked. Do not publish a current date, venue, ticket link, lineup, or edition-specific claim until official sources are refreshed and confirmed.",
+      "Exact future festival dates, festival venue, tickets, and lineup are not confirmed on the checked official pages. Do not use one-off show details as festival details.",
   },
 ];
 
 const southernCaliforniaCards = guideCards.filter((card) => card.section === "Southern California anchors");
 const pnwCards = guideCards.filter((card) => card.section === "Pacific Northwest corridor");
-const heldBackLeads = [
-  "Substance — Los Angeles",
-  "Substance — San Francisco",
-  "The Vth Gathering / San Francisco World Goth Day Festival — Alameda",
-  "Out From The Shadows — Portland",
-  "West Coast Women’s Darkwave Festival — Oakland",
-  "Cloak & Dagger Festival — Los Angeles",
+const heldBackLeads: HeldBackLead[] = [
+  {
+    name: "Substance — Los Angeles",
+    reason: "Held until usable current official or ticketing sources confirm city details.",
+  },
+  {
+    name: "Substance — San Francisco",
+    reason: "Held until usable current official or ticketing sources confirm a San Francisco record.",
+  },
+  {
+    name: "The Vth Gathering / San Francisco World Goth Day Festival — Alameda",
+    reason: "A 2025 Alameda / Bay Area event is source-supported, but no future edition was confirmed.",
+  },
+  {
+    name: "Out From The Shadows — Portland",
+    reason: "The official-looking site currently lacks festival details.",
+  },
+  {
+    name: "West Coast Women’s Darkwave Festival — Oakland",
+    reason: "Historical darkwave reference only for this version.",
+  },
+  {
+    name: "Cloak & Dagger Festival — Los Angeles",
+    reason: "Historical Los Angeles reference only for this version.",
+  },
 ];
 
 export default function WestCoastPacificNorthwestDarkAlternativeGuidePage() {
@@ -208,18 +234,18 @@ export default function WestCoastPacificNorthwestDarkAlternativeGuidePage() {
               West Coast &amp; Pacific Northwest Dark Alternative Festivals
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-[var(--raf-text-muted)] sm:text-xl">
-              A curated route through source-backed dark alternative festival signals from Southern California to Portland, Seattle, and Vancouver.
+              A curated regional route through active atlas records, recently active festival signals, and carefully caveated dark alternative source trails from Southern California to Portland, Seattle, and Vancouver.
             </p>
             <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-              This guide follows the darker side of the West Coast festival circuit, from Southern California’s retro alternative anchors to the Pacific Northwest’s darkwave, post-punk, EBM, and industrial corridor.
+              This guide follows the darker side of the West Coast festival circuit, from Southern California’s active atlas anchors to the Pacific Northwest’s recently active darkwave, post-punk, EBM, and industrial corridor.
             </p>
             <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-              It is intentionally selective. Some festivals are ready to include now, some are still being watched for next-edition details, and others are better treated as background context until the source trail is stronger.
+              It is intentionally selective and source-aware. Some records are active atlas entries, some are recently active signals, and some are reference points whose next-edition details still need official confirmation. Treat this as a discovery route, not a live ticket calendar or location dataset.
             </p>
             <div className="mt-8 grid gap-3 sm:grid-cols-3">
               <AtlasFact label="Guide cards" value={`${guideCards.length} source-aware records`} />
               <AtlasFact label="Route" value="Southern California → Portland → Seattle → Vancouver" />
-              <AtlasFact label="Main fresh signal" value="Verboden’s PNW corridor" />
+              <AtlasFact label="Main fresh signal" value="Recently active Verboden PNW corridor" />
             </div>
           </div>
         </section>
@@ -230,7 +256,7 @@ export default function WestCoastPacificNorthwestDarkAlternativeGuidePage() {
             A regional route, not another genre directory.
           </h2>
           <p className="mt-4 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-            The route starts in Southern California, where large retro alternative festivals help bring new wave, post-punk, synthpop, and darker nostalgia into a coastal festival frame. From there, it moves north into the Pacific Northwest, where Vancouver, Seattle, and Portland form a more concentrated darkwave, EBM, post-punk, and industrial discovery corridor.
+            The route starts in Southern California, where active atlas records like Darker Waves and Just Like Heaven help readers enter the broader retro alternative circuit. From there, it moves north into the Pacific Northwest, where Vancouver, Seattle, and Portland form a source-backed but date-sensitive darkwave, EBM, post-punk, and industrial corridor.
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
             {["Southern California", "Portland", "Seattle", "Vancouver", "darkwave", "post-punk", "EBM", "industrial", "retro alternative"].map((tag) => (
@@ -243,37 +269,50 @@ export default function WestCoastPacificNorthwestDarkAlternativeGuidePage() {
 
         <GuideSection
           eyebrow="Southern California anchors"
-          title="The route starts with retro alternative overlap."
-          description="Darker Waves, Cruel World, and Just Like Heaven are handled as Southern California route context, not as recycled genre cards from the broader retro alternative guide."
+          title="The route starts with active atlas records and careful reference points."
+          description="Darker Waves and Just Like Heaven are active atlas records that help anchor the Southern California side of the route. Cruel World remains a useful Pasadena reference point, but next-edition details should be checked from official sources before treating it as current or upcoming."
           records={southernCaliforniaCards}
         />
 
         <GuideSection
           eyebrow="Pacific Northwest corridor"
           title="Verboden and Mechanismus give the guide its strongest regional value."
-          description="Vancouver, Seattle, and Portland form the heart of this page: a source-aware darkwave, post-punk, EBM, industrial, and dark electronic route that should stay separate from any future map work until details are stronger."
+          description="Vancouver, Seattle, and Portland form the heart of this page as a recently active, source-backed darkwave, post-punk, EBM, industrial, and dark electronic corridor. Keep the cities separate, keep the dates cautious, and do not treat any of these records as location-ready."
           records={pnwCards}
           emphasized
         />
 
+        <section className="mt-10 rounded-[2rem] border border-[rgba(34,211,238,0.18)] bg-[linear-gradient(135deg,rgba(34,211,238,0.08),rgba(168,85,247,0.1),rgba(0,0,0,0.42))] p-6 sm:p-8 lg:p-10">
+          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-cyan)]">Source status</p>
+          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+            Official sources first, then careful public wording.
+          </h2>
+          <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
+            RetroAltFest separates active atlas records from tracked signals and reference points. Official sources come first, and festival records are not treated as location-ready until place details are verified separately.
+          </p>
+          <Link className="mt-6 inline-flex raf-button-secondary px-5 py-3 text-sm font-semibold text-white" href="/verification">
+            How RetroAltFest verifies festival status
+          </Link>
+        </section>
+
         <section className="mt-10 rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(30,22,48,0.5),rgba(255,255,255,0.024))] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.28)] sm:p-8 lg:p-10">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">Still watching</p>
+          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">Still being watched</p>
           <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
             Useful leads, but not public guide cards yet.
           </h2>
           <div className="mt-5 rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-5 text-sm leading-7 text-[var(--raf-text-muted)]">
             <p>
-              Spokane remains a useful Verboden-related source trail to watch, but it should not become a standalone festival card until current status, event framing, and ticketing language are clearer.
+              Spokane has an official-linked Verboden Showcase source trail, but it should stay a related signal rather than a full guide card until the relationship model is clearer and a future edition is officially announced.
             </p>
           </div>
           <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-            The following names remain useful research leads, historical references, or background context, but they are held out of the public card set for this version:
+            The following names remain useful research leads, historical references, or background context. They are held out of the public card set because the current source trail is past, weak, inaccessible, secondary-only, or not specific enough for current visitor-facing recommendations.
           </p>
           <ul className="mt-6 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {heldBackLeads.map((lead) => (
-              <li key={lead} className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4 text-sm leading-6 text-[var(--raf-text-muted)]">
-                <span className="font-display text-lg font-semibold text-white">{lead}</span>
-                <span className="mt-2 block">Held for more source cleanup before visitor-facing card treatment.</span>
+              <li key={lead.name} className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4 text-sm leading-6 text-[var(--raf-text-muted)]">
+                <span className="font-display text-lg font-semibold text-white">{lead.name}</span>
+                <span className="mt-2 block">{lead.reason}</span>
               </li>
             ))}
           </ul>
@@ -372,7 +411,12 @@ function FestivalGuideCard({ record, emphasized }: { record: GuideCard; emphasiz
       </div>
 
       <div className="mt-5 space-y-2">
-        <a className="inline-flex break-words text-sm font-semibold text-[var(--raf-cyan)] transition hover:text-white" href={record.officialUrl} target="_blank" rel="noreferrer">
+        {record.atlasPath ? (
+          <Link className="inline-flex text-sm font-semibold text-[var(--raf-magenta)] transition hover:text-white" href={record.atlasPath}>
+            View atlas entry
+          </Link>
+        ) : null}
+        <a className="block break-words text-sm font-semibold text-[var(--raf-cyan)] transition hover:text-white" href={record.officialUrl} target="_blank" rel="noreferrer">
           Official source: {record.officialUrl.replace(/^https?:\/\//, "")}
         </a>
         <p className="text-xs leading-5 text-[var(--raf-text-dim)]">Sources checked: {record.sourceUrls.length} official or reliable pages.</p>
