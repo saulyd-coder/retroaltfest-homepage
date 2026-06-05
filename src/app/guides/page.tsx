@@ -44,7 +44,7 @@ const guides: GuideCard[] = [
     href: "/guides/west-coast-pacific-northwest-dark-alternative-festivals",
     role: "regional West Coast / PNW discovery guide",
     description:
-      "A curated route through source-backed dark alternative festival signals from Southern California to Portland, Seattle, and Vancouver.",
+      "Regional discovery across Southern California and the Pacific Northwest, with active atlas anchors, recently active corridor signals, and source-aware caveats.",
     tags: ["West Coast", "Pacific Northwest", "dark alternative", "regional route"],
     accent: "cyan",
   },

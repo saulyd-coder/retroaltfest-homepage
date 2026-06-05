@@ -26,7 +26,7 @@ export function FeaturedFestivals() {
           <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--raf-cyan)]">Curated scene guides</span>
           <span className="mt-2 block font-display text-3xl font-semibold tracking-tight text-white">Explore RetroAltFest Guides</span>
           <span className="mt-2 block max-w-3xl text-sm leading-6 text-[var(--raf-text-muted)]">
-            Start with curated guides for goth, darkwave, industrial, EBM, post-punk, new wave, and retro alternative festival discovery.
+            Start with curated guides for regional West Coast / PNW discovery, goth, darkwave, industrial, EBM, post-punk, new wave, and retro alternative festival paths.
           </span>
           <span className="mt-4 flex flex-wrap gap-2">
             {[

@@ -757,7 +757,9 @@ test('guide page for West Coast and Pacific Northwest dark alternative festivals
   const sitemap = read('src/app/sitemap.ts');
   const guidesPage = read('src/app/guides/page.tsx');
   assert.match(featuredFestivals, /West Coast \/ PNW/);
+  assert.match(featuredFestivals, /regional West Coast \/ PNW discovery/);
   assert.match(guidesPage, /\/guides\/west-coast-pacific-northwest-dark-alternative-festivals/);
+  assert.match(guidesPage, /Regional discovery across Southern California and the Pacific Northwest, with active atlas anchors, recently active corridor signals, and source-aware caveats\./);
   assert.match(sitemap, /\/guides\/west-coast-pacific-northwest-dark-alternative-festivals/);
 });
 
