@@ -8,6 +8,7 @@ import {
 import { buildMetadata } from "@/lib/seo";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
+import { DiscoveryLinks } from "@/components/site/DiscoveryLinks";
 
 export const dynamicParams = false;
 
@@ -165,6 +166,28 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
             </section>
           </aside>
         </section>
+
+        <DiscoveryLinks
+          title="Continue exploring RetroAltFest."
+          description="Move from this source-checked atlas entry into the full directory, the guide hub, or the verification notes that explain the trust layer behind each record."
+          links={[
+            {
+              href: "/festivals",
+              label: "Browse all atlas records",
+              description: "Return to the current 15-record festival atlas and compare records by scene, region, and status.",
+            },
+            {
+              href: "/guides",
+              label: "Read curated guides",
+              description: "Use scene and regional guides for context around goth, darkwave, industrial, EBM, new wave, and post-punk discovery.",
+            },
+            {
+              href: "/verification",
+              label: "See source-check notes",
+              description: "Learn how RetroAltFest labels confirmation, uncertainty, and location confidence before deeper discovery steps.",
+            },
+          ]}
+        />
       </article>
 
       <Footer />

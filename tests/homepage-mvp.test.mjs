@@ -874,6 +874,68 @@ test('guides index is static, compact, and lists exactly the four live curated s
   assert.doesNotMatch(guidesPage, /future guide|coming soon|placeholder|search|filter|useState|useMemo|fetch\(|prisma|supabase|mongodb|auth|cms|database|geocoding|latitude|longitude|coordinates|map pins/i);
 });
 
+test('internal discovery links connect existing routes without fake festival detail pages', () => {
+  const data = JSON.parse(read('src/data/atlas-festivals.json'));
+  const atlasSlugs = new Set(data.festivals.map((record) => record.slug));
+  assert.equal(data.festivals.length, 15);
+
+  const sourcePaths = [
+    'src/app/page.tsx',
+    'src/app/festivals/page.tsx',
+    'src/app/festivals/[slug]/page.tsx',
+    'src/app/guides/page.tsx',
+    'src/app/guides/north-american-goth-darkwave-festivals/page.tsx',
+    'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx',
+    'src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/page.tsx',
+    'src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/page.tsx',
+    'src/app/verification/page.tsx',
+    'src/components/site/Header.tsx',
+    'src/components/site/Footer.tsx',
+    'src/components/site/DiscoveryLinks.tsx',
+  ];
+
+  const source = sourcePaths.map(read).join('\n');
+  for (const route of ['/festivals', '/guides', '/verification']) {
+    assert.match(source, new RegExp(route.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')));
+  }
+
+  for (const guide of [
+    '/guides/west-coast-pacific-northwest-dark-alternative-festivals',
+    '/guides/north-american-goth-darkwave-festivals',
+    '/guides/industrial-ebm-dark-electronic-festivals-north-america',
+    '/guides/new-wave-post-punk-retro-alternative-festivals-north-america',
+  ]) {
+    assert.match(source, new RegExp(guide.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')));
+  }
+
+  const festivalLinks = [...source.matchAll(/\/festivals\/([a-z0-9-]+)/g)].map((match) => match[1]);
+  for (const slug of festivalLinks) {
+    assert.equal(atlasSlugs.has(slug), true, `/festivals/${slug} should be an active atlas route`);
+  }
+
+  for (const blockedSlug of ['cruel-world', 'riot-fest', 'dark-force-fest', 'triton-festival', 'verboden-music-festival', 'mechanismus', 'mechanismus-festival']) {
+    assert.doesNotMatch(source, new RegExp(`/festivals/${blockedSlug}`));
+  }
+});
+
+test('discovery flow uses route-safe global navigation instead of local-only footer anchors', () => {
+  const header = read('src/components/site/Header.tsx');
+  const footer = read('src/components/site/Footer.tsx');
+  const homepage = read('src/app/page.tsx');
+  const detailPage = read('src/app/festivals/[slug]/page.tsx');
+
+  for (const source of [header, footer]) {
+    assert.match(source, /href="\/festivals"/);
+    assert.match(source, /href="\/guides"/);
+    assert.match(source, /href="\/verification"/);
+  }
+
+  assert.doesNotMatch(footer, /href="#(festivals|map|trust|submit)"/);
+  assert.match(homepage, /Where should I start\?/);
+  assert.match(homepage, /Choose your first RetroAltFest path/);
+  assert.match(detailPage, /Continue exploring RetroAltFest/);
+});
+
 test('public festival DTO helper defines only approved browser-facing shapes', () => {
   const helperPath = 'src/lib/public-festivals.ts';
   assert.equal(existsSync(join(root, helperPath)), true, 'public DTO helper should exist');

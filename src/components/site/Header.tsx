@@ -13,8 +13,8 @@ export function Header() {
 
         <div className="hidden items-center gap-7 text-sm text-[var(--raf-text-muted)] md:flex">
           <Link className="transition hover:text-white focus-visible:text-white" href="/festivals">Festivals</Link>
-          <Link className="transition hover:text-white focus-visible:text-white" href="/#map">Map</Link>
-          <Link className="transition hover:text-white focus-visible:text-white" href="/#trust">Trust</Link>
+          <Link className="transition hover:text-white focus-visible:text-white" href="/guides">Guides</Link>
+          <Link className="transition hover:text-white focus-visible:text-white" href="/verification">Verification</Link>
           <Link className="raf-button-secondary px-4 py-2 font-medium text-white" href="/#submit">
             Submit
           </Link>

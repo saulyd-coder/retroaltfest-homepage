@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
+import { DiscoveryLinks } from "@/components/site/DiscoveryLinks";
 import { buildMetadata } from "@/lib/seo";
 
 const pagePath = "/guides/west-coast-pacific-northwest-dark-alternative-festivals";
@@ -341,6 +342,28 @@ export default function WestCoastPacificNorthwestDarkAlternativeGuidePage() {
             </Link>
           </div>
         </section>
+
+        <DiscoveryLinks
+          title="Choose your next discovery path."
+          description="Use this guide as one route into the atlas, then continue into the full directory, the guide hub, or the source-check notes behind RetroAltFest records."
+          links={[
+            {
+              href: "/guides",
+              label: "Back to all guides",
+              description: "Compare the current Goth & Darkwave, Industrial / EBM, New Wave / Post-Punk, and West Coast / PNW guide routes.",
+            },
+            {
+              href: "/festivals",
+              label: "Browse current atlas records",
+              description: "Open the active festival atlas and follow only source-backed internal detail links.",
+            },
+            {
+              href: "/verification",
+              label: "See how source checks work",
+              description: "Review how RetroAltFest separates confirmed records from reference signals and related context.",
+            },
+          ]}
+        />
       </article>
 
       <Footer />

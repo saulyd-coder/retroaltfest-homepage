@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function Footer() {
   return (
     <footer className="relative border-t border-[var(--raf-border-soft)] px-5 py-10 sm:px-8">
@@ -9,10 +11,10 @@ export function Footer() {
           <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--raf-text-dim)]">MVP atlas · official-source first · no guessed pins</p>
         </div>
         <div className="flex flex-wrap gap-4">
-          <a className="transition hover:text-white focus-visible:text-white" href="#festivals">Festivals</a>
-          <a className="transition hover:text-white focus-visible:text-white" href="#map">Map preview</a>
-          <a className="transition hover:text-white focus-visible:text-white" href="#trust">Trust notes</a>
-          <a className="transition hover:text-white focus-visible:text-white" href="#submit">Submit festival</a>
+          <Link className="transition hover:text-white focus-visible:text-white" href="/festivals">Festival atlas</Link>
+          <Link className="transition hover:text-white focus-visible:text-white" href="/guides">Guides</Link>
+          <Link className="transition hover:text-white focus-visible:text-white" href="/verification">Verification</Link>
+          <Link className="transition hover:text-white focus-visible:text-white" href="/#submit">Submit festival</Link>
         </div>
       </div>
     </footer>

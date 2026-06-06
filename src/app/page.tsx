@@ -6,6 +6,7 @@ import { SubmitFestivalCta } from "@/components/home/SubmitFestivalCta";
 import { TrustSection } from "@/components/home/TrustSection";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
+import { DiscoveryLinks } from "@/components/site/DiscoveryLinks";
 import { WaitlistSignup } from "@/components/waitlist/WaitlistSignup";
 
 export default function Home() {
@@ -25,6 +26,30 @@ export default function Home() {
       <Hero />
       <FirstDarkFestivalSignals />
       <TrustSection />
+      <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
+        <DiscoveryLinks
+          eyebrow="Where should I start?"
+          title="Choose your first RetroAltFest path."
+          description="Browse current atlas records, read curated scene guides, or see how RetroAltFest checks sources before anything moves deeper into location-based discovery."
+          links={[
+            {
+              href: "/festivals",
+              label: "Browse the festival atlas",
+              description: "Open the 15 current source-checked festival records and filter by scene, region, or status.",
+            },
+            {
+              href: "/guides",
+              label: "Read curated scene guides",
+              description: "Start with goth, darkwave, industrial, EBM, new wave, post-punk, retro alternative, or West Coast / PNW context.",
+            },
+            {
+              href: "/verification",
+              label: "See how source checks work",
+              description: "Learn why RetroAltFest keeps verification notes visible and stays verified before mapped.",
+            },
+          ]}
+        />
+      </div>
       <FeaturedFestivals />
       <MapPreview />
       <WaitlistSignup />

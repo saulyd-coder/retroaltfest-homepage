@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { FestivalDirectoryBrowser } from "@/components/festivals/FestivalDirectoryBrowser";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
+import { DiscoveryLinks } from "@/components/site/DiscoveryLinks";
 import { publicFestivalDirectoryItems } from "@/lib/public-festivals";
 import { buildMetadata } from "@/lib/seo";
 
@@ -39,6 +40,34 @@ export default function FestivalsDirectoryPage() {
         </div>
 
         <FestivalDirectoryBrowser festivals={publicFestivalDirectoryItems} />
+
+        <DiscoveryLinks
+          eyebrow="Use guides for context"
+          title="Not sure which scene lane fits?"
+          description="The atlas shows current public records. The guides help you understand regional and genre pathways without pretending every related festival is an active atlas listing."
+          links={[
+            {
+              href: "/guides/north-american-goth-darkwave-festivals",
+              label: "Goth & Darkwave guide",
+              description: "Start with the dark-scene foundation route for goth, darkwave, post-punk, and related festival context.",
+            },
+            {
+              href: "/guides/industrial-ebm-dark-electronic-festivals-north-america",
+              label: "Industrial & EBM guide",
+              description: "Follow the heavier industrial, EBM, post-industrial, and dark electronic discovery lane.",
+            },
+            {
+              href: "/guides/new-wave-post-punk-retro-alternative-festivals-north-america",
+              label: "New Wave & Post-Punk guide",
+              description: "Explore the broader retro alternative path across new wave, post-punk, and 80s-adjacent festival worlds.",
+            },
+            {
+              href: "/guides/west-coast-pacific-northwest-dark-alternative-festivals",
+              label: "West Coast / PNW guide",
+              description: "Use the regional route for Southern California, Pacific Northwest, and nearby dark alternative context.",
+            },
+          ]}
+        />
       </section>
 
       <Footer />
