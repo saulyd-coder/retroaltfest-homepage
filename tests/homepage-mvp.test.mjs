@@ -673,30 +673,29 @@ test('guide page for new wave post-punk and retro alternative festivals is stati
   const requiredCopy = [
     'New Wave, Post-Punk &amp; Retro Alternative Festivals in North America',
     'Start here for North American new wave, post-punk, retro alternative, synth-era, and related indie-nostalgia festival discovery.',
-    'Core active atlas record with current source support',
+    'Who this guide is for',
+    'How to use this guide',
+    'Where to start',
+    'Scene and vibe notes',
+    'Source-supported active atlas record',
     'Darker Waves',
-    'Active atlas record with current source support',
     '/festivals/darker-waves',
-    'Related and adjacent active atlas records',
+    'Related active atlas records',
     'Just Like Heaven',
-    'Adjacent retro alternative discovery',
     '/festivals/just-like-heaven',
     'The New Colossus Festival',
-    'Emerging post-punk-adjacent discovery',
     '/festivals/the-new-colossus-festival',
-    'Reference / date-not-announced signal',
+    'Reference points, not active atlas links here',
     'Cruel World',
-    'future date not yet confirmed',
-    'Broad related festival to know',
     'Riot Fest',
-    'Possible future additions',
-    'Kilby Block Party',
-    'Best Friends Forever Fest',
-    'When We Were Young',
+    'Why some names are not linked',
+    'Short FAQ',
+    'Related RetroAltFest paths',
     'See how RetroAltFest verifies festival records',
     '/verification',
     '/guides/north-american-goth-darkwave-festivals',
     '/guides/industrial-ebm-dark-electronic-festivals-north-america',
+    '/guides/west-coast-pacific-northwest-dark-alternative-festivals',
     'href="/festivals"',
   ];
 
@@ -710,8 +709,8 @@ test('guide page for new wave post-punk and retro alternative festivals is stati
   assert.doesNotMatch(guide, /\/festivals\/cruel-world/);
   assert.doesNotMatch(guide, /\/festivals\/riot-fest/);
   assert.doesNotMatch(guide, /Currently confirmed/);
-  assert.doesNotMatch(guide, /upcoming Cruel World|Cruel World[^`\n]*upcoming|tickets available|passes on sale/i);
-  assert.doesNotMatch(guide, /complete list|full directory|confirmed-current claims/i);
+  assert.doesNotMatch(guide, /upcoming|tickets available|passes on sale|featuring|lineup includes|full lineup/i);
+  assert.doesNotMatch(guide, /complete list|full directory|confirmed-current claims|best festivals/i);
   assert.doesNotMatch(guide, /latitude|longitude|geocodingSource|geocoding_source|coordinates|geocoding|map-ready|map placement|map pin|future map|later city-level map review/i);
   assert.doesNotMatch(guide, /date_pending|source_status|Phase 0|map-readiness|watchlist|core_anchor|confirmed_upcoming|mapDisplayCategory|public V1|source sufficiency|record type|overlap risk|adjacent_reference/i);
   assert.doesNotMatch(guide, /fetch\(|prisma|supabase|mongodb|auth|cms|scrap/i);

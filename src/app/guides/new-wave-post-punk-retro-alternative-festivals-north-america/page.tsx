@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { DiscoveryLinks } from "@/components/site/DiscoveryLinks";
@@ -8,6 +9,7 @@ import { buildMetadata } from "@/lib/seo";
 const pagePath = "/guides/new-wave-post-punk-retro-alternative-festivals-north-america";
 const gothDarkwaveGuidePath = "/guides/north-american-goth-darkwave-festivals";
 const industrialEbmGuidePath = "/guides/industrial-ebm-dark-electronic-festivals-north-america";
+const westCoastGuidePath = "/guides/west-coast-pacific-northwest-dark-alternative-festivals";
 
 export const metadata: Metadata = buildMetadata({
   title: "New Wave, Post-Punk & Retro Alternative Festivals in North America",
@@ -30,7 +32,6 @@ type GuideRecord = {
   city: string;
   region: string;
   country: string;
-  dateText?: string;
   officialUrl: string;
   sourceUrls: string[];
   atlasPath?: string;
@@ -38,8 +39,9 @@ type GuideRecord = {
   statusLabel: string;
   sceneFit: string;
   summary: string;
+  visitorFit: string;
   curatorNote: string;
-  confirmedText: string;
+  sourceNote: string;
   checkingText: string;
   guideAngle: string;
 };
@@ -51,20 +53,21 @@ const activeAtlasRecords: GuideRecord[] = [
     city: "Huntington Beach",
     region: "California",
     country: "United States",
-    dateText: "November 14, 2026",
     officialUrl: "https://www.darkerwavesfest.com/",
-    sourceUrls: ["https://www.darkerwavesfest.com/", "https://www.darkerwavesfest.com/lineup", "https://www.darkerwavesfest.com/tickets"],
+    sourceUrls: ["https://www.darkerwavesfest.com/"],
     atlasPath: "/festivals/darker-waves",
-    genreTags: ["new wave", "synth", "darkwave-adjacent", "retro alternative", "synthpop-adjacent"],
-    statusLabel: "Active atlas record with current source support",
-    sceneFit: "new wave, synth, darkwave-adjacent, retro alternative, and synthpop-adjacent discovery",
+    genreTags: ["new wave", "synth-era", "darkwave-adjacent", "retro alternative", "synthpop-adjacent"],
+    statusLabel: "Source-supported active atlas record",
+    sceneFit: "new wave, synth-era, darkwave-adjacent, retro alternative, and synthpop-adjacent discovery",
     summary:
-      "Darker Waves is the cleanest active atlas anchor for this guide: an official 2026 Huntington Beach festival where new wave, synth, darkwave-adjacent, and retro alternative discovery overlap.",
+      "Darker Waves is the clearest active atlas anchor for this guide because it sits close to the new wave, synth-era, retro alternative, and dark-leaning nostalgia lane.",
+    visitorFit:
+      "Start here if your taste runs toward the Depeche Mode, New Order, The Cure, Pet Shop Boys, Erasure, and dark dance-floor side of retro alternative culture.",
     curatorNote:
-      "RetroAltFest keeps this as the only core active guide card here. Artist and day-by-day claims should stay with the official source unless they are refreshed separately.",
-    confirmedText: "Official 2026 date and Huntington Beach festival identity are supported by the checked official source trail.",
-    checkingText: "Lineup specifics should be rechecked before being repeated in detail.",
-    guideAngle: "Core active atlas record with current source support.",
+      "RetroAltFest treats this as the core active card for this guide, while keeping artist, schedule, and ticket details with official sources unless those facts are refreshed separately.",
+    sourceNote: "The public atlas page exists because the record has source support inside the RetroAltFest active atlas.",
+    checkingText: "Specific artist bookings and event logistics should be checked at the official source before travel planning.",
+    guideAngle: "Core source-supported atlas entry for the new wave / retro alternative lane.",
   },
 ];
 
@@ -75,19 +78,20 @@ const adjacentAtlasRecords: GuideRecord[] = [
     city: "Pasadena",
     region: "California",
     country: "United States",
-    dateText: "August 22, 2026",
     officialUrl: "https://justlikeheavenfest.com/",
-    sourceUrls: ["https://justlikeheavenfest.com/", "https://justlikeheavenfest.com/lineup/", "https://justlikeheavenfest.com/festival-info/", "https://justlikeheavenfest.com/passes"],
+    sourceUrls: ["https://justlikeheavenfest.com/"],
     atlasPath: "/festivals/just-like-heaven",
-    genreTags: ["retro alternative", "indie nostalgia", "blog-era indie", "2000s alternative", "adjacent discovery"],
-    statusLabel: "Adjacent retro alternative discovery",
-    sceneFit: "retro alternative, indie nostalgia, blog-era and 2000s alternative memory",
+    genreTags: ["retro alternative", "indie nostalgia", "blog-era indie", "alternative memory", "adjacent discovery"],
+    statusLabel: "Related active atlas record",
+    sceneFit: "retro alternative, indie nostalgia, blog-era indie, and alternative memory",
     summary:
-      "Just Like Heaven is an active atlas link for adjacent retro alternative and indie nostalgia discovery, useful for readers exploring the wider orbit around new wave and post-punk without treating it as a core post-punk festival.",
+      "Just Like Heaven is useful for readers exploring the indie-nostalgia and retro alternative orbit around this guide, without treating it as a core post-punk or new wave festival.",
+    visitorFit:
+      "Use it as a path if listeners are coming from Interpol, Yeah Yeah Yeahs, The Strokes, Franz Ferdinand, and the blog-era alternative side of the family tree.",
     curatorNote:
-      "The status is strong, but the guide fit is adjacent. Keep it near the lane without turning this page into a general indie-nostalgia directory.",
-    confirmedText: "Official 2026 date and Pasadena festival identity are supported by the checked official source trail.",
-    checkingText: "Keep the framing related rather than core new wave or core post-punk.",
+      "The atlas link is active, but the scene fit is adjacent. Keeping that distinction prevents this guide from becoming a general indie nostalgia directory.",
+    sourceNote: "RetroAltFest links it because it is already part of the active atlas, not because every act or stage fits this exact guide lane.",
+    checkingText: "Specific artist bookings and event logistics should stay with official sources unless separately refreshed.",
     guideAngle: "Related active atlas record for nearby retro alternative and indie-nostalgia discovery.",
   },
   {
@@ -96,19 +100,20 @@ const adjacentAtlasRecords: GuideRecord[] = [
     city: "New York City",
     region: "New York",
     country: "United States",
-    dateText: "March 9–14, 2027",
     officialUrl: "https://www.newcolossusfestival.com/",
-    sourceUrls: ["https://www.newcolossusfestival.com/", "https://www.newcolossusfestival.com/badges", "https://www.newcolossusfestival.com/past-line-up"],
+    sourceUrls: ["https://www.newcolossusfestival.com/"],
     atlasPath: "/festivals/the-new-colossus-festival",
     genreTags: ["emerging alternative", "indie", "post-punk-adjacent", "new-music discovery", "multi-venue festival"],
-    statusLabel: "Emerging post-punk-adjacent discovery",
+    statusLabel: "Related active atlas record",
     sceneFit: "emerging alternative, indie, post-punk-adjacent, and new-music discovery",
     summary:
-      "The New Colossus Festival is a current active atlas link for emerging alternative and post-punk-adjacent discovery in New York City, with official 2027 dates confirmed; keep it framed as new-music discovery rather than classic new wave nostalgia.",
+      "The New Colossus Festival belongs here as a bridge into emerging alternative and post-punk-adjacent discovery, not as a classic new wave nostalgia anchor.",
+    visitorFit:
+      "Choose this path if your taste runs toward newer bands, international discovery, post-punk-adjacent guitar music, and the exploratory side of alternative festivals.",
     curatorNote:
-      "This is not a classic new wave nostalgia anchor. It belongs here as a useful active atlas bridge into emerging alternative and post-punk-adjacent discovery.",
-    confirmedText: "Official 2027 dates and New York City festival identity are supported by the checked official source trail.",
-    checkingText: "Treat it as a multi-venue parent festival and avoid single-venue simplification.",
+      "The festival helps this page serve visitors who want discovery beyond legacy nostalgia while still staying near the retro alternative and post-punk conversation.",
+    sourceNote: "RetroAltFest links it as an active atlas record with a useful adjacent role for this guide.",
+    checkingText: "Treat it as a broader discovery festival and avoid simplifying it to a single-scene event.",
     guideAngle: "Related active atlas record for emerging post-punk-adjacent discovery.",
   },
 ];
@@ -121,17 +126,19 @@ const referenceRecords: GuideRecord[] = [
     region: "California",
     country: "United States",
     officialUrl: "https://cruelworldfest.com/",
-    sourceUrls: ["https://cruelworldfest.com/", "https://cruelworldfest.com/lineup", "https://cruelworldfest.com/past-lineups", "https://cruelworldfest.com/info"],
+    sourceUrls: ["https://cruelworldfest.com/"],
     genreTags: ["classic alternative", "new wave", "post-punk", "synthpop-adjacent", "dark alternative"],
-    statusLabel: "Reference / date-not-announced signal",
+    statusLabel: "Reference point, not an active atlas link here",
     sceneFit: "classic alternative, new wave, post-punk, synthpop-adjacent, and dark alternative history",
     summary:
-      "Cruel World remains one of the strongest reference points for this guide’s retro alternative and post-punk lane, but current official sources checked here did not confirm a specific future date; keep it date-not-announced until a clean official future edition is published.",
+      "Cruel World remains a strong reference point for this guide’s retro alternative and post-punk lane, but RetroAltFest does not link it as an active atlas record here.",
+    visitorFit:
+      "It is useful context for listeners coming from Siouxsie and the Banshees, Bauhaus, Echo & the Bunnymen, Tears for Fears, and other darker or synth-linked alternative touchstones.",
     curatorNote:
-      "The editorial fit is strong, but the current public page should not present Cruel World as active, ticketed, or equivalent to atlas-backed records.",
-    confirmedText: "Official sources support Pasadena identity and recent activity, not a clean future date for this guide refresh.",
-    checkingText: "Recheck official date, edition, and logistics pages before any active treatment.",
-    guideAngle: "Reference signal with future date not yet confirmed.",
+      "The editorial fit is strong, but this page avoids treating reference signals like active atlas records.",
+    sourceNote: "A familiar name can be scene-relevant without receiving a RetroAltFest detail link.",
+    checkingText: "Official future-edition details would need a separate source review before active treatment.",
+    guideAngle: "Reference signal only; no RetroAltFest detail link.",
   },
 ];
 
@@ -142,46 +149,42 @@ const broadRelatedRecords: GuideRecord[] = [
     city: "Chicago",
     region: "Illinois",
     country: "United States",
-    dateText: "September 18–20, 2026",
     officialUrl: "https://riotfest.org/",
-    sourceUrls: ["https://riotfest.org/", "https://riotfest.org/chicago/lineup/", "https://riotfest.org/chicago/tickets/"],
+    sourceUrls: ["https://riotfest.org/"],
     genreTags: ["punk", "alternative", "legacy alternative", "post-punk-adjacent", "broad related signal"],
-    statusLabel: "Broad related festival to know",
+    statusLabel: "Broad related reference point",
     sceneFit: "punk, legacy alternative, broad alternative, and occasional post-punk-adjacent discovery",
     summary:
-      "Riot Fest has current official 2026 support, but for this guide it should remain a broad related festival to know, useful only where punk, legacy alternative, and post-punk-adjacent discovery overlap.",
+      "Riot Fest can be useful context where punk, legacy alternative, and post-punk-adjacent discovery overlap, but its scope is wider than this guide’s main lane.",
+    visitorFit:
+      "Use it as a nearby reference point if your taste runs toward broader alternative and punk-rooted festival culture rather than a focused new wave or post-punk guide path.",
     curatorNote:
-      "The event status is strong, but the scope is wider than this guide. Keep it light and do not turn it into an active RetroAltFest atlas CTA here.",
-    confirmedText: "Official 2026 date support exists, but the guide fit is broad.",
-    checkingText: "Use only as a light related reference, not a core new wave or post-punk card.",
-    guideAngle: "Broad related/overlap only; no RetroAltFest detail link.",
+      "RetroAltFest keeps the mention light here and does not turn it into an active guide card or festival-detail CTA.",
+    sourceNote: "Related context is not the same as an active RetroAltFest atlas page.",
+    checkingText: "Any specific artist, schedule, or ticket claim would require a separate source check.",
+    guideAngle: "Broad related reference only; no RetroAltFest detail link.",
   },
 ];
 
 const statusLabels = [
   {
-    label: "Active atlas record with current source support",
-    description: "A RetroAltFest atlas entry with current official or organizer-controlled source support and a public festival detail page.",
+    label: "Source-supported active atlas record",
+    description: "A RetroAltFest atlas entry with a public festival detail page and source support inside the active atlas.",
   },
   {
     label: "Related active atlas record",
     description: "An active atlas entry that helps discovery in a nearby lane without becoming the core new wave or post-punk anchor.",
   },
   {
-    label: "Reference / date-not-announced signal",
-    description: "A strong editorial fit where current official sources do not yet support a clean future date for active treatment.",
+    label: "Reference point",
+    description: "A familiar or scene-relevant festival name that helps readers understand the lane, but does not receive an active RetroAltFest detail link here.",
   },
   {
-    label: "Broad related festival to know",
+    label: "Broad related context",
     description: "A wider punk, indie, nostalgia, or alternative event that may matter to readers without defining this guide’s main lane.",
-  },
-  {
-    label: "Held until the guide fit is stronger",
-    description: "A researched lead kept out of active treatment because the fit or source case is not strong enough for this exact guide angle.",
   },
 ];
 
-const heldBackLeads = ["Kilby Block Party", "Best Friends Forever Fest", "When We Were Young"];
 const allPublicRecords = [...activeAtlasRecords, ...adjacentAtlasRecords, ...referenceRecords, ...broadRelatedRecords];
 
 export default function NewWavePostPunkRetroAlternativeGuidePage() {
@@ -216,10 +219,10 @@ export default function NewWavePostPunkRetroAlternativeGuidePage() {
               Start here for North American new wave, post-punk, retro alternative, synth-era, and related indie-nostalgia festival discovery.
             </p>
             <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-              RetroAltFest separates active atlas records with current source support from adjacent retro alternative overlap, emerging post-punk-adjacent discovery, and reference records still waiting on clean future-date confirmation.
+              This guide is for listeners coming from new wave, synthpop, post-punk, 80s alternative, goth-adjacent sounds, indie memory, and darker dance-floor culture who want a careful doorway into festival discovery.
             </p>
             <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-              We keep caveats visible because this lane overlaps with darkwave, synthpop, indie nostalgia, punk, and broader alternative festivals. RetroAltFest would rather label uncertainty clearly than imply dates, ticketing, or festival-detail pages that official sources do not support.
+              RetroAltFest separates source-supported active atlas records from adjacent links and reference points. We would rather label uncertainty clearly than imply ticketing, artist bookings, or festival pages that official sources do not support.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link className="raf-button-secondary px-5 py-3 text-sm font-semibold text-white" href="/verification">
@@ -233,75 +236,127 @@ export default function NewWavePostPunkRetroAlternativeGuidePage() {
               </Link>
             </div>
             <div className="mt-8 grid gap-3 sm:grid-cols-3">
-              <AtlasFact label="Guide records" value={`${allPublicRecords.length} checked examples`} />
-              <AtlasFact label="Core atlas card" value="Darker Waves" />
+              <AtlasFact label="Guide examples" value={`${allPublicRecords.length} source-aware examples`} />
+              <AtlasFact label="Primary atlas path" value="Darker Waves" />
               <AtlasFact label="Scope" value="New wave / post-punk / retro alternative" />
             </div>
           </div>
         </section>
 
+        <section className="mt-10 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+          <InfoPanel eyebrow="Who this guide is for" title="A doorway for retro alternative listeners who know the borders are blurry.">
+            <p>
+              Use this page if your taste runs toward new wave hooks, synth-era melancholy, darker guitar lines, post-punk atmosphere, indie nostalgia, or festival-scale alternative culture that brushes against goth and darkwave without always living there.
+            </p>
+            <p>
+              The point is not to flatten those scenes into one bucket. It is to help visitors find useful starting points while keeping source support, guide fit, and uncertainty visible.
+            </p>
+          </InfoPanel>
+
+          <InfoPanel eyebrow="How to use this guide" title="Start with the atlas links, then use reference points as context.">
+            <p>
+              Active atlas links go to public RetroAltFest festival pages. Reference points help explain the scene lane, but they do not receive fake detail pages just because the name is familiar.
+            </p>
+            <p>
+              For current artist, schedule, location, and ticket details, use the official festival source linked from each card. RetroAltFest keeps this page focused on discovery and context.
+            </p>
+          </InfoPanel>
+        </section>
+
         <section className="mt-10 rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(18,13,30,0.74),rgba(0,0,0,0.38))] p-6 sm:p-8 lg:p-10">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">What this guide covers</p>
+          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">Where to start</p>
           <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            The lane is retro alternative first, with visible overlap.
+            Choose the lane that matches your listening history.
+          </h2>
+          <div className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <StartCard
+              title="New wave, synth-era, and dark dance-floor memory"
+              description="Start with Darker Waves if your taste runs toward synthpop, 80s alternative, and darkwave-adjacent nostalgia."
+              href="/festivals/darker-waves"
+              linkLabel="Open Darker Waves"
+            />
+            <StartCard
+              title="Indie nostalgia and retro alternative overlap"
+              description="Use Just Like Heaven as an adjacent active atlas path for blog-era indie, alternative memory, and retro festival discovery."
+              href="/festivals/just-like-heaven"
+              linkLabel="Open Just Like Heaven"
+            />
+            <StartCard
+              title="Emerging alternative and post-punk-adjacent discovery"
+              description="Use The New Colossus Festival when you want newer bands, international discovery, and post-punk-adjacent scenes."
+              href="/festivals/the-new-colossus-festival"
+              linkLabel="Open The New Colossus Festival"
+            />
+            <StartCard
+              title="Darker scene-specific paths"
+              description="If you want the goth, darkwave, industrial, or EBM side, continue into the related RetroAltFest guides."
+              href={gothDarkwaveGuidePath}
+              linkLabel="Read the Goth & Darkwave guide"
+            />
+            <StartCard
+              title="Full active atlas browsing"
+              description="Use the festival directory when you want the full set of source-supported active RetroAltFest records."
+              href="/festivals"
+              linkLabel="Browse the atlas"
+            />
+            <StartCard
+              title="Source-aware method"
+              description="Use the verification page when you want to understand why some names are linked and others stay as context."
+              href="/verification"
+              linkLabel="Read the verification notes"
+            />
+          </div>
+        </section>
+
+        <section className="mt-10 rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(18,13,30,0.74),rgba(0,0,0,0.38))] p-6 sm:p-8 lg:p-10">
+          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">Scene and vibe notes</p>
+          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+            Retro alternative is a family tree, not a clean shelf label.
           </h2>
           <p className="mt-4 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-            This page focuses on festivals with reliable source trails across new wave, post-punk, synth-era nostalgia, dark alternative crossover, retro indie memory, and emerging alternative discovery. It does not treat every related indie, punk, or nostalgia festival as a core new wave/post-punk event.
+            The lane is retro alternative first, with visible overlap across new wave, post-punk, synthpop, darkwave-adjacent sounds, indie nostalgia, and broader alternative festivals. RetroAltFest keeps those overlaps useful without pretending every event belongs equally in the same scene.
           </p>
-          <div className="mt-6 flex flex-wrap gap-2">
-            {["new wave", "post-punk", "synth-era", "retro alternative", "indie nostalgia", "emerging alternative"].map((tag) => (
-              <span key={tag} className="raf-chip rounded-full px-3 py-1 text-xs">
-                {tag}
-              </span>
-            ))}
+          <div className="mt-7 grid gap-4 md:grid-cols-2">
+            <VibeNote title="New wave and synthpop nostalgia" description="Listeners coming from Depeche Mode, New Order, Pet Shop Boys, Erasure, or The Cure may find the strongest doorway through synth-era and dark dance-floor festival contexts." />
+            <VibeNote title="Post-punk and darker guitar overlap" description="Sounds adjacent to Joy Division, The Chameleons, Bauhaus, Echo & the Bunnymen, and The Sound help explain why some darker alternative festivals sit near this guide." />
+            <VibeNote title="Indie and blog-era alternative memory" description="Fans of Interpol, Yeah Yeah Yeahs, The Strokes, and Franz Ferdinand may connect through retro alternative and indie nostalgia rather than classic new wave." />
+            <VibeNote title="Darkwave and club-culture edges" description="Clan of Xymox, Drab Majesty, Boy Harsher-style dark electronic references, dark disco, electroclash, and EBM-adjacent DJ culture sit near the borders of this guide." />
           </div>
         </section>
 
         <GuideSection
-          eyebrow="Core active atlas record with current source support"
+          eyebrow="Source-supported active atlas record"
           title="Darker Waves is the active guide anchor."
-          description="Darker Waves is the only core active guide card in this refresh. Other linked records are useful adjacent paths, not core new wave/post-punk anchors."
+          description="Darker Waves is the core source-supported atlas card in this guide. Other linked records are useful adjacent paths, not the central new wave / retro alternative anchor."
           records={activeAtlasRecords}
           emphasized
         />
 
         <GuideSection
-          eyebrow="Related and adjacent active atlas records"
+          eyebrow="Related active atlas records"
           title="Nearby atlas links for retro alternative and post-punk-adjacent discovery."
           description="Just Like Heaven and The New Colossus Festival are useful active atlas paths when their guide fit is labeled carefully: adjacent retro alternative / indie nostalgia for Just Like Heaven, and emerging post-punk-adjacent discovery for The New Colossus."
           records={adjacentAtlasRecords}
         />
 
         <GuideSection
-          eyebrow="Reference / date-not-announced signal"
-          title="A strong guide fit waiting on clean future-date support."
-          description="Cruel World matters to this lane, but it is not an active atlas record and should not be treated like Darker Waves until a clean official future edition is published."
-          records={referenceRecords}
+          eyebrow="Reference points, not active atlas links here"
+          title="Familiar names can explain the lane without getting fake detail pages."
+          description="Cruel World and Riot Fest can be useful scene context, but this page does not link them as active RetroAltFest atlas records. Reference value is not the same as active atlas treatment."
+          records={[...referenceRecords, ...broadRelatedRecords]}
         />
 
-        <GuideSection
-          eyebrow="Broad related festival to know"
-          title="Useful overlap, not a core RetroAltFest card."
-          description="Riot Fest has current official source support, but its scope is broad. It stays light here as a related punk and legacy-alternative overlap signal, not an active atlas link."
-          records={broadRelatedRecords}
-        />
-
-        <section className="mt-10 rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(30,22,48,0.5),rgba(255,255,255,0.024))] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.28)] sm:p-8 lg:p-10">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">Possible future additions</p>
+        <section className="mt-10 rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(18,13,30,0.74),rgba(0,0,0,0.38))] p-6 sm:p-8 lg:p-10">
+          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">Why some names are not linked</p>
           <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            Reviewed, but not active guide cards here.
+            RetroAltFest does not create festival pages just to fill space.
           </h2>
           <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-            Kilby Block Party, Best Friends Forever Fest, and When We Were Young were reviewed as possible leads, but they stay out of active treatment for this guide. Their fit is either too broad, too date-uncertain, or better suited to another RetroAltFest guide lane.
+            Some festivals are meaningful reference points for new wave, post-punk, and retro alternative listeners, but they are not active RetroAltFest atlas links on this page. That distinction protects visitors from dead ends and keeps the atlas tied to source-supported records.
           </p>
-          <ul className="mt-6 grid gap-3 md:grid-cols-3">
-            {heldBackLeads.map((lead) => (
-              <li key={lead} className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4 text-sm leading-6 text-[var(--raf-text-muted)]">
-                <span className="font-display text-lg font-semibold text-white">{lead}</span>
-                <span className="mt-2 block">Held until the guide fit is stronger for this exact lane.</span>
-              </li>
-            ))}
-          </ul>
+          <p className="mt-4 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
+            When a name is discussed as context, the guide should make that clear. When a name receives a public RetroAltFest festival page, it should be because the record belongs in the active atlas and has passed the site’s source-aware review.
+          </p>
         </section>
 
         <section className="mt-10 rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(18,13,30,0.74),rgba(0,0,0,0.38))] p-6 sm:p-8 lg:p-10">
@@ -310,7 +365,7 @@ export default function NewWavePostPunkRetroAlternativeGuidePage() {
             How RetroAltFest labels this guide
           </h2>
           <p className="mt-4 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-            RetroAltFest keeps source caveats visible so readers can tell active atlas records from adjacent overlap, emerging discovery links, and reference records still waiting on clean future-date support.
+            RetroAltFest keeps source caveats visible so readers can tell active atlas records from adjacent discovery and reference context.
           </p>
           <div className="mt-6 grid gap-4 md:grid-cols-2">
             {statusLabels.map((status) => (
@@ -323,12 +378,27 @@ export default function NewWavePostPunkRetroAlternativeGuidePage() {
         </section>
 
         <section className="mt-10 rounded-[2rem] border border-[rgba(34,211,238,0.18)] bg-[linear-gradient(135deg,rgba(34,211,238,0.08),rgba(168,85,247,0.1),rgba(0,0,0,0.42))] p-6 sm:p-8 lg:p-10">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-cyan)]">Related paths</p>
+          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-cyan)]">Short FAQ</p>
+          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+            Quick answers for careful festival discovery.
+          </h2>
+          <div className="mt-7 grid gap-4 md:grid-cols-2">
+            <FaqItem question="Are these all active RetroAltFest festival pages?" answer="No. The guide includes active atlas links and reference points. Only source-supported active atlas records receive RetroAltFest festival detail links." />
+            <FaqItem question="Why are some familiar festivals mentioned but not linked?" answer="A festival can be useful context without being an active atlas record here. RetroAltFest avoids fake detail pages for reference-only names." />
+            <FaqItem question="What counts as new wave or post-punk for this guide?" answer="The guide focuses on festival discovery where new wave, post-punk, synth-era, retro alternative, darkwave-adjacent, or indie nostalgia sounds meaningfully overlap." />
+            <FaqItem question="Is this a full list of every related festival?" answer="No. It is a curated, source-aware starting point that favors trust and usefulness over scale." />
+            <FaqItem question="How is this different from the goth and darkwave guide?" answer="This page leans more toward new wave, post-punk, retro alternative, synth-era, and indie nostalgia. The goth and darkwave guide stays closer to darker scene-specific discovery." />
+            <FaqItem question="How does RetroAltFest verify festival information?" answer="RetroAltFest uses a source-aware process and explains the method on the verification page." href="/verification" linkLabel="Read verification notes" />
+          </div>
+        </section>
+
+        <section className="mt-10 rounded-[2rem] border border-[rgba(34,211,238,0.18)] bg-[linear-gradient(135deg,rgba(34,211,238,0.08),rgba(168,85,247,0.1),rgba(0,0,0,0.42))] p-6 sm:p-8 lg:p-10">
+          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-cyan)]">Related RetroAltFest paths</p>
           <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
             Keep the overlap useful without blurring the guides.
           </h2>
           <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
-            For darker scene-specific discovery, use the North American Goth & Darkwave Festivals guide. For heavier dark electronic, industrial, and EBM-focused discovery, use the Industrial, EBM & Dark Electronic Festivals in North America guide. This page stays centered on retro alternative, new wave, post-punk, synth-era discovery, and adjacent nostalgia.
+            For darker scene-specific discovery, use the North American Goth & Darkwave Festivals guide. For heavier dark electronic, industrial, and EBM-focused discovery, use the Industrial, EBM & Dark Electronic Festivals in North America guide. For regional West Coast and Pacific Northwest exploration, use the regional dark alternative guide.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link className="raf-button-secondary px-5 py-3 text-sm font-semibold text-white" href={gothDarkwaveGuidePath}>
@@ -336,6 +406,9 @@ export default function NewWavePostPunkRetroAlternativeGuidePage() {
             </Link>
             <Link className="raf-button-secondary px-5 py-3 text-sm font-semibold text-white" href={industrialEbmGuidePath}>
               Read the Industrial / EBM guide
+            </Link>
+            <Link className="raf-button-secondary px-5 py-3 text-sm font-semibold text-white" href={westCoastGuidePath}>
+              Read the West Coast / PNW guide
             </Link>
             <Link className="raf-button-primary px-5 py-3 text-sm font-black text-[#050507]" href="/festivals">
               Browse the festival atlas
@@ -345,7 +418,7 @@ export default function NewWavePostPunkRetroAlternativeGuidePage() {
 
         <DiscoveryLinks
           title="Choose your next discovery path."
-          description="Use this guide as one route into the atlas, then continue into the current record view, the guide hub, or the source-check notes behind RetroAltFest records."
+          description="Use this guide as one route into the atlas, then continue into the active record view, the guide hub, or the source-check notes behind RetroAltFest records."
           links={[
             {
               href: "/guides",
@@ -354,13 +427,13 @@ export default function NewWavePostPunkRetroAlternativeGuidePage() {
             },
             {
               href: "/festivals",
-              label: "Browse current atlas records",
-              description: "Open the active festival atlas and follow only source-backed internal detail links.",
+              label: "Browse active atlas records",
+              description: "Open the festival atlas and follow only source-backed internal detail links.",
             },
             {
               href: "/verification",
               label: "See how source checks work",
-              description: "Review how RetroAltFest separates confirmed records from reference signals and related context.",
+              description: "Review how RetroAltFest separates active records from reference signals and related context.",
             },
           ]}
         />
@@ -419,13 +492,14 @@ function FestivalGuideCard({ record, emphasized }: { record: GuideRecord; emphas
 
       <p className="mt-5 text-sm font-semibold text-white">Scene fit: {record.sceneFit}</p>
       <p className="mt-3 leading-7 text-[var(--raf-text-muted)]">{record.summary}</p>
+      <p className="mt-4 leading-7 text-[var(--raf-text-muted)]">{record.visitorFit}</p>
       <p className="mt-4 rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4 text-sm leading-6 text-[var(--raf-text-muted)]">
         <span className="font-semibold text-white">Curator note: </span>{record.curatorNote}
       </p>
 
       <dl className="mt-5 grid gap-3 sm:grid-cols-2">
-        <AtlasFact label="What we’ve confirmed" value={record.confirmedText} />
-        <AtlasFact label="What we’re still checking" value={record.checkingText} />
+        <AtlasFact label="Source-aware note" value={record.sourceNote} />
+        <AtlasFact label="Still check officially" value={record.checkingText} />
       </dl>
 
       <p className="mt-5 rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4 text-sm leading-6 text-[var(--raf-text-muted)]">
@@ -449,8 +523,53 @@ function FestivalGuideCard({ record, emphasized }: { record: GuideRecord; emphas
         <a className="inline-flex break-words text-sm font-semibold text-[var(--raf-cyan)] transition hover:text-white" href={record.officialUrl} target="_blank" rel="noreferrer">
           Official source: {record.officialUrl.replace(/^https?:\/\//, "")}
         </a>
-        <p className="text-xs leading-5 text-[var(--raf-text-dim)]">Sources checked: {record.sourceUrls.length} official or organizer-controlled pages.</p>
+        <p className="text-xs leading-5 text-[var(--raf-text-dim)]">Sources checked: {record.sourceUrls.length} official or organizer-controlled page.</p>
       </div>
+    </article>
+  );
+}
+
+function InfoPanel({ eyebrow, title, children }: { eyebrow: string; title: string; children: ReactNode }) {
+  return (
+    <section className="rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(18,13,30,0.74),rgba(0,0,0,0.38))] p-6 sm:p-8">
+      <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">{eyebrow}</p>
+      <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white">{title}</h2>
+      <div className="mt-4 space-y-4 leading-8 text-[var(--raf-text-muted)]">{children}</div>
+    </section>
+  );
+}
+
+function StartCard({ title, description, href, linkLabel }: { title: string; description: string; href: string; linkLabel: string }) {
+  return (
+    <article className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-5">
+      <h3 className="font-display text-xl font-semibold text-white">{title}</h3>
+      <p className="mt-3 text-sm leading-6 text-[var(--raf-text-muted)]">{description}</p>
+      <Link className="mt-4 inline-flex text-sm font-semibold text-[var(--raf-cyan)] transition hover:text-white" href={href}>
+        {linkLabel}
+      </Link>
+    </article>
+  );
+}
+
+function VibeNote({ title, description }: { title: string; description: string }) {
+  return (
+    <article className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-5">
+      <h3 className="font-display text-xl font-semibold text-white">{title}</h3>
+      <p className="mt-3 text-sm leading-6 text-[var(--raf-text-muted)]">{description}</p>
+    </article>
+  );
+}
+
+function FaqItem({ question, answer, href, linkLabel }: { question: string; answer: string; href?: string; linkLabel?: string }) {
+  return (
+    <article className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-5">
+      <h3 className="font-display text-xl font-semibold text-white">{question}</h3>
+      <p className="mt-3 text-sm leading-6 text-[var(--raf-text-muted)]">{answer}</p>
+      {href && linkLabel ? (
+        <Link className="mt-4 inline-flex text-sm font-semibold text-[var(--raf-cyan)] transition hover:text-white" href={href}>
+          {linkLabel}
+        </Link>
+      ) : null}
     </article>
   );
 }
