@@ -357,11 +357,27 @@ test('public launch exposes robots, sitemap, and web manifest metadata routes', 
   assert.match(sitemap, /\/festivals/);
   assert.match(sitemap, /\/guides\/north-american-goth-darkwave-festivals/);
   assert.match(sitemap, /\/guides\/industrial-ebm-dark-electronic-festivals-north-america/);
+  assert.doesNotMatch(sitemap, /terminus-festival-resonance/);
 
   assert.match(manifest, /MetadataRoute\.Manifest/);
   assert.match(manifest, /name: "RetroAltFest"/);
   assert.match(manifest, /start_url: "\/"/);
   assert.match(manifest, /\/icon\.svg/);
+});
+
+test('legacy Terminus resonance slug redirects to the canonical atlas entry', () => {
+  const legacyRedirectPath = 'src/app/festivals/terminus-festival-resonance/route.ts';
+  assert.equal(existsSync(join(root, legacyRedirectPath)), true, 'legacy Terminus redirect route should exist');
+
+  const redirectRoute = read(legacyRedirectPath);
+  const data = JSON.parse(read('src/data/atlas-festivals.json'));
+  const slugs = new Set(data.festivals.map((record) => record.slug));
+
+  assert.match(redirectRoute, /NextResponse\.redirect/);
+  assert.match(redirectRoute, /\/festivals\/terminus-festival/);
+  assert.match(redirectRoute, /301/);
+  assert.equal(slugs.has('terminus-festival'), true, 'canonical Terminus slug should remain active');
+  assert.equal(slugs.has('terminus-festival-resonance'), false, 'legacy Terminus slug should not become an atlas record');
 });
 
 test('custom analytics logger is disabled for production safety', () => {
