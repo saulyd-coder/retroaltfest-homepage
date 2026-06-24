@@ -47,6 +47,11 @@ export default function Home() {
               label: "See how source checks work",
               description: "Learn why RetroAltFest keeps verification notes visible and stays verified before mapped.",
             },
+            {
+              href: "/suggest",
+              label: "Suggest a festival for review",
+              description: "Send a source-backed suggestion, correction, or official update for manual review.",
+            },
           ]}
         />
       </div>

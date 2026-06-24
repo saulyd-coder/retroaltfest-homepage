@@ -37,6 +37,9 @@ export default function FestivalsDirectoryPage() {
           <Link className="mt-5 inline-flex font-mono text-xs uppercase tracking-[0.22em] text-[var(--raf-cyan)] transition hover:text-white" href="/verification">
             What these status labels mean →
           </Link>
+          <Link className="ml-0 mt-3 inline-flex font-mono text-xs uppercase tracking-[0.22em] text-[var(--raf-magenta)] transition hover:text-white sm:ml-5 sm:mt-5" href="/suggest">
+            Missing a festival? Suggest a source-backed lead →
+          </Link>
         </div>
 
         <FestivalDirectoryBrowser festivals={publicFestivalDirectoryItems} />
@@ -65,6 +68,11 @@ export default function FestivalsDirectoryPage() {
               href: "/guides/west-coast-pacific-northwest-dark-alternative-festivals",
               label: "West Coast / PNW guide",
               description: "Use the regional route for Southern California, Pacific Northwest, and nearby dark alternative context.",
+            },
+            {
+              href: "/suggest",
+              label: "Suggest a festival for review",
+              description: "Share a festival lead, correction, or official source for manual review before anything changes publicly.",
             },
           ]}
         />

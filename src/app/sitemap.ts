@@ -31,6 +31,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.75,
     },
     {
+      url: `${SITE_URL}/suggest`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.65,
+    },
+    {
       url: `${SITE_URL}/guides/north-american-goth-darkwave-festivals`,
       lastModified: now,
       changeFrequency: "monthly",

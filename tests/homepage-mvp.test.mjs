@@ -355,6 +355,7 @@ test('public launch exposes robots, sitemap, and web manifest metadata routes', 
   assert.match(sitemap, /featuredFestivals/);
   assert.match(sitemap, /festivalSlug/);
   assert.match(sitemap, /\/festivals/);
+  assert.match(sitemap, /\/suggest/);
   assert.match(sitemap, /\/guides\/north-american-goth-darkwave-festivals/);
   assert.match(sitemap, /\/guides\/industrial-ebm-dark-electronic-festivals-north-america/);
   assert.doesNotMatch(sitemap, /terminus-festival-resonance/);
@@ -378,6 +379,42 @@ test('legacy Terminus resonance slug redirects to the canonical atlas entry', ()
   assert.match(redirectRoute, /301/);
   assert.equal(slugs.has('terminus-festival'), true, 'canonical Terminus slug should remain active');
   assert.equal(slugs.has('terminus-festival-resonance'), false, 'legacy Terminus slug should not become an atlas record');
+});
+
+test('suggest page provides source-backed manual review intake without platform scope', () => {
+  const suggestPath = 'src/app/suggest/page.tsx';
+  assert.equal(existsSync(join(root, suggestPath)), true, 'static /suggest page should exist');
+
+  const suggestPage = read(suggestPath);
+  const homepage = read('src/app/page.tsx');
+  const footer = read('src/components/site/Footer.tsx');
+  const verificationPage = read('src/app/verification/page.tsx');
+  const festivalsPage = read('src/app/festivals/page.tsx');
+  const sitemap = read('src/app/sitemap.ts');
+
+  for (const copy of [
+    'Suggest a festival for review',
+    'source-backed suggestion',
+    'reviewed manually',
+    'not automatically published',
+    'Open the suggestion form',
+    'The form opens in Google Forms.',
+    'https://forms.gle/qhXiMRZbcihSue6z8',
+    'target="_blank"',
+    'rel="noopener noreferrer"',
+    'Please do not submit private, confidential, or unpublished information.',
+    'Contact info is optional',
+  ]) {
+    assert.match(suggestPage, new RegExp(copy.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
+
+  for (const source of [homepage, footer, verificationPage, festivalsPage]) {
+    assert.match(source, /href(?::|=)\s*"\/suggest"/);
+  }
+
+  assert.match(sitemap, /`\$\{SITE_URL\}\/suggest`/);
+  assert.doesNotMatch(suggestPage, /Submit your festival for listing|claim a listing|get listed|guaranteed inclusion|official partner/i);
+  assert.doesNotMatch(suggestPage, /fetch\(|\/api\/|prisma|supabase|mongodb|auth|cms|database|scraping|auto-publishing/i);
 });
 
 test('custom analytics logger is disabled for production safety', () => {
@@ -904,13 +941,14 @@ test('internal discovery links connect existing routes without fake festival det
     'src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/page.tsx',
     'src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/page.tsx',
     'src/app/verification/page.tsx',
+    'src/app/suggest/page.tsx',
     'src/components/site/Header.tsx',
     'src/components/site/Footer.tsx',
     'src/components/site/DiscoveryLinks.tsx',
   ];
 
   const source = sourcePaths.map(read).join('\n');
-  for (const route of ['/festivals', '/guides', '/verification']) {
+  for (const route of ['/festivals', '/guides', '/verification', '/suggest']) {
     assert.match(source, new RegExp(route.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')));
   }
 
@@ -949,6 +987,8 @@ test('discovery flow uses route-safe global navigation instead of local-only foo
   assert.match(homepage, /Where should I start\?/);
   assert.match(homepage, /Choose your first RetroAltFest path/);
   assert.match(detailPage, /Continue exploring RetroAltFest/);
+  assert.match(header, /href="\/suggest"/);
+  assert.match(footer, /href="\/suggest"/);
 });
 
 test('public festival DTO helper defines only approved browser-facing shapes', () => {
@@ -1025,12 +1065,14 @@ test('public route and component sources do not expose blocked internal source-s
     'src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/page.tsx',
     'src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/page.tsx',
     'src/app/verification/page.tsx',
+    'src/app/suggest/page.tsx',
     'src/components/festivals/FestivalDirectoryBrowser.tsx',
     'src/components/home/FestivalCard.tsx',
     'src/components/home/FeaturedFestivals.tsx',
     'src/components/home/MapPreview.tsx',
     'src/components/home/TrustSection.tsx',
     'src/components/home/FirstDarkFestivalSignals.tsx',
+    'src/components/home/SubmitFestivalCta.tsx',
   ];
 
   const blockedPatterns = [

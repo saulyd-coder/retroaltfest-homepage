@@ -14,7 +14,7 @@ export function Footer() {
           <Link className="transition hover:text-white focus-visible:text-white" href="/festivals">Festival atlas</Link>
           <Link className="transition hover:text-white focus-visible:text-white" href="/guides">Guides</Link>
           <Link className="transition hover:text-white focus-visible:text-white" href="/verification">Verification</Link>
-          <Link className="transition hover:text-white focus-visible:text-white" href="/#submit">Submit festival</Link>
+          <Link className="transition hover:text-white focus-visible:text-white" href="/suggest">Suggest a festival</Link>
         </div>
       </div>
     </footer>

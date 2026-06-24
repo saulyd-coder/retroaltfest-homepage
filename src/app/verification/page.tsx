@@ -179,11 +179,11 @@ export default function VerificationPage() {
               <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-cyan)]">Help improve the atlas</p>
               <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white">Have a festival lead or correction?</h2>
               <p className="mt-4 max-w-3xl text-base leading-7 text-[var(--raf-text-muted)]">
-                RetroAltFest will eventually support cleaner submissions. For now, join the discovery digest and keep an eye on the atlas as the source-checking loop expands.
+                If you know a festival, correction, or official update RetroAltFest should review, send a source-backed suggestion. Suggestions are checked manually and are not automatically published.
               </p>
             </div>
-            <Link className="raf-button-primary w-fit px-5 py-3" href="/#waitlist">
-              Join the waitlist
+            <Link className="raf-button-primary w-fit px-5 py-3" href="/suggest">
+              Suggest a festival for review
             </Link>
           </div>
         </section>
