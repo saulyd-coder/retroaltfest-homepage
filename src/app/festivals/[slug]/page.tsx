@@ -12,6 +12,42 @@ import { DiscoveryLinks } from "@/components/site/DiscoveryLinks";
 
 export const dynamicParams = false;
 
+const detailPagePolish: Record<
+  string,
+  {
+    metadataTitle: string;
+    metadataDescription: string;
+    heroSummary: string;
+    sourceAwareNote: string;
+    verificationHighlights: string[];
+    faq: {
+      question: string;
+      answer: string;
+    };
+  }
+> = {
+  "absolution-fest": {
+    metadataTitle: "Absolution Fest 2026 — Tampa Goth, Darkwave & Post-Punk Festival",
+    metadataDescription:
+      "Source-aware RetroAltFest notes for Absolution Fest 2026 in Tampa, Florida, scheduled for October 1–3 with official and organizer-controlled source support.",
+    heroSummary:
+      "Absolution Fest 2026 is scheduled for October 1–3, 2026 in Tampa, Florida, with official and organizer-controlled sources supporting the current date and city details. RetroAltFest keeps venue and map certainty cautious until each location detail is rechecked.",
+    sourceAwareNote:
+      "For current ticket and event details, check the official Absolution Fest site and the official-site-linked Eventbrite listing. RetroAltFest summarizes the source trail, but the organizer-controlled pages remain the best place for updates.",
+    verificationHighlights: [
+      "Official sources support Absolution Fest 2026 for October 1–3, 2026.",
+      "Official sources place the event in Tampa, Florida.",
+      "The organizer-controlled ticket page lists The Orpheum in Tampa, FL.",
+      "Venue and map certainty stay cautious until rechecked for any future placement work.",
+    ],
+    faq: {
+      question: "Is Absolution Fest 2026 officially announced?",
+      answer:
+        "Yes. Official and organizer-controlled sources support Absolution Fest 2026 for October 1–3, 2026 in Tampa, Florida. The official-site-linked Eventbrite listing names The Orpheum in Tampa, FL; visitors should check the official festival site and Eventbrite for the latest ticket and event details.",
+    },
+  },
+};
+
 type FestivalPageProps = {
   params: Promise<{ slug: string }>;
 };
@@ -31,9 +67,11 @@ export async function generateMetadata({ params }: FestivalPageProps): Promise<M
     };
   }
 
+  const polish = detailPagePolish[festival.slug];
+
   return buildMetadata({
-    title: `${festival.name} festival guide`,
-    description: festival.summary,
+    title: polish?.metadataTitle ?? `${festival.name} festival guide`,
+    description: polish?.metadataDescription ?? festival.summary,
     path: `/festivals/${festival.slug}`,
     type: "article",
     keywords: festival.seoKeywords,
@@ -45,11 +83,10 @@ export async function generateMetadata({ params }: FestivalPageProps): Promise<M
 
 export default async function FestivalDetailPage({ params }: FestivalPageProps) {
   const { slug } = await params;
-  const festival = getPublicFestivalDetailBySlug(slug);
+  const festival = getPublicFestivalDetailBySlug(slug) ?? notFound();
 
-  if (!festival) {
-    notFound();
-  }
+  const polish = detailPagePolish[festival.slug];
+  const heroSummary = polish?.heroSummary ?? festival.summary;
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[var(--raf-black)] text-[var(--raf-text)]">
@@ -78,7 +115,7 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
                 {festival.name}
               </h1>
               <p className="mt-5 max-w-3xl text-lg leading-8 text-[var(--raf-text-muted)] sm:text-xl">
-                {festival.summary}
+                {heroSummary}
               </p>
 
               <dl className="mt-8 grid gap-3 sm:grid-cols-3">
@@ -127,6 +164,21 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
               </div>
             </section>
 
+            {polish ? (
+              <section className="rounded-[2rem] border border-[rgba(34,211,238,0.18)] bg-[linear-gradient(180deg,rgba(14,26,38,0.62),rgba(0,0,0,0.32))] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.22)] sm:p-8">
+                <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-cyan)]">Source-aware status</p>
+                <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white">Current source check</h2>
+                <p className="mt-5 leading-8 text-[var(--raf-text-muted)]">{polish.sourceAwareNote}</p>
+                <ul className="mt-5 grid gap-3 text-sm leading-6 text-[var(--raf-text-muted)] md:grid-cols-2">
+                  {polish.verificationHighlights.map((highlight) => (
+                    <li key={highlight} className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4">
+                      {highlight}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+
             <section className="rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(18,13,30,0.74),rgba(0,0,0,0.38))] p-6 sm:p-8">
               <h2 className="font-display text-3xl font-semibold tracking-tight text-white">Official sources</h2>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -139,6 +191,14 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
                 ))}
               </div>
             </section>
+
+            {polish ? (
+              <section className="rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-black/25 p-6 shadow-[0_20px_80px_rgba(0,0,0,0.2)] sm:p-8">
+                <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">Quick answer</p>
+                <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white">{polish.faq.question}</h2>
+                <p className="mt-5 leading-8 text-[var(--raf-text-muted)]">{polish.faq.answer}</p>
+              </section>
+            ) : null}
           </div>
 
           <aside className="space-y-8">

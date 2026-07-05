@@ -265,6 +265,24 @@ test('festival detail route is static-first and SEO-ready', () => {
   assert.match(helpers, /getSimilarFestivals/);
 });
 
+test('Absolution Fest detail polish stays one-page and source-aware', () => {
+  const detailPage = read('src/app/festivals/[slug]/page.tsx');
+  const dataBefore = read('src/data/atlas-festivals.json');
+  const publicBoundary = read('src/lib/public-festivals.ts');
+
+  assert.match(detailPage, /Absolution Fest 2026 — Tampa Goth, Darkwave & Post-Punk Festival/);
+  assert.match(detailPage, /October 1–3, 2026 in Tampa, Florida/);
+  assert.match(detailPage, /The Orpheum in Tampa, FL/);
+  assert.match(detailPage, /official Absolution Fest site and the official-site-linked Eventbrite listing/);
+  assert.match(detailPage, /Venue and map certainty stay cautious/);
+  assert.match(detailPage, /Is Absolution Fest 2026 officially announced\?/);
+  assert.match(detailPage, /detailPagePolish\[festival\.slug\]/);
+  assert.doesNotMatch(detailPage, /latitude|longitude|geocoding|map-readiness|date_pending|source_status|needs_review/);
+  assert.doesNotMatch(detailPage, /fetch\(|\/api\/|prisma|supabase|mongodb|auth|cms|database|scraping/i);
+  assert.equal(read('src/data/atlas-festivals.json'), dataBefore);
+  assert.match(publicBoundary, /getPublicFestivalDetailBySlug/);
+});
+
 test('homepage cards link into the curated festival atlas', () => {
   const card = read('src/components/home/FestivalCard.tsx');
   assert.match(card, /next\/link/);
