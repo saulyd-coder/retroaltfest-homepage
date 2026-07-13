@@ -104,10 +104,50 @@ test('homepage MVP uses clean component structure and footer', () => {
   }
 
   const page = read('src/app/page.tsx');
-  assert.match(page, /<Hero/);
+  assert.match(page, /<NightTransmissionHero/);
   assert.match(page, /<FeaturedFestivals/);
   assert.match(page, /<Footer/);
   assert.doesNotMatch(page, /function FestivalCard/);
+});
+
+test('Night Transmission homepage uses supplied decorative assets with live public festival data', () => {
+  const componentPath = 'src/components/home/night-transmission/NightTransmissionHero.tsx';
+  const stylesPath = 'src/components/home/night-transmission/NightTransmissionHero.module.css';
+  const assetNames = [
+    'environment-desktop.webp',
+    'environment-mobile.webp',
+    'wet-ground.webp',
+    'poster-orbital-magenta.webp',
+    'poster-tunnel-cyan.webp',
+    'poster-waveform-violet.webp',
+    'headline-distress-mask.webp',
+  ];
+
+  assert.equal(existsSync(join(root, componentPath)), true);
+  assert.equal(existsSync(join(root, stylesPath)), true);
+
+  for (const assetName of assetNames) {
+    assert.equal(existsSync(join(root, 'public/night-transmission', assetName)), true, `${assetName} should be copied into the public asset directory`);
+  }
+
+  const component = read(componentPath);
+  const styles = read(stylesPath);
+  assert.match(component, /publicFeaturedFestivals/);
+  assert.match(component, /<picture/);
+  assert.match(component, /environment-mobile\.webp/);
+  assert.match(component, /environment-desktop\.webp/);
+  assert.match(component, /wet-ground\.webp/);
+  assert.match(component, /aria-pressed/);
+  assert.match(component, /aria-expanded=\{menuOpen\}/);
+  assert.match(component, /aria-controls="night-transmission-nav"/);
+  assert.match(component, /href=\{`\/festivals\/\$\{festival\.slug\}`\}/);
+  assert.match(component, /alt=""/);
+  assert.doesNotMatch(component, /atlas-festivals\.json|latitude|longitude|geocod/i);
+  assert.match(styles, /headline-distress-mask\.webp/);
+  assert.match(styles, /\.mobileNavToggle/);
+  assert.match(styles, /min-width: 44px/);
+  assert.match(styles, /prefers-reduced-motion/);
+  assert.match(styles, /focus-visible/);
 });
 
 test('README documents setup, structure, run, and deployment guidance', () => {
@@ -628,12 +668,12 @@ test('first dark festival signals module is placed directly after the hero', () 
   const page = read('src/app/page.tsx');
   assert.match(page, /components\/home\/FirstDarkFestivalSignals/);
 
-  const heroIndex = page.indexOf('<Hero />');
+  const heroIndex = page.indexOf('<NightTransmissionHero />');
   const signalsIndex = page.indexOf('<FirstDarkFestivalSignals />');
   const trustIndex = page.indexOf('<TrustSection />');
   const mapIndex = page.indexOf('<MapPreview />');
 
-  assert.ok(heroIndex > -1, 'Hero should still render');
+  assert.ok(heroIndex > -1, 'Night Transmission hero should render');
   assert.ok(signalsIndex > heroIndex, 'Signals module should render after Hero');
   assert.ok(trustIndex > signalsIndex, 'Existing trust section should remain after Signals module');
   assert.ok(mapIndex > signalsIndex, 'Existing map preview should remain after Signals module');

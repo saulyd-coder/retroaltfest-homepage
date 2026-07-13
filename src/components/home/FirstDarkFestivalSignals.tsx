@@ -1,4 +1,5 @@
 import signalsData from "@/data/first_dark_festival_signals.json";
+import styles from "./FirstDarkFestivalSignals.module.css";
 
 const statusTone: Record<string, string> = {
   "Confirmed upcoming": "border-[rgba(52,211,153,0.26)] bg-[rgba(52,211,153,0.08)] text-[var(--raf-verified)]",
@@ -20,7 +21,7 @@ export function FirstDarkFestivalSignals() {
   return (
     <section
       aria-labelledby="first-dark-festival-signals-heading"
-      className="relative mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-18"
+      className={`${styles.section} relative mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-18`}
     >
       <div className="section-shadow-well pointer-events-none absolute inset-x-4 top-0 h-40 rounded-full opacity-80 blur-3xl" />
 
@@ -36,16 +37,16 @@ export function FirstDarkFestivalSignals() {
         <p className="mt-4 max-w-2xl border-l border-[var(--raf-cyan)]/24 pl-4 text-sm leading-6 text-[var(--raf-text-muted)]">
           {section.trust_note}
         </p>
-        <p className="mt-3 max-w-2xl rounded-2xl border border-[rgba(168,85,247,0.18)] bg-[rgba(15,23,42,0.42)] px-4 py-3 text-sm leading-6 text-[var(--raf-text-dim)]">
+        <p className={`${styles.clarification} mt-3 max-w-2xl border border-[rgba(168,85,247,0.18)] px-4 py-3 text-sm leading-6 text-[var(--raf-text-dim)]`}>
           {section.clarification_note}
         </p>
       </div>
 
-      <div className="relative grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className={`${styles.signalGrid} relative grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3`}>
         {signals.map((signal) => (
           <article
             key={signal.id}
-            className="editorial-card-glow group relative min-h-full overflow-hidden rounded-3xl border border-[rgba(168,85,247,0.18)] p-5 transition duration-500 hover:-translate-y-0.5 hover:border-[var(--raf-cyan)]/40"
+            className={`${styles.card} editorial-card-glow group relative min-h-full overflow-hidden border border-[rgba(168,85,247,0.18)] p-5 transition duration-500 hover:border-[var(--raf-cyan)]/40`}
           >
             <div
               className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${
