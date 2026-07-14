@@ -141,9 +141,12 @@ test('Night Transmission homepage uses supplied decorative assets with live publ
   assert.match(component, /aria-expanded=\{menuOpen\}/);
   assert.match(component, /aria-controls="night-transmission-nav"/);
   assert.match(component, /href=\{`\/festivals\/\$\{festival\.slug\}`\}/);
+  assert.match(component, /<span>THE UNDERGROUND<\/span>\s*\{" "\}\s*<span>IS STILL ALIVE\.<\/span>/);
   assert.match(component, /alt=""/);
   assert.doesNotMatch(component, /atlas-festivals\.json|latitude|longitude|geocod/i);
   assert.match(styles, /headline-distress-mask\.webp/);
+  assert.match(styles, /width: max-content/);
+  assert.match(styles, /padding-right: 0\.08em/);
   assert.match(styles, /\.mobileNavToggle/);
   assert.match(styles, /min-width: 44px/);
   assert.match(styles, /prefers-reduced-motion/);

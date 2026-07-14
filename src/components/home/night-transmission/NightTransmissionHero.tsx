@@ -103,6 +103,7 @@ export function NightTransmissionHero() {
         <p className={styles.eyebrow}>SOURCE-AWARE DARK FESTIVAL DISCOVERY</p>
         <h1 id="night-transmission-title" className={styles.title}>
           <span>THE UNDERGROUND</span>
+          {" "}
           <span>IS STILL ALIVE.</span>
         </h1>
         <p className={styles.supporting}>New wave. Goth. Darkwave. EBM. Industrial. Synthpop.</p>

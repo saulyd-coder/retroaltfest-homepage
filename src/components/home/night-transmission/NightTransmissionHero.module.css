@@ -671,7 +671,8 @@
 .eyebrow { display: none; }
 
 .title {
-  width: 118%;
+  width: max-content;
+  padding-right: 0.08em;
   font-size: clamp(104px, 8.2vw, 137px);
   line-height: 0.78;
   letter-spacing: -0.045em;
@@ -1087,7 +1088,6 @@
   }
 
   .title {
-    width: 136%;
     font-size: clamp(62px, 17vw, 68px);
     line-height: 0.76;
     letter-spacing: -0.045em;
