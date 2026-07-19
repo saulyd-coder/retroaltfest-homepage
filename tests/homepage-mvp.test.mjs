@@ -82,6 +82,59 @@ test('global styles define the Nocturnal Atlas design tokens and accessible moti
   assert.match(css, /prefers-reduced-motion/);
 });
 
+test('Night Transmission Phase 2A shell stays additive, square, accessible, and route-safe', () => {
+  const shellPath = 'src/components/site/NightTransmissionSiteShell.module.css';
+  const navigationPath = 'src/components/site/SiteNavigation.tsx';
+
+  assert.equal(existsSync(join(root, shellPath)), true, 'shared Night Transmission shell CSS should exist');
+  assert.equal(existsSync(join(root, navigationPath)), true, 'mobile site navigation client island should exist');
+
+  const globals = read('src/app/globals.css');
+  const header = read('src/components/site/Header.tsx');
+  const footer = read('src/components/site/Footer.tsx');
+  const shell = read(shellPath);
+  const navigation = read(navigationPath);
+  const source = `${header}\n${footer}\n${shell}\n${navigation}`;
+
+  for (const token of [
+    '--nt-broadcast-black',
+    '--nt-signal-magenta',
+    '--nt-electric-cyan',
+    '--nt-acid-selected',
+    '--nt-bone-text',
+    '--nt-muted-telemetry',
+    '--nt-signal-divider',
+    '--nt-focus-ring',
+    '--nt-distressed-surface',
+    '--nt-shell-gutter',
+  ]) {
+    assert.match(globals, new RegExp(token));
+  }
+
+  for (const route of ['/festivals', '/guides', '/verification', '/suggest']) {
+    const escapedRoute = route.replace('/', '\\/');
+    assert.match(header + navigation, new RegExp(`href="${escapedRoute}"`));
+    assert.match(footer, new RegExp(`href="${escapedRoute}"`));
+  }
+
+  assert.match(header, /SiteNavigation/);
+  assert.match(header, /aria-label="Main navigation"/);
+  assert.match(navigation, /"use client"/);
+  assert.match(navigation, /aria-expanded=\{isOpen\}/);
+  assert.match(navigation, /aria-controls="site-mobile-navigation"/);
+  assert.match(navigation, /aria-label=\{isOpen \? "Close navigation" : "Open navigation"\}/);
+  assert.match(navigation, /hidden=\{!isOpen\}/);
+  assert.match(navigation, /event\.key === "Escape"/);
+  assert.match(navigation, /triggerRef\.current\?\.focus\(\)/);
+  assert.match(shell, /min-height:\s*44px/);
+  assert.match(shell, /prefers-reduced-motion/);
+  assert.match(shell, /forced-colors/);
+  assert.match(shell, /focus-visible/);
+  assert.doesNotMatch(source, /backdrop-filter|backdrop-blur|border-radius/);
+  assert.doesNotMatch(source, /\/night-transmission\//);
+  assert.doesNotMatch(source, /fetch\(|<canvas|WebGL|framer-motion|lottie|three/i);
+});
+
 test('metadata is production-ready for RetroAltFest sharing', () => {
   const layout = read('src/app/layout.tsx');
   assert.match(layout, /RetroAltFest/);

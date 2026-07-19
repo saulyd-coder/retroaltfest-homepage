@@ -23,6 +23,23 @@
   --raf-acid: #a3e635;
   --raf-verified: #34d399;
   --raf-warning: #fbbf24;
+
+  /* Night Transmission Phase 2: additive shared-shell roles. */
+  --nt-broadcast-black: #010103;
+  --nt-broadcast-ink: #05070a;
+  --nt-signal-magenta: #f3008e;
+  --nt-electric-cyan: #73efff;
+  --nt-acid-selected: #d8ff63;
+  --nt-bone-text: #f4f0ef;
+  --nt-muted-telemetry: #928b9d;
+  --nt-signal-divider: rgba(115, 239, 255, 0.34);
+  --nt-focus-ring: #73efff;
+  --nt-distressed-surface: rgba(255, 255, 255, 0.026);
+  --nt-shell-gutter: clamp(1rem, 3vw, 2.5rem);
+  --nt-shell-content: 80rem;
+  --nt-shell-control: 2.75rem;
+  --nt-shell-shadow: 0 18px 48px rgba(0, 0, 0, 0.48);
+
   --background: var(--raf-black);
   --foreground: var(--raf-text);
 }
