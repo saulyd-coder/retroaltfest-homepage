@@ -1075,6 +1075,64 @@ test('public verification page explains source checks without exposing internal 
   }
 });
 
+test('verification Night Transmission integration stays static, route-scoped, source-safe, and content-preserving', () => {
+  const pagePath = 'src/app/verification/page.tsx';
+  const stylesPath = 'src/app/verification/VerificationPage.module.css';
+  const waveformAsset = 'public/night-transmission-inner/purple-waveform.avif';
+  const towerAsset = 'public/night-transmission-inner/tower-beacon-signature.avif';
+
+  assert.equal(existsSync(join(root, stylesPath)), true, 'route-scoped Verification CSS should exist');
+  assert.equal(existsSync(join(root, waveformAsset)), true, 'approved production waveform asset should exist');
+  assert.equal(existsSync(join(root, towerAsset)), true, 'existing production tower asset should remain available');
+
+  const page = read(pagePath);
+  const styles = existsSync(join(root, stylesPath)) ? read(stylesPath) : '';
+  const source = `${page}\n${styles}`;
+
+  assert.match(page, /import styles from "\.\/VerificationPage\.module\.css"/);
+  for (const className of [
+    'page',
+    'towerBeacon',
+    'content',
+    'breadcrumb',
+    'masthead',
+    'trustGrid',
+    'statusGrid',
+    'statusPanel',
+    'sourcesGrid',
+    'ctaPanel',
+    'closing',
+  ]) {
+    assert.match(page, new RegExp(`styles\\.${className}`));
+  }
+
+  assert.match(styles, /\/night-transmission-inner\/purple-waveform\.avif/);
+  assert.match(styles, /\/night-transmission-inner\/tower-beacon-signature\.avif/);
+  assert.match(styles, /position:\s*fixed/);
+  assert.match(styles, /background-size:\s*cover|\/\s*cover\s+no-repeat/);
+  assert.match(styles, /@media\s*\(min-width:\s*901px\)/);
+  assert.match(styles, /@media\s*\(max-width:\s*900px\)/);
+  assert.match(styles, /prefers-reduced-motion:\s*reduce/);
+  assert.match(styles, /forced-colors:\s*active/);
+  assert.ok(
+    styles.indexOf('/night-transmission-inner/tower-beacon-signature.avif') > styles.indexOf('@media (min-width: 901px)'),
+    'tower URL should only be declared inside the desktop media query',
+  );
+
+  assert.doesNotMatch(page, /"use client"|useState|useEffect|useMemo|fetch\(/);
+  assert.doesNotMatch(source, /\/prototypes\/|\/night-transmission\/(?!inner)/);
+  assert.doesNotMatch(source, /border-radius:\s*(?!0\b)|rounded-/);
+  assert.doesNotMatch(source, /canvas(?!text)|webgl|video|parallax|prisma|supabase|mongodb|\bauth\b|\bcms\b|\bdatabase\b|scraping/i);
+  assert.doesNotMatch(page, /Visual concept|Prototype breadcrumb|data-channel=/);
+
+  assert.match(page, /const pagePath = "\/verification"/);
+  assert.match(page, /How RetroAltFest Verifies Festivals \| RetroAltFest/);
+  assert.match(page, /How RetroAltFest verifies festivals/);
+  assert.match(page, /statusLabels\.map/);
+  assert.match(page, /sourceExamples\.map/);
+  assert.match(page, /href="\/suggest"/);
+});
+
 test('guides index is static, compact, and lists exactly the four live curated scene guides', () => {
   const guidesPath = 'src/app/guides/page.tsx';
   assert.equal(existsSync(join(root, guidesPath)), true, 'static /guides page should exist');
