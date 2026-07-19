@@ -439,8 +439,44 @@ test('festival directory route lists the atlas with lightweight filters and sear
   assert.match(browser, /festival\.slug/);
   assert.match(browser, /\/festivals\/\$\{festival\.slug\}/);
   assert.match(browser, /filteredFestivals\.map/);
-  assert.match(browser, /grid gap-4|sm:grid-cols|lg:grid-cols/);
+  assert.match(browser, /styles\.slabGrid/);
   assert.doesNotMatch(browser, /framer-motion|lottie|three|canvas|axios/i);
+});
+
+test('festival directory Night Transmission integration stays public-DTO-only and route-scoped', () => {
+  const page = read('src/app/festivals/page.tsx');
+  const browser = read('src/components/festivals/FestivalDirectoryBrowser.tsx');
+  const cssPath = 'src/components/festivals/FestivalDirectory.module.css';
+  const corridorPath = 'public/night-transmission-inner/cyan-corridor.avif';
+  const towerPath = 'public/night-transmission-inner/tower-beacon-signature.avif';
+
+  assert.equal(existsSync(join(root, cssPath)), true, 'production festival directory CSS module should exist');
+  assert.equal(existsSync(join(root, corridorPath)), true, 'production cyan corridor asset should exist');
+  assert.equal(existsSync(join(root, towerPath)), true, 'production tower asset should exist');
+
+  const css = read(cssPath);
+  assert.match(page, /FestivalDirectory\.module\.css/);
+  assert.match(page, /publicFestivalDirectoryItems/);
+  assert.match(browser, /PublicFestivalDirectoryItem/);
+  assert.match(browser, /festival\.sceneTags/);
+  assert.match(browser, /sceneOptions/);
+  assert.match(browser, /FILTERS ACTIVE/);
+  assert.match(browser, /NO FILTERS APPLIED/);
+  assert.match(browser, /aria-live="polite"/);
+  assert.match(browser, /Showing \{filteredFestivals\.length\} of \{festivals\.length\} source-aware atlas records/);
+  assert.match(browser, /href=\{`\/festivals\/\$\{festival\.slug\}`\}/);
+  assert.doesNotMatch(browser, /@\/lib\/festivals|categoryFilters|atlas-festivals|rawFestival/i);
+  assert.doesNotMatch(browser, /disabled=\{!hasActiveFilters\}/);
+
+  assert.match(css, /\/night-transmission-inner\/cyan-corridor\.avif/);
+  assert.match(css, /\/night-transmission-inner\/tower-beacon-signature\.avif/);
+  assert.match(css, /position:\s*fixed/);
+  assert.match(css, /\/ cover no-repeat/);
+  assert.match(css, /min-height:\s*(44|48|50)px/);
+  assert.match(css, /prefers-reduced-motion:\s*reduce/);
+  assert.match(css, /forced-colors:\s*active/);
+  assert.doesNotMatch(`${page}\n${browser}\n${css}`, /\/prototypes\/|\/night-transmission\/(?!inner)/);
+  assert.doesNotMatch(`${page}\n${browser}\n${css}`, /fetch\(|\/api\/|prisma|supabase|mongodb|auth|cms|database|scraping|canvas(?!text)|webgl|video/i);
 });
 
 test('public launch polish adds accessible states and clearer trust microcopy', () => {
@@ -638,22 +674,29 @@ test('festival categories expose the launch taxonomy across data and UI', () => 
     assert.ok(festival.categories.length >= 1, `${festival.festival_name} should have at least one category`);
   }
 
-  assert.match(browser, /categoryFilters/);
+  assert.match(browser, /sceneOptions/);
+  assert.doesNotMatch(browser, /categoryFilters|@\/lib\/festivals/);
   assert.match(browser, /festival\.sceneTags/);
   assert.match(card, /festival\.sceneTags/);
 });
 
 test('mobile polish keeps production UI readable on small screens', () => {
-  const source = [
+  const existingResponsiveSource = [
     'src/components/home/Hero.tsx',
     'src/components/waitlist/WaitlistSignup.tsx',
-    'src/components/festivals/FestivalDirectoryBrowser.tsx',
     'src/app/festivals/[slug]/page.tsx',
   ].map(read).join('\n');
+  const directory = read('src/components/festivals/FestivalDirectoryBrowser.tsx');
+  const directoryCss = read('src/components/festivals/FestivalDirectory.module.css');
 
-  for (const token of ['text-4xl sm:text-6xl', 'grid-cols-1 sm:grid-cols', 'overflow-x-auto', 'min-w-0']) {
-    assert.match(source, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  for (const token of ['text-4xl sm:text-6xl', 'min-w-0']) {
+    assert.match(existingResponsiveSource, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
+  assert.match(directory, /styles\.slabGrid/);
+  assert.match(directoryCss, /@media \(max-width: 600px\)/);
+  assert.match(directoryCss, /grid-template-columns:\s*1fr/);
+  assert.match(directoryCss, /min-width:\s*0/);
+  assert.match(directoryCss, /overflow-wrap:\s*anywhere/);
 });
 
 test('first dark festival signals data matches the locked MVP content packet', () => {
