@@ -1113,6 +1113,47 @@ test('guides index is static, compact, and lists exactly the four live curated s
   assert.doesNotMatch(guidesPage, /future guide|coming soon|placeholder|search|filter|useState|useMemo|fetch\(|prisma|supabase|mongodb|auth|cms|database|geocoding|latitude|longitude|coordinates|map pins/i);
 });
 
+test('guides hub Night Transmission integration stays static, route-scoped, and content-safe', () => {
+  const pagePath = 'src/app/guides/page.tsx';
+  const stylesPath = 'src/app/guides/GuidesHub.module.css';
+  const orbitalAsset = 'public/night-transmission-inner/magenta-orbit.avif';
+  const towerAsset = 'public/night-transmission-inner/tower-beacon-signature.avif';
+
+  assert.equal(existsSync(join(root, stylesPath)), true, 'route-scoped Guides Hub CSS should exist');
+  assert.equal(existsSync(join(root, orbitalAsset)), true, 'approved production orbital asset should exist');
+  assert.equal(existsSync(join(root, towerAsset)), true, 'existing production tower asset should remain available');
+
+  const page = read(pagePath);
+  const styles = existsSync(join(root, stylesPath)) ? read(stylesPath) : '';
+  const source = `${page}\n${styles}`;
+
+  assert.match(page, /import styles from "\.\/GuidesHub\.module\.css"/);
+  assert.match(page, /className=\{styles\.page\}/);
+  assert.match(page, /className=\{styles\.towerBeacon\}/);
+  assert.match(page, /className=\{styles\.issueIndex\}/);
+  assert.match(page, /className=\{styles\.featured\}/);
+  assert.match(page, /className=\{styles\.guideRow\}/);
+  assert.match(page, /String\(index \+ 1\)\.padStart\(2, "0"\)/);
+  assert.match(page, /const \[featured, \.\.\.remainingGuides\] = guides/);
+  assert.match(page, /<article[^>]+className=\{styles\.featured\}/s);
+  assert.match(page, /remainingGuides\.map\(\(guide, index\)/);
+
+  assert.match(styles, /\/night-transmission-inner\/magenta-orbit\.avif/);
+  assert.match(styles, /\/night-transmission-inner\/tower-beacon-signature\.avif/);
+  assert.match(styles, /position:\s*fixed/);
+  assert.match(styles, /background-size:\s*cover|\/\s*cover\s+no-repeat/);
+  assert.match(styles, /@media\s*\(min-width:\s*901px\)/);
+  assert.match(styles, /@media\s*\(max-width:\s*900px\)/);
+  assert.match(styles, /prefers-reduced-motion:\s*reduce/);
+  assert.match(styles, /forced-colors:\s*active/);
+
+  assert.doesNotMatch(page, /"use client"|useState|useEffect|useMemo|fetch\(/);
+  assert.doesNotMatch(source, /\/prototypes\/|\/night-transmission\/(?!inner)/);
+  assert.doesNotMatch(source, /border-radius:\s*(?!0\b)|rounded-/);
+  assert.doesNotMatch(source, /canvas(?!text)|webgl|video|parallax|prisma|supabase|mongodb|\bauth\b|\bcms\b|\bdatabase\b|scraping/i);
+  assert.doesNotMatch(page, /Field Guides|Visual concept|FEATURED TRANSMISSION|Guide concept index/);
+});
+
 test('internal discovery links connect existing routes without fake festival detail pages', () => {
   const data = JSON.parse(read('src/data/atlas-festivals.json'));
   const atlasSlugs = new Set(data.festivals.map((record) => record.slug));

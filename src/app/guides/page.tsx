@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { buildMetadata } from "@/lib/seo";
+import styles from "./GuidesHub.module.css";
 
 const pagePath = "/guides";
 
@@ -77,91 +78,123 @@ const guides: GuideCard[] = [
   },
 ];
 
-const accentClass: Record<GuideCard["accent"], string> = {
-  cyan: "border-[var(--raf-cyan)]/30 bg-[linear-gradient(135deg,rgba(34,211,238,0.13),rgba(168,85,247,0.08),rgba(0,0,0,0.34))] text-[var(--raf-cyan)]",
-  magenta:
-    "border-[var(--raf-magenta)]/30 bg-[linear-gradient(135deg,rgba(217,70,239,0.13),rgba(168,85,247,0.08),rgba(0,0,0,0.34))] text-[var(--raf-magenta)]",
-  violet:
-    "border-[var(--raf-violet)]/35 bg-[linear-gradient(135deg,rgba(124,58,237,0.14),rgba(217,70,239,0.08),rgba(0,0,0,0.34))] text-[var(--raf-violet-light)]",
-};
+function issueNumber(index: number) {
+  return String(index + 1).padStart(2, "0");
+}
 
 export default function GuidesPage() {
+  const [featured, ...remainingGuides] = guides;
+
   return (
-    <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(217,70,239,0.2),transparent_34%),radial-gradient(circle_at_80%_0%,rgba(34,211,238,0.12),transparent_30%),var(--raf-black)] text-[var(--raf-text)]">
+    <main className={styles.page}>
       <Header />
 
-      <article className="mx-auto max-w-7xl px-5 pb-20 pt-10 sm:px-8 lg:pt-16">
-        <nav aria-label="Breadcrumb" className="mb-8 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-text-dim)]">
-          <Link href="/" className="transition hover:text-[var(--raf-cyan)]">
-            RetroAltFest
-          </Link>
+      <div className={styles.paperEdge} aria-hidden="true" />
+      <div className={styles.towerBeacon} aria-hidden="true" />
+
+      <article className={styles.content}>
+        <nav aria-label="Breadcrumb" className={styles.breadcrumb}>
+          <Link href="/">RetroAltFest</Link>
           <span>/Guides</span>
         </nav>
 
-        <section className="relative overflow-hidden rounded-[2.25rem] border border-[var(--raf-border)] bg-white/[0.045] p-6 shadow-[0_30px_100px_rgba(0,0,0,0.42)] sm:p-10 lg:p-12">
-          <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_18%_10%,rgba(217,70,239,0.24),transparent_28%),radial-gradient(circle_at_78%_20%,rgba(34,211,238,0.16),transparent_24%)]" />
-          <p className="font-mono text-xs uppercase tracking-[0.32em] text-[var(--raf-cyan)]">Festival guides by scene</p>
-          <h1 className="mt-4 max-w-4xl font-display text-5xl font-semibold tracking-tight text-white sm:text-6xl lg:text-7xl">
-            RetroAltFest Guides
-          </h1>
-          <p className="mt-6 max-w-3xl text-xl leading-8 text-[var(--raf-text)]">
-            Start here for curated paths into goth, darkwave, industrial, EBM, post-punk, new wave, and retro alternative festivals.
-          </p>
-          <p className="mt-5 max-w-3xl text-base leading-7 text-[var(--raf-text-muted)]">
-            These guides are intentionally selective: we check official or reliable sources, separate confirmed events from events still being checked, and avoid pretending every related festival belongs in the same lane.
-          </p>
-          <Link className="mt-5 inline-flex font-mono text-xs uppercase tracking-[0.22em] text-[var(--raf-cyan)] transition hover:text-white" href="/verification">
-            How RetroAltFest handles source checks →
-          </Link>
-        </section>
-
-        <section className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" aria-label="RetroAltFest curated scene guides">
-          {guides.map((guide) => (
-            <Link
-              key={guide.href}
-              href={guide.href}
-              className={`group flex min-h-full flex-col rounded-[2rem] border p-6 transition duration-300 hover:-translate-y-1 hover:border-[var(--raf-cyan)]/50 hover:bg-white/[0.055] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--raf-cyan)] ${accentClass[guide.accent]}`}
-            >
-              <span className="w-fit rounded-full border border-current/30 bg-black/25 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.24em]">
-                curated guide
-              </span>
-              <span className="mt-5 block font-display text-3xl font-semibold leading-tight tracking-tight text-white">
-                {guide.title}
-              </span>
-              <span className="mt-3 block text-sm uppercase tracking-[0.2em] text-current/90">{guide.role}</span>
-              <span className="mt-4 block flex-1 text-base leading-7 text-[var(--raf-text-muted)]">{guide.description}</span>
-              <span className="mt-5 flex flex-wrap gap-2">
-                {guide.tags.map((tag) => (
-                  <span key={tag} className="rounded-full border border-white/10 bg-black/25 px-3 py-1 text-xs text-[var(--raf-text)]">
-                    {tag}
-                  </span>
-                ))}
-              </span>
-              <span className="mt-6 inline-flex items-center font-mono text-xs uppercase tracking-[0.24em] text-white">
-                Read guide <span aria-hidden="true" className="ml-2 transition group-hover:translate-x-1">→</span>
-              </span>
+        <header className={styles.masthead}>
+          <div className={styles.mastheadCopy}>
+            <p className={styles.telemetry}>
+              <span aria-hidden="true">◆</span> Festival guides by scene
+            </p>
+            <h1>RetroAltFest Guides</h1>
+            <p className={styles.intro}>
+              Start here for curated paths into goth, darkwave, industrial, EBM, post-punk, new wave, and retro alternative festivals.
+            </p>
+            <p className={styles.trustCopy}>
+              These guides are intentionally selective: we check official or reliable sources, separate confirmed events from events still being checked, and avoid pretending every related festival belongs in the same lane.
+            </p>
+            <Link className={styles.sourceLink} href="/verification">
+              How RetroAltFest handles source checks <span aria-hidden="true">→</span>
             </Link>
-          ))}
+          </div>
+
+          <nav className={styles.issueIndex} aria-label="Guide issue index">
+            {guides.map((guide, index) => {
+              const number = issueNumber(index);
+              return (
+                <a key={guide.href} href={`#guide-${number}`}>
+                  <span>{number}</span>
+                  <b>{guide.title}</b>
+                </a>
+              );
+            })}
+          </nav>
+        </header>
+
+        <article className={styles.featured} data-accent={featured.accent} id="guide-01" aria-labelledby="featured-guide-title">
+          <div className={styles.featuredCopy}>
+            <div className={styles.storyMeta}>
+              <span>Issue 01</span>
+              <span>curated guide</span>
+              <span>{featured.role}</span>
+            </div>
+            <h2 id="featured-guide-title">{featured.title}</h2>
+            <p>{featured.description}</p>
+            <ul className={styles.tags} aria-label={`Themes for ${featured.title}`}>
+              {featured.tags.map((tag) => <li key={tag}>{tag}</li>)}
+            </ul>
+            <Link href={featured.href}>
+              Read guide <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        </article>
+
+        <div className={styles.sectionDivider} aria-hidden="true">
+          <span />
+          <b>Curated guide index</b>
+          <em>02—04</em>
+        </div>
+
+        <section className={styles.guideList} aria-label="RetroAltFest curated scene guides">
+          {remainingGuides.map((guide, index) => {
+            const number = issueNumber(index + 1);
+            return (
+              <article className={styles.guideRow} data-accent={guide.accent} id={`guide-${number}`} key={guide.href}>
+                <div className={styles.guideNumber} aria-hidden="true">{number}</div>
+                <div className={styles.guideBody}>
+                  <p className={styles.guideRole}>
+                    <span>Issue {number}</span>
+                    <span>curated guide</span>
+                    <span>{guide.role}</span>
+                  </p>
+                  <h2>{guide.title}</h2>
+                  <p>{guide.description}</p>
+                  <ul className={styles.tags} aria-label={`Themes for ${guide.title}`}>
+                    {guide.tags.map((tag) => <li key={tag}>{tag}</li>)}
+                  </ul>
+                </div>
+                <Link href={guide.href} aria-label={`Read ${guide.title}`}>
+                  <span>Read guide</span>
+                  <b aria-hidden="true">↗</b>
+                </Link>
+              </article>
+            );
+          })}
         </section>
 
-        <section className="mt-10 grid gap-5 lg:grid-cols-[1.25fr_0.75fr]">
-          <div className="rounded-[2rem] border border-[var(--raf-border)] bg-black/25 p-6 sm:p-8">
-            <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">How to read these guides</p>
-            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white">Curated lanes, not exhaustive directories.</h2>
-            <p className="mt-4 text-base leading-7 text-[var(--raf-text-muted)]">
+        <section className={styles.closingGrid}>
+          <div className={styles.editorialNote}>
+            <p className={styles.closingLabel}>How to read these guides</p>
+            <h2>Curated lanes, not exhaustive directories.</h2>
+            <p>
               RetroAltFest guides are designed as restrained discovery paths. When a festival sits outside the core lane, we label it as a related festival to know, a dates-not-announced-yet note, or a possible future addition instead of forcing it into a public card.
             </p>
           </div>
 
-          <Link
-            href="/festivals"
-            className="rounded-[2rem] border border-[var(--raf-cyan)]/25 bg-[linear-gradient(135deg,rgba(34,211,238,0.12),rgba(217,70,239,0.08),rgba(0,0,0,0.34))] p-6 transition duration-300 hover:-translate-y-1 hover:border-[var(--raf-cyan)]/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--raf-cyan)] sm:p-8"
-          >
-            <span className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-cyan)]">Related path</span>
-            <span className="mt-3 block font-display text-3xl font-semibold tracking-tight text-white">Browse the festival atlas</span>
-            <span className="mt-4 block text-base leading-7 text-[var(--raf-text-muted)]">
+          <Link href="/festivals" className={styles.atlasLink}>
+            <span className={styles.atlasLabel}>Related path</span>
+            <strong>Browse the festival atlas</strong>
+            <span className={styles.atlasDescription}>
               Move from editorial guides into the curated festival directory when you want the current atlas records.
             </span>
+            <b aria-hidden="true">→</b>
           </Link>
         </section>
       </article>
