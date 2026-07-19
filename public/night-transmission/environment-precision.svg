@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941" fill="none">
+  <defs>
+    <linearGradient id="beam" x1="1035" y1="54" x2="1185" y2="685" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d8fbff" stop-opacity=".72"/>
+      <stop offset=".16" stop-color="#46dcff" stop-opacity=".34"/>
+      <stop offset=".72" stop-color="#10b9dc" stop-opacity=".08"/>
+      <stop offset="1" stop-color="#10b9dc" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="beacon">
+      <stop stop-color="#fff"/>
+      <stop offset=".14" stop-color="#ff4bb7" stop-opacity=".95"/>
+      <stop offset=".45" stop-color="#f0008b" stop-opacity=".34"/>
+      <stop offset="1" stop-color="#f0008b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="tower" x1="1458" y1="54" x2="1458" y2="585" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ff4bb7" stop-opacity=".9"/>
+      <stop offset=".45" stop-color="#d81b82" stop-opacity=".48"/>
+      <stop offset="1" stop-color="#7d1756" stop-opacity=".08"/>
+    </linearGradient>
+    <filter id="blur20"><feGaussianBlur stdDeviation="20"/></filter>
+    <filter id="blur6"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+  <path d="M953 51 L1129 235 L1337 720 L1093 690 Z" fill="url(#beam)" opacity=".82"/>
+  <path d="M953 51 L1129 235" stroke="#a9f6ff" stroke-opacity=".7" stroke-width="1.2"/>
+  <path d="M966 65 L1132 238" stroke="#42d8f5" stroke-opacity=".28" stroke-width="4" filter="url(#blur6)"/>
+  <ellipse cx="1182" cy="515" rx="265" ry="170" fill="#1bc8ec" fill-opacity=".06" filter="url(#blur20)"/>
+  <g stroke="url(#tower)" stroke-width="1.1" opacity=".78">
+    <path d="M1458 68 L1424 585 M1458 68 L1492 585 M1438 350 H1478 M1432 430 H1484 M1427 510 H1489"/>
+    <path d="M1449 205 L1470 275 L1441 350 L1478 430 L1427 510 L1492 585 M1467 205 L1445 275 L1476 350 L1432 430 L1489 510 L1424 585"/>
+    <path d="M1458 68 V585" stroke-opacity=".56"/>
+    <path d="M1452 125 H1464 M1448 175 H1468 M1444 225 H1472 M1441 285 H1475" stroke-opacity=".5"/>
+  </g>
+  <circle cx="1458" cy="63" r="52" fill="url(#beacon)" opacity=".56"/>
+  <circle cx="1458" cy="63" r="4" fill="#fff"/>
+  <path d="M1388 134 Q1458 85 1528 134 M1360 171 Q1458 99 1556 171" stroke="#ff2aa3" stroke-opacity=".14"/>
+  <g stroke="#53daf3" stroke-opacity=".12">
+    <path d="M890 574 L1030 501 L1178 539 L1322 472 L1510 527 L1672 462"/>
+    <path d="M900 599 L1038 527 L1180 568 L1328 500 L1515 555 L1672 490"/>
+  </g>
+</svg>

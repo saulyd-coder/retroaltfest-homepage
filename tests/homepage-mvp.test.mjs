@@ -26,7 +26,9 @@ test('ships the curated festival app data for the homepage vertical slice', () =
 test('homepage contains the required RetroAltFest MVP sections and CTAs', () => {
   const homepageSource = [
     'src/app/page.tsx',
-    'src/components/home/Hero.tsx',
+    'src/components/home/NightTransmissionHero.tsx',
+    'src/components/home/NightTransmissionNav.tsx',
+    'src/components/home/NightTransmissionTuner.tsx',
     'src/components/home/FeaturedFestivals.tsx',
     'src/components/home/SceneChips.tsx',
     'src/components/home/TrustSection.tsx',
@@ -38,8 +40,9 @@ test('homepage contains the required RetroAltFest MVP sections and CTAs', () => 
     .join('\n');
 
   const requiredCopy = [
-    'Discover dark alternative festivals worth traveling for.',
-    'Browse festivals',
+    'THE UNDERGROUND',
+    'IS STILL ALIVE.',
+    'ENTER THE ATLAS',
     'Suggest a festival',
     'Map preview',
     'Featured festivals',
@@ -58,7 +61,7 @@ test('homepage contains the required RetroAltFest MVP sections and CTAs', () => 
 test('homepage removes generated template branding and deploy links', () => {
   const homepageSource = [
     'src/app/page.tsx',
-    'src/components/home/Hero.tsx',
+    'src/components/home/NightTransmissionHero.tsx',
     'src/components/site/Footer.tsx',
   ]
     .filter((sourcePath) => existsSync(join(root, sourcePath)))
@@ -91,6 +94,10 @@ test('homepage MVP uses clean component structure and footer', () => {
   const componentPaths = [
     'src/components/site/Header.tsx',
     'src/components/home/Hero.tsx',
+    'src/components/home/NightTransmissionHero.tsx',
+    'src/components/home/NightTransmissionHero.module.css',
+    'src/components/home/NightTransmissionNav.tsx',
+    'src/components/home/NightTransmissionTuner.tsx',
     'src/components/home/FeaturedFestivals.tsx',
     'src/components/home/SceneChips.tsx',
     'src/components/home/TrustSection.tsx',
@@ -104,10 +111,72 @@ test('homepage MVP uses clean component structure and footer', () => {
   }
 
   const page = read('src/app/page.tsx');
-  assert.match(page, /<Hero/);
+  assert.match(page, /<NightTransmissionHero/);
+  assert.doesNotMatch(page, /<Header\s*\/>|<Hero\s*\/>/);
   assert.match(page, /<FeaturedFestivals/);
   assert.match(page, /<Footer/);
   assert.doesNotMatch(page, /function FestivalCard/);
+});
+
+test('Night Transmission homepage integration stays bounded, semantic, and public-DTO-backed', () => {
+  const page = read('src/app/page.tsx');
+  const hero = read('src/components/home/NightTransmissionHero.tsx');
+  const nav = read('src/components/home/NightTransmissionNav.tsx');
+  const tuner = read('src/components/home/NightTransmissionTuner.tsx');
+  const css = read('src/components/home/NightTransmissionHero.module.css');
+  const source = `${hero}\n${nav}\n${tuner}\n${css}`;
+
+  assert.match(hero, /publicFeaturedFestivals/);
+  assert.match(hero, /PublicFeaturedFestival/);
+  for (const slug of ['terminus-festival', 'absolution-fest', 'cold-waves']) {
+    assert.match(hero, new RegExp(slug));
+    assert.match(hero, /href=\{`\/festivals\/\$\{festival\.slug\}`\}/);
+  }
+  assert.doesNotMatch(source, /atlas-festivals|@\/lib\/festivals|\/prototypes\/|fetch\(|\/api\/|canvas(?!text)|webgl|three|video/i);
+
+  for (const [label, href] of [
+    ['FESTIVALS', '/festivals'],
+    ['GUIDES', '/guides'],
+    ['VERIFICATION', '/verification'],
+    ['SUGGEST', '/suggest'],
+  ]) {
+    assert.match(nav, new RegExp(`href: "${href}"[\\s\\S]*label: "${label}"`));
+  }
+  assert.match(nav, /type="button"/);
+  assert.match(nav, /aria-expanded=\{isOpen\}/);
+  assert.match(nav, /aria-controls="night-transmission-routes"/);
+  assert.match(nav, /Close navigation/);
+  assert.match(nav, /Open navigation/);
+
+  assert.match(tuner, /useState/);
+  assert.match(tuner, /aria-pressed=\{selectedGenre === genre\}/);
+  assert.match(tuner, /setSelectedGenre/);
+  assert.match(css, /min-height: 44px/);
+  assert.match(css, /focus-visible/);
+  assert.match(css, /prefers-reduced-motion: reduce/);
+  assert.match(css, /\/night-transmission\/environment-desktop\.webp/);
+  assert.match(css, /\/night-transmission\/wet-ground\.webp/);
+
+  assert.match(hero, /<h1/);
+  assert.match(hero, /THE UNDERGROUND/);
+  assert.match(hero, /IS STILL ALIVE\./);
+  assert.match(hero, /RetroAltFest house visuals — not official festival artwork\./);
+  assert.doesNotMatch(hero, /discoveryPreview[\s\S]*<span\s*\/>[\s\S]*<span\s*\/>[\s\S]*<span\s*\/>/);
+
+  const hierarchy = [
+    '<NightTransmissionHero',
+    '<FirstDarkFestivalSignals',
+    '<TrustSection',
+    '<DiscoveryLinks',
+    '<FeaturedFestivals',
+    '<MapPreview',
+    '<WaitlistSignup',
+    '<SubmitFestivalCta',
+    '<Footer',
+  ];
+  const positions = hierarchy.map((token) => page.indexOf(token));
+  assert.equal(positions.every((position) => position >= 0), true);
+  assert.deepEqual(positions, [...positions].sort((a, b) => a - b));
 });
 
 test('README documents setup, structure, run, and deployment guidance', () => {
@@ -128,7 +197,8 @@ test('visual refinement pass deepens atmosphere without heavy dependencies', () 
   const css = read('src/app/globals.css');
   const source = [
     'src/app/page.tsx',
-    'src/components/home/Hero.tsx',
+    'src/components/home/NightTransmissionHero.tsx',
+    'src/components/home/NightTransmissionHero.module.css',
     'src/components/home/FestivalCard.tsx',
     'src/components/home/MapPreview.tsx',
   ].map(read).join('\n');
@@ -141,7 +211,7 @@ test('visual refinement pass deepens atmosphere without heavy dependencies', () 
     assert.match(css, new RegExp(animation));
   }
 
-  assert.doesNotMatch(`${css}\n${source}`, /framer-motion|lottie|canvas|three/i);
+  assert.doesNotMatch(`${css}\n${source}`, /framer-motion|lottie|canvas(?!text)|three/i);
 });
 
 test('visual refinement plan separates MVP-safe upgrades from future enhancements', () => {
@@ -326,6 +396,9 @@ test('public launch polish adds accessible states and clearer trust microcopy', 
     'src/components/site/Header.tsx',
     'src/components/site/Footer.tsx',
     'src/components/home/Hero.tsx',
+    'src/components/home/NightTransmissionHero.tsx',
+    'src/components/home/NightTransmissionNav.tsx',
+    'src/components/home/NightTransmissionTuner.tsx',
     'src/components/home/FestivalCard.tsx',
     'src/components/home/TrustSection.tsx',
     'src/components/festivals/FestivalDirectoryBrowser.tsx',
@@ -628,13 +701,13 @@ test('first dark festival signals module is placed directly after the hero', () 
   const page = read('src/app/page.tsx');
   assert.match(page, /components\/home\/FirstDarkFestivalSignals/);
 
-  const heroIndex = page.indexOf('<Hero />');
+  const heroIndex = page.indexOf('<NightTransmissionHero />');
   const signalsIndex = page.indexOf('<FirstDarkFestivalSignals />');
   const trustIndex = page.indexOf('<TrustSection />');
   const mapIndex = page.indexOf('<MapPreview />');
 
-  assert.ok(heroIndex > -1, 'Hero should still render');
-  assert.ok(signalsIndex > heroIndex, 'Signals module should render after Hero');
+  assert.ok(heroIndex > -1, 'Night Transmission hero should render');
+  assert.ok(signalsIndex > heroIndex, 'Signals module should render after the Night Transmission hero');
   assert.ok(trustIndex > signalsIndex, 'Existing trust section should remain after Signals module');
   assert.ok(mapIndex > signalsIndex, 'Existing map preview should remain after Signals module');
 });

@@ -1,11 +1,10 @@
 import { FeaturedFestivals } from "@/components/home/FeaturedFestivals";
 import { FirstDarkFestivalSignals } from "@/components/home/FirstDarkFestivalSignals";
-import { Hero } from "@/components/home/Hero";
 import { MapPreview } from "@/components/home/MapPreview";
+import { NightTransmissionHero } from "@/components/home/NightTransmissionHero";
 import { SubmitFestivalCta } from "@/components/home/SubmitFestivalCta";
 import { TrustSection } from "@/components/home/TrustSection";
 import { Footer } from "@/components/site/Footer";
-import { Header } from "@/components/site/Header";
 import { DiscoveryLinks } from "@/components/site/DiscoveryLinks";
 import { WaitlistSignup } from "@/components/waitlist/WaitlistSignup";
 
@@ -22,8 +21,7 @@ export default function Home() {
       <div className="cinematic-vignette pointer-events-none absolute inset-0" />
       <div className="pointer-events-none absolute left-1/2 top-0 h-[44rem] w-[44rem] -translate-x-1/2 rounded-full bg-[var(--raf-violet)]/20 blur-3xl" />
 
-      <Header />
-      <Hero />
+      <NightTransmissionHero />
       <FirstDarkFestivalSignals />
       <TrustSection />
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
