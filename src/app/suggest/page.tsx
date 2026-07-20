@@ -9,7 +9,7 @@ const pagePath = "/suggest";
 const suggestionFormUrl = "https://forms.gle/qhXiMRZbcihSue6z8";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Suggest a Festival for Review | RetroAltFest",
+  title: "Suggest a Festival for Review",
   description:
     "Send RetroAltFest a source-backed suggestion for a festival, correction, or update. Suggestions are reviewed manually and are not automatically published.",
   path: pagePath,

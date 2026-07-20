@@ -654,7 +654,19 @@ test('suggest Night Transmission integration stays static, route-scoped, source-
     assert.match(page, new RegExp(copy.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
 
-  assert.match(page, /title: "Suggest a Festival for Review \| RetroAltFest"/);
+  const layout = read('src/app/layout.tsx');
+  const seo = read('src/lib/seo.ts');
+  const routeTitle = page.match(/title:\s*"([^"]+)"/)?.[1];
+  const titleTemplate = layout.match(/template:\s*"([^"]+)"/)?.[1];
+  const siteUrl = seo.match(/siteUrl\s*=\s*"([^"]+)"/)?.[1];
+  const routePath = page.match(/const pagePath\s*=\s*"([^"]+)"/)?.[1];
+
+  assert.equal(routeTitle, 'Suggest a Festival for Review');
+  assert.doesNotMatch(routeTitle, /RetroAltFest/, 'route-level metadata input should not duplicate the brand');
+  assert.equal(titleTemplate?.replace('%s', routeTitle), 'Suggest a Festival for Review | RetroAltFest');
+  assert.match(seo, /const canonical = absoluteUrl\(path\)/);
+  assert.match(seo, /alternates:\s*\{\s*canonical,\s*\}/s);
+  assert.equal(`${siteUrl}${routePath}`, 'https://retroaltfest.com/suggest');
   assert.match(page, /path: pagePath/);
 });
 
