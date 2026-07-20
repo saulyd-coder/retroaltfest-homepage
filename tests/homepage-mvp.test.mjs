@@ -597,6 +597,67 @@ test('suggest page provides source-backed manual review intake without platform 
   assert.doesNotMatch(suggestPage, /fetch\(|\/api\/|prisma|supabase|mongodb|auth|cms|database|scraping|auto-publishing/i);
 });
 
+test('suggest Night Transmission integration stays static, route-scoped, source-safe, and Form-preserving', () => {
+  const pagePath = 'src/app/suggest/page.tsx';
+  const cssPath = 'src/app/suggest/SuggestPage.module.css';
+  const page = read(pagePath);
+
+  assert.equal(existsSync(join(root, cssPath)), true, 'route-scoped Suggest CSS should exist');
+  const css = read(cssPath);
+
+  assert.match(page, /import styles from "\.\/SuggestPage\.module\.css"/);
+  assert.match(page, /className=\{styles\.page\}/);
+  assert.match(page, /className=\{styles\.towerBeacon\}/);
+  assert.match(page, /aria-hidden="true" className=\{styles\.towerBeacon\}/);
+  assert.doesNotMatch(page, /"use client"|useState|useEffect|useMemo|fetch\(|\/api\//);
+  assert.doesNotMatch(page, /\/prototypes\/|night-transmission-suggest-concept|\/night-transmission\//);
+  assert.doesNotMatch(page, /rounded-|overflow-hidden|ambient-haze|nocturnal-grid|cinematic-vignette|grain-field/);
+
+  assert.equal((css.match(/purple-waveform\.avif/g) ?? []).length, 1, 'waveform URL should be declared once');
+  assert.equal((css.match(/tower-beacon-signature\.avif/g) ?? []).length, 1, 'tower URL should be declared once');
+  const desktopTowerBoundary = css.indexOf('@media (min-width: 901px)');
+  const towerUrl = css.indexOf('/night-transmission-inner/tower-beacon-signature.avif');
+  assert.ok(desktopTowerBoundary >= 0, 'desktop-only tower boundary should exist');
+  assert.ok(towerUrl > desktopTowerBoundary, 'tower URL should be declared only inside the desktop media query');
+  assert.match(css, /\/night-transmission-inner\/purple-waveform\.avif/);
+  assert.match(css, /position:\s*fixed/);
+  assert.match(css, /background-size:\s*cover/);
+  assert.match(css, /background-repeat:\s*no-repeat/);
+  assert.match(css, /outline:\s*2px solid var\(--nt-focus-ring\)/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.match(css, /@media \(forced-colors: active\)/);
+  assert.doesNotMatch(css, /border-radius|\/prototypes\/|\/night-transmission\//);
+  assert.doesNotMatch(css, /overflow-x:\s*hidden|\.page\s*\{[^}]*overflow:\s*hidden/s);
+
+  assert.match(page, /const pagePath = "\/suggest"/);
+  assert.match(page, /const suggestionFormUrl = "https:\/\/forms\.gle\/qhXiMRZbcihSue6z8"/);
+  assert.equal((page.match(/href=\{suggestionFormUrl\}/g) ?? []).length, 2, 'exactly two Form links should remain');
+  assert.equal((page.match(/target="_blank"/g) ?? []).length, 2, 'both Form links should open a new target');
+  assert.equal((page.match(/rel="noopener noreferrer"/g) ?? []).length, 2, 'both Form links should preserve safe rel values');
+  assert.equal((page.match(/Open the suggestion form/g) ?? []).length, 2, 'both CTA labels should remain exact');
+
+  for (const copy of [
+    'A goth, darkwave, industrial, EBM, synthpop, post-punk, new wave, retro alternative, or adjacent festival we should look at',
+    'A correction to an existing RetroAltFest festival page',
+    'A new official date, ticketing, organizer, venue, or status source',
+    'A historical or reference point that may help visitors understand the scene',
+    'Official festival website',
+    'Organizer-controlled page or official social profile',
+    'Official ticketing page',
+    'Venue page connected to the event',
+    'A public source that clearly explains the update or correction',
+    'Suggestions are reviewed manually before anything changes on RetroAltFest.',
+    'A suggestion may become an atlas entry, a source check, a reference point, or simply stay under review.',
+    'Sending a lead does not guarantee a listing, page update, or public mention.',
+    'Nothing submitted through the form is automatically published.',
+  ]) {
+    assert.match(page, new RegExp(copy.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
+
+  assert.match(page, /title: "Suggest a Festival for Review \| RetroAltFest"/);
+  assert.match(page, /path: pagePath/);
+});
+
 test('custom analytics logger is disabled for production safety', () => {
   const analyticsRoute = read('src/app/api/analytics/route.ts');
   const layout = read('src/app/layout.tsx');
