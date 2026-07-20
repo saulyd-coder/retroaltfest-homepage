@@ -132,12 +132,16 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
               <p>
                 <span className="text-white">Status:</span> {festival.statusLabel}
               </p>
-              <p>
-                <span className="text-white">Source confidence:</span> {festival.sourceConfidenceLabel}
-              </p>
-              <p>
-                <span className="text-white">Location confidence:</span> {festival.coordinateLabel}
-              </p>
+              {festival.showConfidenceDetails ? (
+                <>
+                  <p>
+                    <span className="text-white">Source confidence:</span> {festival.sourceConfidenceLabel}
+                  </p>
+                  <p>
+                    <span className="text-white">Location confidence:</span> {festival.coordinateLabel}
+                  </p>
+                </>
+              ) : null}
             </div>
             <Link className="mt-5 inline-flex w-full justify-center rounded-full border border-[var(--raf-cyan)]/25 bg-[var(--raf-cyan)]/10 px-5 py-3 text-center text-sm font-bold text-[var(--raf-cyan)] transition hover:-translate-y-0.5 hover:border-[var(--raf-cyan)]/50 hover:text-white" href="/verification">
               How verification works
@@ -160,7 +164,7 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
               <h2 className="font-display text-3xl font-semibold tracking-tight text-white">Verification notes</h2>
               <div className="mt-5 grid gap-4 text-sm leading-7 text-[var(--raf-text-muted)] md:grid-cols-2">
                 <p>{festival.verificationNote}</p>
-                <p>{festival.mappingNote}</p>
+                {festival.mappingNote ? <p>{festival.mappingNote}</p> : null}
               </div>
             </section>
 
@@ -244,7 +248,9 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
             {
               href: "/verification",
               label: "See source-check notes",
-              description: "Learn how RetroAltFest labels confirmation, uncertainty, and location confidence before deeper discovery steps.",
+              description: festival.showConfidenceDetails
+                ? "Learn how RetroAltFest labels confirmation, uncertainty, and location confidence before deeper discovery steps."
+                : "Learn how RetroAltFest uses official sources and clear uncertainty notes before deeper discovery steps.",
             },
           ]}
         />

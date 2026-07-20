@@ -45,6 +45,7 @@ export type PublicFestivalDetail = {
   statusLabel: string;
   sourceConfidenceLabel: string;
   coordinateLabel: "Not guessed" | "Location being checked" | "Ready for map placement";
+  showConfidenceDetails: boolean;
   officialSiteUrl: string;
   sourceLinks: Array<{
     label: string;
@@ -52,7 +53,7 @@ export type PublicFestivalDetail = {
     typeLabel: string;
   }>;
   verificationNote: string;
-  mappingNote: string;
+  mappingNote: string | null;
   similar: Array<{
     id: string;
     slug: string;
@@ -69,6 +70,13 @@ const publicStatusLabels: Record<string, string> = {
   needs_review: "Source check in progress",
   historical_reference: "Historical / reference",
 };
+
+const festivalStatusOverrides: Record<string, string> = {
+  "wave-gotik-treffen": "Next edition officially announced",
+  levitation: "Upcoming — dates confirmed by the official festival page",
+};
+
+const streamlinedTrustSlugs = new Set(["wave-gotik-treffen", "levitation"]);
 
 const publicSourceConfidenceLabels: Record<string, string> = {
   high: "High",
@@ -101,7 +109,7 @@ export function toPublicFestivalDirectoryItem(festival: Festival): PublicFestiva
   const sceneTags = festival.categories.map(genreLabel);
   const locationLabel = formatLocation(festival);
   const dateLabel = festival.date_text;
-  const status = publicStatusLabel(festival.verification_status);
+  const status = publicStatusLabel(festival);
 
   return {
     id: festival.festival_id,
@@ -127,13 +135,14 @@ export function toPublicFeaturedFestival(festival: Festival): PublicFeaturedFest
     locationLabel: formatLocation(festival),
     dateLabel: festival.date_text,
     sceneTags: festival.categories.map(genreLabel),
-    statusLabel: publicStatusLabel(festival.verification_status),
+    statusLabel: publicStatusLabel(festival),
     summary: festival.atlas_summary,
     officialSiteUrl: festival.official_url,
   };
 }
 
 export function toPublicFestivalDetail(festival: Festival): PublicFestivalDetail {
+  const slug = festivalSlug(festival);
   const similar = getSimilarFestivals(festival).map((candidate) => ({
     id: candidate.festival_id,
     slug: festivalSlug(candidate),
@@ -151,9 +160,10 @@ export function toPublicFestivalDetail(festival: Festival): PublicFestivalDetail
     dateLabel: festival.date_text,
     venueLabel: festival.venue_name || "Venue not published yet",
     sceneTags: festival.categories.map(genreLabel),
-    statusLabel: publicStatusLabel(festival.verification_status),
+    statusLabel: publicStatusLabel(festival),
     sourceConfidenceLabel: publicSourceConfidenceLabel(festival.source_confidence),
     coordinateLabel: publicCoordinateLabel(festival.geocoding_confidence),
+    showConfidenceDetails: !streamlinedTrustSlugs.has(slug),
     officialSiteUrl: festival.official_url,
     sourceLinks: festival.source_links.map((source) => ({
       label: source.label,
@@ -161,14 +171,16 @@ export function toPublicFestivalDetail(festival: Festival): PublicFestivalDetail
       typeLabel: publicSourceTypeLabel(source.type),
     })),
     verificationNote: festival.data_quality_notes,
-    mappingNote: festival.map_notes,
+    mappingNote: streamlinedTrustSlugs.has(slug) ? null : festival.map_notes,
     similar,
     seoKeywords: [festival.festival_name, ...festival.genres, ...festival.categories, festival.city, festival.country],
   };
 }
 
-function publicStatusLabel(status: string) {
-  return publicStatusLabels[status] ?? "Source check in progress";
+function publicStatusLabel(festival: Festival) {
+  return festivalStatusOverrides[festivalSlug(festival)]
+    ?? publicStatusLabels[festival.verification_status]
+    ?? "Source check in progress";
 }
 
 function publicSourceConfidenceLabel(confidence: string) {

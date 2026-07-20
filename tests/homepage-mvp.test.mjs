@@ -277,8 +277,8 @@ test('North America 8 records preserve source-aware caveats and map safety', () 
     assert.ok(festival.similar_festival_ids.every((similarId) => byId.has(similarId)), `${id} should only link to integrated records`);
   }
 
-  assert.match(byId.get('levitation').data_quality_notes, /not every show fits RetroAltFest|broad/i);
-  assert.match(byId.get('levitation').map_notes, /Parent\/multi-venue|No single map pin/i);
+  assert.match(byId.get('levitation').data_quality_notes, /selective relevance to RetroAltFest scenes|broad/i);
+  assert.match(byId.get('levitation').map_notes, /Radio\/East and other Austin venues/i);
   assert.match(byId.get('mutek-montreal').data_quality_notes, /not specifically goth\/darkwave|Do not frame as goth\/darkwave-specific/i);
   assert.match(byId.get('the-new-colossus-festival').data_quality_notes, /broad|Avoid core goth\/darkwave/i);
   assert.match(byId.get('terminus-festival').data_quality_notes, /do not use unverified full-lineup poster transcription/i);
@@ -306,6 +306,39 @@ test('festival detail route is static-first and SEO-ready', () => {
   assert.match(helpers, /festivalSlug/);
   assert.match(helpers, /getFestivalBySlug/);
   assert.match(helpers, /getSimilarFestivals/);
+});
+
+test('WGT and LEVITATION use the approved public trust corrections', () => {
+  const data = JSON.parse(read('src/data/atlas-festivals.json'));
+  const byId = new Map(data.festivals.map((record) => [record.festival_id, record]));
+  const wgt = byId.get('wave-gotik-treffen');
+  const levitation = byId.get('levitation');
+  const publicBoundary = read('src/lib/public-festivals.ts');
+  const detailPage = read('src/app/festivals/[slug]/page.tsx');
+
+  assert.equal(data.festivals.length, 15);
+
+  assert.equal(wgt.start_date, '2027-05-14');
+  assert.equal(wgt.end_date, '2027-05-17');
+  assert.equal(wgt.date_text, 'May 14–17, 2027');
+  assert.equal(wgt.verification_status, 'confirmed_upcoming');
+  assert.equal(wgt.venue_name, 'Multiple venues across Leipzig');
+  assert.match(wgt.atlas_summary, /next edition for May 14–17, 2027/);
+  assert.match(wgt.data_quality_notes, /takes place across multiple venues in the city/);
+  assert.doesNotMatch(JSON.stringify(wgt), /ongoing as of 2026-05-24|mapping cautions|Parent record only|child venue records|precise map display/i);
+
+  assert.equal(levitation.date_text, 'September 10–13, 2026');
+  assert.equal(levitation.venue_name, 'Radio/East and multiple Austin venues');
+  assert.match(levitation.atlas_summary, /it is not a goth- or darkwave-only festival/);
+  assert.equal(levitation.why_it_matters, 'LEVITATION offers an Austin discovery path for listeners whose tastes cross psych, electronic, post-punk-adjacent, darkwave, and broader alternative music.');
+  assert.match(levitation.data_quality_notes, /selective relevance to RetroAltFest scenes/);
+  assert.doesNotMatch(JSON.stringify(levitation), /discovery parent|RetroAltFest should frame it|single-pin record|future child venue records|Public copy must not imply|Parent\/multi-venue record only|No single map pin should be created/i);
+
+  assert.match(publicBoundary, /"wave-gotik-treffen": "Next edition officially announced"/);
+  assert.match(publicBoundary, /levitation: "Upcoming — dates confirmed by the official festival page"/);
+  assert.match(publicBoundary, /streamlinedTrustSlugs = new Set\(\["wave-gotik-treffen", "levitation"\]\)/);
+  assert.match(detailPage, /festival\.showConfidenceDetails \?/);
+  assert.match(detailPage, /festival\.mappingNote \? <p>\{festival\.mappingNote\}<\/p> : null/);
 });
 
 test('Absolution Fest detail polish stays one-page and source-aware', () => {

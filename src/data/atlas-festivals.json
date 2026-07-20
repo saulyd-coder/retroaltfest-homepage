@@ -46,9 +46,9 @@
       "geocoding_source": null,
       "geocoding_query": null,
       "geocoding_confidence": "not_geocoded",
-      "start_date": "2026-05-22",
-      "end_date": "2026-05-25",
-      "date_text": "22 May 2026 until 25 May 2026; ongoing as of 2026-05-24",
+      "start_date": "2027-05-14",
+      "end_date": "2027-05-17",
+      "date_text": "May 14–17, 2027",
       "genres": [
         "goth",
         "darkwave",
@@ -70,13 +70,13 @@
         "https://www.wave-gotik-treffen.de/english/",
         "https://www.wave-gotik-treffen.de/english/info/info.php"
       ],
-      "verification_status": "confirmed_current",
+      "verification_status": "confirmed_upcoming",
       "source_confidence": "high",
       "follow_up_needed": true,
-      "map_notes": "Parent record only. Festival uses many venues across Leipzig; child venue records are needed before precise map display.",
-      "data_quality_notes": "Official site confirms dates and Leipzig/Germany. No single venue assigned.",
+      "map_notes": "Wave-Gotik-Treffen takes place across multiple venues in Leipzig.",
+      "data_quality_notes": "The official festival site confirms May 14–17, 2027 in Leipzig, Germany. Wave-Gotik-Treffen takes place across multiple venues in the city.",
       "slug": "wave-gotik-treffen",
-      "atlas_summary": "Wave-Gotik-Treffen is a curated RetroAltFest atlas record for goth, darkwave, industrial, post-punk travelers, located in Leipzig · Saxony · Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
+      "atlas_summary": "Wave-Gotik-Treffen is a source-supported festival spanning goth, darkwave, industrial, post-punk, and related scenes across Leipzig, Germany. The official festival site confirms the next edition for May 14–17, 2027.",
       "why_it_matters": "Wave-Gotik-Treffen is one of the defining pilgrimage points for global goth and dark alternative culture: a city-scale gathering where venues, streets, museums, clubs, and sub-scenes all become part of the experience. For RetroAltFest, it anchors the atlas as a benchmark for festivals that are more than a lineup — they are temporary nocturnal cities.",
       "source_links": [
         {
@@ -734,7 +734,7 @@
       "city": "Austin",
       "state_region": "Texas",
       "country": "United States",
-      "venue_name": "Austin multi-venue event; official 2026 page does not make this a single-pin record",
+      "venue_name": "Radio/East and multiple Austin venues",
       "venue_address": null,
       "latitude": null,
       "longitude": null,
@@ -743,7 +743,7 @@
       "geocoding_confidence": "not_geocoded",
       "start_date": "2026-09-10",
       "end_date": "2026-09-13",
-      "date_text": "September 10-13, 2026",
+      "date_text": "September 10–13, 2026",
       "genres": [
         "alternative",
         "psych",
@@ -754,9 +754,9 @@
       "tags": [
         "Austin",
         "multi-venue",
-        "parent record",
+        "genre-spanning",
         "broad alternative",
-        "split before mapping"
+        "Austin venues"
       ],
       "festival_type": "music_festival",
       "map_display_category": "multi_venue_parent",
@@ -767,11 +767,11 @@
       "verification_status": "confirmed_upcoming",
       "source_confidence": "high",
       "follow_up_needed": true,
-      "map_notes": "Parent/multi-venue record only. No single map pin should be created from this record; child venue records would need separate source review.",
-      "data_quality_notes": "Confirmed upcoming; broad multi-venue alternative event. Public copy must not imply all programming fits RetroAltFest.",
+      "map_notes": "Festival programming spans Radio/East and other Austin venues.",
+      "data_quality_notes": "The official 2026 festival page confirms September 10–13 in Austin. LEVITATION is a broad, multi-venue event with selective relevance to RetroAltFest scenes rather than a dedicated goth or darkwave festival.",
       "slug": "levitation",
-      "atlas_summary": "LEVITATION is an Austin multi-venue alternative discovery parent with psych, electronic, and darkwave-adjacent overlap. RetroAltFest should frame it as a broad festival with selective scene relevance, not a pure goth or darkwave event.",
-      "why_it_matters": "LEVITATION adds an Austin discovery pathway for travelers whose tastes cross psych, electronic, post-punk-adjacent, and dark alternative edges. Its value is as a parent record, with future child venue records only after separate verification.",
+      "atlas_summary": "LEVITATION returns to Austin September 10–13, 2026 with a genre-spanning program across Radio/East and other Austin venues. RetroAltFest includes it for its darkwave, electronic, post-punk-adjacent, and broader alternative overlap; it is not a goth- or darkwave-only festival.",
+      "why_it_matters": "LEVITATION offers an Austin discovery path for listeners whose tastes cross psych, electronic, post-punk-adjacent, darkwave, and broader alternative music.",
       "source_links": [
         {
           "label": "Official festival site",
