@@ -4,6 +4,7 @@ import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { DiscoveryLinks } from "@/components/site/DiscoveryLinks";
 import { buildMetadata } from "@/lib/seo";
+import styles from "./GuideArticle.module.css";
 
 const pagePath = "/guides/north-american-goth-darkwave-festivals";
 
@@ -164,52 +165,49 @@ const allRecords = [...activeAtlasRecords, ...referenceSignals];
 
 export default function NorthAmericanGothDarkwaveGuidePage() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[var(--raf-black)] text-[var(--raf-text)]">
-      <div className="ambient-haze pointer-events-none absolute -inset-28 opacity-90" />
-      <div className="nocturnal-grid pointer-events-none absolute inset-0 opacity-42 mix-blend-screen" />
-      <div className="cinematic-vignette pointer-events-none absolute inset-0" />
-      <div className="grain-field pointer-events-none absolute inset-0 opacity-[0.06]" />
+    <main className={styles.page}>
+      <span className={styles.paperEdge} aria-hidden="true" />
+      <span className={styles.towerBeacon} aria-hidden="true" />
 
       <Header />
 
-      <article className="relative mx-auto max-w-7xl px-5 pb-20 pt-10 sm:px-8 lg:pb-28 lg:pt-16">
-        <nav className="mb-8 font-mono text-xs uppercase tracking-[0.24em] text-[var(--raf-text-dim)]" aria-label="Breadcrumb">
-          <Link className="transition hover:text-[var(--raf-cyan)]" href="/">
+      <article className={styles.content}>
+        <nav className={styles.breadcrumb} aria-label="Breadcrumb">
+          <Link href="/">
             RetroAltFest
           </Link>
-          <span className="mx-3 text-[var(--raf-violet)]">/</span>
-          <Link className="transition hover:text-[var(--raf-cyan)]" href="/guides">
+          <span className={styles.crumbDivider}>/</span>
+          <Link href="/guides">
             Guides
           </Link>
-          <span className="mx-3 text-[var(--raf-violet)]">/</span>
-          <span className="text-[var(--raf-text-muted)]">North American Goth &amp; Darkwave</span>
+          <span className={styles.crumbDivider}>/</span>
+          <span className={styles.crumbCurrent}>North American Goth &amp; Darkwave</span>
         </nav>
 
-        <section className="relative overflow-hidden rounded-[2rem] border border-[rgba(168,85,247,0.2)] bg-[linear-gradient(145deg,rgba(35,24,57,0.82),rgba(8,7,14,0.92)_58%,rgba(3,3,6,0.96))] p-6 shadow-[0_34px_120px_rgba(0,0,0,0.55),0_0_70px_rgba(88,28,135,0.16)] sm:p-8 lg:p-10">
-          <div className="map-panel-bloom pointer-events-none absolute -inset-16 opacity-55 blur-2xl" />
-          <div className="relative z-10 max-w-4xl">
-            <p className="font-mono text-xs uppercase tracking-[0.32em] text-[var(--raf-cyan)]">Curated scene guide</p>
-            <h1 className="mt-5 text-balance font-display text-4xl font-semibold tracking-[-0.045em] text-white sm:text-5xl lg:text-7xl">
+        <section className={styles.masthead}>
+          <div className={styles.mastheadInner}>
+            <p className={styles.mastheadLabel}>Curated scene guide</p>
+            <h1 className={styles.mastheadTitle}>
               North American Goth &amp; Darkwave Festivals: A Curated Guide
             </h1>
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-[var(--raf-text-muted)] sm:text-xl">
+            <p className={styles.mastheadLead}>
               This guide highlights North American goth and darkwave festival records that RetroAltFest can describe from official or organizer-controlled sources.
             </p>
-            <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
+            <p className={styles.mastheadCopy}>
               Some entries are active atlas records with current 2026 source support; others are kept as reference signals when their next edition is not yet confirmed. We keep source caveats visible because RetroAltFest is built around verified-before-mapped discovery, not guessed dates, ticket claims, or location shortcuts.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link className="raf-button-primary" href="/verification">
+            <div className={styles.pathLinks}>
+              <Link className={styles.primaryPath} href="/verification">
                 See how RetroAltFest handles verification
               </Link>
-              <Link className="raf-button-secondary" href="/festivals">
+              <Link className={styles.secondaryPath} href="/festivals">
                 Browse the festival atlas
               </Link>
-              <Link className="raf-button-secondary" href="/guides">
+              <Link className={styles.secondaryPath} href="/guides">
                 Explore more guides
               </Link>
             </div>
-            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            <div className={styles.factGrid}>
               <AtlasFact label="Guide records" value={`${allRecords.length} checked examples`} />
               <AtlasFact label="Active atlas links" value={`${activeAtlasRecords.length} source-supported records`} />
               <AtlasFact label="Scope" value="North America first" />
@@ -218,25 +216,31 @@ export default function NorthAmericanGothDarkwaveGuidePage() {
         </section>
 
         <GuideSection
+          id="active-atlas-records"
           eyebrow="Source-supported active atlas records"
           title="Four active atlas records with current source support."
           description="These are the guide cards with direct RetroAltFest atlas links. Each one is tied to official or organizer-controlled 2026 source support rather than a broad page-level status claim."
           records={activeAtlasRecords}
+          startIndex={1}
+          variant="active"
         />
 
         <GuideSection
+          id="reference-signals"
           eyebrow="Reference signals to recheck before travel planning"
           title="Tracked dark-scene signals and related references."
           description="These entries matter to the North American dark alternative landscape, but they are intentionally not active-linked as atlas detail records in this guide refresh."
           records={referenceSignals}
+          startIndex={5}
+          variant="reference"
         />
 
-        <section className="mt-10 rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(18,13,30,0.74),rgba(0,0,0,0.38))] p-6 sm:p-8 lg:p-10">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">Status language</p>
-          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+        <section className={styles.statusSection} id="status-language">
+          <p className={styles.statusEyebrow}>Status language</p>
+          <h2 className={styles.sectionTitle}>
             How RetroAltFest labels this guide
           </h2>
-          <div className="mt-6 grid gap-4 md:grid-cols-2">
+          <div className={styles.statusGrid}>
             <StatusCard
               label="Active atlas record with 2026 source support"
               description="Used only for the four linked guide cards where official or organizer-controlled sources support the current date/status shown here."
@@ -256,45 +260,47 @@ export default function NorthAmericanGothDarkwaveGuidePage() {
           </div>
         </section>
 
-        <section className="mt-10 rounded-[2rem] border border-[rgba(34,211,238,0.18)] bg-[linear-gradient(135deg,rgba(34,211,238,0.08),rgba(168,85,247,0.1),rgba(0,0,0,0.42))] p-6 sm:p-8 lg:p-10">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-cyan)]">Closing note</p>
-          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+        <section className={styles.closingSection} id="closing-note">
+          <p className={styles.closingEyebrow}>Closing note</p>
+          <h2 className={styles.sectionTitle}>
             The atlas expands only as sources hold.
           </h2>
-          <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
+          <p className={styles.closingCopy}>
             RetroAltFest keeps caveats visible so readers can tell the difference between active atlas records, recently active signals, and related reference points. The goal is not to publish the biggest list quickly; it is to build a trustworthy discovery layer where each festival is labeled clearly before it enters deeper location review.
           </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Link className="raf-button-primary" href="/verification">
+          <div className={styles.pathLinks}>
+            <Link className={styles.primaryPath} href="/verification">
               How RetroAltFest verifies festival records
             </Link>
-            <Link className="raf-button-secondary" href="/festivals">
+            <Link className={styles.secondaryPath} href="/festivals">
               Open the current atlas
             </Link>
           </div>
         </section>
 
-        <DiscoveryLinks
-          title="Choose your next discovery path."
-          description="Use this guide as one route into the atlas, then continue into the full directory, the guide hub, or the source-check notes behind RetroAltFest records."
-          links={[
-            {
-              href: "/guides",
-              label: "Back to all guides",
-              description: "Compare the current Goth & Darkwave, Industrial / EBM, New Wave / Post-Punk, and West Coast / PNW guide routes.",
-            },
-            {
-              href: "/festivals",
-              label: "Browse current atlas records",
-              description: "Open the active festival atlas and follow only source-backed internal detail links.",
-            },
-            {
-              href: "/verification",
-              label: "See how source checks work",
-              description: "Review how RetroAltFest separates confirmed records from reference signals and related context.",
-            },
-          ]}
-        />
+        <div className={styles.relatedPaths} id="related-paths">
+          <DiscoveryLinks
+            title="Choose your next discovery path."
+            description="Use this guide as one route into the atlas, then continue into the full directory, the guide hub, or the source-check notes behind RetroAltFest records."
+            links={[
+              {
+                href: "/guides",
+                label: "Back to all guides",
+                description: "Compare the current Goth & Darkwave, Industrial / EBM, New Wave / Post-Punk, and West Coast / PNW guide routes.",
+              },
+              {
+                href: "/festivals",
+                label: "Browse current atlas records",
+                description: "Open the active festival atlas and follow only source-backed internal detail links.",
+              },
+              {
+                href: "/verification",
+                label: "See how source checks work",
+                description: "Review how RetroAltFest separates confirmed records from reference signals and related context.",
+              },
+            ]}
+          />
+        </div>
       </article>
 
       <Footer />
@@ -303,71 +309,95 @@ export default function NorthAmericanGothDarkwaveGuidePage() {
 }
 
 function GuideSection({
+  id,
   eyebrow,
   title,
   description,
   records,
+  startIndex,
+  variant,
 }: {
+  id: string;
   eyebrow: string;
   title: string;
   description: string;
   records: GuideRecord[];
+  startIndex: number;
+  variant: "active" | "reference";
 }) {
   return (
-    <section className="mt-10 rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(30,22,48,0.5),rgba(255,255,255,0.024))] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.28)] sm:p-8 lg:p-10">
-      <div className="max-w-3xl">
-        <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">{eyebrow}</p>
-        <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">{title}</h2>
-        <p className="mt-4 leading-8 text-[var(--raf-text-muted)]">{description}</p>
+    <section
+      className={`${styles.guideSection} ${variant === "active" ? styles.activeSection : styles.referenceSection}`}
+      id={id}
+    >
+      <div className={styles.sectionHeader}>
+        <p className={styles.sectionEyebrow}>{eyebrow}</p>
+        <h2 className={styles.sectionTitle}>{title}</h2>
+        <p className={styles.sectionDescription}>{description}</p>
       </div>
 
-      <div className="mt-7 grid gap-5 lg:grid-cols-2">
-        {records.map((record) => (
-          <FestivalGuideCard key={record.festivalName} record={record} />
+      <div className={styles.recordList}>
+        {records.map((record, index) => (
+          <FestivalGuideCard
+            key={record.festivalName}
+            record={record}
+            recordIndex={startIndex + index}
+            variant={variant}
+          />
         ))}
       </div>
     </section>
   );
 }
 
-function FestivalGuideCard({ record }: { record: GuideRecord }) {
+function FestivalGuideCard({
+  record,
+  recordIndex,
+  variant,
+}: {
+  record: GuideRecord;
+  recordIndex: number;
+  variant: "active" | "reference";
+}) {
   return (
-    <article className="group relative overflow-hidden rounded-[1.75rem] border border-[var(--raf-border-soft)] bg-[linear-gradient(180deg,rgba(17,12,30,0.82),rgba(4,4,8,0.9))] p-5 transition duration-300 hover:-translate-y-1 hover:border-[var(--raf-cyan)]/40 hover:bg-white/[0.045] sm:p-6">
-      <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[var(--raf-cyan)]/40 to-transparent opacity-0 transition group-hover:opacity-100" />
-      <div className="flex flex-wrap items-start justify-between gap-3">
+    <article
+      className={`${styles.festivalRecord} ${variant === "active" ? styles.activeRecord : styles.referenceRecord}`}
+    >
+      <span className={styles.recordIndex} aria-hidden="true" data-index={String(recordIndex).padStart(2, "0")} />
+      <div className={styles.recordHeader}>
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--raf-text-dim)]">
+          <p className={styles.recordLocation}>
             {record.city} · {record.region} · {record.country}
           </p>
-          <h3 className="mt-3 font-display text-2xl font-semibold tracking-tight text-white">{record.festivalName}</h3>
+          <h3 className={styles.recordTitle}>{record.festivalName}</h3>
         </div>
-        <span className="max-w-full rounded-full border border-[var(--raf-border)] bg-white/[0.055] px-3 py-1 text-right font-mono text-[11px] font-semibold leading-5 text-[var(--raf-cyan)] sm:max-w-[18rem]">
+        <span className={styles.recordStatus}>
           {record.statusLabel}
         </span>
       </div>
 
-      <p className="mt-5 text-sm font-semibold text-white">Scene fit: {record.sceneFit}</p>
-      <p className="mt-3 leading-7 text-[var(--raf-text-muted)]">{record.summary}</p>
-      <p className="mt-4 rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4 text-sm leading-6 text-[var(--raf-text-muted)]">
-        <span className="font-semibold text-white">Curator note: </span>{record.sourceCaveat}
+      <p className={styles.sceneFit}>Scene fit: {record.sceneFit}</p>
+      <p className={styles.recordSummary}>{record.summary}</p>
+      <p className={styles.curatorNote}>
+        <span>Curator note: </span>{record.sourceCaveat}
       </p>
 
-      <dl className="mt-5 grid gap-3 sm:grid-cols-2">
+      <dl className={styles.factList}>
         <AtlasFact label="What sources support" value={record.confirmedDetails} />
         <AtlasFact label="What to recheck" value={record.recheckDetails} />
-        <div className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4">
-          <dt className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--raf-text-dim)]">Official source</dt>
-          <dd className="mt-2 break-words text-sm leading-6 text-white">
-            <a className="transition hover:text-[var(--raf-cyan)]" href={record.officialUrl} target="_blank" rel="noreferrer">
+        <div className={`${styles.fact} ${styles.sourceFact}`}>
+          <dt className={styles.factLabel}>Official source</dt>
+          <dd className={styles.factValue}>
+            <a className={styles.officialLink} href={record.officialUrl} target="_blank" rel="noreferrer">
               {record.officialUrl.replace(/^https?:\/\//, "")}
             </a>
           </dd>
         </div>
         {record.atlasPath ? (
-          <div className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4">
-            <dt className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--raf-text-dim)]">RetroAltFest atlas</dt>
-            <dd className="mt-2 text-sm leading-6 text-white">
-              <Link className="font-semibold transition hover:text-[var(--raf-cyan)]" href={record.atlasPath}>
+          <div className={`${styles.fact} ${styles.atlasFact}`}>
+            <dt className={styles.factLabel}>RetroAltFest atlas</dt>
+            <dd className={styles.factValue}>
+              <Link className={styles.atlasLink} href={record.atlasPath}>
                 View atlas record
               </Link>
             </dd>
@@ -375,9 +405,9 @@ function FestivalGuideCard({ record }: { record: GuideRecord }) {
         ) : null}
       </dl>
 
-      <div className="mt-5 flex flex-wrap gap-2">
+      <div className={styles.tagList}>
         {record.genreTags.map((tag) => (
-          <span key={tag} className="raf-chip rounded-full px-3 py-1 text-xs">
+          <span key={tag} className={styles.tag}>
             {tag}
           </span>
         ))}
@@ -387,19 +417,21 @@ function FestivalGuideCard({ record }: { record: GuideRecord }) {
 }
 
 function StatusCard({ label, description }: { label: string; description: string }) {
+  const isActive = label === "Active atlas record with 2026 source support";
+
   return (
-    <div className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4">
-      <h3 className="font-display text-xl font-semibold text-white">{label}</h3>
-      <p className="mt-2 text-sm leading-6 text-[var(--raf-text-muted)]">{description}</p>
+    <div className={`${styles.statusCard} ${isActive ? styles.activeStatusCard : styles.contextStatusCard}`}>
+      <h3>{label}</h3>
+      <p>{description}</p>
     </div>
   );
 }
 
 function AtlasFact({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4">
-      <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--raf-text-dim)]">{label}</p>
-      <p className="mt-2 text-sm leading-6 text-white">{value}</p>
+    <div className={styles.fact}>
+      <p className={styles.factLabel}>{label}</p>
+      <p className={styles.factValue}>{value}</p>
     </div>
   );
 }

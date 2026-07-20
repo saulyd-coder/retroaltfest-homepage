@@ -1,0 +1,1010 @@
+.page {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow-wrap: break-word;
+  color: var(--nt-bone-text);
+  background: #040205;
+}
+
+.page::before {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background: url("/night-transmission-inner/magenta-orbit.avif") center 52% / cover no-repeat;
+}
+
+.page::after {
+  position: fixed;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background:
+    linear-gradient(90deg, rgb(3 1 4 / 80%) 0%, rgb(3 1 4 / 51%) 24%, rgb(3 1 4 / 40%) 52%, rgb(3 1 4 / 62%) 78%, rgb(3 1 4 / 84%) 100%),
+    linear-gradient(180deg, rgb(3 1 4 / 60%) 0%, rgb(3 1 4 / 42%) 22%, rgb(3 1 4 / 58%) 65%, rgb(3 1 4 / 76%) 100%),
+    repeating-linear-gradient(177deg, transparent 0 9px, rgb(255 255 255 / 1.2%) 10px, transparent 11px 18px),
+    radial-gradient(circle at 22% 34%, rgb(255 255 255 / 4%) 0 0.5px, transparent 0.85px);
+  background-size: auto, auto, auto, 9px 9px;
+}
+
+.page > header,
+.page > footer {
+  position: relative;
+  z-index: 7;
+}
+
+.paperEdge {
+  position: fixed;
+  z-index: 2;
+  inset: 78px 14px 16px;
+  pointer-events: none;
+  border: 1px solid rgb(255 73 177 / 12%);
+  box-shadow:
+    inset 0 0 0 2px rgb(0 0 0 / 42%),
+    inset 0 0 96px rgb(0 0 0 / 54%);
+  clip-path: polygon(0.4% 0, 24% 0.25%, 51% 0, 79% 0.3%, 99.7% 0, 100% 26%, 99.6% 52%, 100% 79%, 99.6% 100%, 71% 99.6%, 47% 100%, 19% 99.7%, 0 100%, 0.35% 72%, 0 43%, 0.45% 18%);
+}
+
+.towerBeacon {
+  display: none;
+}
+
+.content {
+  position: relative;
+  z-index: 4;
+  width: min(calc(100% - 40px), 1220px);
+  margin: 0 auto;
+  padding: 30px 0 112px;
+}
+
+.breadcrumb {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+  padding: 0 14px;
+  border-left: 1px solid rgb(243 0 142 / 48%);
+  color: var(--nt-muted-telemetry);
+  background: linear-gradient(90deg, rgb(4 2 6 / 88%), rgb(4 2 6 / 24%) 74%, transparent);
+  font-family: var(--font-jetbrains-mono), "Courier New", monospace;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.breadcrumb a {
+  display: inline-flex;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  border-bottom: 1px solid transparent;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+
+.breadcrumb a:hover {
+  border-bottom-color: var(--nt-electric-cyan);
+  color: var(--nt-bone-text);
+}
+
+.crumbDivider {
+  color: rgb(243 0 142 / 74%);
+}
+
+.crumbCurrent {
+  color: rgb(244 240 239 / 66%);
+}
+
+.masthead,
+.guideSection,
+.statusSection,
+.closingSection {
+  position: relative;
+  border-top: 1px solid rgb(243 0 142 / 42%);
+  border-right: 1px solid rgb(116 58 255 / 18%);
+  border-bottom: 1px solid rgb(116 58 255 / 34%);
+  border-left: 1px solid rgb(243 0 142 / 20%);
+  background:
+    linear-gradient(104deg, rgb(243 0 142 / 5%), transparent 24%),
+    linear-gradient(180deg, rgb(7 3 10 / 91%), rgb(3 2 6 / 94%));
+  box-shadow: 0 28px 72px rgb(0 0 0 / 30%);
+}
+
+.masthead::after,
+.guideSection::after,
+.statusSection::after,
+.closingSection::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  width: min(26%, 250px);
+  height: 1px;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(90deg, transparent, var(--nt-electric-cyan));
+  opacity: 0.62;
+}
+
+.masthead {
+  min-height: 560px;
+  padding: clamp(34px, 5.5vw, 74px);
+  overflow: hidden;
+}
+
+.masthead::before {
+  position: absolute;
+  top: 0;
+  right: clamp(20px, 4vw, 58px);
+  width: clamp(72px, 11vw, 150px);
+  height: 34%;
+  pointer-events: none;
+  content: "";
+  border-right: 1px solid rgb(115 239 255 / 16%);
+  border-left: 1px solid rgb(243 0 142 / 16%);
+  background:
+    linear-gradient(90deg, transparent 49%, rgb(243 0 142 / 26%) 49% 50%, transparent 50%),
+    repeating-linear-gradient(180deg, transparent 0 15px, rgb(115 239 255 / 18%) 16px, transparent 17px 31px);
+  opacity: 0.7;
+}
+
+.mastheadInner {
+  position: relative;
+  z-index: 1;
+  max-width: 940px;
+}
+
+.mastheadLabel,
+.sectionEyebrow,
+.statusEyebrow,
+.closingEyebrow {
+  color: var(--nt-electric-cyan);
+  font-family: var(--font-jetbrains-mono), "Courier New", monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.mastheadLabel::before,
+.sectionEyebrow::before,
+.statusEyebrow::before,
+.closingEyebrow::before {
+  display: inline-block;
+  width: 30px;
+  height: 1px;
+  margin-right: 12px;
+  vertical-align: middle;
+  content: "";
+  background: currentcolor;
+}
+
+.mastheadTitle {
+  max-width: 18ch;
+  margin-top: 22px;
+  color: #fff;
+  font-family: var(--font-space-grotesk), Arial, sans-serif;
+  font-size: clamp(3.2rem, 6vw, 5.7rem);
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 0.96;
+  text-wrap: balance;
+}
+
+.mastheadLead,
+.mastheadCopy,
+.sectionDescription,
+.recordSummary,
+.closingCopy {
+  max-width: 72ch;
+  color: rgb(230 222 229 / 80%);
+  font-family: var(--font-inter), Arial, sans-serif;
+  font-size: 1.075rem;
+  line-height: 1.75;
+}
+
+.mastheadLead {
+  max-width: 65ch;
+  margin-top: 30px;
+  color: rgb(244 240 239 / 88%);
+  font-size: clamp(1.08rem, 1.5vw, 1.24rem);
+}
+
+.mastheadCopy {
+  margin-top: 18px;
+}
+
+.pathLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.primaryPath,
+.secondaryPath {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 15px;
+  border: 1px solid rgb(115 239 255 / 26%);
+  color: var(--nt-bone-text);
+  background: rgb(2 2 5 / 54%);
+  font-family: var(--font-jetbrains-mono), "Courier New", monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+  text-decoration: none;
+  transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+}
+
+.primaryPath {
+  border-color: rgb(243 0 142 / 64%);
+  background: linear-gradient(100deg, rgb(243 0 142 / 15%), rgb(2 2 5 / 64%));
+}
+
+.primaryPath:hover,
+.secondaryPath:hover {
+  border-color: var(--nt-electric-cyan);
+  color: #fff;
+  background-color: rgb(115 239 255 / 7%);
+}
+
+.factGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin-top: 34px;
+  border-top: 1px solid rgb(115 239 255 / 15%);
+  border-left: 1px solid rgb(115 239 255 / 15%);
+}
+
+.fact {
+  min-width: 0;
+  padding: 16px;
+  border-right: 1px solid rgb(115 239 255 / 15%);
+  border-bottom: 1px solid rgb(115 239 255 / 15%);
+  background: rgb(1 1 4 / 52%);
+}
+
+.factLabel {
+  color: rgb(187 174 190 / 72%);
+  font-family: var(--font-jetbrains-mono), "Courier New", monospace;
+  font-size: 0.61rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.factValue {
+  margin-top: 8px;
+  color: rgb(244 240 239 / 90%);
+  font-family: var(--font-inter), Arial, sans-serif;
+  font-size: 0.93rem;
+  line-height: 1.65;
+}
+
+.guideSection,
+.statusSection,
+.closingSection {
+  margin-top: 34px;
+  padding: clamp(30px, 4.5vw, 58px);
+  scroll-margin-top: 92px;
+}
+
+.activeSection {
+  border-top-color: rgb(194 255 79 / 34%);
+}
+
+.referenceSection {
+  border-top-color: rgb(243 0 142 / 42%);
+}
+
+.sectionHeader {
+  max-width: 850px;
+  padding-left: 18px;
+  border-left: 1px solid rgb(243 0 142 / 48%);
+}
+
+.activeSection .sectionHeader {
+  border-left-color: rgb(194 255 79 / 54%);
+}
+
+.sectionEyebrow,
+.statusEyebrow {
+  color: rgb(255 76 181 / 88%);
+}
+
+.activeSection .sectionEyebrow {
+  color: rgb(194 255 79 / 78%);
+}
+
+.sectionTitle {
+  max-width: 22ch;
+  margin-top: 13px;
+  color: #fff;
+  font-family: var(--font-space-grotesk), Arial, sans-serif;
+  font-size: clamp(2.05rem, 3.8vw, 3.7rem);
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  line-height: 1.03;
+  text-wrap: balance;
+}
+
+.sectionDescription {
+  margin-top: 18px;
+}
+
+.recordList {
+  display: grid;
+  gap: 22px;
+  margin-top: 34px;
+}
+
+.festivalRecord {
+  position: relative;
+  min-width: 0;
+  padding: clamp(28px, 4vw, 48px) clamp(24px, 4vw, 52px) clamp(30px, 4vw, 48px) clamp(72px, 8vw, 104px);
+  overflow: hidden;
+  border-top: 1px solid rgb(255 255 255 / 13%);
+  border-right: 1px solid rgb(255 255 255 / 8%);
+  border-bottom: 1px solid rgb(255 255 255 / 12%);
+  border-left: 2px solid rgb(243 0 142 / 58%);
+  background:
+    linear-gradient(90deg, rgb(243 0 142 / 4%), transparent 23%),
+    rgb(1 1 4 / 76%);
+}
+
+.recordIndex {
+  position: absolute;
+  top: 28px;
+  left: 20px;
+  color: rgb(255 76 181 / 52%);
+  font-family: var(--font-jetbrains-mono), "Courier New", monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.recordIndex::before {
+  content: attr(data-index);
+}
+
+.festivalRecord::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 54px;
+  width: 1px;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(180deg, rgb(243 0 142 / 36%), transparent 30%, rgb(115 239 255 / 18%) 72%, transparent);
+}
+
+.activeRecord {
+  border-left-color: rgb(194 255 79 / 54%);
+}
+
+.activeRecord .recordIndex {
+  color: rgb(194 255 79 / 60%);
+}
+
+.activeRecord::after {
+  background: linear-gradient(180deg, rgb(194 255 79 / 34%), transparent 32%, rgb(115 239 255 / 18%) 74%, transparent);
+}
+
+.recordHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
+  gap: 28px;
+  align-items: start;
+}
+
+.recordLocation {
+  color: rgb(187 174 190 / 70%);
+  font-family: var(--font-jetbrains-mono), "Courier New", monospace;
+  font-size: 0.63rem;
+  font-weight: 600;
+  letter-spacing: 0.17em;
+  line-height: 1.65;
+  text-transform: uppercase;
+}
+
+.recordTitle {
+  max-width: 25ch;
+  margin-top: 10px;
+  color: #fff;
+  font-family: var(--font-space-grotesk), Arial, sans-serif;
+  font-size: clamp(1.55rem, 2.8vw, 2.65rem);
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+.recordStatus {
+  display: block;
+  min-width: 0;
+  padding: 12px 13px 12px 28px;
+  border-top: 1px solid rgb(115 239 255 / 30%);
+  border-bottom: 1px solid rgb(115 239 255 / 14%);
+  color: var(--nt-electric-cyan);
+  background:
+    linear-gradient(90deg, rgb(115 239 255 / 11%), transparent 72%),
+    linear-gradient(90deg, transparent 0 12px, rgb(115 239 255 / 68%) 12px 15px, transparent 15px);
+  font-family: var(--font-jetbrains-mono), "Courier New", monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.55;
+}
+
+.activeRecord .recordStatus {
+  border-top-color: rgb(194 255 79 / 34%);
+  color: rgb(218 255 142 / 90%);
+  background:
+    linear-gradient(90deg, rgb(194 255 79 / 10%), transparent 72%),
+    linear-gradient(90deg, transparent 0 12px, rgb(194 255 79 / 72%) 12px 15px, transparent 15px);
+}
+
+.sceneFit {
+  max-width: 72ch;
+  margin-top: 28px;
+  color: rgb(244 240 239 / 94%);
+  font-family: var(--font-inter), Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.65;
+}
+
+.recordSummary {
+  margin-top: 12px;
+}
+
+.curatorNote {
+  max-width: 72ch;
+  margin-top: 20px;
+  padding: 16px 18px;
+  border-top: 1px solid rgb(255 255 255 / 12%);
+  border-bottom: 1px solid rgb(255 255 255 / 8%);
+  border-left: 3px solid rgb(116 58 255 / 64%);
+  color: rgb(224 215 224 / 78%);
+  background: rgb(0 0 2 / 54%);
+  font-family: var(--font-inter), Arial, sans-serif;
+  font-size: 0.98rem;
+  line-height: 1.7;
+}
+
+.curatorNote span {
+  color: var(--nt-bone-text);
+  font-weight: 700;
+}
+
+.factList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  margin-top: 22px;
+  border-top: 1px solid rgb(115 239 255 / 13%);
+  border-left: 1px solid rgb(115 239 255 / 13%);
+}
+
+.sourceFact {
+  border-left: 2px solid rgb(115 239 255 / 38%);
+}
+
+.atlasFact {
+  border-left: 2px solid rgb(194 255 79 / 38%);
+}
+
+.officialLink,
+.atlasLink {
+  display: inline-flex;
+  min-height: 44px;
+  max-width: 100%;
+  align-items: center;
+  border-bottom: 1px solid rgb(115 239 255 / 54%);
+  color: rgb(244 240 239 / 94%);
+  overflow-wrap: anywhere;
+  text-decoration: none;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+
+.atlasLink {
+  border-bottom-color: rgb(194 255 79 / 50%);
+  font-weight: 700;
+}
+
+.officialLink:hover,
+.atlasLink:hover {
+  border-bottom-color: var(--nt-signal-magenta);
+  color: #fff;
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 22px;
+}
+
+.tag {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  padding: 5px 10px;
+  border-top: 1px solid rgb(243 0 142 / 18%);
+  border-bottom: 1px solid rgb(115 239 255 / 12%);
+  color: rgb(212 200 214 / 72%);
+  background: rgb(0 0 2 / 42%);
+  font-family: var(--font-jetbrains-mono), "Courier New", monospace;
+  font-size: 0.67rem;
+  line-height: 1.35;
+}
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  margin-top: 28px;
+  border-top: 1px solid rgb(255 255 255 / 12%);
+  border-left: 1px solid rgb(255 255 255 / 12%);
+}
+
+.statusCard {
+  min-width: 0;
+  padding: 24px;
+  border-right: 1px solid rgb(255 255 255 / 12%);
+  border-bottom: 1px solid rgb(255 255 255 / 12%);
+  background: rgb(0 0 2 / 58%);
+}
+
+.statusCard h3 {
+  padding-left: 13px;
+  border-left: 3px solid rgb(243 0 142 / 62%);
+  color: #fff;
+  font-family: var(--font-space-grotesk), Arial, sans-serif;
+  font-size: clamp(1.22rem, 2vw, 1.65rem);
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+.activeStatusCard h3 {
+  border-left-color: rgb(194 255 79 / 68%);
+}
+
+.contextStatusCard h3 {
+  border-left-color: rgb(115 239 255 / 54%);
+}
+
+.statusCard p {
+  margin-top: 13px;
+  color: rgb(224 215 224 / 78%);
+  font-family: var(--font-inter), Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.closingSection {
+  border-top-color: rgb(115 239 255 / 44%);
+  background:
+    linear-gradient(104deg, rgb(115 239 255 / 6%), transparent 24%),
+    linear-gradient(180deg, rgb(4 5 9 / 93%), rgb(3 2 6 / 95%));
+}
+
+.closingEyebrow {
+  color: var(--nt-electric-cyan);
+}
+
+.closingCopy {
+  margin-top: 20px;
+}
+
+.relatedPaths {
+  margin-top: 34px;
+  scroll-margin-top: 92px;
+}
+
+.relatedPaths > section {
+  margin-top: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-top: 1px solid rgb(243 0 142 / 38%) !important;
+  border-right: 1px solid rgb(116 58 255 / 16%) !important;
+  border-bottom: 1px solid rgb(115 239 255 / 26%) !important;
+  border-left: 1px solid rgb(243 0 142 / 18%) !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(104deg, rgb(115 239 255 / 5%), transparent 28%),
+    linear-gradient(180deg, rgb(6 4 11 / 92%), rgb(2 2 5 / 94%)) !important;
+  box-shadow: 0 28px 72px rgb(0 0 0 / 30%) !important;
+}
+
+.relatedPaths > section > div:first-child {
+  max-width: 850px !important;
+  padding-left: 18px;
+  border-left: 1px solid rgb(115 239 255 / 44%);
+}
+
+.relatedPaths > section > div:first-child > p:first-child {
+  color: var(--nt-electric-cyan) !important;
+  font-family: var(--font-jetbrains-mono), "Courier New", monospace !important;
+  font-size: 0.68rem !important;
+  font-weight: 700;
+  letter-spacing: 0.25em !important;
+  line-height: 1.5 !important;
+  text-transform: uppercase;
+}
+
+.relatedPaths > section > div:first-child > h2 {
+  max-width: 22ch;
+  margin-top: 13px !important;
+  color: #fff;
+  font-family: var(--font-space-grotesk), Arial, sans-serif !important;
+  font-size: clamp(2.05rem, 3.8vw, 3.7rem) !important;
+  font-weight: 650 !important;
+  letter-spacing: -0.045em !important;
+  line-height: 1.03 !important;
+  text-wrap: balance;
+}
+
+.relatedPaths > section > div:first-child > p:last-child {
+  max-width: 72ch;
+  margin-top: 18px !important;
+  color: rgb(230 222 229 / 80%) !important;
+  font-family: var(--font-inter), Arial, sans-serif;
+  font-size: 1.075rem !important;
+  line-height: 1.75 !important;
+}
+
+.relatedPaths a {
+  min-width: 0;
+  min-height: 44px;
+  overflow-wrap: anywhere;
+  border-radius: 0 !important;
+  border-color: rgb(115 239 255 / 18%) !important;
+  background: rgb(0 0 2 / 56%) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.relatedPaths a:hover {
+  border-color: rgb(243 0 142 / 54%) !important;
+  background: rgb(243 0 142 / 5%) !important;
+}
+
+.breadcrumb a:focus-visible,
+.primaryPath:focus-visible,
+.secondaryPath:focus-visible,
+.officialLink:focus-visible,
+.atlasLink:focus-visible,
+.relatedPaths a:focus-visible {
+  outline: 2px solid var(--nt-focus-ring);
+  outline-offset: 4px;
+}
+
+@media (min-width: 1101px) {
+  .towerBeacon {
+    position: fixed;
+    z-index: 2;
+    top: 96px;
+    right: -62px;
+    display: block;
+    width: min(25vw, 330px);
+    height: min(82vh, 780px);
+    pointer-events: none;
+    opacity: 0.075;
+    background: url("/night-transmission-inner/tower-beacon-signature.avif") right top / cover no-repeat;
+    filter: brightness(1.22) contrast(1.06) saturate(0.88);
+    mix-blend-mode: screen;
+    mask-image:
+      linear-gradient(90deg, transparent 0, rgb(0 0 0 / 34%) 30%, black 62%),
+      linear-gradient(180deg, black 0 72%, transparent 100%);
+    mask-composite: intersect;
+  }
+}
+
+@media (max-width: 900px) {
+  .content {
+    width: min(calc(100% - 28px), 760px);
+    padding-top: 20px;
+  }
+
+  .paperEdge {
+    inset: 70px 7px 10px;
+  }
+
+  .masthead {
+    min-height: auto;
+    padding: 38px 30px 42px;
+  }
+
+  .mastheadTitle {
+    font-size: clamp(2.7rem, 8.5vw, 4.6rem);
+  }
+
+  .recordHeader {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .recordStatus {
+    max-width: 34rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .content {
+    width: min(calc(100% - 24px), 600px);
+    padding: 14px 0 76px;
+  }
+
+  .breadcrumb {
+    flex-wrap: wrap;
+    gap: 7px 9px;
+    margin-bottom: 14px;
+    padding: 4px 10px;
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+  }
+
+  .crumbCurrent {
+    flex-basis: 100%;
+    padding-bottom: 8px;
+  }
+
+  .masthead {
+    padding: 30px 20px 34px;
+  }
+
+  .masthead::before {
+    right: 12px;
+    width: 58px;
+    opacity: 0.38;
+  }
+
+  .mastheadLabel,
+  .sectionEyebrow,
+  .statusEyebrow,
+  .closingEyebrow {
+    font-size: 0.61rem;
+    letter-spacing: 0.18em;
+  }
+
+  .mastheadLabel::before,
+  .sectionEyebrow::before,
+  .statusEyebrow::before,
+  .closingEyebrow::before {
+    width: 18px;
+    margin-right: 8px;
+  }
+
+  .mastheadTitle {
+    max-width: 100%;
+    margin-top: 18px;
+    font-size: clamp(2.25rem, 12.5vw, 3.5rem);
+    letter-spacing: -0.05em;
+    line-height: 0.98;
+    text-wrap: pretty;
+  }
+
+  .mastheadLead,
+  .mastheadCopy,
+  .sectionDescription,
+  .recordSummary,
+  .closingCopy {
+    font-size: 1rem;
+    line-height: 1.72;
+  }
+
+  .mastheadLead {
+    margin-top: 24px;
+  }
+
+  .pathLinks {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin-top: 24px;
+  }
+
+  .primaryPath,
+  .secondaryPath {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .factGrid,
+  .factList,
+  .statusGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .guideSection,
+  .statusSection,
+  .closingSection {
+    margin-top: 22px;
+    padding: 28px 18px 30px;
+  }
+
+  .sectionHeader {
+    padding-left: 12px;
+  }
+
+  .sectionTitle {
+    max-width: 100%;
+    font-size: clamp(1.9rem, 9vw, 2.75rem);
+    letter-spacing: -0.04em;
+    text-wrap: pretty;
+  }
+
+  .recordList {
+    gap: 16px;
+    margin-top: 26px;
+  }
+
+  .festivalRecord {
+    padding: 58px 18px 26px;
+  }
+
+  .recordIndex {
+    top: 20px;
+    left: 18px;
+  }
+
+  .festivalRecord::after {
+    top: 16px;
+    right: 18px;
+    bottom: auto;
+    left: 52px;
+    width: auto;
+    height: 1px;
+    background: linear-gradient(90deg, rgb(243 0 142 / 42%), transparent);
+  }
+
+  .activeRecord::after {
+    background: linear-gradient(90deg, rgb(194 255 79 / 38%), transparent);
+  }
+
+  .recordLocation {
+    font-size: 0.59rem;
+    letter-spacing: 0.13em;
+  }
+
+  .recordTitle {
+    max-width: 100%;
+    font-size: clamp(1.45rem, 7.5vw, 2rem);
+    text-wrap: pretty;
+  }
+
+  .recordStatus {
+    padding: 11px 12px 11px 26px;
+    font-size: 0.66rem;
+  }
+
+  .sceneFit {
+    margin-top: 22px;
+    font-size: 1rem;
+  }
+
+  .curatorNote {
+    padding: 14px;
+    font-size: 0.96rem;
+  }
+
+  .fact {
+    padding: 14px;
+  }
+
+  .statusCard {
+    padding: 19px 17px;
+  }
+
+  .relatedPaths {
+    margin-top: 22px;
+  }
+
+  .relatedPaths > section > div:last-child {
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .relatedPaths a,
+  .relatedPaths a span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 360px) {
+  .content {
+    width: min(calc(100% - 18px), 342px);
+  }
+
+  .masthead {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .mastheadTitle {
+    font-size: clamp(2.08rem, 12vw, 2.75rem);
+  }
+
+  .guideSection,
+  .statusSection,
+  .closingSection {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .festivalRecord {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .recordTitle,
+  .sectionTitle {
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .breadcrumb a,
+  .primaryPath,
+  .secondaryPath,
+  .officialLink,
+  .atlasLink,
+  .relatedPaths a {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .page,
+  .masthead,
+  .guideSection,
+  .festivalRecord,
+  .statusSection,
+  .closingSection,
+  .statusCard,
+  .fact,
+  .relatedPaths > section,
+  .relatedPaths a {
+    color: CanvasText;
+    border-color: CanvasText !important;
+    background: Canvas !important;
+    forced-color-adjust: auto;
+  }
+
+  .page::before,
+  .page::after,
+  .paperEdge,
+  .towerBeacon,
+  .masthead::before,
+  .masthead::after,
+  .guideSection::after,
+  .statusSection::after,
+  .closingSection::after,
+  .festivalRecord::after,
+  .recordIndex {
+    display: none;
+  }
+
+  .breadcrumb a:focus-visible,
+  .primaryPath:focus-visible,
+  .secondaryPath:focus-visible,
+  .officialLink:focus-visible,
+  .atlasLink:focus-visible,
+  .relatedPaths a:focus-visible {
+    outline-color: Highlight;
+  }
+}

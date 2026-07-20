@@ -929,6 +929,68 @@ test('guide page for North American goth and darkwave festivals is static, bound
   assert.match(featuredFestivals, /href="\/guides"/);
 });
 
+test('Night Transmission Phase 3A guide article stays route-local, square, and content-safe', () => {
+  const guidePath = 'src/app/guides/north-american-goth-darkwave-festivals/page.tsx';
+  const cssPath = 'src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css';
+  const otherGuidePaths = [
+    'src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/page.tsx',
+    'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx',
+    'src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/page.tsx',
+  ];
+
+  assert.equal(existsSync(join(root, cssPath)), true, 'reference article should have route-local Night Transmission CSS');
+
+  const guide = read(guidePath);
+  const css = read(cssPath);
+  const source = `${guide}\n${css}`;
+
+  assert.match(guide, /import styles from "\.\/GuideArticle\.module\.css"/);
+  assert.match(guide, /<main className=\{styles\.page\}>/);
+  assert.match(guide, /className=\{styles\.paperEdge\} aria-hidden="true"/);
+  assert.match(guide, /className=\{styles\.towerBeacon\} aria-hidden="true"/);
+  assert.doesNotMatch(guide, /rounded-/);
+  assert.doesNotMatch(guide, /"use client"|useState|useEffect|useMemo|fetch\(/);
+
+  assert.equal((css.match(/magenta-orbit\.avif/g) ?? []).length, 1, 'orbital asset should be declared once');
+  assert.equal((css.match(/tower-beacon-signature\.avif/g) ?? []).length, 1, 'tower asset should be declared once');
+  const towerMediaIndex = css.indexOf('@media (min-width: 1101px)');
+  const towerUrlIndex = css.indexOf('tower-beacon-signature.avif');
+  assert.ok(towerMediaIndex > -1 && towerUrlIndex > towerMediaIndex, 'tower URL should live only in the desktop media query');
+  assert.match(css, /prefers-reduced-motion/);
+  assert.match(css, /forced-colors/);
+  assert.match(css, /focus-visible/);
+
+  const h2Sequence = [
+    'Four active atlas records with current source support.',
+    'Tracked dark-scene signals and related references.',
+    'How RetroAltFest labels this guide',
+    'The atlas expands only as sources hold.',
+    'Choose your next discovery path.',
+  ];
+  let lastHeadingIndex = -1;
+  for (const heading of h2Sequence) {
+    const headingIndex = guide.indexOf(heading);
+    assert.ok(headingIndex > lastHeadingIndex, `${heading} should stay in the approved H2 sequence`);
+    lastHeadingIndex = headingIndex;
+  }
+
+  for (const atlasPath of [
+    '/festivals/absolution-fest',
+    '/festivals/a-murder-of-crows-xi-nyc-goth-post-punk-festival',
+    '/festivals/cold-waves',
+    '/festivals/terminus-festival',
+  ]) {
+    assert.match(guide, new RegExp(`atlasPath: "${atlasPath.replaceAll('/', '\\/')}"`));
+  }
+  assert.doesNotMatch(guide, /atlasPath: "\/festivals\/(dark-force-fest|cruel-world|verboden-music-festival)"/);
+  assert.doesNotMatch(source, /FAQPage|application\/ld\+json|<script|\/prototypes\/|night-transmission-(hero|skyline|environment|wet-ground|poster)/i);
+
+  for (const otherGuidePath of otherGuidePaths) {
+    const otherGuide = read(otherGuidePath);
+    assert.doesNotMatch(otherGuide, /GuideArticle\.module\.css|magenta-orbit|tower-beacon-signature/);
+  }
+});
+
 test('guide page for industrial EBM and dark electronic festivals is static, bounded, and source-safe', () => {
   const guidePath = 'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx';
   assert.equal(existsSync(join(root, guidePath)), true, 'industrial guide route should exist');
