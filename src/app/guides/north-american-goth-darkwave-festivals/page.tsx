@@ -9,7 +9,7 @@ import styles from "./GuideArticle.module.css";
 const pagePath = "/guides/north-american-goth-darkwave-festivals";
 
 export const metadata: Metadata = buildMetadata({
-  title: "North American Goth & Darkwave Festivals | RetroAltFest Guide",
+  title: "North American Goth & Darkwave Festivals",
   description:
     "A source-aware North American guide to goth, darkwave, post-punk, industrial, synth, and related dark alternative festivals checked against official or organizer-controlled sources.",
   path: pagePath,

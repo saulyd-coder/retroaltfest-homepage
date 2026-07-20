@@ -929,6 +929,27 @@ test('guide page for North American goth and darkwave festivals is static, bound
   assert.match(featuredFestivals, /href="\/guides"/);
 });
 
+test('North American Goth and Darkwave guide metadata composes the RetroAltFest brand once', () => {
+  const page = read('src/app/guides/north-american-goth-darkwave-festivals/page.tsx');
+  const layout = read('src/app/layout.tsx');
+  const seo = read('src/lib/seo.ts');
+  const routeTitle = page.match(/title:\s*"([^"]+)"/)?.[1];
+  const titleTemplate = layout.match(/template:\s*"([^"]+)"/)?.[1];
+  const siteUrl = seo.match(/siteUrl\s*=\s*"([^"]+)"/)?.[1];
+  const routePath = page.match(/const pagePath\s*=\s*"([^"]+)"/)?.[1];
+
+  assert.equal(routeTitle, 'North American Goth & Darkwave Festivals');
+  assert.doesNotMatch(routeTitle, /RetroAltFest/, 'route-level metadata input should not duplicate the brand');
+  assert.equal(
+    titleTemplate?.replace('%s', routeTitle),
+    'North American Goth & Darkwave Festivals | RetroAltFest',
+  );
+  assert.equal(
+    `${siteUrl}${routePath}`,
+    'https://retroaltfest.com/guides/north-american-goth-darkwave-festivals',
+  );
+});
+
 test('Night Transmission Phase 3A guide article stays route-local, square, and content-safe', () => {
   const guidePath = 'src/app/guides/north-american-goth-darkwave-festivals/page.tsx';
   const cssPath = 'src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css';
