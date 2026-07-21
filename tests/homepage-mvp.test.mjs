@@ -954,7 +954,6 @@ test('Night Transmission Phase 3A guide article stays route-local, square, and c
   const guidePath = 'src/app/guides/north-american-goth-darkwave-festivals/page.tsx';
   const cssPath = 'src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css';
   const otherGuidePaths = [
-    'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx',
     'src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/page.tsx',
   ];
 
@@ -1308,6 +1307,132 @@ test('Night Transmission Phase 3B West Coast guide stays route-local, square, an
   for (const protectedGuidePath of protectedGuidePaths) {
     const protectedGuide = read(protectedGuidePath);
     assert.doesNotMatch(protectedGuide, /west-coast-pacific-northwest-dark-alternative-festivals\/GuideArticle\.module\.css/);
+  }
+});
+
+test('Night Transmission Phase 3C Industrial guide stays route-local, square, and contract-safe', () => {
+  const guidePath = 'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx';
+  const cssPath = 'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/GuideArticle.module.css';
+  const protectedGuidePaths = [
+    'src/app/guides/north-american-goth-darkwave-festivals/page.tsx',
+    'src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/page.tsx',
+    'src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/page.tsx',
+  ];
+
+  assert.equal(existsSync(join(root, cssPath)), true, 'Phase 3C should have one route-local CSS module');
+
+  const guide = read(guidePath);
+  const css = existsSync(join(root, cssPath)) ? read(cssPath) : '';
+  const source = `${guide}\n${css}`;
+
+  assert.match(guide, /import styles from "\.\/GuideArticle\.module\.css"/);
+  assert.match(guide, /data-article-contract="de81cbdb5ec67509b1af3114b37b4d87d8a1dd32aa50ace7e5346fd299334732"/);
+  for (const className of [
+    'page',
+    'paperEdge',
+    'towerBeacon',
+    'content',
+    'breadcrumb',
+    'masthead',
+    'guideSection',
+    'festivalRecord',
+    'recordIndex',
+    'heldSection',
+    'statusSection',
+    'relatedPaths',
+  ]) {
+    assert.match(guide, new RegExp(`styles\\.${className}`));
+  }
+
+  assert.doesNotMatch(guide, /"use client"|useState|useEffect|useMemo|fetch\(/);
+  assert.equal((css.match(/magenta-orbit\.avif/g) ?? []).length, 1, 'orbital asset should be declared once');
+  assert.equal((css.match(/tower-beacon-signature\.avif/g) ?? []).length, 1, 'tower asset should be declared once');
+  const towerMediaIndex = css.indexOf('@media (min-width: 1101px)');
+  const towerUrlIndex = css.indexOf('tower-beacon-signature.avif');
+  assert.ok(towerMediaIndex > -1 && towerUrlIndex > towerMediaIndex, 'tower URL should live only in the 1101px desktop media query');
+  assert.match(css, /prefers-reduced-motion/);
+  assert.match(css, /forced-colors/);
+  assert.match(css, /focus-visible/);
+  const nonZeroRadii = [...css.matchAll(/border-radius:\s*([^;]+);/g)]
+    .map((match) => match[1].replace(/\s*!important\s*$/, '').trim())
+    .filter((value) => value !== '0');
+  assert.deepEqual(nonZeroRadii, [], 'Phase 3C route surfaces should stay square');
+
+  assert.match(guide, /title: "Industrial, EBM & Dark Electronic Festivals in North America \| RetroAltFest"/);
+  assert.match(guide, /path: pagePath/);
+  assert.match(guide, /type: "article"/);
+
+  const publicRecordSource = guide.slice(0, guide.indexOf('const heldRecords'));
+  const publicRecordNames = [...publicRecordSource.matchAll(/festivalName: "([^"]+)"/g)].map((match) => match[1]);
+  assert.deepEqual(publicRecordNames, [
+    'Cold Waves',
+    'Terminus Festival',
+    'Absolution Fest',
+    'Mechanismus',
+    'Verboden Music Festival',
+    'Dark Force Fest',
+  ]);
+  assert.deepEqual([...publicRecordSource.matchAll(/atlasPath: "([^"]+)"/g)].map((match) => match[1]), [
+    '/festivals/cold-waves',
+    '/festivals/terminus-festival',
+    '/festivals/absolution-fest',
+  ]);
+  assert.equal((publicRecordSource.match(/festivalName:/g) ?? []).length, 7, 'type plus six public records should be the only public festivalName source occurrences');
+  assert.equal((publicRecordSource.match(/atlasPath:/g) ?? []).length, 3, 'exactly three public records should declare atlasPath');
+
+  const variants = [...guide.matchAll(/variant="(active|adjacent|caveated|reference)"/g)].map((match) => match[1]);
+  assert.deepEqual(variants, ['active', 'adjacent', 'caveated', 'reference']);
+
+  const h2Sequence = [
+    'Core active atlas records with current source support.',
+    'A linked atlas record for adjacent scene overlap.',
+    'Strong industrial and dark-electronic signals, clearly caveated.',
+    'Useful context, not a current anchor.',
+    'Triton Festival stays held for now.',
+    'How RetroAltFest labels this guide',
+    'Follow the overlap without blurring the labels.',
+    'The industrial guide expands only as sources hold.',
+    'Choose your next discovery path.',
+  ];
+  let lastHeadingIndex = -1;
+  for (const heading of h2Sequence) {
+    const headingIndex = guide.indexOf(heading, lastHeadingIndex + 1);
+    assert.ok(headingIndex > lastHeadingIndex, `${heading} should remain in the frozen H2 source sequence`);
+    lastHeadingIndex = headingIndex;
+  }
+
+  for (const statusLabel of [
+    'Core industrial / dark electronic atlas record',
+    'Core industrial / EBM atlas record',
+    'Related dark-scene overlap',
+    'Tracked scene signal',
+    'Recently active corridor signal',
+    'Held until source support improves',
+  ]) {
+    assert.match(guide, new RegExp(statusLabel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  }
+
+  assert.match(guide, /Triton Festival remains held from this guide because current official source support was not strong enough in this refresh\./);
+  assert.match(guide, /Triton should not appear as a public festival card or linked detail route\./);
+  assert.match(guide, /festivalName: "Triton Festival"/);
+  assert.doesNotMatch(guide, /atlasPath: "[^"]*triton|href="[^"]*triton/i);
+
+  const officialUrls = [...guide.matchAll(/officialUrl: "([^"]+)"/g)].map((match) => match[1]);
+  assert.deepEqual(officialUrls, [
+    'https://coldwaves.net/',
+    'https://terminus-festival.com/',
+    'https://www.absolutionfest.com/',
+    'https://www.mechanismus.net/',
+    'https://verbodenfestival.com/',
+    'https://darkforcefest.com/',
+  ]);
+
+  assert.doesNotMatch(source, /FAQPage|application\/ld\+json|<script|\/prototypes\/|night-transmission-(hero|skyline|environment|wet-ground|poster)/i);
+  assert.doesNotMatch(source, /<canvas|WebGLRenderingContext|<video|parallax|prisma|supabase|mongodb|\bauth\b|\bcms\b|\bdatabase\b|scraping/i);
+
+  for (const protectedGuidePath of protectedGuidePaths) {
+    const protectedGuide = read(protectedGuidePath);
+    assert.doesNotMatch(protectedGuide, /industrial-ebm-dark-electronic-festivals-north-america\/GuideArticle\.module\.css|NT \/ CHANNEL 03C/);
   }
 });
 

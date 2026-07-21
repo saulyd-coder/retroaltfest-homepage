@@ -4,6 +4,7 @@ import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { DiscoveryLinks } from "@/components/site/DiscoveryLinks";
 import { buildMetadata } from "@/lib/seo";
+import styles from "./GuideArticle.module.css";
 
 const pagePath = "/guides/industrial-ebm-dark-electronic-festivals-north-america";
 const gothDarkwaveGuidePath = "/guides/north-american-goth-darkwave-festivals";
@@ -195,52 +196,53 @@ const allPublicRecords = [...activeAtlasRecords, ...relatedOverlapRecords, ...tr
 
 export default function IndustrialEbmDarkElectronicGuidePage() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[var(--raf-black)] text-[var(--raf-text)]">
-      <div className="ambient-haze pointer-events-none absolute -inset-28 opacity-90" />
-      <div className="nocturnal-grid pointer-events-none absolute inset-0 opacity-42 mix-blend-screen" />
-      <div className="cinematic-vignette pointer-events-none absolute inset-0" />
-      <div className="grain-field pointer-events-none absolute inset-0 opacity-[0.06]" />
+    <main className={styles.page}>
+      <span className={styles.paperEdge} aria-hidden="true" />
+      <span className={styles.towerBeacon} aria-hidden="true" />
 
       <Header />
 
-      <article className="relative mx-auto max-w-7xl px-5 pb-20 pt-10 sm:px-8 lg:pb-28 lg:pt-16">
-        <nav className="mb-8 font-mono text-xs uppercase tracking-[0.24em] text-[var(--raf-text-dim)]" aria-label="Breadcrumb">
-          <Link className="transition hover:text-[var(--raf-cyan)]" href="/">
+      <article
+        className={styles.content}
+        data-article-contract="de81cbdb5ec67509b1af3114b37b4d87d8a1dd32aa50ace7e5346fd299334732"
+      >
+        <nav className={styles.breadcrumb} aria-label="Breadcrumb">
+          <Link href="/">
             RetroAltFest
           </Link>
-          <span className="mx-3 text-[var(--raf-violet)]">/</span>
-          <Link className="transition hover:text-[var(--raf-cyan)]" href="/guides">
+          <span className={styles.crumbDivider}>/</span>
+          <Link href="/guides">
             Guides
           </Link>
-          <span className="mx-3 text-[var(--raf-violet)]">/</span>
-          <span className="text-[var(--raf-text-muted)]">Industrial / EBM / Dark Electronic</span>
+          <span className={styles.crumbDivider}>/</span>
+          <span className={styles.crumbCurrent}>Industrial / EBM / Dark Electronic</span>
         </nav>
 
-        <section className="relative overflow-hidden rounded-[2rem] border border-[rgba(168,85,247,0.2)] bg-[linear-gradient(145deg,rgba(35,24,57,0.82),rgba(8,7,14,0.92)_58%,rgba(3,3,6,0.96))] p-6 shadow-[0_34px_120px_rgba(0,0,0,0.55),0_0_70px_rgba(88,28,135,0.16)] sm:p-8 lg:p-10">
-          <div className="map-panel-bloom pointer-events-none absolute -inset-16 opacity-55 blur-2xl" />
-          <div className="relative z-10 max-w-4xl">
-            <p className="font-mono text-xs uppercase tracking-[0.32em] text-[var(--raf-cyan)]">Curated scene guide</p>
-            <h1 className="mt-5 text-balance font-display text-4xl font-semibold tracking-[-0.045em] text-white sm:text-5xl lg:text-7xl">
+        <section className={styles.masthead}>
+          <span className={styles.mastheadTelemetry} aria-hidden="true" data-label="NT / CHANNEL 03C" />
+          <div className={styles.mastheadInner}>
+            <p className={styles.mastheadLabel}>Curated scene guide</p>
+            <h1 className={styles.mastheadTitle}>
               Industrial, EBM &amp; Dark Electronic Festivals in North America
             </h1>
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-[var(--raf-text-muted)] sm:text-xl">
+            <p className={styles.mastheadLead}>
               Start here for North American industrial, EBM, post-industrial, and dark electronic festival discovery.
             </p>
-            <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
+            <p className={styles.mastheadCopy}>
               RetroAltFest separates active atlas records with current source support from related dark-scene overlap, recently active corridor signals, and reference records that need a future source refresh. We keep caveats visible because industrial and dark alternative events often overlap across goth, darkwave, synth, post-punk, and regional scenes.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link className="raf-button-primary" href="/verification">
+            <div className={styles.pathLinks}>
+              <Link className={styles.primaryPath} href="/verification">
                 See how RetroAltFest verifies festival records
               </Link>
-              <Link className="raf-button-secondary" href="/festivals">
+              <Link className={styles.secondaryPath} href="/festivals">
                 Browse the festival atlas
               </Link>
-              <Link className="raf-button-secondary" href="/guides">
+              <Link className={styles.secondaryPath} href="/guides">
                 Explore more guides
               </Link>
             </div>
-            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            <div className={styles.factGrid}>
               <AtlasFact label="Guide records" value={`${allPublicRecords.length} checked examples`} />
               <AtlasFact label="Core atlas links" value="Cold Waves · Terminus" />
               <AtlasFact label="Scope" value="Industrial / EBM / dark electronic" />
@@ -253,6 +255,8 @@ export default function IndustrialEbmDarkElectronicGuidePage() {
           title="Core active atlas records with current source support."
           description="Cold Waves and Terminus Festival are the two core Industrial/EBM/dark electronic cards in this refresh, and they are the only core records with direct atlas CTAs here."
           records={activeAtlasRecords}
+          startIndex={1}
+          variant="active"
         />
 
         <GuideSection
@@ -260,6 +264,8 @@ export default function IndustrialEbmDarkElectronicGuidePage() {
           title="A linked atlas record for adjacent scene overlap."
           description="Absolution Fest is included as a related dark-scene bridge for readers whose industrial and dark electronic interests overlap with goth, darkwave, electronic, and post-punk programming."
           records={relatedOverlapRecords}
+          startIndex={3}
+          variant="adjacent"
         />
 
         <GuideSection
@@ -267,6 +273,8 @@ export default function IndustrialEbmDarkElectronicGuidePage() {
           title="Strong industrial and dark-electronic signals, clearly caveated."
           description="Mechanismus and Verboden matter to this scene, but neither receives a RetroAltFest festival detail CTA in this guide refresh."
           records={trackedSignals}
+          startIndex={4}
+          variant="caveated"
         />
 
         <GuideSection
@@ -274,14 +282,16 @@ export default function IndustrialEbmDarkElectronicGuidePage() {
           title="Useful context, not a current anchor."
           description="Dark Force Fest stays as background/reference because the official 2026 dates checked in this refresh have passed."
           records={referenceRecords}
+          startIndex={6}
+          variant="reference"
         />
 
-        <section className="mt-10 rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(30,22,48,0.5),rgba(255,255,255,0.024))] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.28)] sm:p-8 lg:p-10">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">Held from public card treatment</p>
-          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+        <section className={styles.heldSection} data-held-boundary="triton-festival">
+          <p className={styles.sectionEyebrow}>Held from public card treatment</p>
+          <h2 className={styles.sectionTitle}>
             Triton Festival stays held for now.
           </h2>
-          <div className="mt-5 max-w-3xl space-y-4 leading-8 text-[var(--raf-text-muted)]">
+          <div className={styles.heldCopy}>
             {heldRecords.map((record) => (
               <p key={record.festivalName}>{record.note}</p>
             ))}
@@ -291,76 +301,78 @@ export default function IndustrialEbmDarkElectronicGuidePage() {
           </div>
         </section>
 
-        <section className="mt-10 rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(18,13,30,0.74),rgba(0,0,0,0.38))] p-6 sm:p-8 lg:p-10">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">Guide labels</p>
-          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+        <section className={styles.statusSection} data-status-ledger>
+          <p className={styles.sectionEyebrow}>Guide labels</p>
+          <h2 className={styles.sectionTitle}>
             How RetroAltFest labels this guide
           </h2>
-          <p className="mt-4 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
+          <p className={styles.sectionDescription}>
             RetroAltFest keeps source caveats visible so readers can tell active atlas records from related overlap, recently active signals, and records still waiting on stronger official support.
           </p>
-          <div className="mt-6 grid gap-4 md:grid-cols-2">
+          <div className={styles.statusGrid}>
             {statusLabels.map((status) => (
-              <div key={status.label} className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4">
-                <h3 className="font-display text-xl font-semibold text-white">{status.label}</h3>
-                <p className="mt-2 text-sm leading-6 text-[var(--raf-text-muted)]">{status.description}</p>
+              <div key={status.label} className={styles.statusDefinition}>
+                <h3>{status.label}</h3>
+                <p>{status.description}</p>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="mt-10 rounded-[2rem] border border-[rgba(34,211,238,0.18)] bg-[linear-gradient(135deg,rgba(34,211,238,0.08),rgba(168,85,247,0.1),rgba(0,0,0,0.42))] p-6 sm:p-8 lg:p-10">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-cyan)]">Related paths</p>
-          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+        <section className={styles.relatedSection}>
+          <p className={styles.relatedEyebrow}>Related paths</p>
+          <h2 className={styles.sectionTitle}>
             Follow the overlap without blurring the labels.
           </h2>
-          <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
+          <p className={styles.sectionDescription}>
             This guide pairs with the existing Goth &amp; Darkwave guide while keeping Industrial, EBM, and dark electronic discovery distinct.
           </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link className="raf-button-secondary px-5 py-3 text-sm font-semibold text-white" href={gothDarkwaveGuidePath}>
+          <div className={styles.pathLinks}>
+            <Link className={styles.secondaryPath} href={gothDarkwaveGuidePath}>
               Read the Goth &amp; Darkwave guide
             </Link>
-            <Link className="raf-button-primary px-5 py-3 text-sm font-black text-[#050507]" href="/festivals">
+            <Link className={styles.primaryPath} href="/festivals">
               Browse the festival atlas
             </Link>
-            <Link className="raf-button-secondary px-5 py-3 text-sm font-semibold text-white" href="/verification">
+            <Link className={styles.secondaryPath} href="/verification">
               How RetroAltFest handles source checks
             </Link>
           </div>
         </section>
 
-        <section className="mt-10 rounded-[2rem] border border-[rgba(34,211,238,0.18)] bg-black/25 p-6 sm:p-8 lg:p-10">
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-cyan)]">Closing note</p>
-          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+        <section className={styles.closingSection}>
+          <p className={styles.relatedEyebrow}>Closing note</p>
+          <h2 className={styles.sectionTitle}>
             The industrial guide expands only as sources hold.
           </h2>
-          <p className="mt-5 max-w-3xl leading-8 text-[var(--raf-text-muted)]">
+          <p className={styles.sectionDescription}>
             This guide will expand only as more North American industrial, EBM, dark electronic, and post-industrial festivals have enough official or reliable source support to publish. RetroAltFest’s goal is not to inflate the list quickly; it is to keep source-supported records, related overlap, and background references clearly separated.
           </p>
         </section>
 
-        <DiscoveryLinks
-          title="Choose your next discovery path."
-          description="Use this guide as one route into the atlas, then continue into the full directory, the guide hub, or the source-check notes behind RetroAltFest records."
-          links={[
-            {
-              href: "/guides",
-              label: "Back to all guides",
-              description: "Compare the current Goth & Darkwave, Industrial / EBM, New Wave / Post-Punk, and West Coast / PNW guide routes.",
-            },
-            {
-              href: "/festivals",
-              label: "Browse current atlas records",
-              description: "Open the active festival atlas and follow only source-backed internal detail links.",
-            },
-            {
-              href: "/verification",
-              label: "See how source checks work",
-              description: "Review how RetroAltFest separates confirmed records from reference signals and related context.",
-            },
-          ]}
-        />
+        <div className={styles.relatedPaths} data-discovery-links>
+          <DiscoveryLinks
+            title="Choose your next discovery path."
+            description="Use this guide as one route into the atlas, then continue into the full directory, the guide hub, or the source-check notes behind RetroAltFest records."
+            links={[
+              {
+                href: "/guides",
+                label: "Back to all guides",
+                description: "Compare the current Goth & Darkwave, Industrial / EBM, New Wave / Post-Punk, and West Coast / PNW guide routes.",
+              },
+              {
+                href: "/festivals",
+                label: "Browse current atlas records",
+                description: "Open the active festival atlas and follow only source-backed internal detail links.",
+              },
+              {
+                href: "/verification",
+                label: "See how source checks work",
+                description: "Review how RetroAltFest separates confirmed records from reference signals and related context.",
+              },
+            ]}
+          />
+        </div>
       </article>
 
       <Footer />
@@ -368,74 +380,107 @@ export default function IndustrialEbmDarkElectronicGuidePage() {
   );
 }
 
+type GuideVariant = "active" | "adjacent" | "caveated" | "reference";
+
 function GuideSection({
   eyebrow,
   title,
   description,
   records,
+  startIndex,
+  variant,
 }: {
   eyebrow: string;
   title: string;
   description: string;
   records: GuideRecord[];
+  startIndex: number;
+  variant: GuideVariant;
 }) {
+  const sectionClass = {
+    active: styles.activeSection,
+    adjacent: styles.adjacentSection,
+    caveated: styles.caveatedSection,
+    reference: styles.referenceSection,
+  }[variant];
+
   return (
-    <section className="mt-10 rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(30,22,48,0.5),rgba(255,255,255,0.024))] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.28)] sm:p-8 lg:p-10">
-      <div className="max-w-3xl">
-        <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">{eyebrow}</p>
-        <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl">{title}</h2>
-        <p className="mt-4 leading-8 text-[var(--raf-text-muted)]">{description}</p>
+    <section className={`${styles.guideSection} ${sectionClass}`} data-guide-variant={variant}>
+      <div className={styles.sectionHeader}>
+        <p className={styles.sectionEyebrow}>{eyebrow}</p>
+        <h2 className={styles.sectionTitle}>{title}</h2>
+        <p className={styles.sectionDescription}>{description}</p>
       </div>
 
-      <div className="mt-7 grid gap-5 lg:grid-cols-2">
-        {records.map((record) => (
-          <FestivalGuideCard key={record.festivalName} record={record} />
+      <div className={styles.recordList}>
+        {records.map((record, index) => (
+          <FestivalGuideCard
+            key={record.festivalName}
+            record={record}
+            recordIndex={startIndex + index}
+            variant={variant}
+          />
         ))}
       </div>
     </section>
   );
 }
 
-function FestivalGuideCard({ record }: { record: GuideRecord }) {
+function FestivalGuideCard({
+  record,
+  recordIndex,
+  variant,
+}: {
+  record: GuideRecord;
+  recordIndex: number;
+  variant: GuideVariant;
+}) {
+  const recordClass = {
+    active: styles.activeRecord,
+    adjacent: styles.adjacentRecord,
+    caveated: styles.caveatedRecord,
+    reference: styles.referenceRecord,
+  }[variant];
+
   return (
-    <article className="group relative overflow-hidden rounded-[1.75rem] border border-[var(--raf-border-soft)] bg-[linear-gradient(180deg,rgba(17,12,30,0.82),rgba(4,4,8,0.9))] p-5 transition duration-300 hover:-translate-y-1 hover:border-[var(--raf-cyan)]/40 hover:bg-white/[0.045] sm:p-6">
-      <div className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[var(--raf-cyan)]/40 to-transparent opacity-0 transition group-hover:opacity-100" />
-      <div className="flex flex-wrap items-start justify-between gap-3">
+    <article className={`${styles.festivalRecord} ${recordClass}`} data-festival-record={record.festivalName}>
+      <span className={styles.recordIndex} aria-hidden="true" data-index={String(recordIndex).padStart(2, "0")} />
+      <div className={styles.recordHeader}>
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--raf-text-dim)]">
+          <p className={styles.recordLocation}>
             {record.city} · {record.region} · {record.country}
           </p>
-          <h3 className="mt-3 font-display text-2xl font-semibold tracking-tight text-white">{record.festivalName}</h3>
+          <h3 className={styles.recordTitle}>{record.festivalName}</h3>
         </div>
-        <span className="max-w-full rounded-full border border-[var(--raf-border)] bg-white/[0.055] px-3 py-1 text-right font-mono text-[11px] font-semibold leading-5 text-[var(--raf-cyan)] sm:max-w-[18rem]">
+        <span className={styles.recordStatus}>
           {record.statusLabel}
         </span>
       </div>
 
-      <p className="mt-5 text-sm font-semibold text-white">Scene fit: {record.sceneFit}</p>
-      <p className="mt-3 leading-7 text-[var(--raf-text-muted)]">{record.summary}</p>
-      <p className="mt-4 rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4 text-sm leading-6 text-[var(--raf-text-muted)]">
-        <span className="font-semibold text-white">Curator note: </span>{record.sourceCaveat}
+      <p className={styles.sceneFit}>Scene fit: {record.sceneFit}</p>
+      <p className={styles.recordSummary}>{record.summary}</p>
+      <p className={styles.curatorNote}>
+        <span>Curator note: </span>{record.sourceCaveat}
       </p>
 
-      <dl className="mt-5 grid gap-3 sm:grid-cols-2">
-        <AtlasFact label="What sources support" value={record.sourceSupport} />
-        <AtlasFact label="What to recheck" value={record.recheckDetails} />
+      <dl className={styles.factList}>
+        <RecordFact label="What sources support" value={record.sourceSupport} />
+        <RecordFact label="What to recheck" value={record.recheckDetails} />
         {record.officialUrl ? (
-          <div className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4">
-            <dt className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--raf-text-dim)]">Official source</dt>
-            <dd className="mt-2 break-words text-sm leading-6 text-white">
-              <a className="transition hover:text-[var(--raf-cyan)]" href={record.officialUrl} target="_blank" rel="noreferrer">
+          <div className={`${styles.fact} ${styles.sourceFact}`}>
+            <dt className={styles.factLabel}>Official source</dt>
+            <dd className={styles.factValue}>
+              <a className={styles.officialLink} href={record.officialUrl} target="_blank" rel="noreferrer">
                 {record.officialUrl.replace(/^https?:\/\//, "")}
               </a>
             </dd>
           </div>
         ) : null}
         {record.atlasPath ? (
-          <div className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4">
-            <dt className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--raf-text-dim)]">RetroAltFest atlas</dt>
-            <dd className="mt-2 text-sm leading-6 text-white">
-              <Link className="font-semibold transition hover:text-[var(--raf-cyan)]" href={record.atlasPath}>
+          <div className={`${styles.fact} ${styles.atlasFact}`}>
+            <dt className={styles.factLabel}>RetroAltFest atlas</dt>
+            <dd className={styles.factValue}>
+              <Link className={styles.atlasLink} href={record.atlasPath}>
                 View atlas record
               </Link>
             </dd>
@@ -443,13 +488,13 @@ function FestivalGuideCard({ record }: { record: GuideRecord }) {
         ) : null}
       </dl>
 
-      <p className="mt-5 rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4 text-sm leading-6 text-[var(--raf-text-muted)]">
-        <span className="font-semibold text-white">Industrial / EBM relevance: </span>{record.industrialEbmRelevance}
+      <p className={styles.relevanceNote}>
+        <span>Industrial / EBM relevance: </span>{record.industrialEbmRelevance}
       </p>
 
-      <div className="mt-5 flex flex-wrap gap-2">
+      <div className={styles.tagList}>
         {record.genreTags.map((tag) => (
-          <span key={tag} className="raf-chip rounded-full px-3 py-1 text-xs">
+          <span key={tag} className={styles.tag}>
             {tag}
           </span>
         ))}
@@ -460,9 +505,18 @@ function FestivalGuideCard({ record }: { record: GuideRecord }) {
 
 function AtlasFact({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4">
-      <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--raf-text-dim)]">{label}</p>
-      <p className="mt-2 text-sm leading-6 text-white">{value}</p>
+    <div className={styles.fact}>
+      <p className={styles.factLabel}>{label}</p>
+      <p className={styles.factValue}>{value}</p>
+    </div>
+  );
+}
+
+function RecordFact({ label, value }: { label: string; value: string }) {
+  return (
+    <div className={styles.fact}>
+      <dt className={styles.factLabel}>{label}</dt>
+      <dd className={styles.factValue}>{value}</dd>
     </div>
   );
 }
