@@ -954,7 +954,6 @@ test('Night Transmission Phase 3A guide article stays route-local, square, and c
   const guidePath = 'src/app/guides/north-american-goth-darkwave-festivals/page.tsx';
   const cssPath = 'src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css';
   const otherGuidePaths = [
-    'src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/page.tsx',
     'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx',
     'src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/page.tsx',
   ];
@@ -1192,6 +1191,124 @@ test('guide page for West Coast and Pacific Northwest dark alternative festivals
   assert.match(guidesPage, /\/guides\/west-coast-pacific-northwest-dark-alternative-festivals/);
   assert.match(guidesPage, /Regional discovery across Southern California and the Pacific Northwest, with active atlas anchors, recently active corridor signals, and source-aware caveats\./);
   assert.match(sitemap, /\/guides\/west-coast-pacific-northwest-dark-alternative-festivals/);
+});
+
+test('Night Transmission Phase 3B West Coast guide stays route-local, square, and contract-safe', () => {
+  const guidePath = 'src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/page.tsx';
+  const cssPath = 'src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/GuideArticle.module.css';
+  const protectedGuidePaths = [
+    'src/app/guides/north-american-goth-darkwave-festivals/page.tsx',
+    'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx',
+    'src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/page.tsx',
+  ];
+
+  assert.equal(existsSync(join(root, cssPath)), true, 'Phase 3B should have one route-local CSS module');
+
+  const guide = read(guidePath);
+  const css = existsSync(join(root, cssPath)) ? read(cssPath) : '';
+  const source = `${guide}\n${css}`;
+
+  assert.match(guide, /import styles from "\.\/GuideArticle\.module\.css"/);
+  for (const className of [
+    'page',
+    'paperEdge',
+    'towerBeacon',
+    'content',
+    'breadcrumb',
+    'masthead',
+    'guideSection',
+    'festivalRecord',
+    'recordIndex',
+    'heldBackList',
+    'relatedPaths',
+  ]) {
+    assert.match(guide, new RegExp(`styles\\.${className}`));
+  }
+
+  assert.doesNotMatch(guide, /"use client"|useState|useEffect|useMemo|fetch\(/);
+  assert.equal((css.match(/magenta-orbit\.avif/g) ?? []).length, 1, 'orbital asset should be declared once');
+  assert.equal((css.match(/tower-beacon-signature\.avif/g) ?? []).length, 1, 'tower asset should be declared once');
+  const towerMediaIndex = css.indexOf('@media (min-width: 1101px)');
+  const towerUrlIndex = css.indexOf('tower-beacon-signature.avif');
+  assert.ok(towerMediaIndex > -1 && towerUrlIndex > towerMediaIndex, 'tower URL should live only in the 1101px desktop media query');
+  assert.match(css, /prefers-reduced-motion/);
+  assert.match(css, /forced-colors/);
+  assert.match(css, /focus-visible/);
+  assert.doesNotMatch(guide, /rounded-/);
+  const nonZeroRadii = [...css.matchAll(/border-radius:\s*([^;]+);/g)]
+    .map((match) => match[1].replace(/\s*!important\s*$/, '').trim())
+    .filter((value) => value !== '0');
+  assert.deepEqual(nonZeroRadii, [], 'Phase 3B route surfaces should stay square');
+
+  const publicCardNames = [...guide.matchAll(/festivalName: "([^"]+)"/g)].map((match) => match[1]);
+  assert.deepEqual(publicCardNames, [
+    'Darker Waves',
+    'Cruel World',
+    'Just Like Heaven',
+    'Verboden Music Festival — Vancouver',
+    'Verboden Music Festival — Seattle',
+    'Verboden Music Festival — Portland',
+    'Mechanismus',
+  ]);
+  assert.deepEqual([...guide.matchAll(/atlasPath: "([^"]+)"/g)].map((match) => match[1]), [
+    '/festivals/darker-waves',
+    '/festivals/just-like-heaven',
+  ]);
+  assert.equal((guide.match(/festivalName:/g) ?? []).length, 8, 'type plus seven records should be the only festivalName source occurrences');
+  assert.equal((guide.match(/atlasPath:/g) ?? []).length, 2, 'exactly two records should declare atlasPath');
+
+  const heldBackNames = [...guide.matchAll(/name: "([^"]+)"/g)].map((match) => match[1]);
+  assert.deepEqual(heldBackNames, [
+    'Substance — Los Angeles',
+    'Substance — San Francisco',
+    'The Vth Gathering / San Francisco World Goth Day Festival — Alameda',
+    'Out From The Shadows — Portland',
+    'West Coast Women’s Darkwave Festival — Oakland',
+    'Cloak & Dagger Festival — Los Angeles',
+  ]);
+  assert.match(guide, /Spokane has an official-linked Verboden Showcase source trail/);
+  assert.doesNotMatch(guide, /festivalName: "[^"]*Spokane|name: "[^"]*Spokane|atlasPath: "[^"]*spokane/i);
+
+  const h2Sequence = [
+    'A regional route, not another genre directory.',
+    'The route starts with active atlas records and careful reference points.',
+    'Verboden and Mechanismus give the guide its strongest regional value.',
+    'Official sources first, then careful public wording.',
+    'Useful leads, but not public guide cards yet.',
+    'Keep the regional route distinct from the scene guides.',
+    'Choose your next discovery path.',
+  ];
+  let lastHeadingIndex = -1;
+  for (const heading of h2Sequence) {
+    const headingIndex = guide.indexOf(heading);
+    assert.ok(headingIndex > lastHeadingIndex, `${heading} should remain in the frozen H2 sequence`);
+    lastHeadingIndex = headingIndex;
+  }
+
+  const fixedLinkSequence = [
+    'href="/verification"',
+    'href={gothDarkwaveGuidePath}',
+    'href={industrialEbmGuidePath}',
+    'href={retroAlternativeGuidePath}',
+    'href="/festivals"',
+    'href: "/guides"',
+    'href: "/festivals"',
+    'href: "/verification"',
+  ];
+  let lastLinkIndex = -1;
+  for (const linkSource of fixedLinkSequence) {
+    const linkIndex = guide.indexOf(linkSource, lastLinkIndex + 1);
+    assert.ok(linkIndex > lastLinkIndex, `${linkSource} should remain in route-owned source order`);
+    lastLinkIndex = linkIndex;
+  }
+
+  assert.doesNotMatch(source, /FAQPage|application\/ld\+json|<script|\/prototypes\/|night-transmission-(hero|skyline|environment|wet-ground|poster)/i);
+  assert.doesNotMatch(source, /<canvas|WebGLRenderingContext|<video|parallax|prisma|supabase|mongodb|\bauth\b|\bcms\b|\bdatabase\b|scraping/i);
+
+  for (const protectedGuidePath of protectedGuidePaths) {
+    const protectedGuide = read(protectedGuidePath);
+    assert.doesNotMatch(protectedGuide, /west-coast-pacific-northwest-dark-alternative-festivals\/GuideArticle\.module\.css/);
+  }
 });
 
 test('public verification page explains source checks without exposing internal workflow labels', () => {
