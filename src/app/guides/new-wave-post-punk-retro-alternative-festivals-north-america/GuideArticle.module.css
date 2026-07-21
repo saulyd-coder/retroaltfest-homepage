@@ -1,0 +1,1004 @@
+.page {
+  --phase-magenta: #f238c8;
+  --phase-violet: #9a62ff;
+  --phase-cyan: #58d7e8;
+  --phase-green: #b8f25a;
+  --phase-bone: #e9e3d7;
+  --phase-muted: #aaa3b3;
+  --phase-dim: #777181;
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow: clip;
+  background:
+    linear-gradient(180deg, rgba(5, 4, 9, 0.42), rgba(3, 3, 6, 0.88)),
+    #050408;
+  color: var(--phase-bone);
+}
+
+.page::before {
+  position: fixed;
+  z-index: -3;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(2, 2, 5, 0.74), transparent 20%, transparent 80%, rgba(2, 2, 5, 0.72)),
+    radial-gradient(circle at 50% 15%, transparent 0 24%, rgba(2, 2, 5, 0.3) 56%, rgba(2, 2, 5, 0.8) 100%);
+}
+
+.paperEdge {
+  position: fixed;
+  z-index: -4;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("/night-transmission-inner/magenta-orbit.avif");
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: cover;
+  opacity: 0.78;
+}
+
+.page::after {
+  position: fixed;
+  z-index: -2;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  opacity: 0.18;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(242, 56, 200, 0.018) 1px, transparent 1px);
+  background-size: 100% 6px, 72px 100%;
+  mix-blend-mode: screen;
+}
+
+.towerBeacon {
+  display: none;
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 42px 0 112px;
+}
+
+.content,
+.content * {
+  min-width: 0;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: fit-content;
+  margin: 0 0 32px;
+  color: var(--phase-muted);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.breadcrumb a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+  text-underline-offset: 4px;
+}
+
+.breadcrumb a:hover {
+  color: var(--phase-cyan);
+  text-decoration: underline;
+}
+
+.crumbDivider {
+  color: var(--phase-magenta);
+}
+
+.masthead,
+.infoPanel,
+.dispatchSection,
+.vibeSection,
+.guideSection,
+.boundarySection,
+.statusSection,
+.faqSection,
+.relatedPaths {
+  position: relative;
+  border: 1px solid rgba(154, 98, 255, 0.3);
+  border-radius: 0;
+  background:
+    linear-gradient(135deg, rgba(20, 15, 28, 0.97), rgba(6, 6, 10, 0.98) 68%),
+    #08070c;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
+}
+
+.masthead::before,
+.infoPanel::before,
+.dispatchSection::before,
+.vibeSection::before,
+.guideSection::before,
+.boundarySection::before,
+.statusSection::before,
+.faqSection::before,
+.relatedPaths::before {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: min(230px, 42%);
+  height: 3px;
+  content: "";
+  background: linear-gradient(90deg, var(--phase-magenta), var(--phase-violet), transparent);
+}
+
+.masthead {
+  overflow: hidden;
+  padding: clamp(30px, 5vw, 68px);
+  border-color: rgba(242, 56, 200, 0.42);
+  background:
+    linear-gradient(110deg, rgba(28, 13, 34, 0.98), rgba(8, 7, 13, 0.98) 58%, rgba(4, 4, 7, 0.99)),
+    #08070c;
+}
+
+.masthead::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 300px;
+  height: 300px;
+  content: "";
+  pointer-events: none;
+  border: 1px solid rgba(88, 215, 232, 0.13);
+  box-shadow:
+    0 0 0 44px rgba(154, 98, 255, 0.025),
+    0 0 0 88px rgba(242, 56, 200, 0.018);
+}
+
+.mastheadTelemetry {
+  position: absolute;
+  z-index: 2;
+  top: 18px;
+  right: 20px;
+  color: rgba(88, 215, 232, 0.72);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.mastheadTelemetry::before {
+  content: attr(data-label);
+}
+
+.mastheadInner {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+}
+
+.mastheadLabel,
+.sectionEyebrow,
+.sourceEyebrow {
+  margin: 0;
+  color: var(--phase-magenta);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.25em;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.mastheadLabel,
+.sourceEyebrow {
+  color: var(--phase-cyan);
+}
+
+.mastheadTitle {
+  max-width: 940px;
+  margin: 18px 0 0;
+  color: #fffdf8;
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: clamp(2.7rem, 6.8vw, 5.65rem);
+  font-weight: 760;
+  letter-spacing: -0.055em;
+  line-height: 0.93;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.mastheadLead {
+  max-width: 760px;
+  margin: 28px 0 0;
+  color: #f2edf2;
+  font-size: clamp(1.08rem, 1.8vw, 1.34rem);
+  line-height: 1.62;
+}
+
+.mastheadCopy {
+  max-width: 760px;
+  margin: 18px 0 0;
+  color: var(--phase-muted);
+  font-size: 1rem;
+  line-height: 1.82;
+}
+
+.pathLinks,
+.relatedLinkGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.primaryPath,
+.secondaryPath,
+.relatedLinkGrid a {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(88, 215, 232, 0.34);
+  border-radius: 0;
+  padding: 11px 16px;
+  color: #f7f4f0;
+  background: rgba(6, 9, 13, 0.82);
+  font-size: 0.88rem;
+  font-weight: 760;
+  line-height: 1.4;
+  text-decoration: none;
+}
+
+.primaryPath {
+  border-color: rgba(184, 242, 90, 0.58);
+  color: #dfffa5;
+}
+
+.primaryPath:hover,
+.secondaryPath:hover,
+.relatedLinkGrid a:hover {
+  border-color: var(--phase-cyan);
+  color: #fff;
+  background: rgba(20, 34, 42, 0.88);
+}
+
+.factGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.atlasFact {
+  border: 1px solid rgba(154, 98, 255, 0.22);
+  border-radius: 0;
+  padding: 14px;
+  background: rgba(3, 3, 7, 0.68);
+}
+
+.factLabel {
+  margin: 0;
+  color: var(--phase-dim);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.62rem;
+  font-weight: 750;
+  letter-spacing: 0.16em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.factValue {
+  margin: 7px 0 0;
+  color: #f5f1ec;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1.04fr 0.96fr;
+  gap: 18px;
+  margin-top: 32px;
+}
+
+.infoPanel,
+.dispatchSection,
+.vibeSection,
+.guideSection,
+.boundarySection,
+.statusSection,
+.faqSection,
+.relatedPaths {
+  padding: clamp(24px, 4vw, 44px);
+}
+
+.infoPanel {
+  min-height: 100%;
+}
+
+.infoCopy {
+  margin-top: 16px;
+  color: var(--phase-muted);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.infoCopy p {
+  margin: 0;
+}
+
+.infoCopy p + p {
+  margin-top: 15px;
+}
+
+.dispatchSection,
+.vibeSection,
+.guideSection,
+.boundarySection,
+.statusSection,
+.faqSection,
+.relatedPaths,
+.discoveryShell {
+  margin-top: 32px;
+}
+
+.sectionTitle {
+  max-width: 880px;
+  margin: 10px 0 0;
+  color: #fffdf8;
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: clamp(1.9rem, 4vw, 3.35rem);
+  font-weight: 720;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.sectionDescription {
+  max-width: 780px;
+  margin: 16px 0 0;
+  color: var(--phase-muted);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.dispatchGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.dispatchCard,
+.vibeCard,
+.statusDefinition,
+.faqItem {
+  position: relative;
+  border: 1px solid rgba(154, 98, 255, 0.23);
+  border-radius: 0;
+  padding: 20px;
+  background: rgba(4, 4, 8, 0.78);
+}
+
+.dispatchCard::before,
+.vibeCard::before,
+.statusDefinition::before,
+.faqItem::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 2px;
+  content: "";
+  background: var(--phase-violet);
+}
+
+.dispatchCard h3,
+.vibeCard h3,
+.statusDefinition h3,
+.faqItem h3 {
+  margin: 0;
+  color: #f8f4ee;
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: 1.18rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.dispatchCard p,
+.vibeCard p,
+.statusDefinition p,
+.faqItem p {
+  margin: 12px 0 0;
+  color: var(--phase-muted);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.dispatchCard a,
+.faqItem a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  margin-top: 14px;
+  color: var(--phase-cyan);
+  font-size: 0.86rem;
+  font-weight: 760;
+  line-height: 1.4;
+  text-decoration: underline;
+  text-decoration-color: rgba(88, 215, 232, 0.42);
+  text-underline-offset: 4px;
+}
+
+.dispatchCard a:hover,
+.faqItem a:hover {
+  color: #fff;
+  text-decoration-color: currentColor;
+}
+
+.vibeGrid,
+.statusGrid,
+.faqGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.vibeCard::before {
+  background: var(--phase-magenta);
+}
+
+.sectionIntro {
+  max-width: 850px;
+}
+
+.guideSection.core {
+  border-color: rgba(184, 242, 90, 0.34);
+}
+
+.guideSection.adjacent {
+  border-color: rgba(88, 215, 232, 0.3);
+}
+
+.guideSection.reference {
+  border-color: rgba(154, 98, 255, 0.32);
+}
+
+.recordGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.recordGridEmphasized {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.festivalRecord {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(154, 98, 255, 0.28);
+  border-radius: 0;
+  padding: 26px;
+  background:
+    linear-gradient(150deg, rgba(14, 11, 20, 0.98), rgba(4, 4, 8, 0.99)),
+    #060509;
+}
+
+.festivalRecord::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  content: "";
+  background: var(--phase-violet);
+}
+
+.festivalRecord.core {
+  border-color: rgba(184, 242, 90, 0.42);
+}
+
+.festivalRecord.core::before {
+  background: var(--phase-green);
+}
+
+.festivalRecord.adjacent {
+  border-color: rgba(88, 215, 232, 0.34);
+}
+
+.festivalRecord.adjacent::before {
+  background: linear-gradient(180deg, var(--phase-cyan), var(--phase-violet));
+}
+
+.festivalRecord.reference::before {
+  background: linear-gradient(180deg, var(--phase-magenta), var(--phase-violet));
+}
+
+.festivalRecordEmphasized {
+  padding: clamp(28px, 4vw, 42px);
+}
+
+.recordIndex {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  color: rgba(242, 56, 200, 0.28);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: clamp(2.7rem, 6vw, 5rem);
+  font-weight: 900;
+  letter-spacing: -0.08em;
+  line-height: 0.9;
+  pointer-events: none;
+}
+
+.recordIndex::before {
+  content: attr(data-index);
+}
+
+.core .recordIndex {
+  color: rgba(184, 242, 90, 0.24);
+}
+
+.adjacent .recordIndex {
+  color: rgba(88, 215, 232, 0.22);
+}
+
+.recordHeader {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, 0.62fr);
+  gap: 20px;
+  align-items: start;
+  padding-right: 56px;
+}
+
+.recordIdentity h3 {
+  max-width: 620px;
+  margin: 10px 0 0;
+  color: #fffdf8;
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: clamp(1.65rem, 3.5vw, 2.65rem);
+  font-weight: 740;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  overflow-wrap: anywhere;
+}
+
+.recordLocation {
+  margin: 0;
+  color: var(--phase-dim);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.65rem;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+  line-height: 1.55;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.recordStatus {
+  position: relative;
+  z-index: 1;
+  justify-self: end;
+  border: 1px solid rgba(88, 215, 232, 0.3);
+  border-radius: 0;
+  padding: 8px 10px;
+  color: var(--phase-cyan);
+  background: rgba(3, 6, 9, 0.8);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.66rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  text-transform: uppercase;
+}
+
+.core .recordStatus {
+  border-color: rgba(184, 242, 90, 0.36);
+  color: #dfffaa;
+}
+
+.reference .recordStatus {
+  border-color: rgba(242, 56, 200, 0.3);
+  color: #f1a9df;
+}
+
+.sceneFit {
+  margin: 24px 0 0;
+  color: #f3eef1;
+  font-size: 0.92rem;
+  font-weight: 760;
+  line-height: 1.65;
+}
+
+.recordCopy {
+  margin: 13px 0 0;
+  color: var(--phase-muted);
+  font-size: 1rem;
+  line-height: 1.76;
+}
+
+.curatorNote,
+.guideAngle {
+  margin: 16px 0 0;
+  border: 1px solid rgba(154, 98, 255, 0.2);
+  border-radius: 0;
+  padding: 15px;
+  color: var(--phase-muted);
+  background: rgba(1, 1, 4, 0.62);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+.noteLabel {
+  color: #f8f4ee;
+  font-weight: 760;
+}
+
+.recordFacts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0 0;
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 17px;
+}
+
+.tagList span {
+  border: 1px solid rgba(154, 98, 255, 0.25);
+  border-radius: 0;
+  padding: 6px 8px;
+  color: #c8c1cf;
+  background: rgba(6, 4, 10, 0.7);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.68rem;
+  line-height: 1.3;
+}
+
+.recordLinks {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  margin-top: 18px;
+}
+
+.atlasLink,
+.officialLink {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: var(--phase-cyan);
+  font-size: 0.86rem;
+  font-weight: 760;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-decoration-color: rgba(88, 215, 232, 0.42);
+  text-underline-offset: 4px;
+}
+
+.atlasLink {
+  color: #dfffaa;
+  text-decoration-color: rgba(184, 242, 90, 0.42);
+}
+
+.atlasLink:hover,
+.officialLink:hover {
+  color: #fff;
+  text-decoration-color: currentColor;
+}
+
+.sourceCount {
+  margin: 4px 0 0;
+  color: var(--phase-dim);
+  font-size: 0.72rem;
+  line-height: 1.55;
+}
+
+.boundarySection {
+  border-color: rgba(242, 56, 200, 0.32);
+  background:
+    linear-gradient(110deg, rgba(27, 10, 25, 0.96), rgba(6, 5, 9, 0.99) 72%),
+    #08060a;
+}
+
+.boundarySection::after {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+  content: "REFERENCE BOUNDARY";
+  color: rgba(242, 56, 200, 0.42);
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.statusDefinition::before {
+  background: var(--phase-cyan);
+}
+
+.faqSection {
+  border-color: rgba(88, 215, 232, 0.3);
+}
+
+.faqItem::before {
+  background: linear-gradient(90deg, var(--phase-cyan), var(--phase-violet));
+}
+
+.relatedPaths {
+  border-color: rgba(88, 215, 232, 0.3);
+}
+
+.relatedLinkGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.relatedLinkGrid a {
+  justify-content: flex-start;
+}
+
+.discoveryShell > section {
+  border: 1px solid rgba(88, 215, 232, 0.3) !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(135deg, rgba(7, 17, 22, 0.98), rgba(18, 8, 24, 0.98) 72%),
+    #06070a !important;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.34) !important;
+}
+
+.discoveryShell > section > div:last-child > a {
+  min-height: 146px;
+  border-radius: 0 !important;
+  background: rgba(2, 5, 8, 0.74) !important;
+}
+
+.discoveryShell h2,
+.discoveryShell p,
+.discoveryShell a,
+.discoveryShell span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.page a:focus-visible {
+  outline: 3px solid var(--phase-cyan);
+  outline-offset: 4px;
+}
+
+@media (max-width: 900px) {
+  .infoGrid,
+  .recordGrid,
+  .vibeGrid,
+  .statusGrid,
+  .faqGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dispatchGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .recordHeader {
+    grid-template-columns: minmax(0, 1fr);
+    padding-right: 58px;
+  }
+
+  .recordStatus {
+    justify-self: start;
+  }
+}
+
+@media (max-width: 680px) {
+  .content {
+    width: min(100% - 32px, 1180px);
+    padding-top: 30px;
+    padding-bottom: 84px;
+  }
+
+  .breadcrumb {
+    width: 100%;
+    max-width: 100%;
+    flex-wrap: wrap;
+    gap: 8px;
+    letter-spacing: 0.08em;
+  }
+
+  .discoveryShell span {
+    max-width: 100%;
+    letter-spacing: 0 !important;
+  }
+
+  .masthead,
+  .infoPanel,
+  .dispatchSection,
+  .vibeSection,
+  .guideSection,
+  .boundarySection,
+  .statusSection,
+  .faqSection,
+  .relatedPaths {
+    padding: 24px 20px;
+  }
+
+  .mastheadTelemetry {
+    position: relative;
+    top: auto;
+    right: auto;
+    display: block;
+    margin-bottom: 20px;
+  }
+
+  .mastheadTitle {
+    font-size: clamp(2rem, 10vw, 3.2rem);
+    line-height: 0.98;
+  }
+
+  .factGrid,
+  .dispatchGrid,
+  .relatedLinkGrid,
+  .recordFacts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .festivalRecord,
+  .festivalRecordEmphasized {
+    padding: 24px 20px;
+  }
+
+  .recordHeader {
+    padding-right: 44px;
+  }
+
+  .recordIndex {
+    top: 13px;
+    right: 13px;
+    font-size: 2.7rem;
+  }
+
+  .boundarySection::after {
+    position: static;
+    display: block;
+    margin-top: 22px;
+  }
+
+  .pathLinks,
+  .relatedLinkGrid {
+    align-items: stretch;
+  }
+
+  .primaryPath,
+  .secondaryPath,
+  .relatedLinkGrid a {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 380px) {
+  .content {
+    width: min(100% - 24px, 1180px);
+  }
+
+  .masthead,
+  .infoPanel,
+  .dispatchSection,
+  .vibeSection,
+  .guideSection,
+  .boundarySection,
+  .statusSection,
+  .faqSection,
+  .relatedPaths,
+  .festivalRecord,
+  .festivalRecordEmphasized {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .sectionTitle {
+    font-size: clamp(1.7rem, 9vw, 2.45rem);
+  }
+}
+
+@media (min-width: 1101px) {
+  .towerBeacon {
+    position: fixed;
+    z-index: -1;
+    right: -78px;
+    bottom: -38px;
+    display: block;
+    width: 330px;
+    height: 620px;
+    pointer-events: none;
+    background-image: url("/night-transmission-inner/tower-beacon-signature.avif");
+    background-repeat: no-repeat;
+    background-position: right bottom;
+    background-size: contain;
+    opacity: 0.2;
+    filter: saturate(0.82) contrast(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page *,
+  .page *::before,
+  .page *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .page,
+  .masthead,
+  .infoPanel,
+  .dispatchSection,
+  .vibeSection,
+  .guideSection,
+  .boundarySection,
+  .statusSection,
+  .faqSection,
+  .relatedPaths,
+  .festivalRecord,
+  .dispatchCard,
+  .vibeCard,
+  .statusDefinition,
+  .faqItem,
+  .atlasFact,
+  .curatorNote,
+  .guideAngle,
+  .recordStatus,
+  .tagList span,
+  .discoveryShell > section,
+  .discoveryShell > section > div:last-child > a {
+    border: 1px solid CanvasText !important;
+    background: Canvas !important;
+    box-shadow: none !important;
+    color: CanvasText !important;
+    forced-color-adjust: auto;
+  }
+
+  .paperEdge,
+  .towerBeacon,
+  .page::before,
+  .page::after,
+  .recordIndex,
+  .mastheadTelemetry {
+    display: none !important;
+  }
+
+  .page a {
+    color: LinkText !important;
+    text-decoration: underline;
+  }
+
+  .page a:focus-visible {
+    outline: 3px solid Highlight !important;
+  }
+}

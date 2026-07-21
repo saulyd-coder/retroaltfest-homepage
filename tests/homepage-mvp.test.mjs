@@ -954,9 +954,6 @@ test('North American Goth and Darkwave guide metadata composes the RetroAltFest 
 test('Night Transmission Phase 3A guide article stays route-local, square, and content-safe', () => {
   const guidePath = 'src/app/guides/north-american-goth-darkwave-festivals/page.tsx';
   const cssPath = 'src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css';
-  const otherGuidePaths = [
-    'src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/page.tsx',
-  ];
 
   assert.equal(existsSync(join(root, cssPath)), true, 'reference article should have route-local Night Transmission CSS');
 
@@ -1004,11 +1001,6 @@ test('Night Transmission Phase 3A guide article stays route-local, square, and c
   }
   assert.doesNotMatch(guide, /atlasPath: "\/festivals\/(dark-force-fest|cruel-world|verboden-music-festival)"/);
   assert.doesNotMatch(source, /FAQPage|application\/ld\+json|<script|\/prototypes\/|night-transmission-(hero|skyline|environment|wet-ground|poster)/i);
-
-  for (const otherGuidePath of otherGuidePaths) {
-    const otherGuide = read(otherGuidePath);
-    assert.doesNotMatch(otherGuide, /GuideArticle\.module\.css|magenta-orbit|tower-beacon-signature/);
-  }
 });
 
 test('guide page for industrial EBM and dark electronic festivals is static, bounded, and source-safe', () => {
@@ -1115,6 +1107,137 @@ test('guide page for new wave post-punk and retro alternative festivals is stati
   assert.match(featuredFestivals, /Explore RetroAltFest Guides/);
   assert.match(featuredFestivals, /href="\/guides"/);
   assert.match(sitemap, /\/guides\/new-wave-post-punk-retro-alternative-festivals-north-america/);
+});
+
+test('Night Transmission Phase 3D New Wave guide stays route-local, square, and contract-safe', () => {
+  const guidePath = 'src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/page.tsx';
+  const cssPath = 'src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/GuideArticle.module.css';
+
+  assert.equal(existsSync(join(root, cssPath)), true, 'Phase 3D should have one route-local CSS module');
+
+  const guide = read(guidePath);
+  const css = existsSync(join(root, cssPath)) ? read(cssPath) : '';
+  const source = `${guide}\n${css}`;
+  const between = (start, end) => guide.slice(guide.indexOf(start), guide.indexOf(end));
+
+  assert.match(guide, /import styles from "\.\/GuideArticle\.module\.css"/);
+  for (const className of [
+    'page',
+    'paperEdge',
+    'towerBeacon',
+    'content',
+    'breadcrumb',
+    'masthead',
+    'infoGrid',
+    'dispatchSection',
+    'dispatchCard',
+    'vibeSection',
+    'vibeCard',
+    'guideSection',
+    'festivalRecord',
+    'recordIndex',
+    'boundarySection',
+    'statusSection',
+    'faqSection',
+    'relatedPaths',
+    'discoveryShell',
+  ]) {
+    assert.match(guide, new RegExp(`styles\\.${className}`));
+  }
+
+  assert.match(guide, /data-article-contract="5d85dd89e20d653d151ed20a7752270b9eb79b73ed99526db011927480b7ac62"/);
+  assert.match(guide, /data-heading-contract="1-12-25"/);
+  assert.match(guide, /data-link-contract="27"/);
+  assert.match(guide, /data-record-contract="1-core-2-adjacent-2-reference"/);
+  assert.match(guide, /data-faq-contract="6"/);
+
+  assert.doesNotMatch(guide, /"use client"|useState|useEffect|useMemo|fetch\(/);
+  assert.doesNotMatch(guide, /ambient-haze|nocturnal-grid|cinematic-vignette|grain-field|map-panel-bloom|rounded-/);
+  assert.equal((css.match(/magenta-orbit\.avif/g) ?? []).length, 1, 'orbital asset should be declared once');
+  assert.equal((css.match(/tower-beacon-signature\.avif/g) ?? []).length, 1, 'tower asset should be declared once');
+  const towerMediaIndex = css.indexOf('@media (min-width: 1101px)');
+  const towerUrlIndex = css.indexOf('tower-beacon-signature.avif');
+  assert.ok(towerMediaIndex > -1 && towerUrlIndex > towerMediaIndex, 'tower URL should live only in the 1101px desktop query');
+  assert.match(css, /prefers-reduced-motion/);
+  assert.match(css, /forced-colors/);
+  assert.match(css, /focus-visible/);
+  assert.doesNotMatch(css, /@keyframes|animation\s*:/);
+  const nonZeroRadii = [...css.matchAll(/border-radius:\s*([^;]+);/g)]
+    .map((match) => match[1].replace(/\s*!important\s*$/, '').trim())
+    .filter((value) => value !== '0');
+  assert.deepEqual(nonZeroRadii, [], 'Phase 3D route surfaces should stay square');
+
+  const publicRecordNames = [...guide.matchAll(/festivalName: "([^"]+)"/g)].map((match) => match[1]);
+  assert.deepEqual(publicRecordNames, [
+    'Darker Waves',
+    'Just Like Heaven',
+    'The New Colossus Festival',
+    'Cruel World',
+    'Riot Fest',
+  ]);
+  assert.deepEqual([...guide.matchAll(/atlasPath: "([^"]+)"/g)].map((match) => match[1]), [
+    '/festivals/darker-waves',
+    '/festivals/just-like-heaven',
+    '/festivals/the-new-colossus-festival',
+  ]);
+  assert.doesNotMatch(guide, /atlasPath: "\/festivals\/(cruel-world|riot-fest)"/);
+
+  const activeBlock = between('const activeAtlasRecords', 'const adjacentAtlasRecords');
+  const adjacentBlock = between('const adjacentAtlasRecords', 'const referenceRecords');
+  const referenceBlock = between('const referenceRecords', 'const broadRelatedRecords');
+  const broadBlock = between('const broadRelatedRecords', 'const statusLabels');
+  assert.equal((activeBlock.match(/festivalName:/g) ?? []).length, 1);
+  assert.equal((adjacentBlock.match(/festivalName:/g) ?? []).length, 2);
+  assert.equal((referenceBlock.match(/festivalName:/g) ?? []).length, 1);
+  assert.equal((broadBlock.match(/festivalName:/g) ?? []).length, 1);
+  assert.doesNotMatch(guide, /heldBack|heldRecords|contextualSignals|contextOnlySignals/);
+
+  assert.equal((guide.match(/<StartCard\b/g) ?? []).length, 6, 'six dispatch cards should remain');
+  assert.equal((guide.match(/<VibeNote\b/g) ?? []).length, 4, 'four vibe notes should remain');
+  assert.equal((guide.match(/<FaqItem\b/g) ?? []).length, 6, 'six FAQ entries should remain');
+  const statusBlock = between('const statusLabels', 'const allPublicRecords');
+  assert.equal((statusBlock.match(/label:/g) ?? []).length, 4, 'four status definitions should remain');
+  assert.match(guide, /Why some names are not linked/);
+
+  const h2Sequence = [
+    'A doorway for retro alternative listeners who know the borders are blurry.',
+    'Start with the atlas links, then use reference points as context.',
+    'Choose the lane that matches your listening history.',
+    'Retro alternative is a family tree, not a clean shelf label.',
+    'Darker Waves is the active guide anchor.',
+    'Nearby atlas links for retro alternative and post-punk-adjacent discovery.',
+    'Familiar names can explain the lane without getting fake detail pages.',
+    'RetroAltFest does not create festival pages just to fill space.',
+    'How RetroAltFest labels this guide',
+    'Quick answers for careful festival discovery.',
+    'Keep the overlap useful without blurring the guides.',
+    'Choose your next discovery path.',
+  ];
+  let lastHeadingIndex = -1;
+  for (const heading of h2Sequence) {
+    const headingIndex = guide.indexOf(heading, lastHeadingIndex + 1);
+    assert.ok(headingIndex > lastHeadingIndex, `${heading} should remain in the frozen H2 sequence`);
+    lastHeadingIndex = headingIndex;
+  }
+
+  const routeTitle = guide.match(/title: "([^"]+)"/)?.[1];
+  assert.equal(routeTitle, 'New Wave, Post-Punk & Retro Alternative Festivals in North America');
+  assert.match(guide, /const pagePath = "\/guides\/new-wave-post-punk-retro-alternative-festivals-north-america"/);
+  assert.doesNotMatch(source, /FAQPage|application\/ld\+json|<script|\/prototypes\/|night-transmission-(hero|skyline|environment|wet-ground|poster)/i);
+  assert.doesNotMatch(source, /<canvas|WebGLRenderingContext|<video|parallax|prisma|supabase|mongodb|\bauth\b|\bcms\b|\bdatabase\b|scraping/i);
+
+  const protectedGuideHashes = new Map([
+    ['src/app/guides/north-american-goth-darkwave-festivals/page.tsx', 'deebe1989e238fd3cdd1fcd701f7ceaea1280c54989f58b70bfb8e901ca59f8e'],
+    ['src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css', 'c6ec3ab4ad902c67f831dd6c460c293e22b94e68206493863ad06254021ce20d'],
+    ['src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/page.tsx', '527e52c33520fb7435bebdc1fd612622d082cd8470c9c82c8341b40efad87a94'],
+    ['src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/GuideArticle.module.css', '6a614afd8fabf76a8e13301940958d655ddbe9931d1583ce20af45fe42406b54'],
+    ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx', '70855708398e2be80af1a1effabeff23fca3151b6c72e6c0c5919417f1bdd668'],
+    ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/GuideArticle.module.css', 'c3cbaf0c651fa3544495a7f125def2be0708214d1dd6112775d847aecb5a559e'],
+  ]);
+  for (const [protectedPath, expectedHash] of protectedGuideHashes) {
+    const actualHash = createHash('sha256').update(read(protectedPath)).digest('hex');
+    assert.equal(actualHash, expectedHash, `${protectedPath} should remain hash-identical`);
+  }
 });
 
 test('guide page for West Coast and Pacific Northwest dark alternative festivals is static, bounded, and source-safe', () => {
