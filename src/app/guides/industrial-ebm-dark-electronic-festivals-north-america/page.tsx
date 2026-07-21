@@ -10,7 +10,7 @@ const pagePath = "/guides/industrial-ebm-dark-electronic-festivals-north-america
 const gothDarkwaveGuidePath = "/guides/north-american-goth-darkwave-festivals";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Industrial, EBM & Dark Electronic Festivals in North America | RetroAltFest",
+  title: "Industrial, EBM & Dark Electronic Festivals in North America",
   description:
     "A source-aware North American guide to industrial, EBM, dark electronic, post-industrial, synth, darkwave-overlap, and related dark alternative festival signals checked against official or organizer-controlled sources.",
   path: pagePath,

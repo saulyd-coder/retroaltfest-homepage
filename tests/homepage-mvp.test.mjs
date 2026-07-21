@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 
 const root = process.cwd();
@@ -1358,9 +1359,31 @@ test('Night Transmission Phase 3C Industrial guide stays route-local, square, an
     .filter((value) => value !== '0');
   assert.deepEqual(nonZeroRadii, [], 'Phase 3C route surfaces should stay square');
 
-  assert.match(guide, /title: "Industrial, EBM & Dark Electronic Festivals in North America \| RetroAltFest"/);
+  const rootLayout = read('src/app/layout.tsx');
+  const seoHelper = read('src/lib/seo.ts');
+  const routeTitle = guide.match(/title: "([^"]+)"/)?.[1];
+  const rootTitleTemplate = rootLayout.match(/template: "([^"]+)"/)?.[1];
+  const routePath = guide.match(/const pagePath = "([^"]+)"/)?.[1];
+  const expectedRouteTitle = 'Industrial, EBM & Dark Electronic Festivals in North America';
+  const expectedRenderedTitle = `${expectedRouteTitle} | RetroAltFest`;
+  const expectedCanonicalHref = 'https://retroaltfest.com/guides/industrial-ebm-dark-electronic-festivals-north-america';
+
+  assert.equal(routeTitle, expectedRouteTitle);
+  assert.equal(rootTitleTemplate, '%s | RetroAltFest');
+  assert.equal(rootTitleTemplate.replace('%s', routeTitle), expectedRenderedTitle);
+  assert.equal(`https://retroaltfest.com${routePath}`, expectedCanonicalHref);
   assert.match(guide, /path: pagePath/);
   assert.match(guide, /type: "article"/);
+  assert.match(seoHelper, /const canonical = absoluteUrl\(path\)/);
+  assert.match(seoHelper, /alternates:\s*{\s*canonical/);
+  assert.match(seoHelper, /openGraph:\s*{\s*title,/);
+  assert.match(seoHelper, /twitter:\s*{[\s\S]*?title,/);
+  assert.equal(routeTitle, expectedRouteTitle, 'Open Graph title should inherit the exact buildMetadata title input');
+  assert.equal(routeTitle, expectedRouteTitle, 'Twitter title should inherit the exact buildMetadata title input');
+
+  const normalizedGuide = guide.replace(/title: "[^"]+"/, 'title: "__ROUTE_TITLE__"');
+  assert.equal(createHash('sha256').update(normalizedGuide).digest('hex'), '3a9341ef83a87b421635eead002eb2238cc966251000826e60b6335a7715c945');
+  assert.equal(createHash('sha256').update(css).digest('hex'), 'c3cbaf0c651fa3544495a7f125def2be0708214d1dd6112775d847aecb5a559e');
 
   const publicRecordSource = guide.slice(0, guide.indexOf('const heldRecords'));
   const publicRecordNames = [...publicRecordSource.matchAll(/festivalName: "([^"]+)"/g)].map((match) => match[1]);
