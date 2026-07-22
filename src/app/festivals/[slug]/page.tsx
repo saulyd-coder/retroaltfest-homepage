@@ -14,6 +14,11 @@ import styles from "./FestivalDetail.module.css";
 export const dynamicParams = false;
 
 const FESTIVAL_DETAIL_REFERENCE_SLUG = "mera-luna-festival";
+const NIGHT_TRANSMISSION_DETAIL_SLUGS: readonly string[] = Object.freeze([
+  FESTIVAL_DETAIL_REFERENCE_SLUG,
+  "darker-waves",
+  "ncn-festival-nocturnal-culture-night",
+]);
 const festivalMetadataTitleOverrides: Readonly<Record<string, string>> = {
   [FESTIVAL_DETAIL_REFERENCE_SLUG]: "M'era Luna Festival guide",
 };
@@ -101,7 +106,8 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
 
   const polish = detailPagePolish[festival.slug];
   const heroSummary = polish?.heroSummary ?? festival.summary;
-  const isReferenceRoute = festival.slug === FESTIVAL_DETAIL_REFERENCE_SLUG;
+  const isMeraLunaReferenceRoute = festival.slug === FESTIVAL_DETAIL_REFERENCE_SLUG;
+  const usesNightTransmissionPresentation = NIGHT_TRANSMISSION_DETAIL_SLUGS.includes(festival.slug);
 
   const discoveryLinks = (
     <DiscoveryLinks
@@ -129,17 +135,17 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
 
   return (
     <main
-      className={referenceClass(isReferenceRoute, "relative min-h-screen overflow-hidden bg-[var(--raf-black)] text-[var(--raf-text)]", styles.referencePage)}
-      data-festival-detail-reference={isReferenceRoute ? "night-transmission" : undefined}
-      data-phase4a-main-contract={isReferenceRoute ? PHASE4A_MAIN_CONTENT_HASH : undefined}
-      data-browser-main-contract={isReferenceRoute ? BROWSER_MAIN_CONTENT_HASH : undefined}
+      className={referenceClass(usesNightTransmissionPresentation, "relative min-h-screen overflow-hidden bg-[var(--raf-black)] text-[var(--raf-text)]", styles.referencePage)}
+      data-festival-detail-reference={usesNightTransmissionPresentation ? "night-transmission" : undefined}
+      data-phase4a-main-contract={isMeraLunaReferenceRoute ? PHASE4A_MAIN_CONTENT_HASH : undefined}
+      data-browser-main-contract={isMeraLunaReferenceRoute ? BROWSER_MAIN_CONTENT_HASH : undefined}
     >
       <div className="ambient-haze pointer-events-none absolute -inset-28 opacity-90" />
       <div className="nocturnal-grid pointer-events-none absolute inset-0 opacity-40 mix-blend-screen" />
       <div className="cinematic-vignette pointer-events-none absolute inset-0" />
       <div className="grain-field pointer-events-none absolute inset-0 opacity-[0.06]" />
 
-      {isReferenceRoute ? (
+      {usesNightTransmissionPresentation ? (
         <>
           <div className={styles.paperEdge} data-detail-decoration="paper-edge" aria-hidden="true" />
           <div className={styles.towerBeacon} data-detail-decoration="tower" aria-hidden="true" />
@@ -149,11 +155,11 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
       <Header />
 
       <article
-        className={referenceClass(isReferenceRoute, "relative mx-auto max-w-7xl px-5 pb-20 pt-10 sm:px-8 lg:pb-28 lg:pt-16", styles.content)}
-        data-phase4a-article-contract={isReferenceRoute ? PHASE4A_ARTICLE_CONTENT_HASH : undefined}
-        data-browser-article-contract={isReferenceRoute ? BROWSER_ARTICLE_CONTENT_HASH : undefined}
+        className={referenceClass(usesNightTransmissionPresentation, "relative mx-auto max-w-7xl px-5 pb-20 pt-10 sm:px-8 lg:pb-28 lg:pt-16", styles.content)}
+        data-phase4a-article-contract={isMeraLunaReferenceRoute ? PHASE4A_ARTICLE_CONTENT_HASH : undefined}
+        data-browser-article-contract={isMeraLunaReferenceRoute ? BROWSER_ARTICLE_CONTENT_HASH : undefined}
       >
-        <nav className={referenceClass(isReferenceRoute, "mb-8 font-mono text-xs uppercase tracking-[0.24em] text-[var(--raf-text-dim)]", styles.breadcrumb)} aria-label="Breadcrumb">
+        <nav className={referenceClass(usesNightTransmissionPresentation, "mb-8 font-mono text-xs uppercase tracking-[0.24em] text-[var(--raf-text-dim)]", styles.breadcrumb)} aria-label="Breadcrumb">
           <Link className="transition hover:text-[var(--raf-cyan)]" href="/">
             RetroAltFest
           </Link>
@@ -161,27 +167,27 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
           <span className="text-[var(--raf-text-muted)]">Festival atlas</span>
         </nav>
 
-        <section className={referenceClass(isReferenceRoute, "grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start", styles.masthead)} data-detail-section={isReferenceRoute ? "masthead" : undefined}>
-          <div className={referenceClass(isReferenceRoute, "relative overflow-hidden rounded-[2rem] border border-[rgba(168,85,247,0.2)] bg-[linear-gradient(145deg,rgba(35,24,57,0.82),rgba(8,7,14,0.92)_58%,rgba(3,3,6,0.96))] p-6 shadow-[0_34px_120px_rgba(0,0,0,0.55),0_0_70px_rgba(88,28,135,0.16)] sm:p-8 lg:p-10", styles.mastheadPanel)}>
-            <div className={referenceClass(isReferenceRoute, "map-panel-bloom pointer-events-none absolute -inset-16 opacity-55 blur-2xl", styles.mastheadBloom)} />
-            <div className={referenceClass(isReferenceRoute, "relative z-10", styles.mastheadCopy)}>
-              <p className={referenceClass(isReferenceRoute, "font-mono text-xs uppercase tracking-[0.32em] text-[var(--raf-cyan)]", styles.telemetry)}>Curated atlas entry</p>
-              <h1 className={referenceClass(isReferenceRoute, "mt-5 text-balance font-display text-4xl font-semibold tracking-[-0.045em] text-white sm:text-5xl lg:text-7xl", styles.title)}>
+        <section className={referenceClass(usesNightTransmissionPresentation, "grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start", styles.masthead)} data-detail-section={usesNightTransmissionPresentation ? "masthead" : undefined}>
+          <div className={referenceClass(usesNightTransmissionPresentation, "relative overflow-hidden rounded-[2rem] border border-[rgba(168,85,247,0.2)] bg-[linear-gradient(145deg,rgba(35,24,57,0.82),rgba(8,7,14,0.92)_58%,rgba(3,3,6,0.96))] p-6 shadow-[0_34px_120px_rgba(0,0,0,0.55),0_0_70px_rgba(88,28,135,0.16)] sm:p-8 lg:p-10", styles.mastheadPanel)}>
+            <div className={referenceClass(usesNightTransmissionPresentation, "map-panel-bloom pointer-events-none absolute -inset-16 opacity-55 blur-2xl", styles.mastheadBloom)} />
+            <div className={referenceClass(usesNightTransmissionPresentation, "relative z-10", styles.mastheadCopy)}>
+              <p className={referenceClass(usesNightTransmissionPresentation, "font-mono text-xs uppercase tracking-[0.32em] text-[var(--raf-cyan)]", styles.telemetry)}>Curated atlas entry</p>
+              <h1 className={referenceClass(usesNightTransmissionPresentation, "mt-5 text-balance font-display text-4xl font-semibold tracking-[-0.045em] text-white sm:text-5xl lg:text-7xl", styles.title)}>
                 {festival.name}
               </h1>
-              <p className={referenceClass(isReferenceRoute, "mt-5 max-w-3xl text-lg leading-8 text-[var(--raf-text-muted)] sm:text-xl", styles.summary)}>
+              <p className={referenceClass(usesNightTransmissionPresentation, "mt-5 max-w-3xl text-lg leading-8 text-[var(--raf-text-muted)] sm:text-xl", styles.summary)}>
                 {heroSummary}
               </p>
 
-              <dl className={referenceClass(isReferenceRoute, "mt-8 grid gap-3 sm:grid-cols-3", styles.factGrid)} data-detail-section={isReferenceRoute ? "essential-facts" : undefined}>
-                <AtlasFact label="Location" value={festival.locationLabel} referenceMode={isReferenceRoute} />
-                <AtlasFact label="Dates" value={festival.dateLabel} referenceMode={isReferenceRoute} />
-                <AtlasFact label="Venue" value={festival.venueLabel} referenceMode={isReferenceRoute} />
+              <dl className={referenceClass(usesNightTransmissionPresentation, "mt-8 grid gap-3 sm:grid-cols-3", styles.factGrid)} data-detail-section={usesNightTransmissionPresentation ? "essential-facts" : undefined}>
+                <AtlasFact label="Location" value={festival.locationLabel} referenceMode={usesNightTransmissionPresentation} />
+                <AtlasFact label="Dates" value={festival.dateLabel} referenceMode={usesNightTransmissionPresentation} />
+                <AtlasFact label="Venue" value={festival.venueLabel} referenceMode={usesNightTransmissionPresentation} />
               </dl>
             </div>
           </div>
 
-          <aside className={referenceClass(isReferenceRoute, "rounded-[2rem] border border-[rgba(168,85,247,0.18)] bg-[linear-gradient(180deg,rgba(23,17,39,0.78),rgba(5,5,9,0.9))] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.36)]", styles.statusLedger)} data-detail-section={isReferenceRoute ? "status-verification" : undefined}>
+          <aside className={referenceClass(usesNightTransmissionPresentation, "rounded-[2rem] border border-[rgba(168,85,247,0.18)] bg-[linear-gradient(180deg,rgba(23,17,39,0.78),rgba(5,5,9,0.9))] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.36)]", styles.statusLedger)} data-detail-section={usesNightTransmissionPresentation ? "status-verification" : undefined}>
             <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--raf-text-dim)]">Verification</p>
             <div className="mt-4 space-y-3 text-sm leading-6 text-[var(--raf-text-muted)]">
               <p>
@@ -194,24 +200,24 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
                 <span className="text-white">Location confidence:</span> {festival.coordinateLabel}
               </p>
             </div>
-            <Link className={referenceClass(isReferenceRoute, "mt-5 inline-flex w-full justify-center rounded-full border border-[var(--raf-cyan)]/25 bg-[var(--raf-cyan)]/10 px-5 py-3 text-center text-sm font-bold text-[var(--raf-cyan)] transition hover:-translate-y-0.5 hover:border-[var(--raf-cyan)]/50 hover:text-white", styles.verificationLink)} href="/verification">
+            <Link className={referenceClass(usesNightTransmissionPresentation, "mt-5 inline-flex w-full justify-center rounded-full border border-[var(--raf-cyan)]/25 bg-[var(--raf-cyan)]/10 px-5 py-3 text-center text-sm font-bold text-[var(--raf-cyan)] transition hover:-translate-y-0.5 hover:border-[var(--raf-cyan)]/50 hover:text-white", styles.verificationLink)} href="/verification">
               How verification works
             </Link>
-            <a className={referenceClass(isReferenceRoute, "mt-3 inline-flex w-full justify-center rounded-full bg-white px-5 py-3 text-sm font-black text-[#050507] transition hover:-translate-y-0.5 hover:bg-[var(--raf-cyan)]", styles.officialCta)} data-detail-action={isReferenceRoute ? "official-site" : undefined} href={festival.officialSiteUrl} target="_blank" rel="noreferrer">
+            <a className={referenceClass(usesNightTransmissionPresentation, "mt-3 inline-flex w-full justify-center rounded-full bg-white px-5 py-3 text-sm font-black text-[#050507] transition hover:-translate-y-0.5 hover:bg-[var(--raf-cyan)]", styles.officialCta)} data-detail-action={usesNightTransmissionPresentation ? "official-site" : undefined} href={festival.officialSiteUrl} target="_blank" rel="noreferrer">
               Visit official site
             </a>
           </aside>
         </section>
 
-        <section className={referenceClass(isReferenceRoute, "mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]", styles.bodyGrid)}>
-          <div className={referenceClass(isReferenceRoute, "space-y-8", styles.mainColumn)}>
-            <section className={referenceClass(isReferenceRoute, "rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(30,22,48,0.5),rgba(255,255,255,0.024))] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.28)] sm:p-8", styles.contentPanel)} data-detail-section={isReferenceRoute ? "editorial-context" : undefined}>
+        <section className={referenceClass(usesNightTransmissionPresentation, "mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]", styles.bodyGrid)}>
+          <div className={referenceClass(usesNightTransmissionPresentation, "space-y-8", styles.mainColumn)}>
+            <section className={referenceClass(usesNightTransmissionPresentation, "rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(30,22,48,0.5),rgba(255,255,255,0.024))] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.28)] sm:p-8", styles.contentPanel)} data-detail-section={usesNightTransmissionPresentation ? "editorial-context" : undefined}>
               <p className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-magenta)]">Editorial context</p>
               <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-white">Why this festival matters</h2>
               <p className="mt-5 leading-8 text-[var(--raf-text-muted)]">{festival.whyItMatters}</p>
             </section>
 
-            <section className={referenceClass(isReferenceRoute, "rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-black/25 p-6 shadow-[0_20px_80px_rgba(0,0,0,0.22)] sm:p-8", styles.contentPanel)} data-detail-section={isReferenceRoute ? "source-verification-explanation" : undefined}>
+            <section className={referenceClass(usesNightTransmissionPresentation, "rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-black/25 p-6 shadow-[0_20px_80px_rgba(0,0,0,0.22)] sm:p-8", styles.contentPanel)} data-detail-section={usesNightTransmissionPresentation ? "source-verification-explanation" : undefined}>
               <h2 className="font-display text-3xl font-semibold tracking-tight text-white">Verification notes</h2>
               <div className="mt-5 grid gap-4 text-sm leading-7 text-[var(--raf-text-muted)] md:grid-cols-2">
                 <p>{festival.verificationNote}</p>
@@ -234,11 +240,11 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
               </section>
             ) : null}
 
-            <section className={referenceClass(isReferenceRoute, "rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(18,13,30,0.74),rgba(0,0,0,0.38))] p-6 sm:p-8", styles.sourcesPanel)} data-detail-section={isReferenceRoute ? "official-sources" : undefined}>
+            <section className={referenceClass(usesNightTransmissionPresentation, "rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-[linear-gradient(180deg,rgba(18,13,30,0.74),rgba(0,0,0,0.38))] p-6 sm:p-8", styles.sourcesPanel)} data-detail-section={usesNightTransmissionPresentation ? "official-sources" : undefined}>
               <h2 className="font-display text-3xl font-semibold tracking-tight text-white">Official sources</h2>
-              <div className={referenceClass(isReferenceRoute, "mt-5 grid gap-3 sm:grid-cols-2", styles.sourceGrid)}>
+              <div className={referenceClass(usesNightTransmissionPresentation, "mt-5 grid gap-3 sm:grid-cols-2", styles.sourceGrid)}>
                 {festival.sourceLinks.map((source) => (
-                  <a key={source.url} className={referenceClass(isReferenceRoute, "rounded-2xl border border-[var(--raf-border-soft)] bg-black/30 p-4 text-sm text-[var(--raf-text-muted)] transition hover:-translate-y-0.5 hover:border-[var(--raf-cyan)]/40 hover:text-white", styles.sourceLink)} href={source.url} target="_blank" rel="noreferrer">
+                  <a key={source.url} className={referenceClass(usesNightTransmissionPresentation, "rounded-2xl border border-[var(--raf-border-soft)] bg-black/30 p-4 text-sm text-[var(--raf-text-muted)] transition hover:-translate-y-0.5 hover:border-[var(--raf-cyan)]/40 hover:text-white", styles.sourceLink)} href={source.url} target="_blank" rel="noreferrer">
                     <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--raf-cyan)]">{source.typeLabel}</span>
                     <span className="mt-2 block font-semibold">{source.label}</span>
                     <span className="mt-2 block break-words text-[var(--raf-text-dim)]">{source.url}</span>
@@ -256,23 +262,23 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
             ) : null}
           </div>
 
-          <aside className={referenceClass(isReferenceRoute, "space-y-8", styles.sideRail)}>
-            <section className={referenceClass(isReferenceRoute, "rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-black/30 p-5", styles.sidePanel)} data-detail-section={isReferenceRoute ? "genres-scenes" : undefined}>
+          <aside className={referenceClass(usesNightTransmissionPresentation, "space-y-8", styles.sideRail)}>
+            <section className={referenceClass(usesNightTransmissionPresentation, "rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-black/30 p-5", styles.sidePanel)} data-detail-section={usesNightTransmissionPresentation ? "genres-scenes" : undefined}>
               <h2 className="font-display text-2xl font-semibold text-white">Genre tags</h2>
               <div className="mt-4 flex flex-wrap gap-2">
                 {festival.sceneTags.map((genre) => (
-                  <span key={genre} className={referenceClass(isReferenceRoute, "raf-chip rounded-full px-3 py-1 text-xs", styles.genreTag)}>
+                  <span key={genre} className={referenceClass(usesNightTransmissionPresentation, "raf-chip rounded-full px-3 py-1 text-xs", styles.genreTag)}>
                     {genre}
                   </span>
                 ))}
               </div>
             </section>
 
-            <section className={referenceClass(isReferenceRoute, "rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-black/30 p-5", styles.sidePanel)} data-detail-section={isReferenceRoute ? "related-festivals" : undefined}>
+            <section className={referenceClass(usesNightTransmissionPresentation, "rounded-[2rem] border border-[rgba(168,85,247,0.16)] bg-black/30 p-5", styles.sidePanel)} data-detail-section={usesNightTransmissionPresentation ? "related-festivals" : undefined}>
               <h2 className="font-display text-2xl font-semibold text-white">Similar festivals</h2>
               <div className="mt-4 space-y-3">
                 {festival.similar.map((similar) => (
-                  <Link key={similar.id} className={referenceClass(isReferenceRoute, "block rounded-2xl border border-[var(--raf-border-soft)] bg-white/[0.035] p-4 transition hover:-translate-y-0.5 hover:border-[var(--raf-cyan)]/40 hover:bg-white/[0.06]", styles.relatedLink)} href={`/festivals/${similar.slug}`}>
+                  <Link key={similar.id} className={referenceClass(usesNightTransmissionPresentation, "block rounded-2xl border border-[var(--raf-border-soft)] bg-white/[0.035] p-4 transition hover:-translate-y-0.5 hover:border-[var(--raf-cyan)]/40 hover:bg-white/[0.06]", styles.relatedLink)} href={`/festivals/${similar.slug}`}>
                     <span className="block font-display text-lg font-semibold text-white">{similar.name}</span>
                     <span className="mt-1 block text-sm text-[var(--raf-text-muted)]">{similar.locationLabel}</span>
                   </Link>
@@ -282,7 +288,7 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
           </aside>
         </section>
 
-        {isReferenceRoute ? <div className={styles.discoveryShell} data-detail-section="discovery-links">{discoveryLinks}</div> : discoveryLinks}
+        {usesNightTransmissionPresentation ? <div className={styles.discoveryShell} data-detail-section="discovery-links">{discoveryLinks}</div> : discoveryLinks}
       </article>
 
       <Footer />
