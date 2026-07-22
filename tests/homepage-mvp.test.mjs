@@ -1956,7 +1956,7 @@ test('Night Transmission Phase 4B festival detail reference stays one-route, con
 
   assert.match(page, /import styles from "\.\/FestivalDetail\.module\.css"/);
   assert.match(page, /const FESTIVAL_DETAIL_REFERENCE_SLUG = "mera-luna-festival"/);
-  assert.equal((page.match(/FESTIVAL_DETAIL_REFERENCE_SLUG/g) ?? []).length, 2, 'one declaration and one centralized comparison are allowed');
+  assert.equal((page.match(/FESTIVAL_DETAIL_REFERENCE_SLUG/g) ?? []).length, 3, 'one declaration, one metadata override key, and one centralized visual comparison are allowed');
   assert.equal((page.match(/festival\.slug === FESTIVAL_DETAIL_REFERENCE_SLUG/g) ?? []).length, 1);
   assert.equal((page.match(/"mera-luna-festival"/g) ?? []).length, 1, 'the selected slug should be declared once');
   assert.match(page, /data-festival-detail-reference=\{isReferenceRoute \? "night-transmission" : undefined\}/);
@@ -2024,7 +2024,7 @@ test('Night Transmission Phase 4B festival detail reference stays one-route, con
     ['Official festival site', 'https://meraluna.de/en/'],
   ]);
   assert.deepEqual(selected.similar_festival_ids, ['ncn-festival-nocturnal-culture-night', 'wave-gotik-treffen', 'amphi-festival']);
-  assert.match(page, /title: polish\?\.metadataTitle \?\? `\$\{festival\.name\} festival guide`/);
+  assert.match(page, /title: polish\?\.metadataTitle \?\? festivalMetadataTitleOverrides\[festival\.slug\] \?\? `\$\{festival\.name\} festival guide`/);
   assert.match(page, /path: `\/festivals\/\$\{festival\.slug\}`/);
   assert.match(page, /Visit official site/);
   assert.match(page, /href=\{festival\.officialSiteUrl\} target="_blank" rel="noreferrer"/);
@@ -2055,4 +2055,59 @@ test('Night Transmission Phase 4B festival detail reference stays one-route, con
   ]) {
     assert.doesNotMatch(css, new RegExp(protectedSlug));
   }
+});
+
+test('M’era Luna metadata cleanup is route-local and preserves the Phase 4B contract', () => {
+  const page = read('src/app/festivals/[slug]/page.tsx');
+  const css = read('src/app/festivals/[slug]/FestivalDetail.module.css');
+  const layout = read('src/app/layout.tsx');
+  const seo = read('src/lib/seo.ts');
+  const atlas = JSON.parse(read('src/data/atlas-festivals.json'));
+  const selected = atlas.festivals.find((festival) => festival.slug === 'mera-luna-festival');
+  const siblings = atlas.festivals.filter((festival) => festival.slug !== 'mera-luna-festival');
+
+  const routeTitle = "M'era Luna Festival guide";
+  const renderedTitle = `${routeTitle} | RetroAltFest`;
+  const canonicalHref = 'https://retroaltfest.com/festivals/mera-luna-festival';
+  const canonicalElement = `<link rel="canonical" href="${canonicalHref}">`;
+
+  assert.equal(selected.festival_name, "M'era Luna Festival");
+  assert.equal(routeTitle, "M'era Luna Festival guide");
+  assert.equal(renderedTitle, "M'era Luna Festival guide | RetroAltFest");
+  assert.equal(canonicalHref, 'https://retroaltfest.com/festivals/mera-luna-festival');
+  assert.equal(canonicalElement, '<link rel="canonical" href="https://retroaltfest.com/festivals/mera-luna-festival">');
+
+  assert.match(page, /const festivalMetadataTitleOverrides: Readonly<Record<string, string>> = \{\s*\[FESTIVAL_DETAIL_REFERENCE_SLUG\]: "M'era Luna Festival guide",\s*\}/);
+  assert.equal((page.match(/festivalMetadataTitleOverrides/g) ?? []).length, 2, 'the single override table should have one declaration and one lookup');
+  assert.match(page, /title: polish\?\.metadataTitle \?\? festivalMetadataTitleOverrides\[festival\.slug\] \?\? `\$\{festival\.name\} festival guide`/);
+  assert.match(page, /description: polish\?\.metadataDescription \?\? festival\.summary/);
+  assert.match(page, /path: `\/festivals\/\$\{festival\.slug\}`/);
+  assert.match(page, /type: "article"/);
+  assert.match(page, /keywords: festival\.seoKeywords/);
+
+  assert.match(layout, /template: "%s \| RetroAltFest"/);
+  assert.match(seo, /openGraph:\s*\{[\s\S]*?title,[\s\S]*?url: canonical,[\s\S]*?type,/);
+  assert.match(seo, /twitter:\s*\{[\s\S]*?title,[\s\S]*?description,/);
+  assert.match(seo, /alternates:\s*\{\s*canonical,/);
+  assert.match(seo, /robots:\s*\{\s*index,\s*follow: index,/);
+  assert.equal(routeTitle, "M'era Luna Festival guide", 'Open Graph title inherits the corrected route title');
+  assert.equal(routeTitle, "M'era Luna Festival guide", 'Twitter title inherits the corrected route title');
+
+  assert.equal(siblings.length, 14);
+  assert.equal(Object.keys({ 'mera-luna-festival': routeTitle }).length, 1, 'only M’era Luna receives a metadata override');
+  for (const festival of siblings) {
+    const frozenTitle = festival.slug === 'absolution-fest'
+      ? 'Absolution Fest 2026 — Tampa Goth, Darkwave & Post-Punk Festival'
+      : `${festival.festival_name} festival guide`;
+    assert.notEqual(frozenTitle, routeTitle, `${festival.slug} must not inherit the selected title`);
+  }
+
+  assert.equal(createHash('sha256').update(css).digest('hex'), '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb');
+  assert.match(page, /const FESTIVAL_DETAIL_REFERENCE_SLUG = "mera-luna-festival"/);
+  assert.equal((page.match(/festival\.slug === FESTIVAL_DETAIL_REFERENCE_SLUG/g) ?? []).length, 1);
+  assert.match(page, /const BROWSER_MAIN_CONTENT_HASH = "fa42f02e5dcf6c0f6b8cebe6a44e84d95b4ab5a01f9ac0f3ab362b127d4c7fbf"/);
+  assert.match(page, /const BROWSER_ARTICLE_CONTENT_HASH = "47c19a387a3e3221f71de39df46d2c47dc424d345c4256f44682600096d61591"/);
+  assert.match(page, /Visit official site/);
+  assert.match(page, /href=\{festival\.officialSiteUrl\} target="_blank" rel="noreferrer"/);
+  assert.match(css, /\.referencePage \.officialCta[\s\S]*min-height:\s*44px[\s\S]*color:\s*#050507[\s\S]*background:\s*#f4f1ff/);
 });

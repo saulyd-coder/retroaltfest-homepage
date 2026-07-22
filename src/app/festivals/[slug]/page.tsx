@@ -14,6 +14,9 @@ import styles from "./FestivalDetail.module.css";
 export const dynamicParams = false;
 
 const FESTIVAL_DETAIL_REFERENCE_SLUG = "mera-luna-festival";
+const festivalMetadataTitleOverrides: Readonly<Record<string, string>> = {
+  [FESTIVAL_DETAIL_REFERENCE_SLUG]: "M'era Luna Festival guide",
+};
 const PHASE4A_MAIN_CONTENT_HASH = "76c758093ac2f0188e28f9661519d6455421c4d07720ab251d0744d14bd2af9d";
 const PHASE4A_ARTICLE_CONTENT_HASH = "bd142ffcd3a4f0c9fcfb73842e57b951707ff02b0d226a47f4c9767a5d6942a4";
 const BROWSER_MAIN_CONTENT_HASH = "fa42f02e5dcf6c0f6b8cebe6a44e84d95b4ab5a01f9ac0f3ab362b127d4c7fbf";
@@ -81,7 +84,7 @@ export async function generateMetadata({ params }: FestivalPageProps): Promise<M
   const polish = detailPagePolish[festival.slug];
 
   return buildMetadata({
-    title: polish?.metadataTitle ?? `${festival.name} festival guide`,
+    title: polish?.metadataTitle ?? festivalMetadataTitleOverrides[festival.slug] ?? `${festival.name} festival guide`,
     description: polish?.metadataDescription ?? festival.summary,
     path: `/festivals/${festival.slug}`,
     type: "article",
