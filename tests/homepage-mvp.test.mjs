@@ -1929,3 +1929,130 @@ test('public route and component sources do not expose blocked internal source-s
     }
   }
 });
+
+test('Night Transmission Phase 4B festival detail reference stays one-route, content-exact, and source-safe', () => {
+  const pagePath = 'src/app/festivals/[slug]/page.tsx';
+  const cssPath = 'src/app/festivals/[slug]/FestivalDetail.module.css';
+  const atlasPath = 'src/data/atlas-festivals.json';
+  const dtoPath = 'src/lib/public-festivals.ts';
+
+  assert.equal(existsSync(join(root, cssPath)), true, 'Phase 4B route-local stylesheet should exist');
+
+  const page = read(pagePath);
+  const css = read(cssPath);
+  const atlasSource = read(atlasPath);
+  const dtoSource = read(dtoPath);
+  const atlas = JSON.parse(atlasSource);
+  const selected = atlas.festivals.find((festival) => festival.slug === 'mera-luna-festival');
+
+  assert.ok(selected, 'M’era Luna should remain an active atlas record');
+  assert.equal(atlas.festivals.length, 15);
+  assert.equal(new Set(atlas.festivals.map((festival) => festival.slug)).size, 15);
+  assert.equal(atlas.festivals.every((festival) => festival.latitude === null && festival.longitude === null), true);
+  assert.equal(atlas.festivals.every((festival) => festival.geocoding_source === null && festival.geocoding_query === null), true);
+  assert.deepEqual(new Set(atlas.festivals.map((festival) => festival.geocoding_confidence)), new Set(['not_geocoded']));
+  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), 'b5eaf3a2806b73648fe9810a805fd307226f4fe445a462a174adabb1c937c734');
+  assert.equal(createHash('sha256').update(dtoSource).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
+
+  assert.match(page, /import styles from "\.\/FestivalDetail\.module\.css"/);
+  assert.match(page, /const FESTIVAL_DETAIL_REFERENCE_SLUG = "mera-luna-festival"/);
+  assert.equal((page.match(/FESTIVAL_DETAIL_REFERENCE_SLUG/g) ?? []).length, 2, 'one declaration and one centralized comparison are allowed');
+  assert.equal((page.match(/festival\.slug === FESTIVAL_DETAIL_REFERENCE_SLUG/g) ?? []).length, 1);
+  assert.equal((page.match(/"mera-luna-festival"/g) ?? []).length, 1, 'the selected slug should be declared once');
+  assert.match(page, /data-festival-detail-reference=\{isReferenceRoute \? "night-transmission" : undefined\}/);
+  assert.match(page, /data-phase4a-main-contract=\{isReferenceRoute \? PHASE4A_MAIN_CONTENT_HASH : undefined\}/);
+  assert.match(page, /data-phase4a-article-contract=\{isReferenceRoute \? PHASE4A_ARTICLE_CONTENT_HASH : undefined\}/);
+  assert.match(page, /const PHASE4A_MAIN_CONTENT_HASH = "76c758093ac2f0188e28f9661519d6455421c4d07720ab251d0744d14bd2af9d"/);
+  assert.match(page, /const PHASE4A_ARTICLE_CONTENT_HASH = "bd142ffcd3a4f0c9fcfb73842e57b951707ff02b0d226a47f4c9767a5d6942a4"/);
+  assert.match(page, /const BROWSER_MAIN_CONTENT_HASH = "fa42f02e5dcf6c0f6b8cebe6a44e84d95b4ab5a01f9ac0f3ab362b127d4c7fbf"/);
+  assert.match(page, /const BROWSER_ARTICLE_CONTENT_HASH = "47c19a387a3e3221f71de39df46d2c47dc424d345c4256f44682600096d61591"/);
+
+  for (const hook of [
+    'referencePage',
+    'paperEdge',
+    'towerBeacon',
+    'content',
+    'breadcrumb',
+    'masthead',
+    'mastheadPanel',
+    'factGrid',
+    'statusLedger',
+    'bodyGrid',
+    'contentPanel',
+    'sourceGrid',
+    'sourceLink',
+    'sideRail',
+    'relatedLink',
+    'discoveryShell',
+    'officialCta',
+  ]) {
+    assert.match(page, new RegExp(`styles\\.${hook}`), `page should wire the ${hook} hook`);
+    assert.match(css, new RegExp(`\\.${hook}\\b`), `stylesheet should define the ${hook} hook`);
+  }
+
+  assert.equal((css.match(/tower-beacon-signature\.avif/g) ?? []).length, 1, 'tower URL must be declared exactly once');
+  const desktopMediaIndex = css.indexOf('@media (min-width: 1101px)');
+  const towerUrlIndex = css.indexOf('tower-beacon-signature.avif');
+  assert.ok(desktopMediaIndex >= 0 && towerUrlIndex > desktopMediaIndex, 'tower URL must occur only after the 1101px media boundary');
+  assert.match(css, /\.referencePage \.towerBeacon[\s\S]*display:\s*none/);
+  assert.doesNotMatch(css, /:global|\/night-transmission\//);
+  assert.doesNotMatch(css, /cyan-corridor|magenta-orbit|purple-waveform|night-transmission-hero|night-transmission-skyline|wet-ground|poster-stage/i);
+  assert.doesNotMatch(`${page}\n${css}`, /fetch\(|<canvas|WebGLRenderingContext|<video|framer-motion|lottie|three/i);
+
+  for (const selector of css.matchAll(/([^{}]+)\{/g)) {
+    const value = selector[1].trim();
+    if (value.startsWith('@') || /^(from|to|\d+%)/.test(value)) continue;
+    for (const branch of value.split(',')) {
+      assert.match(branch.trim(), /^\.referencePage\b/, `selector must be scoped below the selected route: ${branch.trim()}`);
+    }
+  }
+  for (const declaration of css.matchAll(/border-radius:\s*([^;}]*)/g)) {
+    assert.equal(declaration[1].replace(/!important/g, '').trim(), '0', 'all reference surfaces must stay square');
+  }
+
+  assert.match(css, /focus-visible/);
+  assert.match(css, /prefers-reduced-motion:\s*reduce/);
+  assert.match(css, /forced-colors:\s*active/);
+  assert.match(css, /min-height:\s*44px/);
+  assert.match(css, /overflow-wrap:\s*anywhere/);
+  assert.match(css, /\.referencePage \.officialCta[\s\S]*color:\s*#050507[\s\S]*background:\s*#f4f1ff/);
+  assert.doesNotMatch(css, /color:\s*rgb\(244\s+241\s+255\)[\s\S]{0,120}background(?:-color)?:\s*rgb\(255\s+255\s+255\)/);
+
+  assert.equal(selected.festival_name, "M'era Luna Festival");
+  assert.equal(selected.official_url, 'https://meraluna.de/en/');
+  assert.deepEqual(selected.source_links.map(({ label, url }) => [label, url]), [
+    ['Official festival site', 'https://meraluna.de/en/'],
+  ]);
+  assert.deepEqual(selected.similar_festival_ids, ['ncn-festival-nocturnal-culture-night', 'wave-gotik-treffen', 'amphi-festival']);
+  assert.match(page, /title: polish\?\.metadataTitle \?\? `\$\{festival\.name\} festival guide`/);
+  assert.match(page, /path: `\/festivals\/\$\{festival\.slug\}`/);
+  assert.match(page, /Visit official site/);
+  assert.match(page, /href=\{festival\.officialSiteUrl\} target="_blank" rel="noreferrer"/);
+
+  const headingLiterals = [
+    '>Why this festival matters</h2>',
+    '>Verification notes</h2>',
+    '>Official sources</h2>',
+    '>Genre tags</h2>',
+    '>Similar festivals</h2>',
+  ];
+  let previousHeading = -1;
+  for (const heading of headingLiterals) {
+    const position = page.indexOf(heading);
+    assert.ok(position > previousHeading, `${heading} should retain its heading order`);
+    previousHeading = position;
+  }
+  assert.match(page, /title="Continue exploring RetroAltFest\."/);
+  assert.ok(page.indexOf('{isReferenceRoute ? <div className={styles.discoveryShell} data-detail-section="discovery-links">{discoveryLinks}<\/div> : discoveryLinks}') > previousHeading);
+
+  for (const protectedSlug of [
+    'absolution-fest',
+    'terminus-festival',
+    'infest-festival',
+    'cold-waves',
+    'the-new-colossus-festival',
+    'ncn-festival-nocturnal-culture-night',
+  ]) {
+    assert.doesNotMatch(css, new RegExp(protectedSlug));
+  }
+});
