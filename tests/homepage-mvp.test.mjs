@@ -2077,8 +2077,8 @@ test('M’era Luna metadata cleanup is route-local and preserves the Phase 4B co
   assert.equal(canonicalHref, 'https://retroaltfest.com/festivals/mera-luna-festival');
   assert.equal(canonicalElement, '<link rel="canonical" href="https://retroaltfest.com/festivals/mera-luna-festival">');
 
-  assert.match(page, /const festivalMetadataTitleOverrides: Readonly<Record<string, string>> = \{\s*\[FESTIVAL_DETAIL_REFERENCE_SLUG\]: "M'era Luna Festival guide",\s*\}/);
-  assert.equal((page.match(/festivalMetadataTitleOverrides/g) ?? []).length, 2, 'the single override table should have one declaration and one lookup');
+  assert.match(page, /const festivalMetadataTitleOverrides: Readonly<Record<string, string>> = \{\s*\[FESTIVAL_DETAIL_REFERENCE_SLUG\]: "M'era Luna Festival guide",\s*"a-murder-of-crows-xi-nyc-goth-post-punk-festival": "A Murder of Crows XI NYC Goth & Post-punk Festival guide",\s*\}/);
+  assert.equal((page.match(/festivalMetadataTitleOverrides/g) ?? []).length, 2, 'the centralized two-entry override table should have one declaration and one lookup');
   assert.match(page, /title: polish\?\.metadataTitle \?\? festivalMetadataTitleOverrides\[festival\.slug\] \?\? `\$\{festival\.name\} festival guide`/);
   assert.match(page, /description: polish\?\.metadataDescription \?\? festival\.summary/);
   assert.match(page, /path: `\/festivals\/\$\{festival\.slug\}`/);
@@ -2094,11 +2094,15 @@ test('M’era Luna metadata cleanup is route-local and preserves the Phase 4B co
   assert.equal(routeTitle, "M'era Luna Festival guide", 'Twitter title inherits the corrected route title');
 
   assert.equal(siblings.length, 14);
-  assert.equal(Object.keys({ 'mera-luna-festival': routeTitle }).length, 1, 'only M’era Luna receives a metadata override');
+  const frozenTitleOverrides = {
+    'mera-luna-festival': routeTitle,
+    'a-murder-of-crows-xi-nyc-goth-post-punk-festival': 'A Murder of Crows XI NYC Goth & Post-punk Festival guide',
+  };
+  assert.equal(Object.keys(frozenTitleOverrides).length, 2, 'only M’era Luna and A Murder of Crows receive metadata overrides');
   for (const festival of siblings) {
     const frozenTitle = festival.slug === 'absolution-fest'
       ? 'Absolution Fest 2026 — Tampa Goth, Darkwave & Post-Punk Festival'
-      : `${festival.festival_name} festival guide`;
+      : frozenTitleOverrides[festival.slug] ?? `${festival.festival_name} festival guide`;
     assert.notEqual(frozenTitle, routeTitle, `${festival.slug} must not inherit the selected title`);
   }
 
@@ -2163,7 +2167,7 @@ test('Night Transmission Phase 4G Batch 2 extends the immutable activation colle
   assert.equal((page.match(/"darker-waves"/g) ?? []).length, 1);
   assert.equal((page.match(/"ncn-festival-nocturnal-culture-night"/g) ?? []).length, 1);
   assert.equal((page.match(/"levitation"/g) ?? []).length, 1);
-  assert.equal((page.match(/"a-murder-of-crows-xi-nyc-goth-post-punk-festival"/g) ?? []).length, 1);
+  assert.equal((page.match(/"a-murder-of-crows-xi-nyc-goth-post-punk-festival"/g) ?? []).length, 2, 'one activation member and one centralized metadata override key are allowed');
   assert.equal((page.match(/festival\.slug === FESTIVAL_DETAIL_REFERENCE_SLUG/g) ?? []).length, 1, 'M’era Luna should keep one separate identity comparison');
   assert.match(page, /const isMeraLunaReferenceRoute = festival\.slug === FESTIVAL_DETAIL_REFERENCE_SLUG/);
   assert.match(page, /const usesNightTransmissionPresentation = NIGHT_TRANSMISSION_DETAIL_SLUGS\.includes\(festival\.slug\)/);
@@ -2195,7 +2199,7 @@ test('Night Transmission Phase 4G Batch 2 extends the immutable activation colle
     assert.doesNotMatch(activationBlock, new RegExp(excludedSlug));
   }
 
-  assert.match(page, /const festivalMetadataTitleOverrides: Readonly<Record<string, string>> = \{\s*\[FESTIVAL_DETAIL_REFERENCE_SLUG\]: "M'era Luna Festival guide",\s*\}/);
+  assert.match(page, /const festivalMetadataTitleOverrides: Readonly<Record<string, string>> = \{\s*\[FESTIVAL_DETAIL_REFERENCE_SLUG\]: "M'era Luna Festival guide",\s*"a-murder-of-crows-xi-nyc-goth-post-punk-festival": "A Murder of Crows XI NYC Goth & Post-punk Festival guide",\s*\}/);
   assert.match(page, /title: polish\?\.metadataTitle \?\? festivalMetadataTitleOverrides\[festival\.slug\] \?\? `\$\{festival\.name\} festival guide`/);
   assert.match(page, /path: `\/festivals\/\$\{festival\.slug\}`/);
 
@@ -2262,4 +2266,86 @@ test('Night Transmission Phase 4G Batch 2 extends the immutable activation colle
   assert.equal(createHash('sha256').update(read('package-lock.json')).digest('hex'), '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56');
   assert.doesNotMatch(`${page}\n${css}`, /"use client"|useState|useEffect|useMemo|fetch\(|<canvas|WebGLRenderingContext|<video|framer-motion|lottie|three|\/prototypes\//i);
   assert.doesNotMatch(page, /geocoding_source|geocoding_query|geocoding_confidence|map_phase0_category|source_status|date_pending|needs_review|core_anchor|watchlist|Phase 0|map-readiness|latitude|longitude/i);
+});
+
+test('A Murder of Crows metadata title cleanup stays route-local and preserves Phase 4G', () => {
+  const page = read('src/app/festivals/[slug]/page.tsx');
+  const css = read('src/app/festivals/[slug]/FestivalDetail.module.css');
+  const layout = read('src/app/layout.tsx');
+  const seo = read('src/lib/seo.ts');
+  const atlas = JSON.parse(read('src/data/atlas-festivals.json'));
+  const targetSlug = 'a-murder-of-crows-xi-nyc-goth-post-punk-festival';
+  const target = atlas.festivals.find((festival) => festival.slug === targetSlug);
+
+  const routeTitle = 'A Murder of Crows XI NYC Goth & Post-punk Festival guide';
+  const renderedTitle = `${routeTitle} | RetroAltFest`;
+  const canonicalHref = `https://retroaltfest.com/festivals/${targetSlug}`;
+  const canonicalElement = `<link rel="canonical" href="${canonicalHref}">`;
+
+  assert.ok(target);
+  assert.equal(target.festival_name, 'A Murder of Crows XI NYC Goth & Post-punk Festival');
+  assert.equal(`${target.festival_name} festival guide`, 'A Murder of Crows XI NYC Goth & Post-punk Festival festival guide', 'the unchanged generic fallback explains the current duplication');
+  assert.equal(routeTitle, 'A Murder of Crows XI NYC Goth & Post-punk Festival guide');
+  assert.equal(renderedTitle, 'A Murder of Crows XI NYC Goth & Post-punk Festival guide | RetroAltFest');
+  assert.equal(canonicalHref, 'https://retroaltfest.com/festivals/a-murder-of-crows-xi-nyc-goth-post-punk-festival');
+  assert.equal(canonicalElement, '<link rel="canonical" href="https://retroaltfest.com/festivals/a-murder-of-crows-xi-nyc-goth-post-punk-festival">');
+
+  assert.match(page, /const festivalMetadataTitleOverrides: Readonly<Record<string, string>> = \{\s*\[FESTIVAL_DETAIL_REFERENCE_SLUG\]: "M'era Luna Festival guide",\s*"a-murder-of-crows-xi-nyc-goth-post-punk-festival": "A Murder of Crows XI NYC Goth & Post-punk Festival guide",\s*\}/);
+  assert.equal((page.match(/festivalMetadataTitleOverrides/g) ?? []).length, 2, 'one centralized map declaration and one centralized lookup are allowed');
+  assert.equal((page.match(/"a-murder-of-crows-xi-nyc-goth-post-punk-festival"/g) ?? []).length, 2, 'one activation member and one metadata override key are allowed');
+  assert.match(page, /title: polish\?\.metadataTitle \?\? festivalMetadataTitleOverrides\[festival\.slug\] \?\? `\$\{festival\.name\} festival guide`/);
+  assert.match(page, /description: polish\?\.metadataDescription \?\? festival\.summary/);
+  assert.match(page, /path: `\/festivals\/\$\{festival\.slug\}`/);
+  assert.match(page, /type: "article"/);
+  assert.match(page, /keywords: festival\.seoKeywords/);
+
+  assert.match(layout, /template: "%s \| RetroAltFest"/);
+  assert.match(seo, /alternates:\s*\{\s*canonical,/);
+  assert.match(seo, /openGraph:\s*\{[\s\S]*?title,[\s\S]*?description,[\s\S]*?url: canonical,[\s\S]*?type,/);
+  assert.match(seo, /twitter:\s*\{[\s\S]*?title,[\s\S]*?description,/);
+  assert.match(seo, /robots:\s*\{\s*index,\s*follow: index,/);
+  assert.equal(routeTitle, 'A Murder of Crows XI NYC Goth & Post-punk Festival guide', 'Open Graph title inherits the route-level title');
+  assert.equal(routeTitle, 'A Murder of Crows XI NYC Goth & Post-punk Festival guide', 'Twitter title inherits the route-level title');
+
+  const titleOverrides = {
+    'mera-luna-festival': "M'era Luna Festival guide",
+    [targetSlug]: routeTitle,
+  };
+  assert.deepEqual(Object.keys(titleOverrides), ['mera-luna-festival', targetSlug]);
+  for (const festival of atlas.festivals) {
+    const resolvedTitle = festival.slug === 'absolution-fest'
+      ? 'Absolution Fest 2026 — Tampa Goth, Darkwave & Post-Punk Festival'
+      : titleOverrides[festival.slug] ?? `${festival.festival_name} festival guide`;
+    if (festival.slug === 'mera-luna-festival') assert.equal(resolvedTitle, "M'era Luna Festival guide");
+    else if (festival.slug === targetSlug) assert.equal(resolvedTitle, routeTitle);
+    else if (festival.slug === 'absolution-fest') assert.equal(resolvedTitle, 'Absolution Fest 2026 — Tampa Goth, Darkwave & Post-Punk Festival');
+    else assert.equal(resolvedTitle, `${festival.festival_name} festival guide`, `${festival.slug} keeps the generic fallback title`);
+  }
+
+  const activationBlock = page.match(/const NIGHT_TRANSMISSION_DETAIL_SLUGS[\s\S]*?\]\);/)?.[0] ?? '';
+  assert.deepEqual([...activationBlock.matchAll(/"([a-z0-9-]+)"/g)].map((match) => match[1]), [
+    'darker-waves',
+    'ncn-festival-nocturnal-culture-night',
+    'levitation',
+    targetSlug,
+  ]);
+  assert.equal((page.match(/NIGHT_TRANSMISSION_DETAIL_SLUGS/g) ?? []).length, 2);
+  assert.equal((page.match(/NIGHT_TRANSMISSION_DETAIL_SLUGS\.includes\(festival\.slug\)/g) ?? []).length, 1);
+  assert.doesNotMatch(page, /Object\.freeze\(new Set|\.add\(|\.delete\(|\.clear\(/);
+
+  const normalizedPage = page.replace(
+    '  "a-murder-of-crows-xi-nyc-goth-post-punk-festival": "A Murder of Crows XI NYC Goth & Post-punk Festival guide",\n',
+    '',
+  );
+  assert.equal(createHash('sha256').update(normalizedPage).digest('hex'), 'bd1c83bd5779f9029fff6eda7089fabbb9d67ec72aad8ce97c886d7518cf3c99', 'the production route source may differ only by the centralized target-title override line');
+  assert.equal(createHash('sha256').update(css).digest('hex'), '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb');
+
+  assert.equal(target.date_text, 'Opening Party: September 3, 2026; Night One: September 4, 2026; Night Two: September 5, 2026');
+  assert.equal(target.venue_name, 'TV Eye; Bowery Ballroom');
+  assert.equal(target.official_url, 'https://www.redpartynyc.com');
+  assert.deepEqual(target.source_urls, ['https://www.redpartynyc.com']);
+  assert.deepEqual(target.similar_festival_ids, ['wave-gotik-treffen', 'ncn-festival-nocturnal-culture-night', 'castle-party-festival']);
+  assert.match(page, /href=\{festival\.officialSiteUrl\} target="_blank" rel="noreferrer"/);
+  assert.match(page, /Visit official site/);
+  assert.match(css, /\.referencePage \.officialCta[\s\S]*min-height:\s*44px[\s\S]*color:\s*#050507[\s\S]*background:\s*#f4f1ff/);
 });
