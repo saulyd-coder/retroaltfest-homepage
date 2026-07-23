@@ -18,6 +18,8 @@ const NIGHT_TRANSMISSION_DETAIL_SLUGS: readonly string[] = Object.freeze([
   FESTIVAL_DETAIL_REFERENCE_SLUG,
   "darker-waves",
   "ncn-festival-nocturnal-culture-night",
+  "levitation",
+  "a-murder-of-crows-xi-nyc-goth-post-punk-festival",
 ]);
 const festivalMetadataTitleOverrides: Readonly<Record<string, string>> = {
   [FESTIVAL_DETAIL_REFERENCE_SLUG]: "M'era Luna Festival guide",

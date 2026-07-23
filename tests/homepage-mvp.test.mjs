@@ -2112,7 +2112,7 @@ test('M’era Luna metadata cleanup is route-local and preserves the Phase 4B co
   assert.match(css, /\.referencePage \.officialCta[\s\S]*min-height:\s*44px[\s\S]*color:\s*#050507[\s\S]*background:\s*#f4f1ff/);
 });
 
-test('Night Transmission Phase 4E Batch 1 uses one immutable activation collection and freezes route contracts', () => {
+test('Night Transmission Phase 4G Batch 2 extends the immutable activation collection and freezes route contracts', () => {
   const pagePath = 'src/app/festivals/[slug]/page.tsx';
   const cssPath = 'src/app/festivals/[slug]/FestivalDetail.module.css';
   const atlasPath = 'src/data/atlas-festivals.json';
@@ -2128,6 +2128,8 @@ test('Night Transmission Phase 4E Batch 1 uses one immutable activation collecti
     'mera-luna-festival',
     'darker-waves',
     'ncn-festival-nocturnal-culture-night',
+    'levitation',
+    'a-murder-of-crows-xi-nyc-goth-post-punk-festival',
   ];
   const contentHashBaselines = {
     'mera-luna-festival': [
@@ -2142,16 +2144,26 @@ test('Night Transmission Phase 4E Batch 1 uses one immutable activation collecti
       'e2b75040c7f83ca17d9b68f6de6d5bfde05e3188a07c2d5fb1c99bcd9d745ccd',
       'b202dcdb95bb0d54ef0ebc3e03a5f786691bfbe8e9e64f7903e2d1bc074c332a',
     ],
+    'levitation': [
+      'f3d34632a1815a30d3955f3ce37b4c8bd34ef3beef61d0f282d33f065cf752f8',
+      '7796cba18445639d350ce9df0eb220a4c80cfbcf4688faac7ceebc8ab7341caf',
+    ],
+    'a-murder-of-crows-xi-nyc-goth-post-punk-festival': [
+      'c56d562c9717e0d3fcd6a7e38f4230dd8380ec30f4f88424b2614dce1dd76aca',
+      '71746277bd2174ff1f0a898ae95906b7ac43628f887ceb54bb3a4be75d3f2d17',
+    ],
   };
 
   assert.deepEqual(Object.keys(contentHashBaselines), approvedSlugs, 'browser QA baselines should cover exactly the activated routes');
-  assert.match(page, /const NIGHT_TRANSMISSION_DETAIL_SLUGS: readonly string\[\] = Object\.freeze\(\[\s*FESTIVAL_DETAIL_REFERENCE_SLUG,\s*"darker-waves",\s*"ncn-festival-nocturnal-culture-night",\s*\]\)/);
+  assert.match(page, /const NIGHT_TRANSMISSION_DETAIL_SLUGS: readonly string\[\] = Object\.freeze\(\[\s*FESTIVAL_DETAIL_REFERENCE_SLUG,\s*"darker-waves",\s*"ncn-festival-nocturnal-culture-night",\s*"levitation",\s*"a-murder-of-crows-xi-nyc-goth-post-punk-festival",\s*\]\)/);
   assert.equal((page.match(/NIGHT_TRANSMISSION_DETAIL_SLUGS/g) ?? []).length, 2, 'one declaration and one centralized lookup are allowed');
   assert.equal((page.match(/NIGHT_TRANSMISSION_DETAIL_SLUGS\.includes\(festival\.slug\)/g) ?? []).length, 1);
   assert.doesNotMatch(page, /Object\.freeze\(new Set|\.add\(|\.delete\(|\.clear\(/);
   assert.equal((page.match(/"mera-luna-festival"/g) ?? []).length, 1);
   assert.equal((page.match(/"darker-waves"/g) ?? []).length, 1);
   assert.equal((page.match(/"ncn-festival-nocturnal-culture-night"/g) ?? []).length, 1);
+  assert.equal((page.match(/"levitation"/g) ?? []).length, 1);
+  assert.equal((page.match(/"a-murder-of-crows-xi-nyc-goth-post-punk-festival"/g) ?? []).length, 1);
   assert.equal((page.match(/festival\.slug === FESTIVAL_DETAIL_REFERENCE_SLUG/g) ?? []).length, 1, 'M’era Luna should keep one separate identity comparison');
   assert.match(page, /const isMeraLunaReferenceRoute = festival\.slug === FESTIVAL_DETAIL_REFERENCE_SLUG/);
   assert.match(page, /const usesNightTransmissionPresentation = NIGHT_TRANSMISSION_DETAIL_SLUGS\.includes\(festival\.slug\)/);
@@ -2174,12 +2186,10 @@ test('Night Transmission Phase 4E Batch 1 uses one immutable activation collecti
     'infest-festival',
     'cold-waves',
     'the-new-colossus-festival',
-    'a-murder-of-crows-xi-nyc-goth-post-punk-festival',
     'wave-gotik-treffen',
     'castle-party-festival',
     'amphi-festival',
     'just-like-heaven',
-    'levitation',
     'mutek-montreal',
   ]) {
     assert.doesNotMatch(activationBlock, new RegExp(excludedSlug));
@@ -2206,6 +2216,36 @@ test('Night Transmission Phase 4E Batch 1 uses one immutable activation collecti
   assert.equal(ncn.verification_status, 'confirmed_upcoming');
   assert.deepEqual(ncn.source_urls, ['https://www.ncn-festival.de']);
   assert.deepEqual(ncn.similar_festival_ids, ['wave-gotik-treffen', 'mera-luna-festival', 'amphi-festival']);
+
+  const levitation = bySlug.get('levitation');
+  assert.ok(levitation);
+  assert.equal(levitation.festival_name, 'LEVITATION');
+  assert.equal(levitation.date_text, 'September 10-13, 2026');
+  assert.equal(levitation.venue_name, 'Austin multi-venue event; official 2026 page does not make this a single-pin record');
+  assert.equal(levitation.city, 'Austin');
+  assert.equal(levitation.state_region, 'Texas');
+  assert.equal(levitation.country, 'United States');
+  assert.equal(levitation.official_url, 'https://levitation.fm/pages/levitation-2026');
+  assert.equal(levitation.verification_status, 'confirmed_upcoming');
+  assert.deepEqual(levitation.source_urls, ['https://levitation.fm/pages/levitation-2026']);
+  assert.deepEqual(levitation.similar_festival_ids, ['the-new-colossus-festival', 'mutek-montreal', 'darker-waves']);
+  assert.equal(`${levitation.festival_name} festival guide`, 'LEVITATION festival guide');
+  assert.equal(`https://retroaltfest.com/festivals/${levitation.slug}`, 'https://retroaltfest.com/festivals/levitation');
+
+  const murderOfCrows = bySlug.get('a-murder-of-crows-xi-nyc-goth-post-punk-festival');
+  assert.ok(murderOfCrows);
+  assert.equal(murderOfCrows.festival_name, 'A Murder of Crows XI NYC Goth & Post-punk Festival');
+  assert.equal(murderOfCrows.date_text, 'Opening Party: September 3, 2026; Night One: September 4, 2026; Night Two: September 5, 2026');
+  assert.equal(murderOfCrows.venue_name, 'TV Eye; Bowery Ballroom');
+  assert.equal(murderOfCrows.city, 'New York');
+  assert.equal(murderOfCrows.state_region, 'New York');
+  assert.equal(murderOfCrows.country, 'United States');
+  assert.equal(murderOfCrows.official_url, 'https://www.redpartynyc.com');
+  assert.equal(murderOfCrows.verification_status, 'confirmed_upcoming');
+  assert.deepEqual(murderOfCrows.source_urls, ['https://www.redpartynyc.com']);
+  assert.deepEqual(murderOfCrows.similar_festival_ids, ['wave-gotik-treffen', 'ncn-festival-nocturnal-culture-night', 'castle-party-festival']);
+  assert.equal(`${murderOfCrows.festival_name} festival guide`, 'A Murder of Crows XI NYC Goth & Post-punk Festival festival guide');
+  assert.equal(`https://retroaltfest.com/festivals/${murderOfCrows.slug}`, 'https://retroaltfest.com/festivals/a-murder-of-crows-xi-nyc-goth-post-punk-festival');
 
   assert.match(page, /href=\{festival\.officialSiteUrl\} target="_blank" rel="noreferrer"/);
   assert.match(page, /Visit official site/);
