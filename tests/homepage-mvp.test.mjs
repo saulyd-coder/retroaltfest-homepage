@@ -2116,7 +2116,7 @@ test('M’era Luna metadata cleanup is route-local and preserves the Phase 4B co
   assert.match(css, /\.referencePage \.officialCta[\s\S]*min-height:\s*44px[\s\S]*color:\s*#050507[\s\S]*background:\s*#f4f1ff/);
 });
 
-test('Night Transmission Phase 4G Batch 2 extends the immutable activation collection and freezes route contracts', () => {
+test('Night Transmission Phase 4I activates New Colossus through the immutable collection and freezes route contracts', () => {
   const pagePath = 'src/app/festivals/[slug]/page.tsx';
   const cssPath = 'src/app/festivals/[slug]/FestivalDetail.module.css';
   const atlasPath = 'src/data/atlas-festivals.json';
@@ -2134,6 +2134,7 @@ test('Night Transmission Phase 4G Batch 2 extends the immutable activation colle
     'ncn-festival-nocturnal-culture-night',
     'levitation',
     'a-murder-of-crows-xi-nyc-goth-post-punk-festival',
+    'the-new-colossus-festival',
   ];
   const contentHashBaselines = {
     'mera-luna-festival': [
@@ -2156,10 +2157,14 @@ test('Night Transmission Phase 4G Batch 2 extends the immutable activation colle
       'c56d562c9717e0d3fcd6a7e38f4230dd8380ec30f4f88424b2614dce1dd76aca',
       '71746277bd2174ff1f0a898ae95906b7ac43628f887ceb54bb3a4be75d3f2d17',
     ],
+    'the-new-colossus-festival': [
+      '6ff0f04895aee5a800c2a2cd06e3ac7db2b5752e1b6fd2b3aa0b533684c22bcf',
+      '1c8d69a746187d06667c933039057e5cc8160f8b727083e33b18216c4a9dbf43',
+    ],
   };
 
   assert.deepEqual(Object.keys(contentHashBaselines), approvedSlugs, 'browser QA baselines should cover exactly the activated routes');
-  assert.match(page, /const NIGHT_TRANSMISSION_DETAIL_SLUGS: readonly string\[\] = Object\.freeze\(\[\s*FESTIVAL_DETAIL_REFERENCE_SLUG,\s*"darker-waves",\s*"ncn-festival-nocturnal-culture-night",\s*"levitation",\s*"a-murder-of-crows-xi-nyc-goth-post-punk-festival",\s*\]\)/);
+  assert.match(page, /const NIGHT_TRANSMISSION_DETAIL_SLUGS: readonly string\[\] = Object\.freeze\(\[\s*FESTIVAL_DETAIL_REFERENCE_SLUG,\s*"darker-waves",\s*"ncn-festival-nocturnal-culture-night",\s*"levitation",\s*"a-murder-of-crows-xi-nyc-goth-post-punk-festival",\s*"the-new-colossus-festival",\s*\]\)/);
   assert.equal((page.match(/NIGHT_TRANSMISSION_DETAIL_SLUGS/g) ?? []).length, 2, 'one declaration and one centralized lookup are allowed');
   assert.equal((page.match(/NIGHT_TRANSMISSION_DETAIL_SLUGS\.includes\(festival\.slug\)/g) ?? []).length, 1);
   assert.doesNotMatch(page, /Object\.freeze\(new Set|\.add\(|\.delete\(|\.clear\(/);
@@ -2168,6 +2173,7 @@ test('Night Transmission Phase 4G Batch 2 extends the immutable activation colle
   assert.equal((page.match(/"ncn-festival-nocturnal-culture-night"/g) ?? []).length, 1);
   assert.equal((page.match(/"levitation"/g) ?? []).length, 1);
   assert.equal((page.match(/"a-murder-of-crows-xi-nyc-goth-post-punk-festival"/g) ?? []).length, 2, 'one activation member and one centralized metadata override key are allowed');
+  assert.equal((page.match(/"the-new-colossus-festival"/g) ?? []).length, 1, 'New Colossus may appear only in the centralized activation collection');
   assert.equal((page.match(/festival\.slug === FESTIVAL_DETAIL_REFERENCE_SLUG/g) ?? []).length, 1, 'M’era Luna should keep one separate identity comparison');
   assert.match(page, /const isMeraLunaReferenceRoute = festival\.slug === FESTIVAL_DETAIL_REFERENCE_SLUG/);
   assert.match(page, /const usesNightTransmissionPresentation = NIGHT_TRANSMISSION_DETAIL_SLUGS\.includes\(festival\.slug\)/);
@@ -2189,7 +2195,6 @@ test('Night Transmission Phase 4G Batch 2 extends the immutable activation colle
     'terminus-festival',
     'infest-festival',
     'cold-waves',
-    'the-new-colossus-festival',
     'wave-gotik-treffen',
     'castle-party-festival',
     'amphi-festival',
@@ -2250,6 +2255,21 @@ test('Night Transmission Phase 4G Batch 2 extends the immutable activation colle
   assert.deepEqual(murderOfCrows.similar_festival_ids, ['wave-gotik-treffen', 'ncn-festival-nocturnal-culture-night', 'castle-party-festival']);
   assert.equal(`${murderOfCrows.festival_name} festival guide`, 'A Murder of Crows XI NYC Goth & Post-punk Festival festival guide');
   assert.equal(`https://retroaltfest.com/festivals/${murderOfCrows.slug}`, 'https://retroaltfest.com/festivals/a-murder-of-crows-xi-nyc-goth-post-punk-festival');
+
+  const newColossus = bySlug.get('the-new-colossus-festival');
+  assert.ok(newColossus);
+  assert.equal(newColossus.festival_name, 'The New Colossus Festival');
+  assert.equal(newColossus.date_text, 'March 9-14, 2027');
+  assert.equal(newColossus.venue_name, 'Independent music venues on the Lower East Side');
+  assert.equal(newColossus.city, 'New York City');
+  assert.equal(newColossus.state_region, 'New York');
+  assert.equal(newColossus.country, 'United States');
+  assert.equal(newColossus.official_url, 'https://www.newcolossusfestival.com/');
+  assert.equal(newColossus.verification_status, 'confirmed_upcoming');
+  assert.deepEqual(newColossus.source_urls, ['https://www.newcolossusfestival.com/']);
+  assert.deepEqual(newColossus.similar_festival_ids, ['levitation', 'mutek-montreal', 'just-like-heaven']);
+  assert.equal(`${newColossus.festival_name} festival guide`, 'The New Colossus Festival festival guide');
+  assert.equal(`https://retroaltfest.com/festivals/${newColossus.slug}`, 'https://retroaltfest.com/festivals/the-new-colossus-festival');
 
   assert.match(page, /href=\{festival\.officialSiteUrl\} target="_blank" rel="noreferrer"/);
   assert.match(page, /Visit official site/);
@@ -2328,16 +2348,22 @@ test('A Murder of Crows metadata title cleanup stays route-local and preserves P
     'ncn-festival-nocturnal-culture-night',
     'levitation',
     targetSlug,
+    'the-new-colossus-festival',
   ]);
   assert.equal((page.match(/NIGHT_TRANSMISSION_DETAIL_SLUGS/g) ?? []).length, 2);
   assert.equal((page.match(/NIGHT_TRANSMISSION_DETAIL_SLUGS\.includes\(festival\.slug\)/g) ?? []).length, 1);
   assert.doesNotMatch(page, /Object\.freeze\(new Set|\.add\(|\.delete\(|\.clear\(/);
 
-  const normalizedPage = page.replace(
-    '  "a-murder-of-crows-xi-nyc-goth-post-punk-festival": "A Murder of Crows XI NYC Goth & Post-punk Festival guide",\n',
-    '',
-  );
-  assert.equal(createHash('sha256').update(normalizedPage).digest('hex'), 'bd1c83bd5779f9029fff6eda7089fabbb9d67ec72aad8ce97c886d7518cf3c99', 'the production route source may differ only by the centralized target-title override line');
+  const normalizedPage = page
+    .replace(
+      '  "the-new-colossus-festival",\n',
+      '',
+    )
+    .replace(
+      '  "a-murder-of-crows-xi-nyc-goth-post-punk-festival": "A Murder of Crows XI NYC Goth & Post-punk Festival guide",\n',
+      '',
+    );
+  assert.equal(createHash('sha256').update(normalizedPage).digest('hex'), 'bd1c83bd5779f9029fff6eda7089fabbb9d67ec72aad8ce97c886d7518cf3c99', 'the route source may differ only by the centralized target-title override and approved New Colossus activation lines');
   assert.equal(createHash('sha256').update(css).digest('hex'), '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb');
 
   assert.equal(target.date_text, 'Opening Party: September 3, 2026; Night One: September 4, 2026; Night Two: September 5, 2026');
