@@ -366,6 +366,71 @@ test('North America 8 records preserve source-aware caveats and map safety', () 
   assert.match(byId.get('terminus-festival').source_urls.join('\n'), /eventbrite\.ca\/e\/terminus-festival-2026-resonance/);
 });
 
+test('Just Like Heaven venue correction stays source-backed, adjacent, and route-safe', () => {
+  const data = JSON.parse(read('src/data/atlas-festivals.json'));
+  const festival = data.festivals.find((record) => record.slug === 'just-like-heaven');
+  assert.ok(festival, 'Just Like Heaven should remain an active atlas record');
+  assert.equal(data.festivals.filter((record) => record.slug === 'just-like-heaven').length, 1);
+
+  assert.equal(festival.venue_name, 'Brookside at the Rose Bowl');
+  assert.equal(festival.tags.includes('venue missing'), false);
+  assert.doesNotMatch(
+    [festival.map_notes, festival.data_quality_notes, festival.why_it_matters].join('\n'),
+    /venue (?:not published|missing|not captured|was not safely captured)|venue details were not captured|because venue details|city-level because venue/i,
+  );
+  assert.equal(festival.source_urls.includes('https://justlikeheavenfest.com/festival-info/'), true);
+  assert.deepEqual(festival.source_links, [
+    {
+      label: 'Official festival site',
+      url: 'https://www.justlikeheavenfest.com/',
+      type: 'official_site',
+    },
+  ]);
+
+  assert.equal(festival.date_text, 'August 22, 2026');
+  assert.equal(festival.start_date, '2026-08-22');
+  assert.equal(festival.end_date, '2026-08-22');
+  assert.equal(festival.verification_status, 'confirmed_upcoming');
+  assert.equal(festival.city, 'Pasadena');
+  assert.equal(festival.state_region, 'California');
+  assert.equal(festival.country, 'United States');
+  assert.equal(festival.tags.includes('adjacent'), true);
+  assert.deepEqual(festival.genres, ['retro alternative', 'indie', '2000s alternative']);
+  assert.deepEqual(festival.categories, ['alternative']);
+  assert.match(festival.data_quality_notes, /Adjacent bridge, not core goth\/darkwave\/synthpop/);
+  assert.match(festival.why_it_matters, /without pretending it is a core goth or darkwave festival/);
+  assert.equal(festival.venue_address, null);
+  assert.equal(festival.latitude, null);
+  assert.equal(festival.longitude, null);
+  assert.equal(festival.geocoding_source, null);
+  assert.equal(festival.geocoding_query, null);
+  assert.equal(festival.geocoding_confidence, 'not_geocoded');
+  assert.equal(festival.map_display_category, 'city_level_candidate');
+  assert.equal(festival.follow_up_needed, true);
+  assert.equal(festival.source_confidence, 'medium');
+  assert.deepEqual(festival.similar_festival_ids, ['darker-waves', 'the-new-colossus-festival', 'levitation']);
+
+  const nonTargetRecords = data.festivals.filter((record) => record.slug !== 'just-like-heaven');
+  assert.equal(
+    createHash('sha256').update(JSON.stringify(nonTargetRecords)).digest('hex'),
+    'fe5550c152a730d38a071d48912e5f526e00ae2e1db7374de3c3287898245600',
+    'every non-target festival record should remain field-identical',
+  );
+
+  for (const [relativePath, expectedHash] of Object.entries({
+    'src/lib/public-festivals.ts': 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8',
+    'src/app/festivals/[slug]/page.tsx': 'b136d810bf2a236186672004dfb89e5b71be06018b07d8249ca29a559db14798',
+    'src/app/festivals/[slug]/FestivalDetail.module.css': '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb',
+    'src/app/sitemap.ts': '8e1d5122c5331898011401f9f956d0dc80225e582caaeec3f217c9272345858b',
+  })) {
+    assert.equal(
+      createHash('sha256').update(read(relativePath)).digest('hex'),
+      expectedHash,
+      `${relativePath} should preserve the metadata, canonical, sitemap, DTO, activation, and visual contracts`,
+    );
+  }
+});
+
 test('festival detail route is static-first and SEO-ready', () => {
   const detailPath = 'src/app/festivals/[slug]/page.tsx';
   assert.equal(existsSync(join(root, detailPath)), true, 'dynamic festival detail route should exist');
@@ -1951,7 +2016,7 @@ test('Night Transmission Phase 4B M’era Luna reference stays content-exact and
   assert.equal(atlas.festivals.every((festival) => festival.latitude === null && festival.longitude === null), true);
   assert.equal(atlas.festivals.every((festival) => festival.geocoding_source === null && festival.geocoding_query === null), true);
   assert.deepEqual(new Set(atlas.festivals.map((festival) => festival.geocoding_confidence)), new Set(['not_geocoded']));
-  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), 'b5eaf3a2806b73648fe9810a805fd307226f4fe445a462a174adabb1c937c734');
+  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), 'cca85f2c58f2a4233200e03965f8917d084373a540147ccf9770854b663384df');
   assert.equal(createHash('sha256').update(dtoSource).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
 
   assert.match(page, /import styles from "\.\/FestivalDetail\.module\.css"/);
@@ -2280,7 +2345,7 @@ test('Night Transmission Phase 4I activates New Colossus through the immutable c
   assert.ok(css.indexOf('tower-beacon-signature.avif') > css.indexOf('@media (min-width: 1101px)'));
 
   assert.equal(createHash('sha256').update(css).digest('hex'), '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb');
-  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), 'b5eaf3a2806b73648fe9810a805fd307226f4fe445a462a174adabb1c937c734');
+  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), 'cca85f2c58f2a4233200e03965f8917d084373a540147ccf9770854b663384df');
   assert.equal(createHash('sha256').update(dtoSource).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
   assert.equal(createHash('sha256').update(read('src/app/sitemap.ts')).digest('hex'), '8e1d5122c5331898011401f9f956d0dc80225e582caaeec3f217c9272345858b');
   assert.equal(createHash('sha256').update(read('package.json')).digest('hex'), 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d');

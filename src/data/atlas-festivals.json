@@ -857,7 +857,7 @@
       "city": "Pasadena",
       "state_region": "California",
       "country": "United States",
-      "venue_name": null,
+      "venue_name": "Brookside at the Rose Bowl",
       "venue_address": null,
       "latitude": null,
       "longitude": null,
@@ -876,23 +876,23 @@
         "Southern California",
         "retro alternative",
         "indie",
-        "adjacent",
-        "venue missing"
+        "adjacent"
       ],
       "festival_type": "music_festival",
       "map_display_category": "city_level_candidate",
       "official_url": "https://www.justlikeheavenfest.com/",
       "source_urls": [
-        "https://www.justlikeheavenfest.com/"
+        "https://www.justlikeheavenfest.com/",
+        "https://justlikeheavenfest.com/festival-info/"
       ],
       "verification_status": "confirmed_upcoming",
       "source_confidence": "medium",
       "follow_up_needed": true,
-      "map_notes": "City/date are supported, but venue was not safely captured in the draft. Not pin-safe; city-level only.",
-      "data_quality_notes": "Confirmed upcoming date/city; venue not captured in draft. Adjacent bridge, not core goth/darkwave/synthpop.",
+      "map_notes": "Official festival information identifies Brookside at the Rose Bowl in Pasadena.",
+      "data_quality_notes": "Confirmed upcoming date/city and Brookside at the Rose Bowl venue. Adjacent bridge, not core goth/darkwave/synthpop.",
       "slug": "just-like-heaven",
       "atlas_summary": "Just Like Heaven is a retro alternative and indie bridge for visitors interested in the wider orbit around new wave, post-punk, 2000s alternative, and Southern California festival discovery.",
-      "why_it_matters": "Just Like Heaven is useful for RetroAltFest because it connects dark-scene visitors to adjacent retro alternative travel planning without pretending it is a core goth or darkwave festival. The record stays city-level because venue details were not captured safely.",
+      "why_it_matters": "Just Like Heaven is useful for RetroAltFest because it connects dark-scene visitors to adjacent retro alternative travel planning without pretending it is a core goth or darkwave festival.",
       "source_links": [
         {
           "label": "Official festival site",
