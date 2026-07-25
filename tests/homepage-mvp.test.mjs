@@ -413,7 +413,7 @@ test('Just Like Heaven venue correction stays source-backed, adjacent, and route
   const nonTargetRecords = data.festivals.filter((record) => record.slug !== 'just-like-heaven');
   assert.equal(
     createHash('sha256').update(JSON.stringify(nonTargetRecords)).digest('hex'),
-    'fe5550c152a730d38a071d48912e5f526e00ae2e1db7374de3c3287898245600',
+    'b03dfb7669a62c7efbf5c08bfd279402d6d7698b986b2a8670c6354c42d52d66',
     'every non-target festival record should remain field-identical',
   );
 
@@ -2016,7 +2016,7 @@ test('Night Transmission Phase 4B M’era Luna reference stays content-exact and
   assert.equal(atlas.festivals.every((festival) => festival.latitude === null && festival.longitude === null), true);
   assert.equal(atlas.festivals.every((festival) => festival.geocoding_source === null && festival.geocoding_query === null), true);
   assert.deepEqual(new Set(atlas.festivals.map((festival) => festival.geocoding_confidence)), new Set(['not_geocoded']));
-  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), 'cca85f2c58f2a4233200e03965f8917d084373a540147ccf9770854b663384df');
+  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), '4baf1b2fb5b0b43bc4ba039d652d13fd7c42ad71e21e94b97c24961ee8b7cec4');
   assert.equal(createHash('sha256').update(dtoSource).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
 
   assert.match(page, /import styles from "\.\/FestivalDetail\.module\.css"/);
@@ -2345,7 +2345,7 @@ test('Night Transmission Phase 4I activates New Colossus through the immutable c
   assert.ok(css.indexOf('tower-beacon-signature.avif') > css.indexOf('@media (min-width: 1101px)'));
 
   assert.equal(createHash('sha256').update(css).digest('hex'), '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb');
-  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), 'cca85f2c58f2a4233200e03965f8917d084373a540147ccf9770854b663384df');
+  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), '4baf1b2fb5b0b43bc4ba039d652d13fd7c42ad71e21e94b97c24961ee8b7cec4');
   assert.equal(createHash('sha256').update(dtoSource).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
   assert.equal(createHash('sha256').update(read('src/app/sitemap.ts')).digest('hex'), '8e1d5122c5331898011401f9f956d0dc80225e582caaeec3f217c9272345858b');
   assert.equal(createHash('sha256').update(read('package.json')).digest('hex'), 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d');
@@ -2446,6 +2446,101 @@ test('A Murder of Crows metadata title cleanup stays route-local and preserves P
   assert.match(page, /href=\{festival\.officialSiteUrl\} target="_blank" rel="noreferrer"/);
   assert.match(page, /Visit official site/);
   assert.match(css, /\.referencePage \.officialCta[\s\S]*min-height:\s*44px[\s\S]*color:\s*#050507[\s\S]*background:\s*#f4f1ff/);
+});
+
+test('Wave-Gotik-Treffen 2027 source correction stays multi-venue, route-safe, and isolated', () => {
+  const atlasSource = read('src/data/atlas-festivals.json');
+  const atlas = JSON.parse(atlasSource);
+  const targetSlug = 'wave-gotik-treffen';
+  const target = atlas.festivals.find((festival) => festival.slug === targetSlug);
+  const nonTarget = atlas.festivals.filter((festival) => festival.slug !== targetSlug);
+  const allowedFields = new Set(['date_text', 'start_date', 'end_date', 'verification_status']);
+  const preservedTarget = Object.fromEntries(Object.entries(target).filter(([field]) => !allowedFields.has(field)));
+  const page = read('src/app/festivals/[slug]/page.tsx');
+  const css = read('src/app/festivals/[slug]/FestivalDetail.module.css');
+  const layout = read('src/app/layout.tsx');
+  const seo = read('src/lib/seo.ts');
+  const sitemap = read('src/app/sitemap.ts');
+  const dto = read('src/lib/public-festivals.ts');
+  const editionFacingFields = JSON.stringify({
+    date_text: target.date_text,
+    start_date: target.start_date,
+    end_date: target.end_date,
+    verification_status: target.verification_status,
+    map_notes: target.map_notes,
+    data_quality_notes: target.data_quality_notes,
+    atlas_summary: target.atlas_summary,
+    why_it_matters: target.why_it_matters,
+    tags: target.tags,
+  });
+
+  assert.ok(target, 'Wave-Gotik-Treffen should remain an active atlas record');
+  assert.equal(atlas.festivals.length, 15);
+  assert.equal(new Set(atlas.festivals.map((festival) => festival.slug)).size, 15);
+  assert.equal(atlas.festivals.filter((festival) => festival.slug === targetSlug).length, 1);
+
+  assert.equal(target.date_text, 'May 14–17, 2027');
+  assert.equal(target.start_date, '2027-05-14');
+  assert.equal(target.end_date, '2027-05-17');
+  assert.equal(target.verification_status, 'confirmed_upcoming');
+  assert.doesNotMatch(editionFacingFields, /2026|confirmed_current|\bcurrent\b/i);
+
+  assert.equal(target.city, 'Leipzig');
+  assert.equal(target.state_region, 'Saxony');
+  assert.equal(target.country, 'Germany');
+  assert.equal(target.venue_name, 'Multiple venues across Leipzig');
+  assert.match(target.map_notes, /many venues across Leipzig/i);
+  assert.equal(target.map_display_category, 'multi_venue_parent');
+  assert.equal(target.venue_address, null);
+  assert.equal(target.latitude, null);
+  assert.equal(target.longitude, null);
+  assert.equal(target.geocoding_source, null);
+  assert.equal(target.geocoding_query, null);
+  assert.equal(target.geocoding_confidence, 'not_geocoded');
+  assert.equal(target.source_confidence, 'high');
+  assert.equal(target.festival_type, 'music_festival');
+  assert.deepEqual(target.source_urls, [
+    'https://www.wave-gotik-treffen.de/english/',
+    'https://www.wave-gotik-treffen.de/english/info/info.php',
+  ]);
+
+  assert.equal(createHash('sha256').update(JSON.stringify(preservedTarget)).digest('hex'), '1bdd1325ffa253eab1c593de9e8bd8828444094eccde29621fdc70cf6f02ec28');
+  assert.equal(createHash('sha256').update(JSON.stringify(nonTarget)).digest('hex'), 'af2a6fe549a1dce0fe59ab378d096e1903822aeecf30ea4ac8adc56103684d21');
+  assert.equal(atlas.festivals.every((festival) => festival.latitude === null && festival.longitude === null), true);
+  assert.equal(atlas.festivals.every((festival) => festival.geocoding_source === null && festival.geocoding_query === null), true);
+  assert.equal(createHash('sha256').update(JSON.stringify(atlas.festivals.map((festival) => [festival.slug, festival.geocoding_confidence]))).digest('hex'), 'a65cfe2ff09e6d46d9d53d609b3bc2e9a314befebf2203c662ae04429a135103');
+
+  const routeTitle = `${target.festival_name} festival guide`;
+  const renderedTitle = `${routeTitle} | RetroAltFest`;
+  const canonicalHref = `https://retroaltfest.com/festivals/${target.slug}`;
+  const canonicalElement = `<link rel="canonical" href="${canonicalHref}">`;
+  assert.equal(routeTitle, 'Wave-Gotik-Treffen festival guide');
+  assert.equal(renderedTitle, 'Wave-Gotik-Treffen festival guide | RetroAltFest');
+  assert.equal(canonicalHref, 'https://retroaltfest.com/festivals/wave-gotik-treffen');
+  assert.equal(canonicalElement, '<link rel="canonical" href="https://retroaltfest.com/festivals/wave-gotik-treffen">');
+  assert.match(page, /title: polish\?\.metadataTitle \?\? festivalMetadataTitleOverrides\[festival\.slug\] \?\? `\$\{festival\.name\} festival guide`/);
+  assert.match(page, /path: `\/festivals\/\$\{festival\.slug\}`/);
+  assert.match(layout, /template: "%s \| RetroAltFest"/);
+  assert.match(seo, /alternates:\s*\{\s*canonical,/);
+  assert.match(sitemap, /featuredFestivals\.map\(\(festival\) =>/);
+  assert.match(sitemap, /festivalSlug\(festival\)/);
+
+  const activationBlock = page.match(/const NIGHT_TRANSMISSION_DETAIL_SLUGS[\s\S]*?\]\);/)?.[0] ?? '';
+  assert.deepEqual([...activationBlock.matchAll(/"([a-z0-9-]+)"/g)].map((match) => match[1]), [
+    'darker-waves',
+    'ncn-festival-nocturnal-culture-night',
+    'levitation',
+    'a-murder-of-crows-xi-nyc-goth-post-punk-festival',
+    'the-new-colossus-festival',
+  ]);
+  assert.doesNotMatch(activationBlock, /wave-gotik-treffen/);
+
+  assert.equal(createHash('sha256').update(page).digest('hex'), 'b136d810bf2a236186672004dfb89e5b71be06018b07d8249ca29a559db14798');
+  assert.equal(createHash('sha256').update(css).digest('hex'), '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb');
+  assert.equal(createHash('sha256').update(sitemap).digest('hex'), '8e1d5122c5331898011401f9f956d0dc80225e582caaeec3f217c9272345858b');
+  assert.equal(createHash('sha256').update(layout).digest('hex'), 'e0d2ecdc24d76e0b2a9d1328c532b0b63f6223d28b35498b8da7ba3aab51457f');
+  assert.equal(createHash('sha256').update(seo).digest('hex'), '5b7a4c9e26dede625ef02c39fc9e96fe779f128ec57bb6db283790d71a9f2b31');
+  assert.equal(createHash('sha256').update(dto).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
 });
 
 test('New Colossus metadata title cleanup stays route-local and preserves Phase 4I', () => {

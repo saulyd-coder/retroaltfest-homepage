@@ -46,9 +46,9 @@
       "geocoding_source": null,
       "geocoding_query": null,
       "geocoding_confidence": "not_geocoded",
-      "start_date": "2026-05-22",
-      "end_date": "2026-05-25",
-      "date_text": "22 May 2026 until 25 May 2026; ongoing as of 2026-05-24",
+      "start_date": "2027-05-14",
+      "end_date": "2027-05-17",
+      "date_text": "May 14–17, 2027",
       "genres": [
         "goth",
         "darkwave",
@@ -70,7 +70,7 @@
         "https://www.wave-gotik-treffen.de/english/",
         "https://www.wave-gotik-treffen.de/english/info/info.php"
       ],
-      "verification_status": "confirmed_current",
+      "verification_status": "confirmed_upcoming",
       "source_confidence": "high",
       "follow_up_needed": true,
       "map_notes": "Parent record only. Festival uses many venues across Leipzig; child venue records are needed before precise map display.",
