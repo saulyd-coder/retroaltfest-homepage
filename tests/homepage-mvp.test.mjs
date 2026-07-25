@@ -10,6 +10,14 @@ function read(relativePath) {
   return readFileSync(join(root, relativePath), 'utf8');
 }
 
+function normalizePhase5A1GuideDiscoveryPilot(source) {
+  return source
+    .replace(/const GENERIC_GUIDE_DISCOVERY_LINK[\s\S]*?\nconst festivalMetadataTitleOverrides/, 'const festivalMetadataTitleOverrides')
+    .replace('  const guideDiscoveryLink = FESTIVAL_DETAIL_GUIDE_LINKS[festival.slug] ?? GENERIC_GUIDE_DISCOVERY_LINK;\n', '')
+    .replace('          href: guideDiscoveryLink.href,', '          href: "/guides",')
+    .replace('          label: guideDiscoveryLink.label,', '          label: "Read curated guides",');
+}
+
 test('ships the curated festival app data for the homepage vertical slice', () => {
   const dataPath = 'src/data/atlas-festivals.json';
   assert.equal(existsSync(join(root, dataPath)), true, 'seed data should be available in src/data');
@@ -423,10 +431,14 @@ test('Just Like Heaven venue correction stays source-backed, adjacent, and route
     'src/app/festivals/[slug]/FestivalDetail.module.css': '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb',
     'src/app/sitemap.ts': '8e1d5122c5331898011401f9f956d0dc80225e582caaeec3f217c9272345858b',
   })) {
+    const source = read(relativePath);
+    const normalizedSource = relativePath === 'src/app/festivals/[slug]/page.tsx'
+      ? normalizePhase5A1GuideDiscoveryPilot(source)
+      : source;
     assert.equal(
-      createHash('sha256').update(read(relativePath)).digest('hex'),
+      createHash('sha256').update(normalizedSource).digest('hex'),
       expectedHash,
-      `${relativePath} should preserve the metadata, canonical, sitemap, DTO, activation, and visual contracts`,
+      `${relativePath} should preserve the metadata, canonical, sitemap, DTO, activation, and visual contracts after the approved Phase 5A.1 substitution is normalized`,
     );
   }
 });
@@ -2235,10 +2247,10 @@ test('Night Transmission Phase 4I activates New Colossus through the immutable c
   assert.equal((page.match(/NIGHT_TRANSMISSION_DETAIL_SLUGS\.includes\(festival\.slug\)/g) ?? []).length, 1);
   assert.doesNotMatch(page, /Object\.freeze\(new Set|\.add\(|\.delete\(|\.clear\(/);
   assert.equal((page.match(/"mera-luna-festival"/g) ?? []).length, 1);
-  assert.equal((page.match(/"darker-waves"/g) ?? []).length, 1);
+  assert.equal((page.match(/"darker-waves"/g) ?? []).length, 2, 'one activation member and one Phase 5A.1 guide mapping key are allowed');
   assert.equal((page.match(/"ncn-festival-nocturnal-culture-night"/g) ?? []).length, 1);
   assert.equal((page.match(/"levitation"/g) ?? []).length, 1);
-  assert.equal((page.match(/"a-murder-of-crows-xi-nyc-goth-post-punk-festival"/g) ?? []).length, 2, 'one activation member and one centralized metadata override key are allowed');
+  assert.equal((page.match(/"a-murder-of-crows-xi-nyc-goth-post-punk-festival"/g) ?? []).length, 3, 'one activation member, one centralized metadata override key, and one Phase 5A.1 guide mapping key are allowed');
   assert.equal((page.match(/"the-new-colossus-festival"/g) ?? []).length, 2, 'one activation member and one centralized metadata override key are allowed');
   assert.equal((page.match(/festival\.slug === FESTIVAL_DETAIL_REFERENCE_SLUG/g) ?? []).length, 1, 'M’era Luna should keep one separate identity comparison');
   assert.match(page, /const isMeraLunaReferenceRoute = festival\.slug === FESTIVAL_DETAIL_REFERENCE_SLUG/);
@@ -2378,7 +2390,7 @@ test('A Murder of Crows metadata title cleanup stays route-local and preserves P
 
   assert.match(page, /const festivalMetadataTitleOverrides: Readonly<Record<string, string>> = \{\s*\[FESTIVAL_DETAIL_REFERENCE_SLUG\]: "M'era Luna Festival guide",\s*"a-murder-of-crows-xi-nyc-goth-post-punk-festival": "A Murder of Crows XI NYC Goth & Post-punk Festival guide",\s*"the-new-colossus-festival": "The New Colossus Festival guide",\s*\}/);
   assert.equal((page.match(/festivalMetadataTitleOverrides/g) ?? []).length, 2, 'one centralized map declaration and one centralized lookup are allowed');
-  assert.equal((page.match(/"a-murder-of-crows-xi-nyc-goth-post-punk-festival"/g) ?? []).length, 2, 'one activation member and one metadata override key are allowed');
+  assert.equal((page.match(/"a-murder-of-crows-xi-nyc-goth-post-punk-festival"/g) ?? []).length, 3, 'one activation member, one metadata override key, and one Phase 5A.1 guide mapping key are allowed');
   assert.match(page, /title: polish\?\.metadataTitle \?\? festivalMetadataTitleOverrides\[festival\.slug\] \?\? `\$\{festival\.name\} festival guide`/);
   assert.match(page, /description: polish\?\.metadataDescription \?\? festival\.summary/);
   assert.match(page, /path: `\/festivals\/\$\{festival\.slug\}`/);
@@ -2422,7 +2434,7 @@ test('A Murder of Crows metadata title cleanup stays route-local and preserves P
   assert.equal((page.match(/NIGHT_TRANSMISSION_DETAIL_SLUGS\.includes\(festival\.slug\)/g) ?? []).length, 1);
   assert.doesNotMatch(page, /Object\.freeze\(new Set|\.add\(|\.delete\(|\.clear\(/);
 
-  const normalizedPage = page
+  const normalizedPage = normalizePhase5A1GuideDiscoveryPilot(page)
     .replace(
       '  "the-new-colossus-festival",\n',
       '',
@@ -2535,7 +2547,7 @@ test('Wave-Gotik-Treffen 2027 source correction stays multi-venue, route-safe, a
   ]);
   assert.doesNotMatch(activationBlock, /wave-gotik-treffen/);
 
-  assert.equal(createHash('sha256').update(page).digest('hex'), 'b136d810bf2a236186672004dfb89e5b71be06018b07d8249ca29a559db14798');
+  assert.equal(createHash('sha256').update(normalizePhase5A1GuideDiscoveryPilot(page)).digest('hex'), 'b136d810bf2a236186672004dfb89e5b71be06018b07d8249ca29a559db14798');
   assert.equal(createHash('sha256').update(css).digest('hex'), '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb');
   assert.equal(createHash('sha256').update(sitemap).digest('hex'), '8e1d5122c5331898011401f9f956d0dc80225e582caaeec3f217c9272345858b');
   assert.equal(createHash('sha256').update(layout).digest('hex'), 'e0d2ecdc24d76e0b2a9d1328c532b0b63f6223d28b35498b8da7ba3aab51457f');
@@ -2640,7 +2652,7 @@ test('Castle Party completed-edition correction stays historical, source-safe, a
   ]);
   assert.equal(activatedSlugs.includes(targetSlug), false);
 
-  assert.equal(createHash('sha256').update(page).digest('hex'), 'b136d810bf2a236186672004dfb89e5b71be06018b07d8249ca29a559db14798');
+  assert.equal(createHash('sha256').update(normalizePhase5A1GuideDiscoveryPilot(page)).digest('hex'), 'b136d810bf2a236186672004dfb89e5b71be06018b07d8249ca29a559db14798');
   assert.equal(createHash('sha256').update(css).digest('hex'), '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb');
   assert.equal(createHash('sha256').update(sitemap).digest('hex'), '8e1d5122c5331898011401f9f956d0dc80225e582caaeec3f217c9272345858b');
   assert.equal(createHash('sha256').update(layout).digest('hex'), 'e0d2ecdc24d76e0b2a9d1328c532b0b63f6223d28b35498b8da7ba3aab51457f');
@@ -2733,7 +2745,7 @@ test('New Colossus metadata title cleanup stays route-local and preserves Phase 
   assert.equal((page.match(/NIGHT_TRANSMISSION_DETAIL_SLUGS\.includes\(festival\.slug\)/g) ?? []).length, 1);
   assert.doesNotMatch(page, /Object\.freeze\(new Set|\.add\(|\.delete\(|\.clear\(/);
 
-  const normalizedPage = page.replace(
+  const normalizedPage = normalizePhase5A1GuideDiscoveryPilot(page).replace(
     '  "the-new-colossus-festival": "The New Colossus Festival guide",\n',
     '',
   );
@@ -2749,4 +2761,93 @@ test('New Colossus metadata title cleanup stays route-local and preserves Phase 
   assert.match(page, /Visit official site/);
   assert.match(css, /\.referencePage \.officialCta[\s\S]*min-height:\s*44px[\s\S]*color:\s*#050507[\s\S]*background:\s*#f4f1ff/);
   assert.match(read('tests/homepage-mvp.test.mjs'), /6ff0f04895aee5a800c2a2cd06e3ac7db2b5752e1b6fd2b3aa0b533684c22bcf[\s\S]*1c8d69a746187d06667c933039057e5cc8160f8b727083e33b18216c4a9dbf43/);
+});
+
+test('Phase 5A.1 closes exactly two reciprocal guide discovery loops and freezes every other route contract', () => {
+  const pagePath = 'src/app/festivals/[slug]/page.tsx';
+  const page = read(pagePath);
+  const atlasSource = read('src/data/atlas-festivals.json');
+  const atlas = JSON.parse(atlasSource);
+  const css = read('src/app/festivals/[slug]/FestivalDetail.module.css');
+  const dto = read('src/lib/public-festivals.ts');
+  const sitemap = read('src/app/sitemap.ts');
+  const packageSource = read('package.json');
+  const packageLock = read('package-lock.json');
+  const newWaveGuide = read('src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/page.tsx');
+  const gothGuide = read('src/app/guides/north-american-goth-darkwave-festivals/page.tsx');
+  const targets = {
+    'darker-waves': {
+      href: '/guides/new-wave-post-punk-retro-alternative-festivals-north-america',
+      label: 'New Wave, Post-Punk & Retro Alternative Guide',
+      reciprocalSource: newWaveGuide,
+    },
+    'a-murder-of-crows-xi-nyc-goth-post-punk-festival': {
+      href: '/guides/north-american-goth-darkwave-festivals',
+      label: 'North American Goth & Darkwave Guide',
+      reciprocalSource: gothGuide,
+    },
+  };
+
+  const mappingBlock = page.match(/const FESTIVAL_DETAIL_GUIDE_LINKS:[\s\S]*?Object\.freeze\(\{[\s\S]*?\n\}\);/)?.[0] ?? '';
+  assert.ok(mappingBlock, 'the explicit immutable Phase 5A.1 mapping should exist');
+  assert.match(page, /const GENERIC_GUIDE_DISCOVERY_LINK = Object\.freeze\(\{\s*href: "\/guides",\s*label: "Read curated guides",\s*\}\)/);
+  assert.match(page, /const guideDiscoveryLink = FESTIVAL_DETAIL_GUIDE_LINKS\[festival\.slug\] \?\? GENERIC_GUIDE_DISCOVERY_LINK/);
+  assert.equal((page.match(/FESTIVAL_DETAIL_GUIDE_LINKS\[festival\.slug\]/g) ?? []).length, 1);
+  assert.match(page, /href: guideDiscoveryLink\.href/);
+  assert.match(page, /label: guideDiscoveryLink\.label/);
+
+  for (const [slug, contract] of Object.entries(targets)) {
+    assert.equal((mappingBlock.match(new RegExp(`"${slug}"`, 'g')) ?? []).length, 1, `${slug} should occur once in the mapping`);
+    assert.equal((mappingBlock.match(new RegExp(contract.href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) ?? []).length, 1, `${slug} should have one direct guide destination`);
+    assert.equal((mappingBlock.match(new RegExp(contract.label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) ?? []).length, 1, `${slug} should have one frozen label`);
+    assert.match(contract.reciprocalSource, new RegExp(`/festivals/${slug}`), `${contract.href} should already link back to ${slug}`);
+  }
+  assert.equal((mappingBlock.match(/^\s+href:/gm) ?? []).length, 2, 'the mapping should contain exactly two href values');
+  assert.equal((mappingBlock.match(/^\s+label:/gm) ?? []).length, 2, 'the mapping should contain exactly two label values');
+
+  for (const festival of atlas.festivals) {
+    if (targets[festival.slug]) continue;
+    assert.doesNotMatch(mappingBlock, new RegExp(`"${festival.slug}"`), `${festival.slug} must retain the generic guide continuation`);
+  }
+
+  const discoveryBlock = page.match(/const discoveryLinks = \([\s\S]*?\n  \);/)?.[0] ?? '';
+  assert.ok(discoveryBlock);
+  assert.equal((discoveryBlock.match(/href:/g) ?? []).length, 3, 'discovery-card count should remain three');
+  const discoveryOrder = [
+    discoveryBlock.indexOf('href: "/festivals"'),
+    discoveryBlock.indexOf('href: guideDiscoveryLink.href'),
+    discoveryBlock.indexOf('href: "/verification"'),
+  ];
+  assert.equal(discoveryOrder.every((position) => position >= 0), true);
+  assert.deepEqual(discoveryOrder, [...discoveryOrder].sort((a, b) => a - b), 'Atlas, guide, and Verification order must remain exact');
+  assert.match(discoveryBlock, /description: "Use scene and regional guides for context around goth, darkwave, industrial, EBM, new wave, and post-punk discovery\."/);
+
+  assert.equal(
+    createHash('sha256').update(normalizePhase5A1GuideDiscoveryPilot(page)).digest('hex'),
+    'b136d810bf2a236186672004dfb89e5b71be06018b07d8249ca29a559db14798',
+    'after normalizing the two approved href/label substitutions, every previous route source byte should remain exact',
+  );
+
+  const activationBlock = page.match(/const NIGHT_TRANSMISSION_DETAIL_SLUGS[\s\S]*?\]\);/)?.[0] ?? '';
+  assert.deepEqual([...activationBlock.matchAll(/"([a-z0-9-]+)"/g)].map((match) => match[1]), [
+    'darker-waves',
+    'ncn-festival-nocturnal-culture-night',
+    'levitation',
+    'a-murder-of-crows-xi-nyc-goth-post-punk-festival',
+    'the-new-colossus-festival',
+  ]);
+  assert.equal((page.match(/NIGHT_TRANSMISSION_DETAIL_SLUGS/g) ?? []).length, 2);
+  assert.match(page, /festival\.sourceLinks\.map/);
+  assert.match(page, /festival\.similar\.map/);
+  assert.match(page, /href=\{source\.url\} target="_blank" rel="noreferrer"/);
+  assert.match(page, /href=\{`\/festivals\/\$\{similar\.slug\}`\}/);
+
+  assert.equal(createHash('sha256').update(css).digest('hex'), '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb');
+  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), '8e148cb046ff61f9cdcba8ed415790bd2f005ed66ae276abe5e3c46d31599e78');
+  assert.equal(createHash('sha256').update(dto).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
+  assert.equal(createHash('sha256').update(sitemap).digest('hex'), '8e1d5122c5331898011401f9f956d0dc80225e582caaeec3f217c9272345858b');
+  assert.equal(createHash('sha256').update(packageSource).digest('hex'), 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d');
+  assert.equal(createHash('sha256').update(packageLock).digest('hex'), '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56');
+  assert.doesNotMatch(`${page}\n${packageSource}`, /"use client"|useState|useEffect|useMemo|fetch\(|\/api\/|\/prototypes\/|framer-motion|lottie|three/i);
+  assert.doesNotMatch(page, /geocoding_source|geocoding_query|geocoding_confidence|map_phase0_category|source_status|date_pending|needs_review|core_anchor|watchlist|Phase 0|map-readiness|latitude|longitude/i);
 });

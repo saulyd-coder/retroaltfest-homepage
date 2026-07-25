@@ -22,6 +22,20 @@ const NIGHT_TRANSMISSION_DETAIL_SLUGS: readonly string[] = Object.freeze([
   "a-murder-of-crows-xi-nyc-goth-post-punk-festival",
   "the-new-colossus-festival",
 ]);
+const GENERIC_GUIDE_DISCOVERY_LINK = Object.freeze({
+  href: "/guides",
+  label: "Read curated guides",
+});
+const FESTIVAL_DETAIL_GUIDE_LINKS: Readonly<Record<string, Readonly<{ href: string; label: string }>>> = Object.freeze({
+  "darker-waves": Object.freeze({
+    href: "/guides/new-wave-post-punk-retro-alternative-festivals-north-america",
+    label: "New Wave, Post-Punk & Retro Alternative Guide",
+  }),
+  "a-murder-of-crows-xi-nyc-goth-post-punk-festival": Object.freeze({
+    href: "/guides/north-american-goth-darkwave-festivals",
+    label: "North American Goth & Darkwave Guide",
+  }),
+});
 const festivalMetadataTitleOverrides: Readonly<Record<string, string>> = {
   [FESTIVAL_DETAIL_REFERENCE_SLUG]: "M'era Luna Festival guide",
   "a-murder-of-crows-xi-nyc-goth-post-punk-festival": "A Murder of Crows XI NYC Goth & Post-punk Festival guide",
@@ -113,6 +127,7 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
   const heroSummary = polish?.heroSummary ?? festival.summary;
   const isMeraLunaReferenceRoute = festival.slug === FESTIVAL_DETAIL_REFERENCE_SLUG;
   const usesNightTransmissionPresentation = NIGHT_TRANSMISSION_DETAIL_SLUGS.includes(festival.slug);
+  const guideDiscoveryLink = FESTIVAL_DETAIL_GUIDE_LINKS[festival.slug] ?? GENERIC_GUIDE_DISCOVERY_LINK;
 
   const discoveryLinks = (
     <DiscoveryLinks
@@ -125,8 +140,8 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
           description: "Return to the current 15-record festival atlas and compare records by scene, region, and status.",
         },
         {
-          href: "/guides",
-          label: "Read curated guides",
+          href: guideDiscoveryLink.href,
+          label: guideDiscoveryLink.label,
           description: "Use scene and regional guides for context around goth, darkwave, industrial, EBM, new wave, and post-punk discovery.",
         },
         {
