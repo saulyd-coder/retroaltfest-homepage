@@ -2851,3 +2851,90 @@ test('Phase 5A.1 closes exactly two reciprocal guide discovery loops and freezes
   assert.doesNotMatch(`${page}\n${packageSource}`, /"use client"|useState|useEffect|useMemo|fetch\(|\/api\/|\/prototypes\/|framer-motion|lottie|three/i);
   assert.doesNotMatch(page, /geocoding_source|geocoding_query|geocoding_confidence|map_phase0_category|source_status|date_pending|needs_review|core_anchor|watchlist|Phase 0|map-readiness|latitude|longitude/i);
 });
+
+test('Phase 5A.2 compresses the mobile directory filter with one native accessible disclosure and freezes every protected contract', () => {
+  const browserPath = 'src/components/festivals/FestivalDirectoryBrowser.tsx';
+  const cssPath = 'src/components/festivals/FestivalDirectory.module.css';
+  const browser = read(browserPath);
+  const css = read(cssPath);
+  const atlasSource = read('src/data/atlas-festivals.json');
+  const atlas = JSON.parse(atlasSource);
+  const dto = read('src/lib/public-festivals.ts');
+  const directoryPage = read('src/app/festivals/page.tsx');
+  const sitemap = read('src/app/sitemap.ts');
+  const packageSource = read('package.json');
+  const packageLock = read('package-lock.json');
+
+  assert.equal((browser.match(/<details\b/g) ?? []).length, 1, 'one native filter disclosure should exist');
+  assert.equal((browser.match(/<summary\b/g) ?? []).length, 1, 'one native summary should exist');
+  assert.match(browser, /<details className=\{styles\.filterDisclosure\} open ref=\{disclosureRef\}>/);
+  assert.match(browser, /<summary className=\{styles\.filterSummary\} aria-label="Filter festivals">/);
+  assert.equal((browser.match(/<span>Filter festivals<\/span>/g) ?? []).length, 1, 'one visible mobile summary label should remain exact');
+  assert.equal((browser.match(/aria-label="Filter festivals"/g) ?? []).length, 1, 'one screen-reader summary name should remain exact');
+  assert.match(browser, /disclosureRef\.current\.dataset\.disclosureReady = "true"/);
+
+  assert.match(browser, /window\.matchMedia\("\(max-width: 600px\)"\)/);
+  assert.match(browser, /disclosureRef\.current\.open = !mobileQuery\.matches/);
+  assert.match(browser, /mobileQuery\.addEventListener\("change", syncDisclosure\)/);
+  assert.match(browser, /mobileQuery\.removeEventListener\("change", syncDisclosure\)/);
+  assert.doesNotMatch(browser, /const \[.*(?:open|expanded|disclosure).*\] = useState/i, 'native details should own mobile expanded state');
+
+  assert.equal((browser.match(/className=\{styles\.controls\}/g) ?? []).length, 1, 'the existing control tree should occur once');
+  assert.equal((browser.match(/type="search"/g) ?? []).length, 1, 'one search control should remain');
+  assert.equal((browser.match(/<select\b/g) ?? []).length, 3, 'scene, region, and status should each occur once');
+  assert.equal((browser.match(/Reset filters/g) ?? []).length, 1, 'one primary reset control should remain');
+  assert.doesNotMatch(browser, /mobileControls|desktopControls|cloneElement|duplicate/i);
+
+  const controlOrder = [
+    browser.indexOf('Search by festival or location'),
+    browser.indexOf('<span>Scene</span>'),
+    browser.indexOf('<span>Region</span>'),
+    browser.indexOf('<span>Status</span>'),
+  ];
+  assert.equal(controlOrder.every((position) => position >= 0), true);
+  assert.deepEqual(controlOrder, [...controlOrder].sort((a, b) => a - b), 'filter labels should retain their exact order');
+  assert.deepEqual(
+    browser.match(/const preferredSceneOrder = \[([^\]]+)\]/)?.[1].match(/"([^"]+)"/g)?.map((value) => value.slice(1, -1)),
+    ['Darkwave', 'Goth', 'Industrial', 'Synthpop', 'Post-punk', 'Electronic', 'Alternative'],
+  );
+
+  const categoryCounts = Object.fromEntries(
+    ['darkwave', 'industrial', 'post-punk'].map((category) => [
+      category,
+      atlas.festivals.filter((festival) => festival.categories.includes(category)).length,
+    ]),
+  );
+  assert.equal(atlas.festivals.length, 15, 'the default directory count should remain 15');
+  assert.deepEqual(categoryCounts, { darkwave: 11, industrial: 8, 'post-punk': 9 });
+  assert.match(browser, /sceneFilter === "all" \|\| festival\.sceneTags\.includes\(sceneFilter\)/);
+  assert.match(browser, /setSearchQuery\(""\)[\s\S]*setSceneFilter\("all"\)[\s\S]*setRegionFilter\("all"\)[\s\S]*setStatusFilter\("all"\)/);
+
+  const detailsBlock = browser.match(/<details[\s\S]*?<\/details>/)?.[0] ?? '';
+  assert.ok(detailsBlock, 'the disclosure source block should be extractable');
+  assert.match(detailsBlock, /className=\{styles\.controls\}/);
+  assert.match(detailsBlock, /className=\{styles\.filterReadout\}/);
+  assert.match(browser.slice(browser.indexOf('</details>')), /className=\{styles\.mobileResultCount\}/, 'the mobile result count should remain outside collapsed content');
+  assert.equal((browser.match(/Showing \{filteredFestivals\.length\} of \{festivals\.length\} source-aware atlas records\./g) ?? []).length, 2, 'responsive result readouts should share the same result source');
+
+  assert.match(css, /@media \(min-width: 601px\)[\s\S]*\.filterSummary[\s\S]*display:\s*none/);
+  assert.match(css, /@media \(min-width: 601px\)[\s\S]*\.filterDisclosure:not\(\[open\]\)\s*>\s*\.disclosureContent[\s\S]*display:\s*contents/);
+  assert.match(css, /@media \(max-width: 600px\)[\s\S]*\.filterSummary[\s\S]*min-height:\s*(44|48|50)px/);
+  assert.match(css, /\.filterDisclosure:not\(\[data-disclosure-ready="true"\]\)\s*>\s*\.disclosureContent[\s\S]*display:\s*none/, 'mobile CSS should stay visually collapsed before hydration while desktop HTML remains expanded without layout shift');
+  assert.match(css, /\.filterSummary:focus-visible[\s\S]*outline:\s*2px solid var\(--nt-focus-ring\)/);
+  assert.match(css, /@media \(forced-colors: active\)[\s\S]*\.filterSummary/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
+  assert.doesNotMatch(`${browser}\n${css}`, /@keyframes|animation\s*:|framer-motion|lottie|three|canvas(?!text)|webgl/i);
+  assert.match(css, /\/night-transmission-inner\/cyan-corridor\.avif/);
+  const nonZeroRadii = [...css.matchAll(/border-radius:\s*([^;]+);/g)]
+    .map((match) => match[1].replace(/\s*!important\s*$/, '').trim())
+    .filter((value) => value !== '0');
+  assert.deepEqual(nonZeroRadii, [], 'the directory should retain square Night Transmission geometry');
+
+  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), '8e148cb046ff61f9cdcba8ed415790bd2f005ed66ae276abe5e3c46d31599e78');
+  assert.equal(createHash('sha256').update(dto).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
+  assert.equal(createHash('sha256').update(directoryPage).digest('hex'), 'd0eb0a675d432754bf9eaf9dddb6a997492e54073356ddea69b5254748b84230');
+  assert.equal(createHash('sha256').update(sitemap).digest('hex'), '8e1d5122c5331898011401f9f956d0dc80225e582caaeec3f217c9272345858b');
+  assert.equal(createHash('sha256').update(packageSource).digest('hex'), 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d');
+  assert.equal(createHash('sha256').update(packageLock).digest('hex'), '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56');
+  assert.doesNotMatch(`${browser}\n${directoryPage}`, /fetch\(|\/api\/|prisma|supabase|mongodb|\bauth\b|\bcms\b|\bdatabase\b|scraping|geocod|latitude|longitude|map UI/i);
+});

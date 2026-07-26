@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { PublicFestivalDirectoryItem } from "@/lib/public-festivals";
 import styles from "./FestivalDirectory.module.css";
 
@@ -16,6 +16,21 @@ export function FestivalDirectoryBrowser({ festivals }: FestivalDirectoryBrowser
   const [sceneFilter, setSceneFilter] = useState("all");
   const [regionFilter, setRegionFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const disclosureRef = useRef<HTMLDetailsElement>(null);
+
+  useEffect(() => {
+    const mobileQuery = window.matchMedia("(max-width: 600px)");
+    const syncDisclosure = () => {
+      if (disclosureRef.current) {
+        disclosureRef.current.dataset.disclosureReady = "true";
+        disclosureRef.current.open = !mobileQuery.matches;
+      }
+    };
+
+    syncDisclosure();
+    mobileQuery.addEventListener("change", syncDisclosure);
+    return () => mobileQuery.removeEventListener("change", syncDisclosure);
+  }, []);
 
   const sceneOptions = useMemo(
     () =>
@@ -86,79 +101,94 @@ export function FestivalDirectoryBrowser({ festivals }: FestivalDirectoryBrowser
           </div>
         </div>
 
-        <div className={styles.controls}>
-          <label className={`${styles.control} ${styles.searchControl}`}>
-            <span>Search by festival or location</span>
-            <input
-              type="search"
-              value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="Search a name or city"
-            />
-          </label>
+        <details className={styles.filterDisclosure} open ref={disclosureRef}>
+          <summary className={styles.filterSummary} aria-label="Filter festivals">
+            <span>Filter festivals</span>
+            <span className={styles.summaryState} aria-hidden="true">
+              {hasActiveFilters ? `${activeFilters.length} ACTIVE` : "OPEN ARRAY"}
+            </span>
+          </summary>
 
-          <label className={styles.control}>
-            <span>Scene</span>
-            <select value={sceneFilter} onChange={(event) => setSceneFilter(event.target.value)}>
-              <option value="all">All scenes</option>
-              {sceneOptions.map((scene) => (
-                <option value={scene} key={scene}>
-                  {scene}
-                </option>
-              ))}
-            </select>
-          </label>
+          <div className={styles.disclosureContent}>
+            <div className={styles.controls}>
+              <label className={`${styles.control} ${styles.searchControl}`}>
+                <span>Search by festival or location</span>
+                <input
+                  type="search"
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder="Search a name or city"
+                />
+              </label>
 
-          <label className={styles.control}>
-            <span>Region</span>
-            <select value={regionFilter} onChange={(event) => setRegionFilter(event.target.value)}>
-              <option value="all">All regions</option>
-              {regionOptions.map((region) => (
-                <option value={region} key={region}>
-                  {region}
-                </option>
-              ))}
-            </select>
-          </label>
+              <label className={styles.control}>
+                <span>Scene</span>
+                <select value={sceneFilter} onChange={(event) => setSceneFilter(event.target.value)}>
+                  <option value="all">All scenes</option>
+                  {sceneOptions.map((scene) => (
+                    <option value={scene} key={scene}>
+                      {scene}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-          <label className={styles.control}>
-            <span>Status</span>
-            <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
-              <option value="all">All statuses</option>
-              {statusOptions.map((status) => (
-                <option value={status} key={status}>
-                  {status}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+              <label className={styles.control}>
+                <span>Region</span>
+                <select value={regionFilter} onChange={(event) => setRegionFilter(event.target.value)}>
+                  <option value="all">All regions</option>
+                  {regionOptions.map((region) => (
+                    <option value={region} key={region}>
+                      {region}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-        <div className={styles.filterReadout} aria-live="polite">
-          <p className={styles.resultCount}>
-            Showing {filteredFestivals.length} of {festivals.length} source-aware atlas records.
-          </p>
+              <label className={styles.control}>
+                <span>Status</span>
+                <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+                  <option value="all">All statuses</option>
+                  {statusOptions.map((status) => (
+                    <option value={status} key={status}>
+                      {status}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
 
-          <div className={styles.filterChips} aria-label="Active filters">
-            {hasActiveFilters ? (
-              activeFilters.map((filter) => (
-                <span key={filter.label}>
-                  <b aria-hidden="true">■</b>
-                  {filter.label}: {filter.value}
-                </span>
-              ))
-            ) : (
-              <span>
-                <b aria-hidden="true">□</b>
-                Unfiltered directory
-              </span>
-            )}
+            <div className={styles.filterReadout} aria-live="polite">
+              <p className={styles.resultCount}>
+                Showing {filteredFestivals.length} of {festivals.length} source-aware atlas records.
+              </p>
+
+              <div className={styles.filterChips} aria-label="Active filters">
+                {hasActiveFilters ? (
+                  activeFilters.map((filter) => (
+                    <span key={filter.label}>
+                      <b aria-hidden="true">■</b>
+                      {filter.label}: {filter.value}
+                    </span>
+                  ))
+                ) : (
+                  <span>
+                    <b aria-hidden="true">□</b>
+                    Unfiltered directory
+                  </span>
+                )}
+              </div>
+
+              <button type="button" onClick={resetFilters}>
+                Reset filters
+              </button>
+            </div>
           </div>
+        </details>
 
-          <button type="button" onClick={resetFilters}>
-            Reset filters
-          </button>
-        </div>
+        <p className={styles.mobileResultCount} aria-live="polite">
+          Showing {filteredFestivals.length} of {festivals.length} source-aware atlas records.
+        </p>
       </div>
 
       <div className={styles.resultsHeader}>

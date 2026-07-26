@@ -287,6 +287,16 @@
   font-size: 0.76rem;
 }
 
+.filterDisclosure,
+.disclosureContent {
+  display: contents;
+}
+
+.filterSummary,
+.mobileResultCount {
+  display: none;
+}
+
 .controls {
   display: grid;
   grid-template-columns: minmax(260px, 1.4fr) repeat(3, minmax(150px, 0.7fr));
@@ -652,6 +662,7 @@
 }
 
 .secondaryLink:focus-visible,
+.filterSummary:focus-visible,
 .control input:focus-visible,
 .control select:focus-visible,
 .filterReadout button:focus-visible,
@@ -660,6 +671,19 @@
 .discoveryShell a:focus-visible {
   outline: 2px solid var(--nt-focus-ring);
   outline-offset: 4px;
+}
+
+@media (min-width: 601px) {
+  .filterDisclosure,
+  .disclosureContent,
+  .filterDisclosure:not([open]) > .disclosureContent {
+    display: contents;
+  }
+
+  .filterSummary,
+  .mobileResultCount {
+    display: none;
+  }
 }
 
 @media (min-width: 901px) {
@@ -788,16 +812,85 @@
     align-items: start;
   }
 
-  .controlHeading h2 {
-    font-size: 2.3rem;
+  .controlHeading .telemetry,
+  .controlState {
+    display: none;
   }
 
-  .controlState {
-    width: fit-content;
+  .controlHeading h2 {
+    margin-top: 0;
+    font-size: 2.05rem;
+  }
+
+  .filterDisclosure {
+    display: block;
+    margin-top: 14px;
+  }
+
+  .filterDisclosure:not([data-disclosure-ready="true"]) > .disclosureContent {
+    display: none;
+  }
+
+  .filterSummary {
+    display: grid;
+    min-height: 48px;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border: 1px solid rgb(115 239 255 / 42%);
+    color: var(--nt-electric-cyan);
+    background: rgb(0 4 7 / 82%);
+    cursor: pointer;
+    font-family: var(--font-jetbrains-mono), "Courier New", monospace;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    line-height: 1.4;
+    list-style: none;
+    text-transform: uppercase;
+  }
+
+  .filterSummary::-webkit-details-marker {
+    display: none;
+  }
+
+  .filterSummary::after {
+    display: grid;
+    width: 24px;
+    height: 24px;
+    border: 1px solid currentColor;
+    content: "+";
+    place-items: center;
+    font-size: 0.9rem;
+    line-height: 1;
+  }
+
+  .filterDisclosure[open] .filterSummary::after {
+    content: "−";
+  }
+
+  .filterDisclosure:not([data-disclosure-ready="true"]) .filterSummary::after {
+    content: "+";
+  }
+
+  .summaryState {
+    color: var(--nt-muted-telemetry);
+    font-size: 0.54rem;
+    letter-spacing: 0.1em;
+  }
+
+  .controlPanel[data-active="true"] .summaryState {
+    color: var(--nt-acid-selected);
+  }
+
+  .disclosureContent {
+    display: block;
   }
 
   .controls {
     grid-template-columns: 1fr;
+    margin-top: 18px;
   }
 
   .searchControl {
@@ -811,7 +904,13 @@
 
   .filterReadout {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 12px;
+    margin-top: 14px;
+    padding-top: 14px;
+  }
+
+  .filterReadout .resultCount {
+    display: none;
   }
 
   .filterChips {
@@ -821,6 +920,20 @@
 
   .filterReadout button {
     width: 100%;
+  }
+
+  .mobileResultCount {
+    display: block;
+    margin: 14px 0 0;
+    padding-top: 14px;
+    border-top: 1px solid rgb(115 239 255 / 14%);
+    color: rgb(236 237 232 / 78%);
+    font-family: var(--font-jetbrains-mono), "Courier New", monospace;
+    font-size: 0.63rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    line-height: 1.5;
+    text-transform: uppercase;
   }
 
   .resultsHeader {
@@ -915,6 +1028,7 @@
   }
 
   .secondaryLink,
+  .filterSummary,
   .controlPanel,
   .controlState,
   .control input,
@@ -927,6 +1041,7 @@
   }
 
   .secondaryLink:focus-visible,
+  .filterSummary:focus-visible,
   .control input:focus-visible,
   .control select:focus-visible,
   .filterReadout button:focus-visible,
