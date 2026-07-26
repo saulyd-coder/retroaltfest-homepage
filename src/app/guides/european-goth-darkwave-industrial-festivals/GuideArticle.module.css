@@ -1,0 +1,1005 @@
+.page {
+  --article-ink: #070609;
+  --article-surface: rgba(7, 6, 10, 0.95);
+  --article-surface-soft: rgba(12, 9, 17, 0.93);
+  --article-bone: #eee7da;
+  --article-muted: #c1b8b5;
+  --article-dim: #91878d;
+  --article-magenta: #f127d9;
+  --article-violet: #9d68ff;
+  --article-cyan: #62e5f3;
+  --article-current: #b9ed64;
+  --article-rule: rgba(224, 210, 225, 0.2);
+  --article-rule-strong: rgba(241, 39, 217, 0.44);
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow: clip;
+  color: var(--article-bone);
+  background: var(--article-ink);
+}
+
+.page::before {
+  content: "";
+  position: fixed;
+  z-index: -3;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("/night-transmission-inner/magenta-orbit.avif");
+  background-position: 50% 48%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.page::after {
+  content: "";
+  position: fixed;
+  z-index: -2;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(1, 1, 3, 0.84), rgba(3, 2, 6, 0.5) 22%, rgba(4, 3, 8, 0.6) 72%, rgba(1, 1, 3, 0.88)),
+    linear-gradient(180deg, rgba(2, 1, 4, 0.44), rgba(2, 1, 4, 0.8));
+}
+
+.paperEdge {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.34;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 5px, rgba(255, 255, 255, 0.013) 6px),
+    radial-gradient(circle at 15% 20%, rgba(241, 39, 217, 0.11), transparent 23%),
+    radial-gradient(circle at 84% 74%, rgba(98, 229, 243, 0.06), transparent 26%);
+  mix-blend-mode: screen;
+}
+
+.towerBeacon {
+  display: none;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  width: min(100% - 2rem, 76rem);
+  margin-inline: auto;
+  padding-block: 2.4rem 6.5rem;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.72rem;
+  margin: 0 0 1.6rem;
+  color: var(--article-dim);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.19em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  color: var(--article-cyan);
+}
+
+.crumbDivider {
+  color: var(--article-violet);
+}
+
+.masthead,
+.sectionNav,
+.guideSection,
+.verificationSection {
+  position: relative;
+  border: 1px solid var(--article-rule);
+  border-radius: 0;
+  background:
+    linear-gradient(90deg, rgba(241, 39, 217, 0.055), transparent 13%),
+    var(--article-surface);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.43);
+}
+
+.masthead::before,
+.guideSection::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  pointer-events: none;
+  background: linear-gradient(180deg, var(--article-magenta), var(--article-violet) 55%, transparent);
+}
+
+.sectionNav::before,
+.verificationSection::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  pointer-events: none;
+  background: linear-gradient(180deg, var(--article-cyan), rgba(98, 229, 243, 0.18), transparent);
+}
+
+.masthead {
+  overflow: hidden;
+  padding: clamp(1.6rem, 4vw, 3.8rem);
+  background:
+    linear-gradient(100deg, rgba(241, 39, 217, 0.13), transparent 32%),
+    linear-gradient(145deg, rgba(15, 10, 20, 0.98), rgba(5, 5, 8, 0.95));
+}
+
+.mastheadTelemetry {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: rgba(98, 229, 243, 0.38);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  pointer-events: none;
+}
+
+.mastheadTelemetry::before {
+  content: attr(data-label);
+}
+
+.mastheadInner {
+  position: relative;
+  z-index: 1;
+  max-width: 60rem;
+}
+
+.mastheadLabel,
+.sectionEyebrow,
+.sourceEyebrow,
+.sectionNavLabel {
+  margin: 0;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.mastheadLabel,
+.sourceEyebrow,
+.sectionNavLabel {
+  color: var(--article-cyan);
+}
+
+.sectionEyebrow {
+  color: var(--article-magenta);
+}
+
+.mastheadTitle {
+  max-width: 16ch;
+  margin: 1rem 0 0;
+  color: #fff;
+  font-family: var(--font-display), Impact, sans-serif;
+  font-size: clamp(2.65rem, 6.3vw, 5.5rem);
+  font-weight: 700;
+  letter-spacing: -0.047em;
+  line-height: 0.94;
+  overflow-wrap: normal;
+  text-wrap: balance;
+}
+
+.mastheadLead {
+  max-width: 50rem;
+  margin: 1.55rem 0 0;
+  color: var(--article-bone);
+  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+  line-height: 1.72;
+}
+
+.mastheadCopy,
+.sectionDescription,
+.recordSummary,
+.choicePanel p,
+.scenePanel p,
+.comparisonSummary {
+  color: var(--article-muted);
+  font-size: 1rem;
+  line-height: 1.78;
+}
+
+.mastheadCopy {
+  max-width: 50rem;
+  margin: 1rem 0 0;
+}
+
+.mastheadActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1.5rem;
+}
+
+.primaryPath,
+.secondaryPath,
+.sourceLink,
+.atlasLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid rgba(98, 229, 243, 0.34);
+  border-radius: 0;
+  color: var(--article-cyan);
+  background: rgba(3, 3, 6, 0.68);
+  font-size: 0.86rem;
+  font-weight: 800;
+  line-height: 1.35;
+  text-align: center;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  text-underline-offset: 0.22em;
+}
+
+.primaryPath {
+  border-color: var(--article-current);
+  color: #071008;
+  background: var(--article-current);
+}
+
+.primaryPath:hover,
+.secondaryPath:hover,
+.sourceLink:hover,
+.atlasLink:hover {
+  color: #fff;
+}
+
+.primaryPath:hover {
+  color: #071008;
+  background: #d6ff8e;
+}
+
+.factGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 2rem;
+  border: 1px solid var(--article-rule);
+  background: var(--article-rule);
+}
+
+.fact {
+  min-width: 0;
+  padding: 1rem;
+  border-radius: 0;
+  background: rgba(4, 4, 7, 0.92);
+}
+
+.factLabel {
+  margin: 0;
+  color: var(--article-dim);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  line-height: 1.45;
+  text-transform: uppercase;
+}
+
+.factValue {
+  margin: 0.55rem 0 0;
+  color: var(--article-bone);
+  font-size: 0.88rem;
+  line-height: 1.58;
+  overflow-wrap: anywhere;
+}
+
+.sectionNav {
+  margin-top: clamp(1.25rem, 3vw, 2.2rem);
+  padding: 1rem 1.2rem;
+}
+
+.sectionNavLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+}
+
+.sectionNavLinks a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid rgba(157, 104, 255, 0.28);
+  border-radius: 0;
+  color: var(--article-bone);
+  background: rgba(157, 104, 255, 0.06);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.sectionNavLinks a:hover {
+  border-color: var(--article-cyan);
+  color: var(--article-cyan);
+}
+
+.guideSection,
+.verificationSection {
+  margin-top: clamp(1.25rem, 3vw, 2.2rem);
+  padding: clamp(1.4rem, 3.5vw, 3rem);
+  scroll-margin-top: 1rem;
+}
+
+.sectionHeader {
+  max-width: 56rem;
+}
+
+.sectionTitle {
+  max-width: 23ch;
+  margin: 0.7rem 0 0;
+  color: #fff;
+  font-family: var(--font-display), Impact, sans-serif;
+  font-size: clamp(2rem, 4.2vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: -0.032em;
+  line-height: 1.02;
+  overflow-wrap: normal;
+  text-wrap: balance;
+}
+
+.sectionDescription {
+  max-width: 52rem;
+  margin: 1rem 0 0;
+}
+
+.orientationGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 1.6rem;
+  border: 1px solid var(--article-rule);
+  background: var(--article-rule);
+}
+
+.orientationLink {
+  display: grid;
+  align-content: center;
+  min-width: 0;
+  min-height: 78px;
+  padding: 0.9rem 1rem;
+  color: var(--article-bone);
+  background: rgba(4, 4, 7, 0.94);
+  text-decoration: none;
+}
+
+.orientationLink span {
+  color: var(--article-current);
+  font-family: var(--font-display), Impact, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.08;
+  overflow-wrap: anywhere;
+}
+
+.orientationLink small {
+  margin-top: 0.42rem;
+  color: var(--article-muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.orientationHistorical {
+  grid-column: 1 / -1;
+}
+
+.orientationHistorical span {
+  color: var(--article-magenta);
+}
+
+.orientationLink:hover {
+  background: rgba(12, 9, 17, 0.98);
+}
+
+.choiceGrid,
+.sceneGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 1.7rem;
+  border: 1px solid var(--article-rule);
+  background: var(--article-rule);
+}
+
+.choicePanel,
+.scenePanel {
+  position: relative;
+  min-width: 0;
+  padding: 1.2rem;
+  border-radius: 0;
+  background: rgba(4, 4, 7, 0.94);
+}
+
+.choicePanel {
+  padding-left: 4.4rem;
+}
+
+.choiceIndex {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.2rem;
+  color: rgba(185, 237, 100, 0.55);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.86rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.choiceFestival {
+  margin: 0;
+  color: var(--article-cyan) !important;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.66rem !important;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  line-height: 1.5 !important;
+  text-transform: uppercase;
+}
+
+.choicePanel h3,
+.scenePanel h3,
+.comparisonHeader h3 {
+  margin: 0.55rem 0 0;
+  color: #fff;
+  font-family: var(--font-display), Impact, sans-serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.choicePanel p:last-child,
+.scenePanel p {
+  margin: 0.75rem 0 0;
+}
+
+.recordList {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1.7rem;
+}
+
+.festivalRecord {
+  position: relative;
+  display: grid;
+  grid-template-columns: 4.6rem minmax(0, 1fr);
+  column-gap: 1.35rem;
+  overflow: hidden;
+  padding: 1.45rem 1.45rem 1.45rem 0;
+  border: 1px solid var(--article-rule);
+  border-radius: 0;
+  background:
+    linear-gradient(90deg, rgba(241, 39, 217, 0.052), transparent 20%),
+    rgba(4, 4, 7, 0.94);
+}
+
+.festivalRecord::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  pointer-events: none;
+}
+
+.currentRecord::before {
+  background: linear-gradient(180deg, var(--article-current), rgba(98, 229, 243, 0.72));
+}
+
+.referenceRecord::before,
+.historicalRecord::before {
+  background: linear-gradient(180deg, var(--article-magenta), var(--article-violet));
+}
+
+.historicalRecord {
+  background:
+    linear-gradient(90deg, rgba(157, 104, 255, 0.075), transparent 24%),
+    rgba(6, 5, 10, 0.96);
+}
+
+.recordIndex {
+  grid-row: 1 / span 8;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-width: 0;
+  padding-top: 0.2rem;
+  color: rgba(232, 224, 210, 0.24);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.recordIndex::before {
+  content: attr(data-index);
+}
+
+.currentRecord .recordIndex {
+  color: rgba(185, 237, 100, 0.58);
+}
+
+.historicalRecord .recordIndex {
+  color: rgba(241, 39, 217, 0.55);
+}
+
+.recordHeader,
+.recordFormat,
+.sceneFit,
+.recordSummary,
+.factList,
+.festivalRecord > .atlasLink {
+  grid-column: 2;
+  min-width: 0;
+}
+
+.recordHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.2rem;
+}
+
+.recordHeader > div {
+  min-width: 0;
+}
+
+.recordLocation {
+  margin: 0;
+  color: var(--article-dim);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1.55;
+  text-transform: uppercase;
+}
+
+.recordTitle {
+  margin: 0.45rem 0 0;
+  color: #fff;
+  font-family: var(--font-display), Impact, sans-serif;
+  font-size: clamp(1.65rem, 3.2vw, 2.45rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.02;
+  overflow-wrap: anywhere;
+}
+
+.recordStatus {
+  flex: 0 1 22rem;
+  max-width: 22rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid rgba(185, 237, 100, 0.28);
+  border-radius: 0;
+  color: var(--article-current);
+  background: rgba(185, 237, 100, 0.045);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.historicalRecord .recordStatus {
+  border-color: rgba(241, 39, 217, 0.32);
+  color: #ff78ea;
+  background: rgba(241, 39, 217, 0.055);
+}
+
+.recordFormat {
+  margin: 1rem 0 0;
+  color: var(--article-cyan);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.sceneFit {
+  margin: 0.75rem 0 0;
+  color: var(--article-bone);
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.58;
+}
+
+.recordSummary {
+  margin: 0.75rem 0 0;
+}
+
+.factList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 1.1rem 0 0;
+  border: 1px solid var(--article-rule);
+  background: var(--article-rule);
+}
+
+.factList .fact {
+  padding: 0.9rem;
+}
+
+.festivalRecord > .atlasLink {
+  justify-self: start;
+  margin-top: 1rem;
+  border-color: rgba(185, 237, 100, 0.33);
+  color: var(--article-current);
+}
+
+.historicalRecord > .atlasLink {
+  border-color: rgba(241, 39, 217, 0.35);
+  color: #ff78ea;
+}
+
+.comparisonGrid {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1.7rem;
+}
+
+.comparisonItem {
+  min-width: 0;
+  padding: 1.2rem;
+  border: 1px solid var(--article-rule);
+  border-radius: 0;
+  background: rgba(4, 4, 7, 0.94);
+}
+
+.comparisonHistorical {
+  border-color: rgba(241, 39, 217, 0.3);
+  background: rgba(8, 5, 11, 0.95);
+}
+
+.comparisonHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.comparisonHeader h3 {
+  margin: 0;
+}
+
+.comparisonHeader span {
+  flex: 0 1 auto;
+  padding: 0.38rem 0.55rem;
+  border: 1px solid rgba(185, 237, 100, 0.28);
+  color: var(--article-current);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.62rem;
+  font-weight: 800;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.comparisonHistorical .comparisonHeader span {
+  border-color: rgba(241, 39, 217, 0.34);
+  color: #ff78ea;
+}
+
+.comparisonFacts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 1rem 0 0;
+  border: 1px solid var(--article-rule);
+  background: var(--article-rule);
+}
+
+.comparisonSummary {
+  margin: 0.9rem 0 0;
+}
+
+.comparisonItem .atlasLink {
+  justify-self: start;
+  margin-top: 0.9rem;
+}
+
+.verificationSection {
+  background:
+    linear-gradient(90deg, rgba(98, 229, 243, 0.06), transparent 18%),
+    var(--article-surface-soft);
+}
+
+.sourceLink {
+  margin-top: 1.3rem;
+}
+
+.relatedPaths {
+  min-width: 0;
+}
+
+.relatedPaths > section {
+  margin-top: clamp(1.25rem, 3vw, 2.2rem) !important;
+  overflow: visible !important;
+  border: 1px solid var(--article-rule-strong) !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(90deg, rgba(241, 39, 217, 0.055), transparent 13%),
+    var(--article-surface) !important;
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.43) !important;
+}
+
+.relatedPaths h2 {
+  max-width: 23ch;
+  color: #fff !important;
+  font-family: var(--font-display), Impact, sans-serif;
+  font-size: clamp(2rem, 4.2vw, 3.5rem) !important;
+  letter-spacing: -0.032em !important;
+  line-height: 1.02 !important;
+  overflow-wrap: normal;
+}
+
+.relatedPaths p {
+  max-width: 52rem;
+  color: var(--article-muted) !important;
+  font-size: 1rem !important;
+  line-height: 1.78 !important;
+}
+
+.relatedPaths a {
+  min-width: 0;
+  min-height: 44px;
+  border-radius: 0 !important;
+  overflow-wrap: anywhere;
+}
+
+.page :is(a, button):focus-visible {
+  outline: 2px solid var(--article-cyan);
+  outline-offset: 3px;
+}
+
+@media (min-width: 1101px) {
+  .towerBeacon {
+    position: fixed;
+    z-index: -1;
+    display: block;
+    right: -4.5rem;
+    bottom: -2rem;
+    width: min(24vw, 20rem);
+    height: min(74vh, 42rem);
+    pointer-events: none;
+    opacity: 0.2;
+    background-image: url("/night-transmission-inner/tower-beacon-signature.avif");
+    background-position: 50% 100%;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+}
+
+@media (max-width: 900px) {
+  .factGrid,
+  .comparisonFacts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .recordHeader,
+  .comparisonHeader {
+    display: block;
+  }
+
+  .recordStatus,
+  .comparisonHeader span {
+    display: inline-block;
+    max-width: 100%;
+    margin-top: 0.85rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .content {
+    width: min(100% - 16px, 76rem);
+    padding-block: 20px 64px;
+  }
+
+  .breadcrumb {
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    width: 100%;
+    letter-spacing: 0.12em;
+  }
+
+  .masthead,
+  .guideSection,
+  .verificationSection {
+    padding: 20px;
+  }
+
+  .sectionNav {
+    padding: 16px;
+  }
+
+  .mastheadTelemetry {
+    position: static;
+    display: block;
+    margin-top: 1.2rem;
+  }
+
+  .mastheadTitle {
+    max-width: none;
+    font-size: clamp(2rem, 11vw, 3.5rem);
+    line-height: 0.96;
+    overflow-wrap: anywhere;
+  }
+
+  .sectionTitle,
+  .relatedPaths h2 {
+    font-size: clamp(1.6rem, 8vw, 2.6rem) !important;
+    overflow-wrap: anywhere;
+  }
+
+  .mastheadActions,
+  .sectionNavLinks {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .primaryPath,
+  .secondaryPath,
+  .sectionNavLinks a,
+  .sourceLink {
+    width: 100%;
+  }
+
+  .orientationGrid,
+  .choiceGrid,
+  .sceneGrid,
+  .factList,
+  .comparisonFacts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .choicePanel {
+    padding: 56px 16px 18px;
+  }
+
+  .choiceIndex {
+    top: 15px;
+    left: 16px;
+  }
+
+  .comparisonItem {
+    padding: 16px;
+  }
+
+  .comparisonHeader span,
+  .comparisonSummary {
+    overflow-wrap: anywhere;
+  }
+
+  .festivalRecord {
+    grid-template-columns: 34px minmax(0, 1fr);
+    column-gap: 10px;
+    padding: 18px 14px 18px 0;
+  }
+
+  .recordIndex {
+    font-size: 0.82rem;
+  }
+
+  .relatedPaths > section > div:nth-child(2) > div:last-child {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .relatedPaths > section > div:nth-child(2) > div:last-child > * {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 380px) {
+  .content {
+    width: min(100% - 10px, 76rem);
+  }
+
+  .masthead,
+  .guideSection,
+  .verificationSection {
+    padding: 16px;
+  }
+
+  .sectionNav {
+    padding: 14px;
+  }
+
+  .festivalRecord {
+    grid-template-columns: 32px minmax(0, 1fr);
+    column-gap: 7px;
+    padding-right: 11px;
+  }
+
+  .recordTitle {
+    font-size: 1.5rem;
+  }
+
+  .choicePanel {
+    padding: 56px 14px 16px;
+  }
+
+  .choiceIndex {
+    top: 15px;
+    left: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page *,
+  .page *::before,
+  .page *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.00001s !important;
+    animation-duration: 0.00001s !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .page,
+  .masthead,
+  .sectionNav,
+  .guideSection,
+  .verificationSection,
+  .orientationLink,
+  .choicePanel,
+  .scenePanel,
+  .festivalRecord,
+  .comparisonItem,
+  .fact,
+  .relatedPaths > section {
+    forced-color-adjust: auto;
+    border-color: CanvasText !important;
+    background: Canvas !important;
+    color: CanvasText !important;
+  }
+
+  .page::before,
+  .page::after,
+  .paperEdge,
+  .towerBeacon,
+  .masthead::before,
+  .sectionNav::before,
+  .guideSection::before,
+  .verificationSection::before,
+  .festivalRecord::before {
+    display: none !important;
+  }
+
+  .page a {
+    color: LinkText !important;
+  }
+
+  .recordStatus,
+  .comparisonHeader span {
+    border-color: CanvasText !important;
+    color: CanvasText !important;
+  }
+}

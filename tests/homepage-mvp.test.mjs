@@ -2938,3 +2938,109 @@ test('Phase 5A.2 compresses the mobile directory filter with one native accessib
   assert.equal(createHash('sha256').update(packageLock).digest('hex'), '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56');
   assert.doesNotMatch(`${browser}\n${directoryPage}`, /fetch\(|\/api\/|prisma|supabase|mongodb|\bauth\b|\bcms\b|\bdatabase\b|scraping|geocod|latitude|longitude|map UI/i);
 });
+
+test('Phase 5B.1 selected European festivals guide is bounded, source-safe, and Night Transmission local-only', () => {
+  const guidePath = 'src/app/guides/european-goth-darkwave-industrial-festivals/page.tsx';
+  const cssPath = 'src/app/guides/european-goth-darkwave-industrial-festivals/GuideArticle.module.css';
+  assert.equal(existsSync(join(root, guidePath)), true, 'Phase 5B.1 route should exist locally');
+  assert.equal(existsSync(join(root, cssPath)), true, 'Phase 5B.1 should use one route-local CSS module');
+
+  const guide = read(guidePath);
+  const css = read(cssPath);
+  const source = `${guide}\n${css}`;
+  const layout = read('src/app/layout.tsx');
+  const seo = read('src/lib/seo.ts');
+  const guidesHub = read('src/app/guides/page.tsx');
+  const sitemap = read('src/app/sitemap.ts');
+
+  assert.match(guide, /const pagePath = "\/guides\/european-goth-darkwave-industrial-festivals"/);
+  assert.match(guide, /title: "Selected Goth, Darkwave & Industrial Festivals in Europe"/);
+  assert.match(guide, /description:\s*"A source-aware guide to selected European goth, darkwave, industrial, EBM, and post-punk festivals documented by RetroAltFest\."/);
+  assert.match(guide, /path: pagePath/);
+  assert.match(guide, /type: "article"/);
+  assert.equal(layout.match(/template: "([^"]+)"/)?.[1], '%s | RetroAltFest');
+  assert.equal(
+    layout.match(/template: "([^"]+)"/)?.[1].replace('%s', guide.match(/title: "([^"]+)"/)?.[1]),
+    'Selected Goth, Darkwave & Industrial Festivals in Europe | RetroAltFest',
+  );
+  assert.equal(`https://retroaltfest.com${guide.match(/const pagePath = "([^"]+)"/)?.[1]}`, 'https://retroaltfest.com/guides/european-goth-darkwave-industrial-festivals');
+  assert.match(seo, /const canonical = absoluteUrl\(path\)/);
+  assert.match(seo, /alternates:\s*{\s*canonical/);
+  assert.match(seo, /openGraph:\s*{\s*title,/);
+  assert.match(seo, /twitter:\s*{[\s\S]*?title,/);
+
+  assert.match(guide, /<h1[^>]*>\s*Selected Goth, Darkwave &amp; Industrial Festivals in Europe\s*<\/h1>/s);
+  assert.match(guide, /curated starting point/i);
+  assert.match(guide, /not a complete list of every European dark-alternative festival/i);
+  assert.match(guide, /data-guide-family="night-transmission"/);
+  assert.match(guide, /data-comparison-framework/);
+  for (const className of ['page', 'paperEdge', 'towerBeacon', 'content', 'breadcrumb', 'masthead', 'sectionNav', 'guideSection', 'festivalRecord', 'recordIndex', 'comparisonGrid', 'historicalRecord', 'relatedPaths']) {
+    assert.match(guide, new RegExp(`styles\\.${className}`));
+  }
+
+  assert.deepEqual([...guide.matchAll(/festivalName: "([^"]+)"/g)].map((match) => match[1]), [
+    'Wave-Gotik-Treffen',
+    "M’era Luna Festival",
+    'Infest Festival',
+    'NCN Festival / Nocturnal Culture Night',
+    'Castle Party Festival',
+  ]);
+  assert.deepEqual([...guide.matchAll(/atlasPath: "([^"]+)"/g)].map((match) => match[1]), [
+    '/festivals/wave-gotik-treffen',
+    '/festivals/mera-luna-festival',
+    '/festivals/infest-festival',
+    '/festivals/ncn-festival-nocturnal-culture-night',
+    '/festivals/castle-party-festival',
+  ]);
+  for (const route of ['/festivals', '/guides', '/verification']) {
+    assert.match(guide, new RegExp(`(?:href=|href:) ["']${route.replaceAll('/', '\\/')}["']|href=["']${route.replaceAll('/', '\\/')}["']`));
+  }
+  assert.match(guide, /Historical\/reference — Castle Party Festival 2026 took place 16–19 July 2026\./);
+  assert.match(guide, /No later edition announcement was found[\s\S]*does not establish cancellation or non-return/);
+  assert.doesNotMatch(source, /Amphi/i);
+
+  assert.match(guide, /href: gothDarkwaveGuidePath/);
+  assert.match(guide, /href: industrialEbmGuidePath/);
+  assert.doesNotMatch(guide, /new-wave-post-punk-retro-alternative-festivals-north-america/);
+  assert.doesNotMatch(guidesHub, /european-goth-darkwave-industrial-festivals/);
+  assert.doesNotMatch(sitemap, /european-goth-darkwave-industrial-festivals/);
+
+  assert.match(guide, /import styles from "\.\/GuideArticle\.module\.css"/);
+  assert.doesNotMatch(guide, /"use client"|useState|useEffect|useMemo|fetch\(|\/api\//);
+  assert.equal((css.match(/magenta-orbit\.avif/g) ?? []).length, 1, 'orbital asset should be declared once');
+  assert.equal((css.match(/tower-beacon-signature\.avif/g) ?? []).length, 1, 'tower asset should be declared once');
+  assert.ok(css.indexOf('tower-beacon-signature.avif') > css.indexOf('@media (min-width: 1101px)'), 'tower URL should live only in the 1101px desktop query');
+  assert.match(css, /prefers-reduced-motion/);
+  assert.match(css, /forced-colors/);
+  assert.match(css, /focus-visible/);
+  const nonZeroRadii = [...css.matchAll(/border-radius:\s*([^;]+);/g)]
+    .map((match) => match[1].replace(/\s*!important\s*$/, '').trim())
+    .filter((value) => value !== '0');
+  assert.deepEqual(nonZeroRadii, [], 'Phase 5B.1 surfaces should stay square');
+
+  assert.doesNotMatch(source, /\b(best|ultimate|definitive|top festivals)\b/i);
+  assert.equal((guide.match(/complete list/gi) ?? []).length, 1, 'complete should appear only in the explicit non-comprehensive caveat');
+  assert.doesNotMatch(source, /ticket|affiliate|commission|hotel|flight|travel-booking|attendance|coordinates|geocod|map UI|latitude|longitude/i);
+  assert.doesNotMatch(source, /FAQPage|application\/ld\+json|<script|<canvas|WebGLRenderingContext|<video|parallax|prisma|supabase|mongodb|\bauth\b|\bcms\b|\bdatabase\b|scraping/i);
+  assert.doesNotMatch(guide, /date_pending|source_status|map_phase0_category|core_anchor|watchlist|Phase 0|map-readiness|needs_review/i);
+
+  const protectedHashes = new Map([
+    ['src/app/guides/page.tsx', '74be1f46fcda8315d21052448f1548f3a100707284a40de68aa7fb531a70d34b'],
+    ['src/app/sitemap.ts', '8e1d5122c5331898011401f9f956d0dc80225e582caaeec3f217c9272345858b'],
+    ['src/data/atlas-festivals.json', '8e148cb046ff61f9cdcba8ed415790bd2f005ed66ae276abe5e3c46d31599e78'],
+    ['src/lib/public-festivals.ts', 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8'],
+    ['package.json', 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d'],
+    ['package-lock.json', '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56'],
+    ['src/app/guides/north-american-goth-darkwave-festivals/page.tsx', 'deebe1989e238fd3cdd1fcd701f7ceaea1280c54989f58b70bfb8e901ca59f8e'],
+    ['src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css', 'c6ec3ab4ad902c67f831dd6c460c293e22b94e68206493863ad06254021ce20d'],
+    ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx', '70855708398e2be80af1a1effabeff23fca3151b6c72e6c0c5919417f1bdd668'],
+    ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/GuideArticle.module.css', 'c3cbaf0c651fa3544495a7f125def2be0708214d1dd6112775d847aecb5a559e'],
+    ['src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/page.tsx', '177c7aba42dff4af4495db3e9fc00ada961ae71def29ed62b6d0146cb815d1a5'],
+    ['src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/GuideArticle.module.css', '9ca0cf323d8c291bbedfc06477e9931237220b91a0e4b21fe57c3f1e70f73d10'],
+    ['src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/page.tsx', '527e52c33520fb7435bebdc1fd612622d082cd8470c9c82c8341b40efad87a94'],
+    ['src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/GuideArticle.module.css', '6a614afd8fabf76a8e13301940958d655ddbe9931d1583ce20af45fe42406b54'],
+  ]);
+  for (const [protectedPath, expectedHash] of protectedHashes) {
+    assert.equal(createHash('sha256').update(read(protectedPath)).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
+  }
+});
