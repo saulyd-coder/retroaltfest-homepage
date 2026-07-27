@@ -50,6 +50,15 @@ const guides: GuideCard[] = [
     accent: "cyan",
   },
   {
+    title: "Selected Goth, Darkwave & Industrial Festivals in Europe",
+    href: "/guides/european-goth-darkwave-industrial-festivals",
+    role: "selected European regional discovery guide",
+    description:
+      "A source-aware starting point to selected European goth, darkwave, industrial, EBM, post-punk, and adjacent dark-alternative festivals.",
+    tags: ["Europe", "goth / darkwave", "industrial / EBM", "post-punk"],
+    accent: "violet",
+  },
+  {
     title: "North American Goth & Darkwave Festivals",
     href: "/guides/north-american-goth-darkwave-festivals",
     role: "dark-scene foundation guide",
@@ -149,7 +158,7 @@ export default function GuidesPage() {
         <div className={styles.sectionDivider} aria-hidden="true">
           <span />
           <b>Curated guide index</b>
-          <em>02—04</em>
+          <em>02—05</em>
         </div>
 
         <section className={styles.guideList} aria-label="RetroAltFest curated scene guides">
