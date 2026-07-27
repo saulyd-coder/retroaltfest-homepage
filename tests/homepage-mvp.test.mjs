@@ -3149,3 +3149,104 @@ test('Phase 5B.2 publishes the selected European guide through the Guides Hub an
   assert.equal(createHash('sha256').update(packageSource).digest('hex'), 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d');
   assert.equal(createHash('sha256').update(packageLock).digest('hex'), '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56');
 });
+
+test('Phase 5C.1 ticket verification guide is reader-facing, non-commercial, and locally bounded', () => {
+  const guidePath = 'src/app/guides/how-to-verify-festival-tickets-official-sources/page.tsx';
+  const cssPath = 'src/app/guides/how-to-verify-festival-tickets-official-sources/GuideArticle.module.css';
+  assert.equal(existsSync(join(root, guidePath)), true, 'Phase 5C.1 route should exist locally');
+  assert.equal(existsSync(join(root, cssPath)), true, 'Phase 5C.1 should use one route-local CSS module');
+
+  const guide = read(guidePath);
+  const css = read(cssPath);
+  const source = `${guide}\n${css}`;
+  const layout = read('src/app/layout.tsx');
+  const seo = read('src/lib/seo.ts');
+  const guidesHub = read('src/app/guides/page.tsx');
+  const sitemap = read('src/app/sitemap.ts');
+  const atlasSource = read('src/data/atlas-festivals.json');
+  const dto = read('src/lib/public-festivals.ts');
+  const packageSource = read('package.json');
+
+  const pagePath = '/guides/how-to-verify-festival-tickets-official-sources';
+  const routeTitle = 'How to Verify Festival Tickets and Official Sources';
+  const canonical = `https://retroaltfest.com${pagePath}`;
+  assert.match(guide, /const pagePath = "\/guides\/how-to-verify-festival-tickets-official-sources"/);
+  assert.match(guide, /title: "How to Verify Festival Tickets and Official Sources"/);
+  assert.match(guide, /description:\s*"A practical guide to checking festival dates, organizer websites, authorized ticket sellers, resale listings, and official sources before buying\."/);
+  assert.match(guide, /path: pagePath/);
+  assert.match(guide, /type: "article"/);
+  assert.equal(layout.match(/template: "([^"]+)"/)?.[1], '%s | RetroAltFest');
+  assert.equal(layout.match(/template: "([^"]+)"/)?.[1].replace('%s', routeTitle), `${routeTitle} | RetroAltFest`);
+  assert.equal(canonical, 'https://retroaltfest.com/guides/how-to-verify-festival-tickets-official-sources');
+  assert.match(seo, /const canonical = absoluteUrl\(path\)/);
+  assert.match(seo, /alternates:\s*{\s*canonical/);
+  assert.match(seo, /openGraph:\s*{\s*title,/);
+  assert.match(seo, /twitter:\s*{[\s\S]*?title,/);
+  assert.match(seo, /robots:\s*{\s*index,\s*follow: index/);
+
+  assert.match(guide, /<h1[^>]*>\s*How to Verify Festival Tickets and Official Sources\s*<\/h1>/s);
+  assert.match(guide, /No checklist can guarantee that a ticket is valid/i);
+  assert.match(guide, /reader(?:’|')s pre-purchase checks/i);
+  assert.match(guide, /RetroAltFest(?:’|')s editorial verification process/i);
+  assert.match(guide, /data-guide-family="night-transmission"/);
+  assert.match(guide, /data-article-contract="ticket-verification-reader-guide"/);
+  assert.match(guide, /data-source-hierarchy/);
+  assert.match(guide, /data-pre-purchase-checklist/);
+  for (const id of ['start-with-organizer', 'follow-ticket-path', 'check-edition', 'resale-risk', 'warning-signals', 'source-conflict', 'pre-purchase-checklist', 'retroaltfest-limits', 'continue-exploring']) {
+    assert.match(guide, new RegExp(`id=["']${id}["']`), `${id} section should be present`);
+  }
+  for (const route of ['/verification', '/festivals', '/guides']) {
+    assert.match(guide, new RegExp(`href=["']${route.replaceAll('/', '\\/')}["']`), `${route} internal link should be present`);
+  }
+  assert.match(guide, /organizer-controlled source/i);
+  assert.match(guide, /current edition/i);
+  assert.match(guide, /authorized ticket (?:path|seller|partner)/i);
+  assert.match(guide, /transfer rules vary/i);
+  assert.match(guide, /screenshots? (?:are|is) not proof/i);
+  assert.match(guide, /pause rather than guess/i);
+  assert.match(guide, /published (?:contact )?channels/i);
+  assert.match(guide, /save (?:the )?(?:receipt|confirmation)/i);
+
+  assert.match(guide, /import styles from "\.\/GuideArticle\.module\.css"/);
+  assert.doesNotMatch(guide, /"use client"|useState|useEffect|useMemo|fetch\(|\/api\//);
+  assert.equal((css.match(/magenta-orbit\.avif/g) ?? []).length, 1, 'orbital asset should be declared once');
+  assert.equal((css.match(/tower-beacon-signature\.avif/g) ?? []).length, 1, 'tower asset should be declared once');
+  assert.ok(css.indexOf('tower-beacon-signature.avif') > css.indexOf('@media (min-width: 1101px)'), 'tower URL should live only in the desktop query');
+  assert.match(css, /prefers-reduced-motion/);
+  assert.match(css, /forced-colors/);
+  assert.match(css, /focus-visible/);
+  const nonZeroRadii = [...css.matchAll(/border-radius:\s*([^;]+);/g)]
+    .map((match) => match[1].replace(/\s*!important\s*$/, '').trim())
+    .filter((value) => value !== '0');
+  assert.deepEqual(nonZeroRadii, [], 'Phase 5C.1 surfaces should stay square');
+
+  assert.doesNotMatch(source, /FAQPage|application\/ld\+json|<script|<canvas|WebGLRenderingContext|<video|prisma|supabase|mongodb|\bauth\b|\bcms\b|\bdatabase\b|scraping|geocod|latitude|longitude|map UI/i);
+  assert.doesNotMatch(source, /["']@type["']\s*:\s*["'](?:Event|Product|Offer|Review|Rating|FAQPage)["']/);
+  assert.doesNotMatch(guide, /Ticketmaster|StubHub|SeatGeek|Vivid Seats|AXS|Eventbrite|Viagogo/i);
+  assert.doesNotMatch(guide, /https?:\/\/(?!retroaltfest\.com)/i);
+  assert.doesNotMatch(guide, /[?&](?:aff|affiliate|ref|utm_|click|partner)=/i);
+  assert.doesNotMatch(guide, /\$\s*\d|€\s*\d|£\s*\d|\b(?:USD|EUR|GBP)\s*\d|live availability|currently on sale|sold out now/i);
+  assert.doesNotMatch(guide, /always safe|guaranteed valid|fraud-free|scam-proof|officially verified by RetroAltFest/i);
+  assert.doesNotMatch(guide, /affiliate|commission|sponsored|coupon|hotel|flight|insurance|product link/i);
+  assert.doesNotMatch(guide, /date_pending|source_status|map_phase0_category|core_anchor|watchlist|Phase 0|map-readiness|needs_review|geocoding_source|geocoding_query|geocoding_confidence/i);
+
+  assert.doesNotMatch(guidesHub, /how-to-verify-festival-tickets-official-sources/);
+  assert.doesNotMatch(sitemap, /how-to-verify-festival-tickets-official-sources/);
+  const protectedHashes = new Map([
+    ['src/app/verification/page.tsx', '28946389175da89f6cd91444f6693b29d21dbcfe0f4a88fa92acf8d471003f14'],
+    ['src/app/verification/VerificationPage.module.css', 'b370b6781237df419a1920128d0849d24345aecab57b624826275521239f3bb1'],
+    ['src/app/guides/page.tsx', '17a67e8510709d8008c7c9bba7352006c063b9bc4986b63cb9a17174a54664e3'],
+    ['src/app/guides/GuidesHub.module.css', 'aef54b1c097f166f8118a0e8b2f08c07e46928f85c67f27b88fce08c344ea6e3'],
+    ['src/app/sitemap.ts', '9e41355aa9072e9b5558f645037f16d7beda46b003fff2e9587b921b1977ace2'],
+    ['src/data/atlas-festivals.json', '8e148cb046ff61f9cdcba8ed415790bd2f005ed66ae276abe5e3c46d31599e78'],
+    ['src/lib/public-festivals.ts', 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8'],
+    ['package.json', 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d'],
+    ['package-lock.json', '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56'],
+  ]);
+  for (const [protectedPath, expectedHash] of protectedHashes) {
+    assert.equal(createHash('sha256').update(read(protectedPath)).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
+  }
+  assert.equal(JSON.parse(atlasSource).festivals.length, 15);
+  assert.doesNotMatch(dto, /how-to-verify-festival-tickets-official-sources/);
+  assert.doesNotMatch(packageSource, /playwright|puppeteer|affiliate|tracking/i);
+});
