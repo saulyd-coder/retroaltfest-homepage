@@ -85,6 +85,15 @@ const guides: GuideCard[] = [
     tags: ["new wave", "post-punk", "80s alternative", "retro alternative"],
     accent: "cyan",
   },
+  {
+    title: "How to Verify Festival Tickets and Official Sources",
+    href: "/guides/how-to-verify-festival-tickets-official-sources",
+    role: "practical ticket-verification guide",
+    description:
+      "A practical pre-purchase guide to checking current-edition festival dates, organizer websites, authorized ticket paths, resale listings, and official sources before paying. These checks cannot establish that a ticket is authentic.",
+    tags: ["pre-purchase checks", "official sources", "ticket paths", "resale caution"],
+    accent: "magenta",
+  },
 ];
 
 function issueNumber(index: number) {
@@ -158,7 +167,7 @@ export default function GuidesPage() {
         <div className={styles.sectionDivider} aria-hidden="true">
           <span />
           <b>Curated guide index</b>
-          <em>02—05</em>
+          <em>02—06</em>
         </div>
 
         <section className={styles.guideList} aria-label="RetroAltFest curated scene guides">
