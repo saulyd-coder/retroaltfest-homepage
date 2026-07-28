@@ -272,7 +272,10 @@ test('North America 8 records preserve source-aware caveats and map safety', () 
     assert.equal(festival.geocoding_source, null);
     assert.equal(festival.geocoding_query, null);
     assert.equal(festival.geocoding_confidence, 'not_geocoded');
-    assert.equal(festival.verification_status, 'confirmed_upcoming');
+    assert.equal(
+      festival.verification_status,
+      id === 'terminus-festival' ? 'date_pending' : 'confirmed_upcoming',
+    );
     assert.ok(festival.source_links.length >= 1);
     assert.ok(festival.similar_festival_ids.every((similarId) => byId.has(similarId)), `${id} should only link to integrated records`);
   }
@@ -281,8 +284,50 @@ test('North America 8 records preserve source-aware caveats and map safety', () 
   assert.match(byId.get('levitation').map_notes, /Radio\/East and other Austin venues/i);
   assert.match(byId.get('mutek-montreal').data_quality_notes, /not specifically goth\/darkwave|Do not frame as goth\/darkwave-specific/i);
   assert.match(byId.get('the-new-colossus-festival').data_quality_notes, /broad|Avoid core goth\/darkwave/i);
-  assert.match(byId.get('terminus-festival').data_quality_notes, /do not use unverified full-lineup poster transcription/i);
+  assert.match(byId.get('terminus-festival').data_quality_notes, /2026 edition has concluded/i);
   assert.match(byId.get('terminus-festival').source_urls.join('\n'), /eventbrite\.ca\/e\/terminus-festival-2026-resonance/);
+});
+
+test('Amphi and Terminus use the approved July 27 post-event corrections', () => {
+  const data = JSON.parse(read('src/data/atlas-festivals.json'));
+  const byId = new Map(data.festivals.map((record) => [record.festival_id, record]));
+  const amphi = byId.get('amphi-festival');
+  const terminus = byId.get('terminus-festival');
+  const publicBoundary = read('src/lib/public-festivals.ts');
+
+  assert.equal(data.festivals.length, 15);
+
+  assert.equal(amphi.start_date, '2027-07-24');
+  assert.equal(amphi.end_date, '2027-07-25');
+  assert.equal(amphi.date_text, 'July 24–25, 2027');
+  assert.equal(amphi.verification_status, 'confirmed_upcoming');
+  assert.equal(
+    amphi.data_quality_notes,
+    'The 2026 edition has concluded. The organizer has announced Amphi Festival’s next edition for July 24–25, 2027 at Tanzbrunnen. Check the official festival website before making travel plans.',
+  );
+
+  assert.equal(terminus.start_date, '2026-07-23');
+  assert.equal(terminus.end_date, '2026-07-26');
+  assert.equal(
+    terminus.date_text,
+    'July 23–26, 2026 — past edition; next edition details need official confirmation.',
+  );
+  assert.equal(terminus.verification_status, 'date_pending');
+  assert.equal(
+    terminus.data_quality_notes,
+    'The July 23–26, 2026 edition has concluded. Official sources checked on July 27, 2026 did not confirm a later edition; check the official festival website for future updates.',
+  );
+
+  for (const festival of [amphi, terminus]) {
+    assert.equal(festival.latitude, null);
+    assert.equal(festival.longitude, null);
+    assert.equal(festival.geocoding_source, null);
+    assert.equal(festival.geocoding_query, null);
+    assert.equal(festival.geocoding_confidence, 'not_geocoded');
+  }
+
+  assert.match(publicBoundary, /confirmed_upcoming: "Confirmed upcoming"/);
+  assert.match(publicBoundary, /date_pending: "Dates not announced yet"/);
 });
 
 test('festival detail route is static-first and SEO-ready', () => {
@@ -336,7 +381,10 @@ test('WGT and LEVITATION use the approved public trust corrections', () => {
 
   assert.match(publicBoundary, /"wave-gotik-treffen": "Next edition officially announced"/);
   assert.match(publicBoundary, /levitation: "Upcoming — dates confirmed by the official festival page"/);
-  assert.match(publicBoundary, /streamlinedTrustSlugs = new Set\(\["wave-gotik-treffen", "levitation"\]\)/);
+  assert.match(publicBoundary, /streamlinedTrustSlugs = new Set\(\[/);
+  for (const slug of ['wave-gotik-treffen', 'levitation', 'amphi-festival', 'terminus-festival']) {
+    assert.match(publicBoundary, new RegExp(`"${slug}"`));
+  }
   assert.match(detailPage, /festival\.showConfidenceDetails \?/);
   assert.match(detailPage, /festival\.mappingNote \? <p>\{festival\.mappingNote\}<\/p> : null/);
 });

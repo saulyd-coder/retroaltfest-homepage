@@ -76,7 +76,12 @@ const festivalStatusOverrides: Record<string, string> = {
   levitation: "Upcoming — dates confirmed by the official festival page",
 };
 
-const streamlinedTrustSlugs = new Set(["wave-gotik-treffen", "levitation"]);
+const streamlinedTrustSlugs = new Set([
+  "wave-gotik-treffen",
+  "levitation",
+  "amphi-festival",
+  "terminus-festival",
+]);
 
 const publicSourceConfidenceLabels: Record<string, string> = {
   high: "High",
