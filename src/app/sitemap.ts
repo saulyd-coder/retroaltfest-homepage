@@ -72,6 +72,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.8,
     },
+    {
+      url: `${SITE_URL}/guides/first-time-dark-alternative-festival-guide`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
   ];
 
   const festivalRoutes: MetadataRoute.Sitemap = featuredFestivals.map((festival) => ({
