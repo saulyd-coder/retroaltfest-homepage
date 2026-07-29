@@ -3340,3 +3340,145 @@ test('Phase 5C.2 publishes the ticket verification guide through the Guides Hub 
   }
   assert.deepEqual(hashTree('public'), { count: 20, hash: 'fdb685b14899493dad0a63d1d0500cbfb975065880f97931020bc0590f36c81b' }, 'public assets should not change');
 });
+
+test('Phase 5C.3A first-time guide is practical, non-commercial, and locally bounded', () => {
+  const guidePath = 'src/app/guides/first-time-dark-alternative-festival-guide/page.tsx';
+  const cssPath = 'src/app/guides/first-time-dark-alternative-festival-guide/GuideArticle.module.css';
+
+  assert.equal(existsSync(join(root, guidePath)), true, 'Phase 5C.3A route should exist locally');
+  assert.equal(existsSync(join(root, cssPath)), true, 'Phase 5C.3A should use one route-local CSS module');
+
+  const guide = read(guidePath);
+  const css = read(cssPath);
+  const source = `${guide}\n${css}`;
+  const guidesHub = read('src/app/guides/page.tsx');
+  const sitemap = read('src/app/sitemap.ts');
+  const atlas = JSON.parse(read('src/data/atlas-festivals.json'));
+
+  assert.match(guide, /const pagePath = "\/guides\/first-time-dark-alternative-festival-guide"/);
+  assert.match(guide, /title: "First-Time Dark Alternative Festival Guide"/);
+  assert.match(guide, /description:\s*"Practical preparation for a first goth, darkwave, industrial, EBM, post-punk, new-wave, or adjacent dark-alternative festival\."/);
+  assert.match(guide, /path: pagePath/);
+  assert.match(guide, /type: "article"/);
+  assert.match(guide, /<h1[^>]*>\s*First-Time Dark Alternative Festival Guide\s*<\/h1>/s);
+  assert.equal((guide.match(/<h1\b/g) ?? []).length, 1, 'the guide should have exactly one authored H1');
+  assert.match(guide, /data-guide-family="night-transmission"/);
+  assert.match(guide, /data-article-contract="first-time-dark-alternative-preparation-guide"/);
+  assert.match(guide, /data-static-readiness-checklist/);
+  assert.match(guide, /<ol[^>]+className=\{styles\.checklist\}/);
+
+  const expectedSections = [
+    'event-you-chose',
+    'event-format',
+    'dress-for-conditions',
+    'hearing-and-energy',
+    'phone-power-schedule',
+    'rules-before-arrival',
+    'arrival-movement-return',
+    'solo-or-meeting-people',
+    'first-time-checklist',
+    'week-of-recheck',
+    'continue-exploring',
+  ];
+  let sectionCursor = -1;
+  for (const id of expectedSections) {
+    const index = guide.indexOf(`id="${id}"`);
+    assert.ok(index > sectionCursor, `${id} should exist in the approved order`);
+    sectionCursor = index;
+  }
+
+  assert.equal((guide.match(/href="\/guides\/how-to-verify-festival-tickets-official-sources"/g) ?? []).length, 1, 'the ticket guide should be linked once near the opening');
+  for (const requiredRoute of ['/festivals', '/guides', '/verification']) {
+    assert.match(guide, new RegExp(`href="${requiredRoute.replaceAll('/', '\\/')}"`), `${requiredRoute} should appear in the closing paths`);
+  }
+  for (const sceneRoute of [
+    '/guides/european-goth-darkwave-industrial-festivals',
+    '/guides/west-coast-pacific-northwest-dark-alternative-festivals',
+    '/guides/north-american-goth-darkwave-festivals',
+    '/guides/industrial-ebm-dark-electronic-festivals-north-america',
+    '/guides/new-wave-post-punk-retro-alternative-festivals-north-america',
+  ]) {
+    assert.doesNotMatch(guide, new RegExp(sceneRoute.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `${sceneRoute} should not be forced into this practical guide`);
+  }
+
+  assert.match(guide, /identified a festival/i);
+  assert.match(guide, /before arrival/i);
+  assert.match(guide, /indoor/i);
+  assert.match(guide, /outdoor/i);
+  assert.match(guide, /multi-venue/i);
+  assert.match(guide, /there is no required uniform/i);
+  assert.match(guide, /hearing protection/i);
+  assert.match(guide, /official (?:event|festival|venue|organizer|operator)/i);
+  assert.match(guide, /cannot guarantee safety, accessibility, transit, entry, or an unchanged event/i);
+  assert.match(guide, /review the organizer and venue accessibility information/i);
+  assert.match(guide, /recheck the official operator schedule/i);
+  assert.match(guide, /consent/i);
+
+  assert.match(guide, /import styles from "\.\/GuideArticle\.module\.css"/);
+  assert.doesNotMatch(guide, /"use client"|useState|useEffect|useMemo|fetch\(|\/api\//);
+  assert.equal((css.match(/magenta-orbit\.avif/g) ?? []).length, 1, 'the existing orbital asset should be declared once');
+  assert.equal((css.match(/tower-beacon-signature\.avif/g) ?? []).length, 1, 'the existing tower asset should be declared once');
+  assert.ok(css.indexOf('tower-beacon-signature.avif') > css.indexOf('@media (min-width: 1101px)'), 'the tower URL should live only in the established desktop query');
+  assert.match(css, /prefers-reduced-motion/);
+  assert.match(css, /forced-colors/);
+  assert.match(css, /focus-visible/);
+  const nonZeroRadii = [...css.matchAll(/border-radius:\s*([^;]+);/g)]
+    .map((match) => match[1].replace(/\s*!important\s*$/, '').trim())
+    .filter((value) => value !== '0');
+  assert.deepEqual(nonZeroRadii, [], 'Phase 5C.3A surfaces should remain square');
+
+  assert.doesNotMatch(source, /FAQPage|application\/ld\+json|<script|<canvas|WebGLRenderingContext|<video|prisma|supabase|mongodb|\bauth\b|\bcms\b|\bdatabase\b|scraping|geocod|latitude|longitude|map UI/i);
+  assert.doesNotMatch(source, /["']@type["']\s*:\s*["'](?:Event|Product|Offer|Review|Rating|FAQPage)["']/);
+  assert.doesNotMatch(guide, /Ticketmaster|StubHub|SeatGeek|Vivid Seats|AXS|Eventbrite|Viagogo/i);
+  assert.doesNotMatch(guide, /https?:\/\//i);
+  assert.doesNotMatch(guide, /[?&](?:aff|affiliate|ref|utm_|click|partner)=/i);
+  assert.doesNotMatch(guide, /\$\s*\d|€\s*\d|£\s*\d|\b(?:USD|EUR|GBP)\s*\d|live availability|currently on sale|sold out now|ticket deal|lowest price/i);
+  assert.doesNotMatch(guide, /affiliate|commission|sponsored|coupon|hotel recommendation|flight recommendation|insurance recommendation|product recommendation|must-have product/i);
+  assert.doesNotMatch(guide, /medical diagnosis|medical treatment|dosage|legal advice|visa advice|crime rate|safe neighborhood|guaranteed safety|guaranteed accessibility|guaranteed transit|guaranteed re-entry|guaranteed entry/i);
+  assert.doesNotMatch(guide, /date_pending|source_status|map_phase0_category|core_anchor|watchlist|Phase 0|map-readiness|needs_review|geocoding_source|geocoding_query|geocoding_confidence/i);
+
+  assert.equal((guidesHub.match(/href: "\/guides\//g) ?? []).length, 6, 'the Guides Hub should remain at six cards during the local sprint');
+  assert.doesNotMatch(guidesHub, /first-time-dark-alternative-festival-guide/);
+  assert.doesNotMatch(sitemap, /first-time-dark-alternative-festival-guide/);
+  const staticRoutesBlock = sitemap.match(/const staticRoutes:[\s\S]*?\n  \];/)?.[0] ?? '';
+  const staticRouteCount = (staticRoutesBlock.match(/url:/g) ?? []).length;
+  assert.equal(atlas.festivals.length, 15, 'festival route count should remain 15');
+  assert.equal(staticRouteCount + atlas.festivals.length, 26, 'the sitemap should remain at 26 URLs');
+
+  const protectedHashes = new Map([
+    ['package-lock.json', '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56'],
+    ['package.json', 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d'],
+    ['public/night-transmission-inner/magenta-orbit.avif', '68ddeb79e1d4c7e75a2aac81c5dad1fe6f0d3f85916a220f3154ff89bbc99706'],
+    ['public/night-transmission-inner/tower-beacon-signature.avif', '51178b456232529f84051fe40fe8acc07c81caee1a389309427fc5cc1cba3594'],
+    ['src/app/festivals/[slug]/FestivalDetail.module.css', '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb'],
+    ['src/app/festivals/[slug]/page.tsx', '82407c32fbaca73946fa5f1e8938810e01e25416328e8872da4eb47a231034c4'],
+    ['src/app/globals.css', '4a208c9b182b696cfd77f3a87e3810e153ef8233290ad829294d47590a573788'],
+    ['src/app/guides/GuidesHub.module.css', 'aef54b1c097f166f8118a0e8b2f08c07e46928f85c67f27b88fce08c344ea6e3'],
+    ['src/app/guides/european-goth-darkwave-industrial-festivals/GuideArticle.module.css', '6f5877f8366151232acf5e08d43bab6cc81f4bb90d2746f5c2e77c8b944758c3'],
+    ['src/app/guides/european-goth-darkwave-industrial-festivals/page.tsx', 'd8cc53a485cea8df1df8fef5d12644ece87ea7ced8fb9323205560f9f4e540a8'],
+    ['src/app/guides/how-to-verify-festival-tickets-official-sources/GuideArticle.module.css', '3ee1c6e11e59e1802d4d86fab26639a8a0c66fb7aa21a4f681c19df05fdc56b4'],
+    ['src/app/guides/how-to-verify-festival-tickets-official-sources/page.tsx', '3b7a1691ddd3b54d97a8495373fac2a5c678e33b87c7637d1663a2c8ace1137a'],
+    ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/GuideArticle.module.css', 'c3cbaf0c651fa3544495a7f125def2be0708214d1dd6112775d847aecb5a559e'],
+    ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx', '70855708398e2be80af1a1effabeff23fca3151b6c72e6c0c5919417f1bdd668'],
+    ['src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/GuideArticle.module.css', '9ca0cf323d8c291bbedfc06477e9931237220b91a0e4b21fe57c3f1e70f73d10'],
+    ['src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/page.tsx', '177c7aba42dff4af4495db3e9fc00ada961ae71def29ed62b6d0146cb815d1a5'],
+    ['src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css', 'c6ec3ab4ad902c67f831dd6c460c293e22b94e68206493863ad06254021ce20d'],
+    ['src/app/guides/north-american-goth-darkwave-festivals/page.tsx', 'deebe1989e238fd3cdd1fcd701f7ceaea1280c54989f58b70bfb8e901ca59f8e'],
+    ['src/app/guides/page.tsx', '8cadcef78439821c28c1c4fe17353a205fdc586d9dbb2a297f7edff73dad6b44'],
+    ['src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/GuideArticle.module.css', '6a614afd8fabf76a8e13301940958d655ddbe9931d1583ce20af45fe42406b54'],
+    ['src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/page.tsx', '527e52c33520fb7435bebdc1fd612622d082cd8470c9c82c8341b40efad87a94'],
+    ['src/app/layout.tsx', 'e0d2ecdc24d76e0b2a9d1328c532b0b63f6223d28b35498b8da7ba3aab51457f'],
+    ['src/app/sitemap.ts', '4277a5e143a37eca3f36b4ff4f0033aa5256502178012e5a909768338836fe5d'],
+    ['src/app/verification/VerificationPage.module.css', 'b370b6781237df419a1920128d0849d24345aecab57b624826275521239f3bb1'],
+    ['src/app/verification/page.tsx', '28946389175da89f6cd91444f6693b29d21dbcfe0f4a88fa92acf8d471003f14'],
+    ['src/components/site/DiscoveryLinks.tsx', '69e9783aa619c7904e4f45e70b20eb837788a2020200f5c5fbbb53a9f79ddee4'],
+    ['src/components/site/Footer.tsx', 'd865de10d989e34611f305a8239d74533b8c6f02c08e355138f5c5025f9ab8db'],
+    ['src/components/site/Header.tsx', '296fb5e4c8a8553f1b38f9c6603cc725f1f26eb81c4468cfd243d6ec3173d0d7'],
+    ['src/data/atlas-festivals.json', '8e148cb046ff61f9cdcba8ed415790bd2f005ed66ae276abe5e3c46d31599e78'],
+    ['src/lib/public-festivals.ts', 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8'],
+    ['src/lib/seo.ts', '5b7a4c9e26dede625ef02c39fc9e96fe779f128ec57bb6db283790d71a9f2b31'],
+  ]);
+  for (const [protectedPath, expectedHash] of protectedHashes) {
+    assert.equal(createHash('sha256').update(readFileSync(join(root, protectedPath))).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
+  }
+});
