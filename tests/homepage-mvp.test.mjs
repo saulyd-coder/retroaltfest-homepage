@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { join, relative } from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 const root = process.cwd();
 
@@ -392,7 +393,110 @@ test('North America 8 records preserve source-aware caveats and map safety', () 
   assert.match(byId.get('mutek-montreal').data_quality_notes, /not specifically goth\/darkwave|Do not frame as goth\/darkwave-specific/i);
   assert.match(byId.get('the-new-colossus-festival').data_quality_notes, /broad|Avoid core goth\/darkwave/i);
   assert.match(byId.get('terminus-festival').data_quality_notes, /do not use unverified full-lineup poster transcription/i);
-  assert.match(byId.get('terminus-festival').source_urls.join('\n'), /eventbrite\.ca\/e\/terminus-festival-2026-resonance/);
+  assert.doesNotMatch(byId.get('terminus-festival').source_urls.join('\n'), /eventbrite\.ca\/e\/terminus-festival-2026-resonance/);
+});
+
+test('Phase 5C.5A removes only the ended Terminus ticket source and preserves every protected contract', () => {
+  const atlasSource = read('src/data/atlas-festivals.json');
+  const data = JSON.parse(atlasSource);
+  const terminus = data.festivals.find((record) => record.slug === 'terminus-festival');
+  const nonTargetRecords = data.festivals.filter((record) => record.slug !== 'terminus-festival');
+  const terminusWithoutSources = Object.fromEntries(
+    Object.entries(terminus).filter(([key]) => !['source_urls', 'source_links'].includes(key)),
+  );
+  const expectedSourceUrls = [
+    'https://terminus-festival.com/',
+    'https://terminus-festival.com/wp-content/uploads/2026/03/DATE-1.png',
+    'https://terminus-festival.com/wp-content/uploads/2026/03/ADDRESS-1.png',
+    'https://terminus-festival.com/wp-content/uploads/2026/03/LINEUP-1.png',
+  ];
+  const expectedSourceLinks = [
+    {
+      label: 'Official festival site',
+      url: 'https://terminus-festival.com/',
+      type: 'official_site',
+    },
+    {
+      label: 'Official source',
+      url: 'https://terminus-festival.com/wp-content/uploads/2026/03/DATE-1.png',
+      type: 'official_source',
+    },
+    {
+      label: 'Official source',
+      url: 'https://terminus-festival.com/wp-content/uploads/2026/03/ADDRESS-1.png',
+      type: 'official_source',
+    },
+    {
+      label: 'Official source',
+      url: 'https://terminus-festival.com/wp-content/uploads/2026/03/LINEUP-1.png',
+      type: 'official_source',
+    },
+  ];
+
+  assert.ok(terminus, 'Terminus should remain an active atlas record');
+  assert.deepEqual(terminus.source_urls, expectedSourceUrls, 'only the ended Eventbrite source URL should be removed, with order preserved');
+  assert.deepEqual(terminus.source_links, expectedSourceLinks, 'only the ended Eventbrite source object should be removed, with labels, types, and order preserved');
+
+  const retainedSourceText = JSON.stringify({ source_urls: terminus.source_urls, source_links: terminus.source_links });
+  assert.doesNotMatch(retainedSourceText, /eventbrite|oddtdtcreator|bit\.ly|ticketmaster|stubhub|vividseats|seatgeek|ticketswap|axs\.com|affiliate|[?&](?:aff|ref|utm_)[^=]*=/i);
+
+  assert.equal(data.festivals.length, 15);
+  assert.equal(data.metadata.record_count, 15);
+  assert.equal(new Set(data.festivals.map((record) => record.slug)).size, 15);
+  assert.equal(terminus.slug, 'terminus-festival');
+  assert.equal(terminus.start_date, '2026-07-23');
+  assert.equal(terminus.end_date, '2026-07-26');
+  assert.equal(terminus.date_text, 'July 23-26, 2026');
+  assert.equal(terminus.verification_status, 'confirmed_upcoming');
+  assert.equal(terminus.latitude, null);
+  assert.equal(terminus.longitude, null);
+  assert.equal(terminus.geocoding_source, null);
+  assert.equal(terminus.geocoding_query, null);
+  assert.equal(terminus.geocoding_confidence, 'not_geocoded');
+
+  assert.equal(
+    createHash('sha256').update(JSON.stringify(terminusWithoutSources)).digest('hex'),
+    '986a38cfb6e1a54fd3216982b702cd7b2d90d1d464c52d319adbcd85fbe73031',
+    'every non-source Terminus field, including status wording and metadata, should remain field-identical',
+  );
+  assert.equal(
+    createHash('sha256').update(JSON.stringify(nonTargetRecords)).digest('hex'),
+    '4cb750d20d5f6cb6ff2d7603ccd86711330ae3095c5b8db81df1279796f1c318',
+    'all 14 non-target festival records should remain field-identical',
+  );
+  assert.equal(
+    createHash('sha256').update(JSON.stringify(data.metadata)).digest('hex'),
+    '77a0a0ba32495136ce28dc57b2449ec81ea898e0cc4b8b73026828493414c0cf',
+    'atlas metadata should remain field-identical',
+  );
+
+  for (const [relativePath, expectedHash] of Object.entries({
+    'src/lib/public-festivals.ts': 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8',
+    'src/app/festivals/[slug]/page.tsx': '82407c32fbaca73946fa5f1e8938810e01e25416328e8872da4eb47a231034c4',
+    'src/app/festivals/[slug]/FestivalDetail.module.css': '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb',
+    'src/app/festivals/terminus-festival-resonance/route.ts': 'd908d62a2874668e91ec4150446a21e368e9403745a60f62e9b4236d15a1532e',
+    'src/app/sitemap.ts': '1231fd8a9bfe5d986b6d790bfcca7ed77871bca276155a5bc83212fcd6bbaf20',
+  })) {
+    assert.equal(
+      createHash('sha256').update(read(relativePath)).digest('hex'),
+      expectedHash,
+      `${relativePath} should remain byte-identical`,
+    );
+  }
+
+  const legacyRedirect = read('src/app/festivals/terminus-festival-resonance/route.ts');
+  assert.match(legacyRedirect, /const TERMINUS_CANONICAL_PATH = "\/festivals\/terminus-festival"/);
+  assert.match(legacyRedirect, /NextResponse\.redirect\(new URL\(TERMINUS_CANONICAL_PATH, request\.url\), 301\)/);
+
+  const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' })
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => line.slice(3));
+  assert.equal(
+    changedPaths.every((path) => ['src/data/atlas-festivals.json', 'tests/homepage-mvp.test.mjs'].includes(path)),
+    true,
+    `no third repository path may change: ${changedPaths.join(', ')}`,
+  );
 });
 
 test('Just Like Heaven venue correction stays source-backed, adjacent, and route-safe', () => {
@@ -442,7 +546,7 @@ test('Just Like Heaven venue correction stays source-backed, adjacent, and route
   const nonTargetRecords = data.festivals.filter((record) => record.slug !== 'just-like-heaven');
   assert.equal(
     createHash('sha256').update(JSON.stringify(nonTargetRecords)).digest('hex'),
-    'd668422ec68cb821d1c2ff6f253d1df2c8e32e97fae4b778af8e0edc925c9f22',
+    '473137eebee14c453ccb782b256e25649e2fcf093f9cdcf961c08aa142efb5b6',
     'every non-target festival record should remain field-identical',
   );
 
@@ -2052,7 +2156,7 @@ test('Night Transmission Phase 4B M’era Luna reference stays content-exact and
   assert.equal(atlas.festivals.every((festival) => festival.latitude === null && festival.longitude === null), true);
   assert.equal(atlas.festivals.every((festival) => festival.geocoding_source === null && festival.geocoding_query === null), true);
   assert.deepEqual(new Set(atlas.festivals.map((festival) => festival.geocoding_confidence)), new Set(['not_geocoded']));
-  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), '8e148cb046ff61f9cdcba8ed415790bd2f005ed66ae276abe5e3c46d31599e78');
+  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c');
   assert.equal(createHash('sha256').update(dtoSource).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
 
   assert.match(page, /import styles from "\.\/FestivalDetail\.module\.css"/);
@@ -2381,7 +2485,7 @@ test('Night Transmission Phase 4I activates New Colossus through the immutable c
   assert.ok(css.indexOf('tower-beacon-signature.avif') > css.indexOf('@media (min-width: 1101px)'));
 
   assert.equal(createHash('sha256').update(css).digest('hex'), '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb');
-  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), '8e148cb046ff61f9cdcba8ed415790bd2f005ed66ae276abe5e3c46d31599e78');
+  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c');
   assert.equal(createHash('sha256').update(dtoSource).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
   assert.equal(createHash('sha256').update(read('src/app/sitemap.ts')).digest('hex'), '1231fd8a9bfe5d986b6d790bfcca7ed77871bca276155a5bc83212fcd6bbaf20');
   assert.equal(createHash('sha256').update(read('package.json')).digest('hex'), 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d');
@@ -2541,7 +2645,7 @@ test('Wave-Gotik-Treffen 2027 source correction stays multi-venue, route-safe, a
   ]);
 
   assert.equal(createHash('sha256').update(JSON.stringify(preservedTarget)).digest('hex'), '1bdd1325ffa253eab1c593de9e8bd8828444094eccde29621fdc70cf6f02ec28');
-  assert.equal(createHash('sha256').update(JSON.stringify(nonTarget)).digest('hex'), 'd484d9c7fcbeff239e349c710dc63634452ba37f6934aed3a92192ba4530c5ee');
+  assert.equal(createHash('sha256').update(JSON.stringify(nonTarget)).digest('hex'), '5836311ad29d14a18ca9cae57eaeda81ae75be1a6a2d175cf2bfa8a994463627');
   assert.equal(atlas.festivals.every((festival) => festival.latitude === null && festival.longitude === null), true);
   assert.equal(atlas.festivals.every((festival) => festival.geocoding_source === null && festival.geocoding_query === null), true);
   assert.equal(createHash('sha256').update(JSON.stringify(atlas.festivals.map((festival) => [festival.slug, festival.geocoding_confidence]))).digest('hex'), 'a65cfe2ff09e6d46d9d53d609b3bc2e9a314befebf2203c662ae04429a135103');
@@ -2643,7 +2747,7 @@ test('Castle Party completed-edition correction stays historical, source-safe, a
   assert.deepEqual(target.similar_festival_ids, ['wave-gotik-treffen', 'ncn-festival-nocturnal-culture-night', 'amphi-festival']);
 
   assert.equal(createHash('sha256').update(JSON.stringify(preservedTarget)).digest('hex'), 'b7e094157e844533696677b686458b320664427fe3d3485da8e27620682cfa05');
-  assert.equal(createHash('sha256').update(JSON.stringify(nonTarget)).digest('hex'), '74ecbae4f2e9ecf3ff1be3a43ea18af66f4dd11e18813e72ba82debdefc85e1b');
+  assert.equal(createHash('sha256').update(JSON.stringify(nonTarget)).digest('hex'), '968862a1d531a3a17c9490fab785386f903852befa3905190ca3d69e68be1872');
   assert.equal(atlas.festivals.every((festival) => festival.latitude === null && festival.longitude === null), true);
   assert.equal(atlas.festivals.every((festival) => festival.geocoding_source === null && festival.geocoding_query === null), true);
   assert.equal(createHash('sha256').update(JSON.stringify(atlas.festivals.map((festival) => [festival.slug, festival.geocoding_confidence]))).digest('hex'), 'a65cfe2ff09e6d46d9d53d609b3bc2e9a314befebf2203c662ae04429a135103');
@@ -2867,7 +2971,7 @@ test('Phase 5A.1 closes exactly two reciprocal guide discovery loops and freezes
   assert.match(page, /href=\{`\/festivals\/\$\{similar\.slug\}`\}/);
 
   assert.equal(createHash('sha256').update(css).digest('hex'), '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb');
-  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), '8e148cb046ff61f9cdcba8ed415790bd2f005ed66ae276abe5e3c46d31599e78');
+  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c');
   assert.equal(createHash('sha256').update(dto).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
   assert.equal(createHash('sha256').update(sitemap).digest('hex'), '1231fd8a9bfe5d986b6d790bfcca7ed77871bca276155a5bc83212fcd6bbaf20');
   assert.equal(createHash('sha256').update(packageSource).digest('hex'), 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d');
@@ -2954,7 +3058,7 @@ test('Phase 5A.2 compresses the mobile directory filter with one native accessib
     .filter((value) => value !== '0');
   assert.deepEqual(nonZeroRadii, [], 'the directory should retain square Night Transmission geometry');
 
-  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), '8e148cb046ff61f9cdcba8ed415790bd2f005ed66ae276abe5e3c46d31599e78');
+  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c');
   assert.equal(createHash('sha256').update(dto).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
   assert.equal(createHash('sha256').update(directoryPage).digest('hex'), 'd0eb0a675d432754bf9eaf9dddb6a997492e54073356ddea69b5254748b84230');
   assert.equal(createHash('sha256').update(sitemap).digest('hex'), '1231fd8a9bfe5d986b6d790bfcca7ed77871bca276155a5bc83212fcd6bbaf20');
@@ -3049,7 +3153,7 @@ test('Phase 5B.1 selected European festivals guide is bounded, source-safe, and 
   assert.doesNotMatch(guide, /date_pending|source_status|map_phase0_category|core_anchor|watchlist|Phase 0|map-readiness|needs_review/i);
 
   const protectedHashes = new Map([
-    ['src/data/atlas-festivals.json', '8e148cb046ff61f9cdcba8ed415790bd2f005ed66ae276abe5e3c46d31599e78'],
+    ['src/data/atlas-festivals.json', 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c'],
     ['src/lib/public-festivals.ts', 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8'],
     ['package.json', 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d'],
     ['package-lock.json', '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56'],
@@ -3149,7 +3253,7 @@ test('Phase 5B.2 publishes the selected European guide through the Guides Hub an
   }
   assert.equal(createHash('sha256').update(guidesCss).digest('hex'), 'aef54b1c097f166f8118a0e8b2f08c07e46928f85c67f27b88fce08c344ea6e3', 'Guides Hub CSS should not change');
   assert.deepEqual(hashTree('public'), { count: 20, hash: 'fdb685b14899493dad0a63d1d0500cbfb975065880f97931020bc0590f36c81b' }, 'public assets should not change');
-  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), '8e148cb046ff61f9cdcba8ed415790bd2f005ed66ae276abe5e3c46d31599e78');
+  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c');
   assert.equal(createHash('sha256').update(dto).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
   assert.equal(createHash('sha256').update(packageSource).digest('hex'), 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d');
   assert.equal(createHash('sha256').update(packageLock).digest('hex'), '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56');
@@ -3241,7 +3345,7 @@ test('Phase 5C.1 ticket verification guide is reader-facing, non-commercial, and
     ['src/app/verification/page.tsx', '28946389175da89f6cd91444f6693b29d21dbcfe0f4a88fa92acf8d471003f14'],
     ['src/app/verification/VerificationPage.module.css', 'b370b6781237df419a1920128d0849d24345aecab57b624826275521239f3bb1'],
     ['src/app/guides/GuidesHub.module.css', 'aef54b1c097f166f8118a0e8b2f08c07e46928f85c67f27b88fce08c344ea6e3'],
-    ['src/data/atlas-festivals.json', '8e148cb046ff61f9cdcba8ed415790bd2f005ed66ae276abe5e3c46d31599e78'],
+    ['src/data/atlas-festivals.json', 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c'],
     ['src/lib/public-festivals.ts', 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8'],
     ['package.json', 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d'],
     ['package-lock.json', '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56'],
@@ -3333,7 +3437,7 @@ test('Phase 5C.2 publishes the ticket verification guide through the Guides Hub 
     ['src/app/verification/page.tsx', '28946389175da89f6cd91444f6693b29d21dbcfe0f4a88fa92acf8d471003f14'],
     ['src/app/verification/VerificationPage.module.css', 'b370b6781237df419a1920128d0849d24345aecab57b624826275521239f3bb1'],
     ['src/app/guides/GuidesHub.module.css', 'aef54b1c097f166f8118a0e8b2f08c07e46928f85c67f27b88fce08c344ea6e3'],
-    ['src/data/atlas-festivals.json', '8e148cb046ff61f9cdcba8ed415790bd2f005ed66ae276abe5e3c46d31599e78'],
+    ['src/data/atlas-festivals.json', 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c'],
     ['src/lib/public-festivals.ts', 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8'],
     ['package.json', 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d'],
     ['package-lock.json', '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56'],
@@ -3467,7 +3571,7 @@ test('Phase 5C.3A first-time guide is practical, non-commercial, and locally bou
     ['src/components/site/DiscoveryLinks.tsx', '69e9783aa619c7904e4f45e70b20eb837788a2020200f5c5fbbb53a9f79ddee4'],
     ['src/components/site/Footer.tsx', 'd865de10d989e34611f305a8239d74533b8c6f02c08e355138f5c5025f9ab8db'],
     ['src/components/site/Header.tsx', '296fb5e4c8a8553f1b38f9c6603cc725f1f26eb81c4468cfd243d6ec3173d0d7'],
-    ['src/data/atlas-festivals.json', '8e148cb046ff61f9cdcba8ed415790bd2f005ed66ae276abe5e3c46d31599e78'],
+    ['src/data/atlas-festivals.json', 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c'],
     ['src/lib/public-festivals.ts', 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8'],
     ['src/lib/seo.ts', '5b7a4c9e26dede625ef02c39fc9e96fe779f128ec57bb6db283790d71a9f2b31'],
   ]);
@@ -3555,7 +3659,7 @@ test('Phase 5C.3B publishes the first-time guide through the Guides Hub and site
     ['src/app/guides/GuidesHub.module.css', 'aef54b1c097f166f8118a0e8b2f08c07e46928f85c67f27b88fce08c344ea6e3'],
     ['src/app/layout.tsx', 'e0d2ecdc24d76e0b2a9d1328c532b0b63f6223d28b35498b8da7ba3aab51457f'],
     ['src/lib/seo.ts', '5b7a4c9e26dede625ef02c39fc9e96fe779f128ec57bb6db283790d71a9f2b31'],
-    ['src/data/atlas-festivals.json', '8e148cb046ff61f9cdcba8ed415790bd2f005ed66ae276abe5e3c46d31599e78'],
+    ['src/data/atlas-festivals.json', 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c'],
     ['src/lib/public-festivals.ts', 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8'],
     ['package.json', 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d'],
     ['package-lock.json', '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56'],

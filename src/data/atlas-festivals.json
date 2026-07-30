@@ -1009,8 +1009,7 @@
         "https://terminus-festival.com/",
         "https://terminus-festival.com/wp-content/uploads/2026/03/DATE-1.png",
         "https://terminus-festival.com/wp-content/uploads/2026/03/ADDRESS-1.png",
-        "https://terminus-festival.com/wp-content/uploads/2026/03/LINEUP-1.png",
-        "https://www.eventbrite.ca/e/terminus-festival-2026-resonance-tickets-1985683094589?aff=oddtdtcreator"
+        "https://terminus-festival.com/wp-content/uploads/2026/03/LINEUP-1.png"
       ],
       "verification_status": "confirmed_upcoming",
       "source_confidence": "high",
@@ -1039,11 +1038,6 @@
         {
           "label": "Official source",
           "url": "https://terminus-festival.com/wp-content/uploads/2026/03/LINEUP-1.png",
-          "type": "official_source"
-        },
-        {
-          "label": "Official source",
-          "url": "https://www.eventbrite.ca/e/terminus-festival-2026-resonance-tickets-1985683094589?aff=oddtdtcreator",
           "type": "official_source"
         }
       ],
