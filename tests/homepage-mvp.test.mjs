@@ -472,7 +472,6 @@ test('Phase 5C.5A removes only the ended Terminus ticket source and preserves ev
 
   for (const [relativePath, expectedHash] of Object.entries({
     'src/lib/public-festivals.ts': 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8',
-    'src/app/festivals/[slug]/page.tsx': '82407c32fbaca73946fa5f1e8938810e01e25416328e8872da4eb47a231034c4',
     'src/app/festivals/[slug]/FestivalDetail.module.css': '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb',
     'src/app/festivals/terminus-festival-resonance/route.ts': 'd908d62a2874668e91ec4150446a21e368e9403745a60f62e9b4236d15a1532e',
     'src/app/sitemap.ts': '1231fd8a9bfe5d986b6d790bfcca7ed77871bca276155a5bc83212fcd6bbaf20',
@@ -483,6 +482,11 @@ test('Phase 5C.5A removes only the ended Terminus ticket source and preserves ev
       `${relativePath} should remain byte-identical`,
     );
   }
+  assert.equal(
+    createHash('sha256').update(normalizePhase5A1GuideDiscoveryPilot(read('src/app/festivals/[slug]/page.tsx'))).digest('hex'),
+    'b136d810bf2a236186672004dfb89e5b71be06018b07d8249ca29a559db14798',
+    'the shared detail route may differ from the frozen baseline only inside the centralized guide-discovery mapping mechanism',
+  );
 
   const legacyRedirect = read('src/app/festivals/terminus-festival-resonance/route.ts');
   assert.match(legacyRedirect, /const TERMINUS_CANONICAL_PATH = "\/festivals\/terminus-festival"/);
@@ -493,7 +497,7 @@ test('Phase 5C.5A removes only the ended Terminus ticket source and preserves ev
     .filter(Boolean)
     .map((line) => line.slice(3));
   assert.equal(
-    changedPaths.every((path) => ['src/data/atlas-festivals.json', 'tests/homepage-mvp.test.mjs'].includes(path)),
+    changedPaths.every((path) => ['src/app/festivals/[slug]/page.tsx', 'tests/homepage-mvp.test.mjs'].includes(path)),
     true,
     `no third repository path may change: ${changedPaths.join(', ')}`,
   );
@@ -2163,7 +2167,7 @@ test('Night Transmission Phase 4B M’era Luna reference stays content-exact and
   assert.match(page, /const FESTIVAL_DETAIL_REFERENCE_SLUG = "mera-luna-festival"/);
   assert.equal((page.match(/FESTIVAL_DETAIL_REFERENCE_SLUG/g) ?? []).length, 4, 'one declaration, one metadata override key, one activation member, and one identity comparison are allowed');
   assert.equal((page.match(/festival\.slug === FESTIVAL_DETAIL_REFERENCE_SLUG/g) ?? []).length, 1);
-  assert.equal((page.match(/"mera-luna-festival"/g) ?? []).length, 1, 'the selected slug should be declared once');
+  assert.equal((page.match(/"mera-luna-festival"/g) ?? []).length, 2, 'the selected slug should appear once as the reference declaration and once as the Phase 5D.1 guide mapping key');
   assert.match(page, /data-festival-detail-reference=\{usesNightTransmissionPresentation \? "night-transmission" : undefined\}/);
   assert.match(page, /data-phase4a-main-contract=\{isMeraLunaReferenceRoute \? PHASE4A_MAIN_CONTENT_HASH : undefined\}/);
   assert.match(page, /data-phase4a-article-contract=\{isMeraLunaReferenceRoute \? PHASE4A_ARTICLE_CONTENT_HASH : undefined\}/);
@@ -2374,7 +2378,7 @@ test('Night Transmission Phase 4I activates New Colossus through the immutable c
   assert.equal((page.match(/NIGHT_TRANSMISSION_DETAIL_SLUGS/g) ?? []).length, 2, 'one declaration and one centralized lookup are allowed');
   assert.equal((page.match(/NIGHT_TRANSMISSION_DETAIL_SLUGS\.includes\(festival\.slug\)/g) ?? []).length, 1);
   assert.doesNotMatch(page, /Object\.freeze\(new Set|\.add\(|\.delete\(|\.clear\(/);
-  assert.equal((page.match(/"mera-luna-festival"/g) ?? []).length, 1);
+  assert.equal((page.match(/"mera-luna-festival"/g) ?? []).length, 2, 'one reference declaration and one Phase 5D.1 guide mapping key are allowed');
   assert.equal((page.match(/"darker-waves"/g) ?? []).length, 2, 'one activation member and one Phase 5A.1 guide mapping key are allowed');
   assert.equal((page.match(/"ncn-festival-nocturnal-culture-night"/g) ?? []).length, 1);
   assert.equal((page.match(/"levitation"/g) ?? []).length, 1);
@@ -2915,6 +2919,7 @@ test('Phase 5A.1 closes exactly two reciprocal guide discovery loops and freezes
       reciprocalSource: gothGuide,
     },
   };
+  const phase5D1ContextualTargets = new Set(['mera-luna-festival']);
 
   const mappingBlock = page.match(/const FESTIVAL_DETAIL_GUIDE_LINKS:[\s\S]*?Object\.freeze\(\{[\s\S]*?\n\}\);/)?.[0] ?? '';
   assert.ok(mappingBlock, 'the explicit immutable Phase 5A.1 mapping should exist');
@@ -2930,11 +2935,11 @@ test('Phase 5A.1 closes exactly two reciprocal guide discovery loops and freezes
     assert.equal((mappingBlock.match(new RegExp(contract.label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) ?? []).length, 1, `${slug} should have one frozen label`);
     assert.match(contract.reciprocalSource, new RegExp(`/festivals/${slug}`), `${contract.href} should already link back to ${slug}`);
   }
-  assert.equal((mappingBlock.match(/^\s+href:/gm) ?? []).length, 2, 'the mapping should contain exactly two href values');
-  assert.equal((mappingBlock.match(/^\s+label:/gm) ?? []).length, 2, 'the mapping should contain exactly two label values');
+  assert.equal((mappingBlock.match(/^\s+href:/gm) ?? []).length, 3, 'the mapping should contain the two reciprocal links plus the one approved Phase 5D.1 contextual link');
+  assert.equal((mappingBlock.match(/^\s+label:/gm) ?? []).length, 3, 'the mapping should contain exactly three frozen labels');
 
   for (const festival of atlas.festivals) {
-    if (targets[festival.slug]) continue;
+    if (targets[festival.slug] || phase5D1ContextualTargets.has(festival.slug)) continue;
     assert.doesNotMatch(mappingBlock, new RegExp(`"${festival.slug}"`), `${festival.slug} must retain the generic guide continuation`);
   }
 
@@ -3550,7 +3555,6 @@ test('Phase 5C.3A first-time guide is practical, non-commercial, and locally bou
     ['public/night-transmission-inner/magenta-orbit.avif', '68ddeb79e1d4c7e75a2aac81c5dad1fe6f0d3f85916a220f3154ff89bbc99706'],
     ['public/night-transmission-inner/tower-beacon-signature.avif', '51178b456232529f84051fe40fe8acc07c81caee1a389309427fc5cc1cba3594'],
     ['src/app/festivals/[slug]/FestivalDetail.module.css', '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb'],
-    ['src/app/festivals/[slug]/page.tsx', '82407c32fbaca73946fa5f1e8938810e01e25416328e8872da4eb47a231034c4'],
     ['src/app/globals.css', '4a208c9b182b696cfd77f3a87e3810e153ef8233290ad829294d47590a573788'],
     ['src/app/guides/GuidesHub.module.css', 'aef54b1c097f166f8118a0e8b2f08c07e46928f85c67f27b88fce08c344ea6e3'],
     ['src/app/guides/european-goth-darkwave-industrial-festivals/GuideArticle.module.css', '6f5877f8366151232acf5e08d43bab6cc81f4bb90d2746f5c2e77c8b944758c3'],
@@ -3578,9 +3582,14 @@ test('Phase 5C.3A first-time guide is practical, non-commercial, and locally bou
   for (const [protectedPath, expectedHash] of protectedHashes) {
     assert.equal(createHash('sha256').update(readFileSync(join(root, protectedPath))).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
   }
+  assert.equal(
+    createHash('sha256').update(normalizePhase5A1GuideDiscoveryPilot(read('src/app/festivals/[slug]/page.tsx'))).digest('hex'),
+    'b136d810bf2a236186672004dfb89e5b71be06018b07d8249ca29a559db14798',
+    'the shared detail route may differ from the frozen baseline only inside the centralized guide-discovery mapping mechanism',
+  );
 });
 
-test('Phase 5C.3B publishes the first-time guide through the Guides Hub and sitemap only', () => {
+test('Phase 5C.3B publishes the first-time guide and Phase 5D.1 maps only M’era Luna to it', () => {
   const guidesHub = read('src/app/guides/page.tsx');
   const sitemap = read('src/app/sitemap.ts');
   const firstTimePath = 'src/app/guides/first-time-dark-alternative-festival-guide/page.tsx';
@@ -3641,6 +3650,78 @@ test('Phase 5C.3B publishes the first-time guide through the Guides Hub and site
   assert.equal(staticSuffixes.length + atlas.festivals.length, 27, 'the generated sitemap should contain 27 URLs');
   assert.equal((sitemap.match(/`\$\{SITE_URL\}\/guides\/first-time-dark-alternative-festival-guide`/g) ?? []).length, 1);
   assert.equal(firstTimeCanonical, 'https://retroaltfest.com/guides/first-time-dark-alternative-festival-guide');
+
+  const page = read('src/app/festivals/[slug]/page.tsx');
+  const mappingBlock = page.match(/const FESTIVAL_DETAIL_GUIDE_LINKS:[\s\S]*?Object\.freeze\(\{[\s\S]*?\n\}\);/)?.[0] ?? '';
+  const targetSlug = 'mera-luna-festival';
+  const heldSlug = 'ncn-festival-nocturnal-culture-night';
+  const firstTimeLabel = 'First-Time Dark Alternative Festival Guide';
+  const existingSpecificMappings = {
+    'darker-waves': {
+      href: '/guides/new-wave-post-punk-retro-alternative-festivals-north-america',
+      label: 'New Wave, Post-Punk & Retro Alternative Guide',
+    },
+    'a-murder-of-crows-xi-nyc-goth-post-punk-festival': {
+      href: '/guides/north-american-goth-darkwave-festivals',
+      label: 'North American Goth & Darkwave Guide',
+    },
+  };
+  const genericSlugs = [
+    'absolution-fest', 'terminus-festival', 'infest-festival', 'cold-waves',
+    'mutek-montreal', 'wave-gotik-treffen', 'castle-party-festival', 'amphi-festival',
+    'just-like-heaven', 'levitation', 'the-new-colossus-festival', heldSlug,
+  ];
+
+  assert.ok(mappingBlock, 'the centralized guide mapping should remain extractable');
+  assert.equal((mappingBlock.match(new RegExp(`"${targetSlug}"`, 'g')) ?? []).length, 1, 'M’era Luna should occur once in the mapping');
+  assert.equal((mappingBlock.match(/\/guides\/first-time-dark-alternative-festival-guide/g) ?? []).length, 1, 'the First-Time Guide destination should occur once in the mapping');
+  assert.equal((mappingBlock.match(new RegExp(firstTimeLabel, 'g')) ?? []).length, 1, 'the exact approved label should occur once in the mapping');
+  assert.doesNotMatch(mappingBlock, new RegExp(`"${heldSlug}"`), 'NCN must remain generic pending its separate source-link review');
+  for (const [slug, contract] of Object.entries(existingSpecificMappings)) {
+    const entryPattern = new RegExp(`"${slug}":[\\s\\S]*?href: "${contract.href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[\\s\\S]*?label: "${contract.label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`);
+    assert.match(mappingBlock, entryPattern, `${slug} should retain its exact existing mapping`);
+    assert.equal((mappingBlock.match(new RegExp(`"${slug}"`, 'g')) ?? []).length, 1);
+  }
+  for (const slug of genericSlugs) {
+    assert.doesNotMatch(mappingBlock, new RegExp(`"${slug}"`), `${slug} should retain the generic /guides destination`);
+  }
+  assert.deepEqual(
+    new Set(atlas.festivals.map((festival) => festival.slug)),
+    new Set([targetSlug, ...Object.keys(existingSpecificMappings), ...genericSlugs]),
+    'the one target, two existing specific routes, and twelve generic routes should account for the complete atlas',
+  );
+  assert.equal((mappingBlock.match(/^\s+href:/gm) ?? []).length, 3, 'exactly three route-specific destinations should exist');
+  assert.equal((mappingBlock.match(/^\s+label:/gm) ?? []).length, 3, 'exactly three route-specific labels should exist');
+
+  const discoveryBlock = page.match(/const discoveryLinks = \([\s\S]*?\n  \);/)?.[0] ?? '';
+  assert.equal((discoveryBlock.match(/href:/g) ?? []).length, 3, 'discovery-card count should remain three');
+  const discoveryOrder = [
+    discoveryBlock.indexOf('href: "/festivals"'),
+    discoveryBlock.indexOf('href: guideDiscoveryLink.href'),
+    discoveryBlock.indexOf('href: "/verification"'),
+  ];
+  assert.equal(discoveryOrder.every((position) => position >= 0), true);
+  assert.deepEqual(discoveryOrder, [...discoveryOrder].sort((a, b) => a - b), 'Atlas, guide, and Verification order must remain exact');
+  assert.match(page, /const GENERIC_GUIDE_DISCOVERY_LINK = Object\.freeze\(\{\s*href: "\/guides",\s*label: "Read curated guides",\s*\}\)/);
+  assert.match(page, /const guideDiscoveryLink = FESTIVAL_DETAIL_GUIDE_LINKS\[festival\.slug\] \?\? GENERIC_GUIDE_DISCOVERY_LINK/);
+
+  const activationBlock = page.match(/const NIGHT_TRANSMISSION_DETAIL_SLUGS[\s\S]*?\]\);/)?.[0] ?? '';
+  assert.deepEqual([...activationBlock.matchAll(/"([a-z0-9-]+)"/g)].map((match) => match[1]), [
+    'darker-waves', heldSlug, 'levitation',
+    'a-murder-of-crows-xi-nyc-goth-post-punk-festival', 'the-new-colossus-festival',
+  ]);
+  assert.match(activationBlock, /FESTIVAL_DETAIL_REFERENCE_SLUG/);
+  assert.equal(
+    createHash('sha256').update(normalizePhase5A1GuideDiscoveryPilot(page)).digest('hex'),
+    'b136d810bf2a236186672004dfb89e5b71be06018b07d8249ca29a559db14798',
+    'metadata, canonicals, sources, related festivals, activation, content, and rendering must remain frozen outside the centralized mapping',
+  );
+  assert.equal(createHash('sha256').update(read('src/app/festivals/[slug]/FestivalDetail.module.css')).digest('hex'), '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb');
+  assert.equal(createHash('sha256').update(read('src/components/site/DiscoveryLinks.tsx')).digest('hex'), '69e9783aa619c7904e4f45e70b20eb837788a2020200f5c5fbbb53a9f79ddee4');
+  assert.doesNotMatch(read(firstTimePath), /mera-luna-festival|ncn-festival-nocturnal-culture-night/, 'the First-Time Guide must remain event-neutral');
+  assert.doesNotMatch(mappingBlock, /[?&](?:aff|affiliate|ref|utm_|click|partner)=|Ticketmaster|StubHub|SeatGeek|Vivid Seats|AXS|Eventbrite|Viagogo|hotel|product|sponsored|commission|analytics/i);
+  assert.doesNotMatch(`${page}\n${read('package.json')}`, /"use client"|useState|useEffect|useMemo|fetch\(|\/api\/|framer-motion|lottie|three/i);
+  assert.doesNotMatch(page, /date_pending|source_status|map_phase0_category|core_anchor|watchlist|Phase 0|map-readiness|needs_review|geocoding_source|geocoding_query|geocoding_confidence|latitude|longitude/i);
 
   assert.match(guidesHub, /title:\s*{\s*absolute: "RetroAltFest Guides \| Goth, Darkwave, Industrial & Retro Alternative Festivals"/);
   assert.match(guidesHub, /description:\s*\n?\s*"Browse curated RetroAltFest guides to goth, darkwave, industrial, EBM, post-punk, new wave, and retro alternative festivals, with clear notes on what is confirmed and what is still being checked\."/);

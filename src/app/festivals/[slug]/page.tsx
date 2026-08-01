@@ -27,6 +27,10 @@ const GENERIC_GUIDE_DISCOVERY_LINK = Object.freeze({
   label: "Read curated guides",
 });
 const FESTIVAL_DETAIL_GUIDE_LINKS: Readonly<Record<string, Readonly<{ href: string; label: string }>>> = Object.freeze({
+  "mera-luna-festival": Object.freeze({
+    href: "/guides/first-time-dark-alternative-festival-guide",
+    label: "First-Time Dark Alternative Festival Guide",
+  }),
   "darker-waves": Object.freeze({
     href: "/guides/new-wave-post-punk-retro-alternative-festivals-north-america",
     label: "New Wave, Post-Punk & Retro Alternative Guide",
