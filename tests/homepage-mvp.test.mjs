@@ -2380,7 +2380,7 @@ test('Night Transmission Phase 4I activates New Colossus through the immutable c
   assert.doesNotMatch(page, /Object\.freeze\(new Set|\.add\(|\.delete\(|\.clear\(/);
   assert.equal((page.match(/"mera-luna-festival"/g) ?? []).length, 2, 'one reference declaration and one Phase 5D.1 guide mapping key are allowed');
   assert.equal((page.match(/"darker-waves"/g) ?? []).length, 2, 'one activation member and one Phase 5A.1 guide mapping key are allowed');
-  assert.equal((page.match(/"ncn-festival-nocturnal-culture-night"/g) ?? []).length, 1);
+  assert.equal((page.match(/"ncn-festival-nocturnal-culture-night"/g) ?? []).length, 2, 'one activation member and one Phase 5D.3 guide mapping key are allowed');
   assert.equal((page.match(/"levitation"/g) ?? []).length, 1);
   assert.equal((page.match(/"a-murder-of-crows-xi-nyc-goth-post-punk-festival"/g) ?? []).length, 3, 'one activation member, one centralized metadata override key, and one Phase 5A.1 guide mapping key are allowed');
   assert.equal((page.match(/"the-new-colossus-festival"/g) ?? []).length, 2, 'one activation member and one centralized metadata override key are allowed');
@@ -2919,7 +2919,7 @@ test('Phase 5A.1 closes exactly two reciprocal guide discovery loops and freezes
       reciprocalSource: gothGuide,
     },
   };
-  const phase5D1ContextualTargets = new Set(['mera-luna-festival']);
+  const contextualTargets = new Set(['mera-luna-festival', 'ncn-festival-nocturnal-culture-night']);
 
   const mappingBlock = page.match(/const FESTIVAL_DETAIL_GUIDE_LINKS:[\s\S]*?Object\.freeze\(\{[\s\S]*?\n\}\);/)?.[0] ?? '';
   assert.ok(mappingBlock, 'the explicit immutable Phase 5A.1 mapping should exist');
@@ -2935,11 +2935,11 @@ test('Phase 5A.1 closes exactly two reciprocal guide discovery loops and freezes
     assert.equal((mappingBlock.match(new RegExp(contract.label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) ?? []).length, 1, `${slug} should have one frozen label`);
     assert.match(contract.reciprocalSource, new RegExp(`/festivals/${slug}`), `${contract.href} should already link back to ${slug}`);
   }
-  assert.equal((mappingBlock.match(/^\s+href:/gm) ?? []).length, 3, 'the mapping should contain the two reciprocal links plus the one approved Phase 5D.1 contextual link');
-  assert.equal((mappingBlock.match(/^\s+label:/gm) ?? []).length, 3, 'the mapping should contain exactly three frozen labels');
+  assert.equal((mappingBlock.match(/^\s+href:/gm) ?? []).length, 4, 'the mapping should contain the two reciprocal links plus the two approved contextual links');
+  assert.equal((mappingBlock.match(/^\s+label:/gm) ?? []).length, 4, 'the mapping should contain exactly four frozen labels');
 
   for (const festival of atlas.festivals) {
-    if (targets[festival.slug] || phase5D1ContextualTargets.has(festival.slug)) continue;
+    if (targets[festival.slug] || contextualTargets.has(festival.slug)) continue;
     assert.doesNotMatch(mappingBlock, new RegExp(`"${festival.slug}"`), `${festival.slug} must retain the generic guide continuation`);
   }
 
@@ -3589,7 +3589,7 @@ test('Phase 5C.3A first-time guide is practical, non-commercial, and locally bou
   );
 });
 
-test('Phase 5C.3B publishes the first-time guide and Phase 5D.1 maps only M’era Luna to it', () => {
+test('Phase 5C.3B publishes the first-time guide and Phase 5D.3 maps only M’era Luna and NCN to it', () => {
   const guidesHub = read('src/app/guides/page.tsx');
   const sitemap = read('src/app/sitemap.ts');
   const firstTimePath = 'src/app/guides/first-time-dark-alternative-festival-guide/page.tsx';
@@ -3653,8 +3653,8 @@ test('Phase 5C.3B publishes the first-time guide and Phase 5D.1 maps only M’er
 
   const page = read('src/app/festivals/[slug]/page.tsx');
   const mappingBlock = page.match(/const FESTIVAL_DETAIL_GUIDE_LINKS:[\s\S]*?Object\.freeze\(\{[\s\S]*?\n\}\);/)?.[0] ?? '';
-  const targetSlug = 'mera-luna-festival';
-  const heldSlug = 'ncn-festival-nocturnal-culture-night';
+  const targetSlugs = ['mera-luna-festival', 'ncn-festival-nocturnal-culture-night'];
+  const ncnSlug = 'ncn-festival-nocturnal-culture-night';
   const firstTimeLabel = 'First-Time Dark Alternative Festival Guide';
   const existingSpecificMappings = {
     'darker-waves': {
@@ -3669,14 +3669,18 @@ test('Phase 5C.3B publishes the first-time guide and Phase 5D.1 maps only M’er
   const genericSlugs = [
     'absolution-fest', 'terminus-festival', 'infest-festival', 'cold-waves',
     'mutek-montreal', 'wave-gotik-treffen', 'castle-party-festival', 'amphi-festival',
-    'just-like-heaven', 'levitation', 'the-new-colossus-festival', heldSlug,
+    'just-like-heaven', 'levitation', 'the-new-colossus-festival',
   ];
+  const ncn = atlas.festivals.find((festival) => festival.slug === ncnSlug);
 
   assert.ok(mappingBlock, 'the centralized guide mapping should remain extractable');
-  assert.equal((mappingBlock.match(new RegExp(`"${targetSlug}"`, 'g')) ?? []).length, 1, 'M’era Luna should occur once in the mapping');
-  assert.equal((mappingBlock.match(/\/guides\/first-time-dark-alternative-festival-guide/g) ?? []).length, 1, 'the First-Time Guide destination should occur once in the mapping');
-  assert.equal((mappingBlock.match(new RegExp(firstTimeLabel, 'g')) ?? []).length, 1, 'the exact approved label should occur once in the mapping');
-  assert.doesNotMatch(mappingBlock, new RegExp(`"${heldSlug}"`), 'NCN must remain generic pending its separate source-link review');
+  for (const targetSlug of targetSlugs) {
+    const targetPattern = new RegExp(`"${targetSlug}":[\\s\\S]*?href: "${firstTimeRoute}"[\\s\\S]*?label: "${firstTimeLabel}"`);
+    assert.match(mappingBlock, targetPattern, `${targetSlug} should link exactly to the First-Time Guide`);
+    assert.equal((mappingBlock.match(new RegExp(`"${targetSlug}"`, 'g')) ?? []).length, 1, `${targetSlug} should occur once in the mapping`);
+  }
+  assert.equal((mappingBlock.match(/\/guides\/first-time-dark-alternative-festival-guide/g) ?? []).length, 2, 'the First-Time Guide destination should occur exactly for M’era Luna and NCN');
+  assert.equal((mappingBlock.match(new RegExp(firstTimeLabel, 'g')) ?? []).length, 2, 'the exact approved label should occur exactly for M’era Luna and NCN');
   for (const [slug, contract] of Object.entries(existingSpecificMappings)) {
     const entryPattern = new RegExp(`"${slug}":[\\s\\S]*?href: "${contract.href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[\\s\\S]*?label: "${contract.label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`);
     assert.match(mappingBlock, entryPattern, `${slug} should retain its exact existing mapping`);
@@ -3687,11 +3691,20 @@ test('Phase 5C.3B publishes the first-time guide and Phase 5D.1 maps only M’er
   }
   assert.deepEqual(
     new Set(atlas.festivals.map((festival) => festival.slug)),
-    new Set([targetSlug, ...Object.keys(existingSpecificMappings), ...genericSlugs]),
-    'the one target, two existing specific routes, and twelve generic routes should account for the complete atlas',
+    new Set([...targetSlugs, ...Object.keys(existingSpecificMappings), ...genericSlugs]),
+    'the two First-Time Guide targets, two existing specific routes, and eleven generic routes should account for the complete atlas',
   );
-  assert.equal((mappingBlock.match(/^\s+href:/gm) ?? []).length, 3, 'exactly three route-specific destinations should exist');
-  assert.equal((mappingBlock.match(/^\s+label:/gm) ?? []).length, 3, 'exactly three route-specific labels should exist');
+  assert.equal((mappingBlock.match(/^\s+href:/gm) ?? []).length, 4, 'exactly four route-specific destinations should exist');
+  assert.equal((mappingBlock.match(/^\s+label:/gm) ?? []).length, 4, 'exactly four route-specific labels should exist');
+  assert.equal(genericSlugs.length, 11, 'exactly eleven routes should retain the generic Guides Hub tuple');
+
+  assert.ok(ncn, 'NCN should remain present in the atlas');
+  assert.equal(ncn.official_url, 'https://www.ncn-festival.de');
+  assert.deepEqual(ncn.source_urls, ['https://www.ncn-festival.de']);
+  assert.deepEqual(ncn.source_links, [{ label: 'Official festival site', url: 'https://www.ncn-festival.de', type: 'official_site' }]);
+  assert.deepEqual(ncn.similar_festival_ids, ['wave-gotik-treffen', 'mera-luna-festival', 'amphi-festival']);
+  assert.match(page, /href=\{festival\.officialSiteUrl\} target="_blank" rel="noreferrer"/);
+  assert.doesNotMatch(`${atlasSource}\n${page}`, /tixforgigs|37760|ncn-special-2021|ticket button|public caveat/i);
 
   const discoveryBlock = page.match(/const discoveryLinks = \([\s\S]*?\n  \);/)?.[0] ?? '';
   assert.equal((discoveryBlock.match(/href:/g) ?? []).length, 3, 'discovery-card count should remain three');
@@ -3707,7 +3720,7 @@ test('Phase 5C.3B publishes the first-time guide and Phase 5D.1 maps only M’er
 
   const activationBlock = page.match(/const NIGHT_TRANSMISSION_DETAIL_SLUGS[\s\S]*?\]\);/)?.[0] ?? '';
   assert.deepEqual([...activationBlock.matchAll(/"([a-z0-9-]+)"/g)].map((match) => match[1]), [
-    'darker-waves', heldSlug, 'levitation',
+    'darker-waves', ncnSlug, 'levitation',
     'a-murder-of-crows-xi-nyc-goth-post-punk-festival', 'the-new-colossus-festival',
   ]);
   assert.match(activationBlock, /FESTIVAL_DETAIL_REFERENCE_SLUG/);
