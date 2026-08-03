@@ -496,10 +496,16 @@ test('Phase 5C.5A removes only the ended Terminus ticket source and preserves ev
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
+  const approvedActivePaths = [
+    'src/app/festivals/[slug]/page.tsx',
+    'src/app/guides/planning-a-dark-alternative-festival-trip/GuideArticle.module.css',
+    'src/app/guides/planning-a-dark-alternative-festival-trip/page.tsx',
+    'tests/homepage-mvp.test.mjs',
+  ];
   assert.equal(
-    changedPaths.every((path) => ['src/app/festivals/[slug]/page.tsx', 'tests/homepage-mvp.test.mjs'].includes(path)),
+    changedPaths.every((path) => approvedActivePaths.includes(path)),
     true,
-    `no third repository path may change: ${changedPaths.join(', ')}`,
+    `no unrelated repository path may change: ${changedPaths.join(', ')}`,
   );
 });
 
@@ -3587,6 +3593,171 @@ test('Phase 5C.3A first-time guide is practical, non-commercial, and locally bou
     'b136d810bf2a236186672004dfb89e5b71be06018b07d8249ca29a559db14798',
     'the shared detail route may differ from the frozen baseline only inside the centralized guide-discovery mapping mechanism',
   );
+});
+
+test('Phase 5E.1 trip-planning guide is distinct, source-safe, non-commercial, and locally bounded', () => {
+  const guidePath = 'src/app/guides/planning-a-dark-alternative-festival-trip/page.tsx';
+  const cssPath = 'src/app/guides/planning-a-dark-alternative-festival-trip/GuideArticle.module.css';
+
+  assert.equal(existsSync(join(root, guidePath)), true, 'Phase 5E.1 route should exist locally');
+  assert.equal(existsSync(join(root, cssPath)), true, 'Phase 5E.1 should use one route-local CSS module');
+
+  const guide = read(guidePath);
+  const css = read(cssPath);
+  const source = `${guide}\n${css}`;
+  const layout = read('src/app/layout.tsx');
+  const seo = read('src/lib/seo.ts');
+  const guidesHub = read('src/app/guides/page.tsx');
+  const sitemap = read('src/app/sitemap.ts');
+  const detailPage = read('src/app/festivals/[slug]/page.tsx');
+  const atlas = JSON.parse(read('src/data/atlas-festivals.json'));
+
+  const pagePath = '/guides/planning-a-dark-alternative-festival-trip';
+  const routeTitle = 'Planning a Dark Alternative Festival Trip';
+  const canonical = `https://retroaltfest.com${pagePath}`;
+  assert.match(guide, /const pagePath = "\/guides\/planning-a-dark-alternative-festival-trip"/);
+  assert.match(guide, /title: "Planning a Dark Alternative Festival Trip"/);
+  assert.match(guide, /description:\s*"Plan a dark alternative festival trip after choosing an event: confirm the edition, interpret its footprint, choose a search area, plan late returns, and preserve flexibility\."/);
+  assert.match(guide, /path: pagePath/);
+  assert.match(guide, /type: "article"/);
+  assert.equal(layout.match(/template: "([^"]+)"/)?.[1], '%s | RetroAltFest');
+  assert.equal(layout.match(/template: "([^"]+)"/)?.[1].replace('%s', routeTitle), `${routeTitle} | RetroAltFest`);
+  assert.equal(canonical, 'https://retroaltfest.com/guides/planning-a-dark-alternative-festival-trip');
+  assert.match(seo, /const canonical = absoluteUrl\(path\)/);
+  assert.match(seo, /alternates:\s*{\s*canonical/);
+
+  assert.match(guide, /<h1[^>]*>\s*Planning a Dark Alternative Festival Trip\s*<\/h1>/s);
+  assert.equal((guide.match(/<h1\b/g) ?? []).length, 1, 'the guide should have exactly one authored H1');
+  assert.match(guide, /data-guide-family="night-transmission"/);
+  assert.match(guide, /data-article-contract="dark-alternative-trip-feasibility-guide"/);
+  assert.match(guide, /data-event-footprint-framework/);
+  assert.match(guide, /data-accommodation-search-method/);
+  assert.match(guide, /data-static-trip-confirmation/);
+
+  const expectedSections = [
+    'current-edition-record', 'event-footprint', 'arrival-departure',
+    'accommodation-search-area', 'late-night-return', 'preserve-flexibility',
+    'official-document-sources', 'trip-confirmation', 'continue-exploring',
+  ];
+  let sectionCursor = -1;
+  for (const id of expectedSections) {
+    const index = guide.indexOf(`id="${id}"`);
+    assert.ok(index > sectionCursor, `${id} should exist in the approved order`);
+    sectionCursor = index;
+  }
+
+  for (const route of [
+    '/guides/how-to-verify-festival-tickets-official-sources',
+    '/guides/first-time-dark-alternative-festival-guide',
+    '/festivals', '/verification', '/guides',
+  ]) {
+    assert.match(guide, new RegExp(`href=["']${route.replaceAll('/', '\\/')}["']`), `${route} internal link should be present`);
+  }
+  for (const sceneRoute of [
+    '/guides/european-goth-darkwave-industrial-festivals',
+    '/guides/west-coast-pacific-northwest-dark-alternative-festivals',
+    '/guides/north-american-goth-darkwave-festivals',
+    '/guides/industrial-ebm-dark-electronic-festivals-north-america',
+    '/guides/new-wave-post-punk-retro-alternative-festivals-north-america',
+  ]) {
+    assert.doesNotMatch(guide, new RegExp(sceneRoute.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), `${sceneRoute} should not be forced into this guide`);
+  }
+
+  for (const pattern of [
+    /already (?:selected|chosen) a festival/i, /trip feasibility/i,
+    /confirmed facts?|unresolved facts?/i, /single-site/i, /multi-venue/i,
+    /final (?:event|programmed) location/i, /arrival (?:window|margin|envelope)/i,
+    /departure (?:window|margin|envelope)/i, /accommodation search area/i,
+    /straight-line distance/i, /late-night return/i,
+    /responsible (?:public )?transport (?:authority|operator)/i,
+    /actual reservation terms/i, /warm-up/i, /side event/i,
+    /official government source/i, /not (?:visa or legal|legal or visa) advice/i,
+    /proceed flexibly/i, /pause/i, /final (?:source )?(?:refresh|confirmation)/i,
+  ]) assert.match(guide, pattern);
+
+  for (const firstTimeId of [
+    'event-you-chose', 'event-format', 'dress-for-conditions', 'hearing-and-energy',
+    'phone-power-schedule', 'rules-before-arrival', 'arrival-movement-return',
+    'solo-or-meeting-people', 'first-time-checklist', 'week-of-recheck',
+  ]) {
+    assert.doesNotMatch(guide, new RegExp(`id=["']${firstTimeId}["']`), `${firstTimeId} belongs to the First-Time Guide`);
+  }
+  assert.doesNotMatch(guide, /data-static-readiness-checklist|First-time readiness checklist/i);
+
+  assert.match(guide, /import styles from "\.\/GuideArticle\.module\.css"/);
+  assert.doesNotMatch(guide, /"use client"|useState|useEffect|useMemo|fetch\(|\/api\//);
+  assert.equal((css.match(/magenta-orbit\.avif/g) ?? []).length, 1, 'the existing orbital asset should be declared once');
+  assert.equal((css.match(/tower-beacon-signature\.avif/g) ?? []).length, 1, 'the existing tower asset should be declared once');
+  assert.ok(css.indexOf('tower-beacon-signature.avif') > css.indexOf('@media (min-width: 1101px)'), 'the tower URL should live only in the desktop query');
+  assert.match(css, /prefers-reduced-motion/);
+  assert.match(css, /forced-colors/);
+  assert.match(css, /focus-visible/);
+  const nonZeroRadii = [...css.matchAll(/border-radius:\s*([^;]+);/g)]
+    .map((match) => match[1].replace(/\s*!important\s*$/, '').trim())
+    .filter((value) => value !== '0');
+  assert.deepEqual(nonZeroRadii, [], 'Phase 5E.1 surfaces should remain square');
+
+  assert.doesNotMatch(source, /FAQPage|application\/ld\+json|<script|<canvas|WebGLRenderingContext|<video|prisma|supabase|mongodb|\bauth\b|\bcms\b|\bdatabase\b|scraping|geocod|latitude|longitude|map UI/i);
+  assert.doesNotMatch(source, /["']@type["']\s*:\s*["'](?:Event|Product|Offer|Review|Rating|FAQPage)["']/);
+  assert.doesNotMatch(guide, /Ticketmaster|StubHub|SeatGeek|Vivid Seats|AXS|Eventbrite|Viagogo|Hilton|Marriott|Expedia|Booking\.com|Airbnb|Delta|United Airlines|Uber|Lyft/i);
+  assert.doesNotMatch(guide, /https?:\/\//i);
+  assert.doesNotMatch(guide, /[?&](?:aff|affiliate|ref|utm_|click|partner)=/i);
+  assert.doesNotMatch(guide, /\$\s*\d|€\s*\d|£\s*\d|\b(?:USD|EUR|GBP)\s*\d|live availability|currently available|current price|lowest price|book now/i);
+  assert.doesNotMatch(guide, /affiliate|commission|sponsored|coupon|discount code|preferred partner|hotel recommendation|neighborhood ranking|flight recommendation|insurance recommendation|product recommendation/i);
+  assert.doesNotMatch(guide, /safe neighborhood|safest area|guaranteed safety|guaranteed transit|guaranteed availability|guaranteed refund|visa required|visa-free|eligible for entry/i);
+  assert.doesNotMatch(guide, /date_pending|source_status|map_phase0_category|core_anchor|watchlist|Phase 0|map-readiness|needs_review|geocoding_source|geocoding_query|geocoding_confidence|latitude|longitude/i);
+
+  assert.doesNotMatch(guidesHub, /planning-a-dark-alternative-festival-trip/, 'the local route should not be wired into the Guides Hub');
+  assert.doesNotMatch(sitemap, /planning-a-dark-alternative-festival-trip/, 'the local route should not be wired into the sitemap');
+  const guideHrefs = [...guidesHub.matchAll(/href: "(\/guides\/[^"]+)"/g)].map((match) => match[1]);
+  const staticRoutesBlock = sitemap.match(/const staticRoutes:[\s\S]*?\n  \];/)?.[0] ?? '';
+  const staticSuffixes = [...staticRoutesBlock.matchAll(/url: (?:SITE_URL|`\$\{SITE_URL\}([^`]+)`)/g)].map((match) => match[1] ?? '');
+  assert.equal(guideHrefs.length, 7, 'the Guides Hub should remain at seven published guide cards');
+  assert.equal(staticSuffixes.length, 12, 'the sitemap should retain twelve static routes');
+  assert.equal(staticSuffixes.filter((suffix) => suffix.startsWith('/guides/')).length, 7, 'the sitemap should retain seven published guide routes');
+  assert.equal(atlas.festivals.length, 15, 'festival route count should remain 15');
+  assert.equal(staticSuffixes.length + atlas.festivals.length, 27, 'the sitemap should remain at 27 URLs');
+  const mappingBlock = detailPage.match(/const FESTIVAL_DETAIL_GUIDE_LINKS:[\s\S]*?Object\.freeze\(\{[\s\S]*?\n\}\);/)?.[0] ?? '';
+  assert.equal((mappingBlock.match(/^\s+href:/gm) ?? []).length, 4, 'exactly four route-specific destinations should remain');
+  assert.equal((mappingBlock.match(/^\s+label:/gm) ?? []).length, 4, 'exactly four route-specific labels should remain');
+
+  const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' })
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => line.slice(3));
+  assert.deepEqual(new Set(changedPaths), new Set([
+    guidePath,
+    cssPath,
+    'tests/homepage-mvp.test.mjs',
+  ]), 'the active worktree must equal the exact Phase 5E.1 three-file allowlist');
+
+  const protectedHashes = new Map([
+    ['src/app/guides/page.tsx', 'aeabf34d9266b46489018a21c365984c9bbdf7fe75c36b22cc22edc06d2a693e'],
+    ['src/app/guides/GuidesHub.module.css', 'aef54b1c097f166f8118a0e8b2f08c07e46928f85c67f27b88fce08c344ea6e3'],
+    ['src/app/sitemap.ts', '1231fd8a9bfe5d986b6d790bfcca7ed77871bca276155a5bc83212fcd6bbaf20'],
+    ['src/app/festivals/[slug]/page.tsx', 'b571123e645db94a8962b1618ba268068d9b1a101ef798b283c8dadc6c7b2c3f'],
+    ['src/app/festivals/[slug]/FestivalDetail.module.css', '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb'],
+    ['src/app/verification/page.tsx', '28946389175da89f6cd91444f6693b29d21dbcfe0f4a88fa92acf8d471003f14'],
+    ['src/app/verification/VerificationPage.module.css', 'b370b6781237df419a1920128d0849d24345aecab57b624826275521239f3bb1'],
+    ['src/app/guides/first-time-dark-alternative-festival-guide/page.tsx', '22695d12985adca1e66439339bfccc29ac86ab42244164a1986fb30098c1c1de'],
+    ['src/app/guides/first-time-dark-alternative-festival-guide/GuideArticle.module.css', 'ff0ea03d3f0eaae2c8b58136c9160731ba49979b438f6cf2197d0177c91477b0'],
+    ['src/app/guides/how-to-verify-festival-tickets-official-sources/page.tsx', '3b7a1691ddd3b54d97a8495373fac2a5c678e33b87c7637d1663a2c8ace1137a'],
+    ['src/app/guides/how-to-verify-festival-tickets-official-sources/GuideArticle.module.css', '3ee1c6e11e59e1802d4d86fab26639a8a0c66fb7aa21a4f681c19df05fdc56b4'],
+    ['src/data/atlas-festivals.json', 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c'],
+    ['src/lib/public-festivals.ts', 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8'],
+    ['src/app/layout.tsx', 'e0d2ecdc24d76e0b2a9d1328c532b0b63f6223d28b35498b8da7ba3aab51457f'],
+    ['src/lib/seo.ts', '5b7a4c9e26dede625ef02c39fc9e96fe779f128ec57bb6db283790d71a9f2b31'],
+    ['src/app/globals.css', '4a208c9b182b696cfd77f3a87e3810e153ef8233290ad829294d47590a573788'],
+    ['src/components/site/Header.tsx', '296fb5e4c8a8553f1b38f9c6603cc725f1f26eb81c4468cfd243d6ec3173d0d7'],
+    ['src/components/site/Footer.tsx', 'd865de10d989e34611f305a8239d74533b8c6f02c08e355138f5c5025f9ab8db'],
+    ['src/components/site/DiscoveryLinks.tsx', '69e9783aa619c7904e4f45e70b20eb837788a2020200f5c5fbbb53a9f79ddee4'],
+    ['package.json', 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d'],
+    ['package-lock.json', '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56'],
+  ]);
+  for (const [protectedPath, expectedHash] of protectedHashes) {
+    assert.equal(createHash('sha256').update(readFileSync(join(root, protectedPath))).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
+  }
+  assert.deepEqual(hashTree('public'), { count: 20, hash: 'fdb685b14899493dad0a63d1d0500cbfb975065880f97931020bc0590f36c81b' }, 'public assets should not change');
 });
 
 test('Phase 5C.3B publishes the first-time guide and Phase 5D.3 maps only M’era Luna and NCN to it', () => {
