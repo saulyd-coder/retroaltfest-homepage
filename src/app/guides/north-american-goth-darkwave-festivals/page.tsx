@@ -100,13 +100,13 @@ const activeAtlasRecords: GuideRecord[] = [
     genreTags: ["darkwave", "EBM", "industrial", "synth", "post-punk"],
     officialUrl: "https://terminus-festival.com/",
     sceneFit: "Darkwave, EBM, industrial, synth, and post-punk.",
-    statusLabel: "Active atlas record with 2026 source support",
+    statusLabel: "Active atlas record — next edition details need official confirmation",
     summary:
-      "Terminus Festival is a source-supported active atlas record for Calgary’s darkwave, EBM, industrial, synth, and post-punk scene, with 2026 date and venue support from official and ticketing sources.",
+      "Terminus Festival remains a source-supported active atlas record for Calgary’s darkwave, EBM, industrial, synth, and post-punk scene. The July 23–26, 2026 edition has concluded, and next edition details need official confirmation.",
     sourceCaveat:
       "The official site can be image-heavy, so RetroAltFest keeps poster, lineup, and logistics details restrained unless the text source trail clearly supports them.",
-    confirmedDetails: "Official and ticketing sources support the 2026 date and venue context used here.",
-    recheckDetails: "Poster, lineup, and day-by-day logistics should be checked against official sources before being repeated in detail.",
+    confirmedDetails: "Official and organizer-controlled sources support the concluded July 23–26, 2026 edition in Calgary.",
+    recheckDetails: "A future edition’s dates, venue, ticketing, lineup, and logistics need official confirmation before travel planning.",
   },
 ];
 
@@ -194,7 +194,7 @@ export default function NorthAmericanGothDarkwaveGuidePage() {
               This guide highlights North American goth and darkwave festival records that RetroAltFest can describe from official or organizer-controlled sources.
             </p>
             <p className={styles.mastheadCopy}>
-              Some entries are active atlas records with current 2026 source support; others are kept as reference signals when their next edition is not yet confirmed. We keep source caveats visible because RetroAltFest is built around verified-before-mapped discovery, not guessed dates, ticket claims, or location shortcuts.
+              Some entries are active atlas records with source-aware status notes; others are kept as reference signals when their next edition is not yet confirmed. An active atlas link does not by itself mean a future edition has been announced. We keep source caveats visible because RetroAltFest is built around verified-before-mapped discovery, not guessed dates, ticket claims, or location shortcuts.
             </p>
             <div className={styles.pathLinks}>
               <Link className={styles.primaryPath} href="/verification">
@@ -218,8 +218,8 @@ export default function NorthAmericanGothDarkwaveGuidePage() {
         <GuideSection
           id="active-atlas-records"
           eyebrow="Source-supported active atlas records"
-          title="Four active atlas records with current source support."
-          description="These are the guide cards with direct RetroAltFest atlas links. Each one is tied to official or organizer-controlled 2026 source support rather than a broad page-level status claim."
+          title="Four active atlas records with source-aware status."
+          description="These are the guide cards with direct RetroAltFest atlas links. Three have official or organizer-controlled support for future 2026 dates; Terminus remains linked for discovery after its 2026 edition concluded, while next edition details need official confirmation."
           records={activeAtlasRecords}
           startIndex={1}
           variant="active"
@@ -242,8 +242,8 @@ export default function NorthAmericanGothDarkwaveGuidePage() {
           </h2>
           <div className={styles.statusGrid}>
             <StatusCard
-              label="Active atlas record with 2026 source support"
-              description="Used only for the four linked guide cards where official or organizer-controlled sources support the current date/status shown here."
+              label="Active atlas record with source-aware status"
+              description="Used for linked guide cards whose public status is supported by official or organizer-controlled sources. A linked record may still have next edition details awaiting confirmation."
             />
             <StatusCard
               label="Reference signal"

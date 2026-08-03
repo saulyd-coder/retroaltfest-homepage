@@ -70,13 +70,13 @@ const activeAtlasRecords: GuideRecord[] = [
     officialUrl: "https://terminus-festival.com/",
     industrialEbmRelevance: "Core industrial / EBM / dark electronic atlas record.",
     sceneFit: "Darkwave, EBM, industrial, synth, post-punk, and dark electronic.",
-    statusLabel: "Core industrial / EBM atlas record",
+    statusLabel: "Core industrial / EBM atlas record — dates not announced",
     summary:
-      "Terminus Festival is a strong Canadian industrial, EBM, dark electronic, darkwave, synth, and post-punk atlas link for this guide, with official 2026 ticketing support for July 23–26 in Calgary.",
+      "Terminus Festival remains a strong Canadian industrial, EBM, dark electronic, darkwave, synth, and post-punk atlas link. The July 23–26, 2026 edition has concluded, and next edition details need official confirmation.",
     sourceCaveat:
       "The official site uses image-heavy assets, so RetroAltFest avoids full poster or lineup transcription unless separately verified from readable official sources.",
-    sourceSupport: "Official and ticketing sources support the 2026 Calgary date context used here.",
-    recheckDetails: "Poster, lineup, venue, and day-by-day logistics should be checked against official sources before being repeated in detail.",
+    sourceSupport: "Official and organizer-controlled sources support the concluded July 23–26, 2026 edition in Calgary.",
+    recheckDetails: "A future edition’s dates, venue, ticketing, lineup, and logistics need official confirmation before travel planning.",
   },
 ];
 
@@ -171,8 +171,8 @@ const statusLabels = [
     description: "Used for Cold Waves, where official sources support a current industrial and dark electronic guide card with a RetroAltFest atlas link.",
   },
   {
-    label: "Core industrial / EBM atlas record",
-    description: "Used for Terminus Festival, where official and ticketing sources support a current industrial, EBM, dark electronic, and darkwave-overlap guide card.",
+    label: "Core industrial / EBM atlas record — dates not announced",
+    description: "Used for Terminus Festival, which remains an active industrial, EBM, dark electronic, and darkwave-overlap atlas link while next edition details need official confirmation.",
   },
   {
     label: "Related dark-scene overlap",
@@ -251,9 +251,9 @@ export default function IndustrialEbmDarkElectronicGuidePage() {
         </section>
 
         <GuideSection
-          eyebrow="Active industrial / dark electronic atlas records"
-          title="Core active atlas records with current source support."
-          description="Cold Waves and Terminus Festival are the two core Industrial/EBM/dark electronic cards in this refresh, and they are the only core records with direct atlas CTAs here."
+          eyebrow="Industrial / dark electronic atlas records"
+          title="Core atlas records with source-aware status."
+          description="Cold Waves and Terminus Festival remain the two core Industrial/EBM/dark electronic atlas links in this guide. Terminus stays linked for discovery, but its next edition details need official confirmation."
           records={activeAtlasRecords}
           startIndex={1}
           variant="active"

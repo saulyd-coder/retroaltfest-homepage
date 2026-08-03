@@ -383,7 +383,7 @@ test('North America 8 records preserve source-aware caveats and map safety', () 
     assert.equal(festival.geocoding_source, null);
     assert.equal(festival.geocoding_query, null);
     assert.equal(festival.geocoding_confidence, 'not_geocoded');
-    assert.equal(festival.verification_status, 'confirmed_upcoming');
+    assert.equal(festival.verification_status, id === 'terminus-festival' ? 'date_pending' : 'confirmed_upcoming');
     assert.ok(festival.source_links.length >= 1);
     assert.ok(festival.similar_festival_ids.every((similarId) => byId.has(similarId)), `${id} should only link to integrated records`);
   }
@@ -392,11 +392,58 @@ test('North America 8 records preserve source-aware caveats and map safety', () 
   assert.match(byId.get('levitation').map_notes, /Parent\/multi-venue|No single map pin/i);
   assert.match(byId.get('mutek-montreal').data_quality_notes, /not specifically goth\/darkwave|Do not frame as goth\/darkwave-specific/i);
   assert.match(byId.get('the-new-colossus-festival').data_quality_notes, /broad|Avoid core goth\/darkwave/i);
-  assert.match(byId.get('terminus-festival').data_quality_notes, /do not use unverified full-lineup poster transcription/i);
+  assert.match(byId.get('terminus-festival').data_quality_notes, /edition has concluded|did not confirm a later edition/i);
   assert.doesNotMatch(byId.get('terminus-festival').source_urls.join('\n'), /eventbrite\.ca\/e\/terminus-festival-2026-resonance/);
 });
 
-test('Phase 5C.5A removes only the ended Terminus ticket source and preserves every protected contract', () => {
+test('Amphi and Terminus freshness corrections stay source-safe across the atlas and guides', () => {
+  const atlas = JSON.parse(read('src/data/atlas-festivals.json'));
+  const amphi = atlas.festivals.find((record) => record.slug === 'amphi-festival');
+  const terminus = atlas.festivals.find((record) => record.slug === 'terminus-festival');
+  const castleParty = atlas.festivals.find((record) => record.slug === 'castle-party-festival');
+  const gothGuide = read('src/app/guides/north-american-goth-darkwave-festivals/page.tsx');
+  const industrialGuide = read('src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx');
+
+  assert.equal(atlas.metadata.record_count, 15);
+  assert.equal(atlas.festivals.length, 15);
+  assert.equal(new Set(atlas.festivals.map((record) => record.slug)).size, 15);
+
+  assert.equal(amphi.start_date, '2027-07-24');
+  assert.equal(amphi.end_date, '2027-07-25');
+  assert.equal(amphi.date_text, 'July 24–25, 2027');
+  assert.equal(amphi.verification_status, 'confirmed_upcoming');
+  assert.match(amphi.data_quality_notes, /2026 edition has concluded/i);
+  assert.match(amphi.data_quality_notes, /July 24–25, 2027/i);
+
+  assert.equal(terminus.start_date, '2026-07-23');
+  assert.equal(terminus.end_date, '2026-07-26');
+  assert.equal(terminus.date_text, 'July 23–26, 2026 — past edition; next edition details need official confirmation.');
+  assert.equal(terminus.verification_status, 'date_pending');
+  assert.match(terminus.data_quality_notes, /edition has concluded/i);
+  assert.match(terminus.data_quality_notes, /did not confirm a later edition/i);
+  assert.doesNotMatch(JSON.stringify({ source_urls: terminus.source_urls, source_links: terminus.source_links }), /eventbrite/i);
+
+  assert.equal(castleParty.verification_status, 'historical_reference');
+  assert.match(castleParty.data_quality_notes, /edition is complete/i);
+
+  for (const guide of [gothGuide, industrialGuide]) {
+    assert.match(guide, /atlasPath: "\/festivals\/terminus-festival"/);
+    assert.match(guide, /July 23–26, 2026 edition has concluded/);
+    assert.match(guide, /next edition details need official confirmation/i);
+    assert.doesNotMatch(guide, /Terminus Festival[^\n]*(?:current|upcoming)[^\n]*2026|Terminus Festival[^\n]*2026[^\n]*(?:current|upcoming)/i);
+  }
+  assert.match(gothGuide, /An active atlas link does not by itself mean a future edition has been announced/);
+  assert.doesNotMatch(gothGuide, /Four active atlas records with current source support|Each one is tied to official or organizer-controlled 2026 source support|active atlas records with current 2026 source support/i);
+
+  for (const record of atlas.festivals) {
+    assert.equal(record.latitude, null);
+    assert.equal(record.longitude, null);
+    assert.equal(record.geocoding_source, null);
+    assert.equal(record.geocoding_query, null);
+  }
+});
+
+test('Terminus preserves the ended-ticket removal while applying the approved freshness correction', () => {
   const atlasSource = read('src/data/atlas-festivals.json');
   const data = JSON.parse(atlasSource);
   const terminus = data.festivals.find((record) => record.slug === 'terminus-festival');
@@ -446,8 +493,8 @@ test('Phase 5C.5A removes only the ended Terminus ticket source and preserves ev
   assert.equal(terminus.slug, 'terminus-festival');
   assert.equal(terminus.start_date, '2026-07-23');
   assert.equal(terminus.end_date, '2026-07-26');
-  assert.equal(terminus.date_text, 'July 23-26, 2026');
-  assert.equal(terminus.verification_status, 'confirmed_upcoming');
+  assert.equal(terminus.date_text, 'July 23–26, 2026 — past edition; next edition details need official confirmation.');
+  assert.equal(terminus.verification_status, 'date_pending');
   assert.equal(terminus.latitude, null);
   assert.equal(terminus.longitude, null);
   assert.equal(terminus.geocoding_source, null);
@@ -456,13 +503,13 @@ test('Phase 5C.5A removes only the ended Terminus ticket source and preserves ev
 
   assert.equal(
     createHash('sha256').update(JSON.stringify(terminusWithoutSources)).digest('hex'),
-    '986a38cfb6e1a54fd3216982b702cd7b2d90d1d464c52d319adbcd85fbe73031',
-    'every non-source Terminus field, including status wording and metadata, should remain field-identical',
+    '483ce6c7e12b211bf134c0c735fed0638bedc8f4f0c61db03d97f61dd2ecfbfc',
+    'the final non-source Terminus fields should match the approved freshness correction',
   );
   assert.equal(
     createHash('sha256').update(JSON.stringify(nonTargetRecords)).digest('hex'),
-    '4cb750d20d5f6cb6ff2d7603ccd86711330ae3095c5b8db81df1279796f1c318',
-    'all 14 non-target festival records should remain field-identical',
+    'd9063392e2684e44613ce4611ce6849aa1582bfc0bb35c99575efed85eaad25e',
+    'the other 14 records should match the approved atlas state including Amphi 2027',
   );
   assert.equal(
     createHash('sha256').update(JSON.stringify(data.metadata)).digest('hex'),
@@ -497,9 +544,9 @@ test('Phase 5C.5A removes only the ended Terminus ticket source and preserves ev
     .filter(Boolean)
     .map((line) => line.slice(3));
   const approvedActivePaths = [
-    'src/app/festivals/[slug]/page.tsx',
-    'src/app/guides/planning-a-dark-alternative-festival-trip/GuideArticle.module.css',
-    'src/app/guides/planning-a-dark-alternative-festival-trip/page.tsx',
+    'src/data/atlas-festivals.json',
+    'src/app/guides/north-american-goth-darkwave-festivals/page.tsx',
+    'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx',
     'tests/homepage-mvp.test.mjs',
   ];
   assert.equal(
@@ -556,7 +603,7 @@ test('Just Like Heaven venue correction stays source-backed, adjacent, and route
   const nonTargetRecords = data.festivals.filter((record) => record.slug !== 'just-like-heaven');
   assert.equal(
     createHash('sha256').update(JSON.stringify(nonTargetRecords)).digest('hex'),
-    '473137eebee14c453ccb782b256e25649e2fcf093f9cdcf961c08aa142efb5b6',
+    '8fd25fd2b79bd036fe56e244f462e169820112b10fac14f9b0697bc39e9e59e8',
     'every non-target festival record should remain field-identical',
   );
 
@@ -1190,7 +1237,7 @@ test('Night Transmission Phase 3A guide article stays route-local, square, and c
   assert.match(css, /focus-visible/);
 
   const h2Sequence = [
-    'Four active atlas records with current source support.',
+    'Four active atlas records with source-aware status.',
     'Tracked dark-scene signals and related references.',
     'How RetroAltFest labels this guide',
     'The atlas expands only as sources hold.',
@@ -1225,8 +1272,8 @@ test('guide page for industrial EBM and dark electronic festivals is static, bou
     'source-aware North American guide',
     'official or organizer-controlled sources',
     'See how RetroAltFest verifies festival records',
-    'Active industrial / dark electronic atlas records',
-    'Core active atlas records with current source support',
+    'Industrial / dark electronic atlas records',
+    'Core atlas records with source-aware status',
     'Cold Waves',
     'Terminus Festival',
     'Mechanismus',
@@ -1439,11 +1486,11 @@ test('Night Transmission Phase 3D New Wave guide stays route-local, square, and 
   assert.doesNotMatch(source, /<canvas|WebGLRenderingContext|<video|parallax|prisma|supabase|mongodb|\bauth\b|\bcms\b|\bdatabase\b|scraping/i);
 
   const protectedGuideHashes = new Map([
-    ['src/app/guides/north-american-goth-darkwave-festivals/page.tsx', 'deebe1989e238fd3cdd1fcd701f7ceaea1280c54989f58b70bfb8e901ca59f8e'],
+    ['src/app/guides/north-american-goth-darkwave-festivals/page.tsx', 'd72c0168158fe572a59ce01a76172c9d4f074b072274a5bbc74a2ca7b4115baa'],
     ['src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css', 'c6ec3ab4ad902c67f831dd6c460c293e22b94e68206493863ad06254021ce20d'],
     ['src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/page.tsx', '527e52c33520fb7435bebdc1fd612622d082cd8470c9c82c8341b40efad87a94'],
     ['src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/GuideArticle.module.css', '6a614afd8fabf76a8e13301940958d655ddbe9931d1583ce20af45fe42406b54'],
-    ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx', '70855708398e2be80af1a1effabeff23fca3151b6c72e6c0c5919417f1bdd668'],
+    ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx', '97e7206411d27e260f7d727413eb5451c33128c8b8381c1e705d54a1295e0438'],
     ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/GuideArticle.module.css', 'c3cbaf0c651fa3544495a7f125def2be0708214d1dd6112775d847aecb5a559e'],
   ]);
   for (const [protectedPath, expectedHash] of protectedGuideHashes) {
@@ -1717,7 +1764,7 @@ test('Night Transmission Phase 3C Industrial guide stays route-local, square, an
   assert.equal(routeTitle, expectedRouteTitle, 'Twitter title should inherit the exact buildMetadata title input');
 
   const normalizedGuide = guide.replace(/title: "[^"]+"/, 'title: "__ROUTE_TITLE__"');
-  assert.equal(createHash('sha256').update(normalizedGuide).digest('hex'), '3a9341ef83a87b421635eead002eb2238cc966251000826e60b6335a7715c945');
+  assert.equal(createHash('sha256').update(normalizedGuide).digest('hex'), 'b2daa0f5c6da7a7dd4bd64b6dca2bbc407af2c1efc71c63cb528b75dccba6ae4');
   assert.equal(createHash('sha256').update(css).digest('hex'), 'c3cbaf0c651fa3544495a7f125def2be0708214d1dd6112775d847aecb5a559e');
 
   const publicRecordSource = guide.slice(0, guide.indexOf('const heldRecords'));
@@ -1742,7 +1789,7 @@ test('Night Transmission Phase 3C Industrial guide stays route-local, square, an
   assert.deepEqual(variants, ['active', 'adjacent', 'caveated', 'reference']);
 
   const h2Sequence = [
-    'Core active atlas records with current source support.',
+    'Core atlas records with source-aware status.',
     'A linked atlas record for adjacent scene overlap.',
     'Strong industrial and dark-electronic signals, clearly caveated.',
     'Useful context, not a current anchor.',
@@ -2166,7 +2213,7 @@ test('Night Transmission Phase 4B M’era Luna reference stays content-exact and
   assert.equal(atlas.festivals.every((festival) => festival.latitude === null && festival.longitude === null), true);
   assert.equal(atlas.festivals.every((festival) => festival.geocoding_source === null && festival.geocoding_query === null), true);
   assert.deepEqual(new Set(atlas.festivals.map((festival) => festival.geocoding_confidence)), new Set(['not_geocoded']));
-  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c');
+  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), '261c069c3d269ceb4679e9ce98a05093c048ad5e0b3bef25b632e2e7dff22aca');
   assert.equal(createHash('sha256').update(dtoSource).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
 
   assert.match(page, /import styles from "\.\/FestivalDetail\.module\.css"/);
@@ -2495,7 +2542,7 @@ test('Night Transmission Phase 4I activates New Colossus through the immutable c
   assert.ok(css.indexOf('tower-beacon-signature.avif') > css.indexOf('@media (min-width: 1101px)'));
 
   assert.equal(createHash('sha256').update(css).digest('hex'), '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb');
-  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c');
+  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), '261c069c3d269ceb4679e9ce98a05093c048ad5e0b3bef25b632e2e7dff22aca');
   assert.equal(createHash('sha256').update(dtoSource).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
   assert.equal(createHash('sha256').update(read('src/app/sitemap.ts')).digest('hex'), '1231fd8a9bfe5d986b6d790bfcca7ed77871bca276155a5bc83212fcd6bbaf20');
   assert.equal(createHash('sha256').update(read('package.json')).digest('hex'), 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d');
@@ -2655,7 +2702,7 @@ test('Wave-Gotik-Treffen 2027 source correction stays multi-venue, route-safe, a
   ]);
 
   assert.equal(createHash('sha256').update(JSON.stringify(preservedTarget)).digest('hex'), '1bdd1325ffa253eab1c593de9e8bd8828444094eccde29621fdc70cf6f02ec28');
-  assert.equal(createHash('sha256').update(JSON.stringify(nonTarget)).digest('hex'), '5836311ad29d14a18ca9cae57eaeda81ae75be1a6a2d175cf2bfa8a994463627');
+  assert.equal(createHash('sha256').update(JSON.stringify(nonTarget)).digest('hex'), '6c0005b49de9d574b67fb7aef5a34734d9c3b83b110de555d4ba79e3ebcb50f3');
   assert.equal(atlas.festivals.every((festival) => festival.latitude === null && festival.longitude === null), true);
   assert.equal(atlas.festivals.every((festival) => festival.geocoding_source === null && festival.geocoding_query === null), true);
   assert.equal(createHash('sha256').update(JSON.stringify(atlas.festivals.map((festival) => [festival.slug, festival.geocoding_confidence]))).digest('hex'), 'a65cfe2ff09e6d46d9d53d609b3bc2e9a314befebf2203c662ae04429a135103');
@@ -2757,7 +2804,7 @@ test('Castle Party completed-edition correction stays historical, source-safe, a
   assert.deepEqual(target.similar_festival_ids, ['wave-gotik-treffen', 'ncn-festival-nocturnal-culture-night', 'amphi-festival']);
 
   assert.equal(createHash('sha256').update(JSON.stringify(preservedTarget)).digest('hex'), 'b7e094157e844533696677b686458b320664427fe3d3485da8e27620682cfa05');
-  assert.equal(createHash('sha256').update(JSON.stringify(nonTarget)).digest('hex'), '968862a1d531a3a17c9490fab785386f903852befa3905190ca3d69e68be1872');
+  assert.equal(createHash('sha256').update(JSON.stringify(nonTarget)).digest('hex'), '9b3508e2752cb61a56cb6dd6c5c91d11d0961833fe27a494f5274e75c4df8c5a');
   assert.equal(atlas.festivals.every((festival) => festival.latitude === null && festival.longitude === null), true);
   assert.equal(atlas.festivals.every((festival) => festival.geocoding_source === null && festival.geocoding_query === null), true);
   assert.equal(createHash('sha256').update(JSON.stringify(atlas.festivals.map((festival) => [festival.slug, festival.geocoding_confidence]))).digest('hex'), 'a65cfe2ff09e6d46d9d53d609b3bc2e9a314befebf2203c662ae04429a135103');
@@ -2982,7 +3029,7 @@ test('Phase 5A.1 closes exactly two reciprocal guide discovery loops and freezes
   assert.match(page, /href=\{`\/festivals\/\$\{similar\.slug\}`\}/);
 
   assert.equal(createHash('sha256').update(css).digest('hex'), '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb');
-  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c');
+  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), '261c069c3d269ceb4679e9ce98a05093c048ad5e0b3bef25b632e2e7dff22aca');
   assert.equal(createHash('sha256').update(dto).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
   assert.equal(createHash('sha256').update(sitemap).digest('hex'), '1231fd8a9bfe5d986b6d790bfcca7ed77871bca276155a5bc83212fcd6bbaf20');
   assert.equal(createHash('sha256').update(packageSource).digest('hex'), 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d');
@@ -3069,7 +3116,7 @@ test('Phase 5A.2 compresses the mobile directory filter with one native accessib
     .filter((value) => value !== '0');
   assert.deepEqual(nonZeroRadii, [], 'the directory should retain square Night Transmission geometry');
 
-  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c');
+  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), '261c069c3d269ceb4679e9ce98a05093c048ad5e0b3bef25b632e2e7dff22aca');
   assert.equal(createHash('sha256').update(dto).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
   assert.equal(createHash('sha256').update(directoryPage).digest('hex'), 'd0eb0a675d432754bf9eaf9dddb6a997492e54073356ddea69b5254748b84230');
   assert.equal(createHash('sha256').update(sitemap).digest('hex'), '1231fd8a9bfe5d986b6d790bfcca7ed77871bca276155a5bc83212fcd6bbaf20');
@@ -3164,13 +3211,13 @@ test('Phase 5B.1 selected European festivals guide is bounded, source-safe, and 
   assert.doesNotMatch(guide, /date_pending|source_status|map_phase0_category|core_anchor|watchlist|Phase 0|map-readiness|needs_review/i);
 
   const protectedHashes = new Map([
-    ['src/data/atlas-festivals.json', 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c'],
+    ['src/data/atlas-festivals.json', '261c069c3d269ceb4679e9ce98a05093c048ad5e0b3bef25b632e2e7dff22aca'],
     ['src/lib/public-festivals.ts', 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8'],
     ['package.json', 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d'],
     ['package-lock.json', '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56'],
-    ['src/app/guides/north-american-goth-darkwave-festivals/page.tsx', 'deebe1989e238fd3cdd1fcd701f7ceaea1280c54989f58b70bfb8e901ca59f8e'],
+    ['src/app/guides/north-american-goth-darkwave-festivals/page.tsx', 'd72c0168158fe572a59ce01a76172c9d4f074b072274a5bbc74a2ca7b4115baa'],
     ['src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css', 'c6ec3ab4ad902c67f831dd6c460c293e22b94e68206493863ad06254021ce20d'],
-    ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx', '70855708398e2be80af1a1effabeff23fca3151b6c72e6c0c5919417f1bdd668'],
+    ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx', '97e7206411d27e260f7d727413eb5451c33128c8b8381c1e705d54a1295e0438'],
     ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/GuideArticle.module.css', 'c3cbaf0c651fa3544495a7f125def2be0708214d1dd6112775d847aecb5a559e'],
     ['src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/page.tsx', '177c7aba42dff4af4495db3e9fc00ada961ae71def29ed62b6d0146cb815d1a5'],
     ['src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/GuideArticle.module.css', '9ca0cf323d8c291bbedfc06477e9931237220b91a0e4b21fe57c3f1e70f73d10'],
@@ -3250,9 +3297,9 @@ test('Phase 5B.2 publishes the selected European guide through the Guides Hub an
   const protectedGuideHashes = new Map([
     ['src/app/guides/european-goth-darkwave-industrial-festivals/page.tsx', 'd8cc53a485cea8df1df8fef5d12644ece87ea7ced8fb9323205560f9f4e540a8'],
     ['src/app/guides/european-goth-darkwave-industrial-festivals/GuideArticle.module.css', '6f5877f8366151232acf5e08d43bab6cc81f4bb90d2746f5c2e77c8b944758c3'],
-    ['src/app/guides/north-american-goth-darkwave-festivals/page.tsx', 'deebe1989e238fd3cdd1fcd701f7ceaea1280c54989f58b70bfb8e901ca59f8e'],
+    ['src/app/guides/north-american-goth-darkwave-festivals/page.tsx', 'd72c0168158fe572a59ce01a76172c9d4f074b072274a5bbc74a2ca7b4115baa'],
     ['src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css', 'c6ec3ab4ad902c67f831dd6c460c293e22b94e68206493863ad06254021ce20d'],
-    ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx', '70855708398e2be80af1a1effabeff23fca3151b6c72e6c0c5919417f1bdd668'],
+    ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx', '97e7206411d27e260f7d727413eb5451c33128c8b8381c1e705d54a1295e0438'],
     ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/GuideArticle.module.css', 'c3cbaf0c651fa3544495a7f125def2be0708214d1dd6112775d847aecb5a559e'],
     ['src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/page.tsx', '177c7aba42dff4af4495db3e9fc00ada961ae71def29ed62b6d0146cb815d1a5'],
     ['src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/GuideArticle.module.css', '9ca0cf323d8c291bbedfc06477e9931237220b91a0e4b21fe57c3f1e70f73d10'],
@@ -3264,7 +3311,7 @@ test('Phase 5B.2 publishes the selected European guide through the Guides Hub an
   }
   assert.equal(createHash('sha256').update(guidesCss).digest('hex'), 'aef54b1c097f166f8118a0e8b2f08c07e46928f85c67f27b88fce08c344ea6e3', 'Guides Hub CSS should not change');
   assert.deepEqual(hashTree('public'), { count: 20, hash: 'fdb685b14899493dad0a63d1d0500cbfb975065880f97931020bc0590f36c81b' }, 'public assets should not change');
-  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c');
+  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), '261c069c3d269ceb4679e9ce98a05093c048ad5e0b3bef25b632e2e7dff22aca');
   assert.equal(createHash('sha256').update(dto).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
   assert.equal(createHash('sha256').update(packageSource).digest('hex'), 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d');
   assert.equal(createHash('sha256').update(packageLock).digest('hex'), '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56');
@@ -3356,7 +3403,7 @@ test('Phase 5C.1 ticket verification guide is reader-facing, non-commercial, and
     ['src/app/verification/page.tsx', '28946389175da89f6cd91444f6693b29d21dbcfe0f4a88fa92acf8d471003f14'],
     ['src/app/verification/VerificationPage.module.css', 'b370b6781237df419a1920128d0849d24345aecab57b624826275521239f3bb1'],
     ['src/app/guides/GuidesHub.module.css', 'aef54b1c097f166f8118a0e8b2f08c07e46928f85c67f27b88fce08c344ea6e3'],
-    ['src/data/atlas-festivals.json', 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c'],
+    ['src/data/atlas-festivals.json', '261c069c3d269ceb4679e9ce98a05093c048ad5e0b3bef25b632e2e7dff22aca'],
     ['src/lib/public-festivals.ts', 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8'],
     ['package.json', 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d'],
     ['package-lock.json', '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56'],
@@ -3448,7 +3495,7 @@ test('Phase 5C.2 publishes the ticket verification guide through the Guides Hub 
     ['src/app/verification/page.tsx', '28946389175da89f6cd91444f6693b29d21dbcfe0f4a88fa92acf8d471003f14'],
     ['src/app/verification/VerificationPage.module.css', 'b370b6781237df419a1920128d0849d24345aecab57b624826275521239f3bb1'],
     ['src/app/guides/GuidesHub.module.css', 'aef54b1c097f166f8118a0e8b2f08c07e46928f85c67f27b88fce08c344ea6e3'],
-    ['src/data/atlas-festivals.json', 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c'],
+    ['src/data/atlas-festivals.json', '261c069c3d269ceb4679e9ce98a05093c048ad5e0b3bef25b632e2e7dff22aca'],
     ['src/lib/public-festivals.ts', 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8'],
     ['package.json', 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d'],
     ['package-lock.json', '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56'],
@@ -3568,11 +3615,11 @@ test('Phase 5C.3A first-time guide is practical, non-commercial, and locally bou
     ['src/app/guides/how-to-verify-festival-tickets-official-sources/GuideArticle.module.css', '3ee1c6e11e59e1802d4d86fab26639a8a0c66fb7aa21a4f681c19df05fdc56b4'],
     ['src/app/guides/how-to-verify-festival-tickets-official-sources/page.tsx', '3b7a1691ddd3b54d97a8495373fac2a5c678e33b87c7637d1663a2c8ace1137a'],
     ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/GuideArticle.module.css', 'c3cbaf0c651fa3544495a7f125def2be0708214d1dd6112775d847aecb5a559e'],
-    ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx', '70855708398e2be80af1a1effabeff23fca3151b6c72e6c0c5919417f1bdd668'],
+    ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx', '97e7206411d27e260f7d727413eb5451c33128c8b8381c1e705d54a1295e0438'],
     ['src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/GuideArticle.module.css', '9ca0cf323d8c291bbedfc06477e9931237220b91a0e4b21fe57c3f1e70f73d10'],
     ['src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/page.tsx', '177c7aba42dff4af4495db3e9fc00ada961ae71def29ed62b6d0146cb815d1a5'],
     ['src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css', 'c6ec3ab4ad902c67f831dd6c460c293e22b94e68206493863ad06254021ce20d'],
-    ['src/app/guides/north-american-goth-darkwave-festivals/page.tsx', 'deebe1989e238fd3cdd1fcd701f7ceaea1280c54989f58b70bfb8e901ca59f8e'],
+    ['src/app/guides/north-american-goth-darkwave-festivals/page.tsx', 'd72c0168158fe572a59ce01a76172c9d4f074b072274a5bbc74a2ca7b4115baa'],
     ['src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/GuideArticle.module.css', '6a614afd8fabf76a8e13301940958d655ddbe9931d1583ce20af45fe42406b54'],
     ['src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/page.tsx', '527e52c33520fb7435bebdc1fd612622d082cd8470c9c82c8341b40efad87a94'],
     ['src/app/layout.tsx', 'e0d2ecdc24d76e0b2a9d1328c532b0b63f6223d28b35498b8da7ba3aab51457f'],
@@ -3581,7 +3628,7 @@ test('Phase 5C.3A first-time guide is practical, non-commercial, and locally bou
     ['src/components/site/DiscoveryLinks.tsx', '69e9783aa619c7904e4f45e70b20eb837788a2020200f5c5fbbb53a9f79ddee4'],
     ['src/components/site/Footer.tsx', 'd865de10d989e34611f305a8239d74533b8c6f02c08e355138f5c5025f9ab8db'],
     ['src/components/site/Header.tsx', '296fb5e4c8a8553f1b38f9c6603cc725f1f26eb81c4468cfd243d6ec3173d0d7'],
-    ['src/data/atlas-festivals.json', 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c'],
+    ['src/data/atlas-festivals.json', '261c069c3d269ceb4679e9ce98a05093c048ad5e0b3bef25b632e2e7dff22aca'],
     ['src/lib/public-festivals.ts', 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8'],
     ['src/lib/seo.ts', '5b7a4c9e26dede625ef02c39fc9e96fe779f128ec57bb6db283790d71a9f2b31'],
   ]);
@@ -3725,11 +3772,17 @@ test('Phase 5E.1 trip-planning guide is distinct, source-safe, non-commercial, a
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  assert.deepEqual(new Set(changedPaths), new Set([
-    guidePath,
-    cssPath,
+  const approvedFreshnessPaths = new Set([
+    'src/data/atlas-festivals.json',
+    'src/app/guides/north-american-goth-darkwave-festivals/page.tsx',
+    'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx',
     'tests/homepage-mvp.test.mjs',
-  ]), 'the active worktree must equal the exact Phase 5E.1 three-file allowlist');
+  ]);
+  assert.equal(
+    changedPaths.every((path) => approvedFreshnessPaths.has(path)),
+    true,
+    `the active worktree must stay inside the approved freshness allowlist: ${changedPaths.join(', ')}`,
+  );
 
   const protectedHashes = new Map([
     ['src/app/guides/page.tsx', 'aeabf34d9266b46489018a21c365984c9bbdf7fe75c36b22cc22edc06d2a693e'],
@@ -3743,7 +3796,7 @@ test('Phase 5E.1 trip-planning guide is distinct, source-safe, non-commercial, a
     ['src/app/guides/first-time-dark-alternative-festival-guide/GuideArticle.module.css', 'ff0ea03d3f0eaae2c8b58136c9160731ba49979b438f6cf2197d0177c91477b0'],
     ['src/app/guides/how-to-verify-festival-tickets-official-sources/page.tsx', '3b7a1691ddd3b54d97a8495373fac2a5c678e33b87c7637d1663a2c8ace1137a'],
     ['src/app/guides/how-to-verify-festival-tickets-official-sources/GuideArticle.module.css', '3ee1c6e11e59e1802d4d86fab26639a8a0c66fb7aa21a4f681c19df05fdc56b4'],
-    ['src/data/atlas-festivals.json', 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c'],
+    ['src/data/atlas-festivals.json', '261c069c3d269ceb4679e9ce98a05093c048ad5e0b3bef25b632e2e7dff22aca'],
     ['src/lib/public-festivals.ts', 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8'],
     ['src/app/layout.tsx', 'e0d2ecdc24d76e0b2a9d1328c532b0b63f6223d28b35498b8da7ba3aab51457f'],
     ['src/lib/seo.ts', '5b7a4c9e26dede625ef02c39fc9e96fe779f128ec57bb6db283790d71a9f2b31'],
@@ -3924,7 +3977,7 @@ test('Phase 5C.3B publishes the first-time guide and Phase 5D.3 maps only M’er
     ['src/app/guides/GuidesHub.module.css', 'aef54b1c097f166f8118a0e8b2f08c07e46928f85c67f27b88fce08c344ea6e3'],
     ['src/app/layout.tsx', 'e0d2ecdc24d76e0b2a9d1328c532b0b63f6223d28b35498b8da7ba3aab51457f'],
     ['src/lib/seo.ts', '5b7a4c9e26dede625ef02c39fc9e96fe779f128ec57bb6db283790d71a9f2b31'],
-    ['src/data/atlas-festivals.json', 'e4ee6ebdf1b8cb37da9e425429890d2e4e51d119f1796ac6dc3bb16a3daab59c'],
+    ['src/data/atlas-festivals.json', '261c069c3d269ceb4679e9ce98a05093c048ad5e0b3bef25b632e2e7dff22aca'],
     ['src/lib/public-festivals.ts', 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8'],
     ['package.json', 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d'],
     ['package-lock.json', '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56'],
