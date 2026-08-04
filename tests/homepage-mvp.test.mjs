@@ -521,7 +521,7 @@ test('Terminus preserves the ended-ticket removal while applying the approved fr
     'src/lib/public-festivals.ts': 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8',
     'src/app/festivals/[slug]/FestivalDetail.module.css': '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb',
     'src/app/festivals/terminus-festival-resonance/route.ts': 'd908d62a2874668e91ec4150446a21e368e9403745a60f62e9b4236d15a1532e',
-    'src/app/sitemap.ts': '1231fd8a9bfe5d986b6d790bfcca7ed77871bca276155a5bc83212fcd6bbaf20',
+    'src/app/sitemap.ts': '01abde4a09f5e9dff3d2942e42c975526d8467571a2ac5a57178b663e0b76fdf',
   })) {
     assert.equal(
       createHash('sha256').update(read(relativePath)).digest('hex'),
@@ -544,9 +544,8 @@ test('Terminus preserves the ended-ticket removal while applying the approved fr
     .filter(Boolean)
     .map((line) => line.slice(3));
   const approvedActivePaths = [
-    'src/data/atlas-festivals.json',
-    'src/app/guides/north-american-goth-darkwave-festivals/page.tsx',
-    'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx',
+    'src/app/guides/page.tsx',
+    'src/app/sitemap.ts',
     'tests/homepage-mvp.test.mjs',
   ];
   assert.equal(
@@ -611,7 +610,7 @@ test('Just Like Heaven venue correction stays source-backed, adjacent, and route
     'src/lib/public-festivals.ts': 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8',
     'src/app/festivals/[slug]/page.tsx': 'b136d810bf2a236186672004dfb89e5b71be06018b07d8249ca29a559db14798',
     'src/app/festivals/[slug]/FestivalDetail.module.css': '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb',
-    'src/app/sitemap.ts': '1231fd8a9bfe5d986b6d790bfcca7ed77871bca276155a5bc83212fcd6bbaf20',
+    'src/app/sitemap.ts': '01abde4a09f5e9dff3d2942e42c975526d8467571a2ac5a57178b663e0b76fdf',
   })) {
     const source = read(relativePath);
     const normalizedSource = relativePath === 'src/app/festivals/[slug]/page.tsx'
@@ -1936,7 +1935,7 @@ test('verification Night Transmission integration stays static, route-scoped, so
   assert.match(page, /href="\/suggest"/);
 });
 
-test('guides index is static, compact, and lists exactly the seven live curated guides', () => {
+test('guides index is static, compact, and lists exactly the eight live curated guides', () => {
   const guidesPath = 'src/app/guides/page.tsx';
   assert.equal(existsSync(join(root, guidesPath)), true, 'static /guides page should exist');
 
@@ -1952,6 +1951,7 @@ test('guides index is static, compact, and lists exactly the seven live curated 
     '/guides/new-wave-post-punk-retro-alternative-festivals-north-america',
     '/guides/how-to-verify-festival-tickets-official-sources',
     '/guides/first-time-dark-alternative-festival-guide',
+    '/guides/planning-a-dark-alternative-festival-trip',
   ];
 
   assert.match(guidesPage, /RetroAltFest Guides/);
@@ -1974,7 +1974,7 @@ test('guides index is static, compact, and lists exactly the seven live curated 
   assert.doesNotMatch(homepage, /href="\/guides\/north-american-goth-darkwave-festivals"/);
 
   assert.match(sitemap, /`\$\{SITE_URL\}\/guides`/);
-  assert.doesNotMatch(guidesPage, /future guide|coming soon|placeholder|search|filter|useState|useMemo|fetch\(|prisma|supabase|mongodb|\bauth\b|\bcms\b|\bdatabase\b|geocoding|latitude|longitude|coordinates|map pins/i);
+  assert.doesNotMatch(guidesPage, /future guide|coming soon|placeholder=|type=["']search|search form|filter|useState|useMemo|fetch\(|prisma|supabase|mongodb|\bauth\b|\bcms\b|\bdatabase\b|geocoding|latitude|longitude|coordinates|map pins/i);
 });
 
 test('guides hub Night Transmission integration stays static, route-scoped, and content-safe', () => {
@@ -2544,7 +2544,7 @@ test('Night Transmission Phase 4I activates New Colossus through the immutable c
   assert.equal(createHash('sha256').update(css).digest('hex'), '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb');
   assert.equal(createHash('sha256').update(atlasSource).digest('hex'), '261c069c3d269ceb4679e9ce98a05093c048ad5e0b3bef25b632e2e7dff22aca');
   assert.equal(createHash('sha256').update(dtoSource).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
-  assert.equal(createHash('sha256').update(read('src/app/sitemap.ts')).digest('hex'), '1231fd8a9bfe5d986b6d790bfcca7ed77871bca276155a5bc83212fcd6bbaf20');
+  assert.equal(createHash('sha256').update(read('src/app/sitemap.ts')).digest('hex'), '01abde4a09f5e9dff3d2942e42c975526d8467571a2ac5a57178b663e0b76fdf');
   assert.equal(createHash('sha256').update(read('package.json')).digest('hex'), 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d');
   assert.equal(createHash('sha256').update(read('package-lock.json')).digest('hex'), '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56');
   assert.doesNotMatch(`${page}\n${css}`, /"use client"|useState|useEffect|useMemo|fetch\(|<canvas|WebGLRenderingContext|<video|framer-motion|lottie|three|\/prototypes\//i);
@@ -2734,7 +2734,7 @@ test('Wave-Gotik-Treffen 2027 source correction stays multi-venue, route-safe, a
 
   assert.equal(createHash('sha256').update(normalizePhase5A1GuideDiscoveryPilot(page)).digest('hex'), 'b136d810bf2a236186672004dfb89e5b71be06018b07d8249ca29a559db14798');
   assert.equal(createHash('sha256').update(css).digest('hex'), '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb');
-  assert.equal(createHash('sha256').update(sitemap).digest('hex'), '1231fd8a9bfe5d986b6d790bfcca7ed77871bca276155a5bc83212fcd6bbaf20');
+  assert.equal(createHash('sha256').update(sitemap).digest('hex'), '01abde4a09f5e9dff3d2942e42c975526d8467571a2ac5a57178b663e0b76fdf');
   assert.equal(createHash('sha256').update(layout).digest('hex'), 'e0d2ecdc24d76e0b2a9d1328c532b0b63f6223d28b35498b8da7ba3aab51457f');
   assert.equal(createHash('sha256').update(seo).digest('hex'), '5b7a4c9e26dede625ef02c39fc9e96fe779f128ec57bb6db283790d71a9f2b31');
   assert.equal(createHash('sha256').update(dto).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
@@ -2839,7 +2839,7 @@ test('Castle Party completed-edition correction stays historical, source-safe, a
 
   assert.equal(createHash('sha256').update(normalizePhase5A1GuideDiscoveryPilot(page)).digest('hex'), 'b136d810bf2a236186672004dfb89e5b71be06018b07d8249ca29a559db14798');
   assert.equal(createHash('sha256').update(css).digest('hex'), '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb');
-  assert.equal(createHash('sha256').update(sitemap).digest('hex'), '1231fd8a9bfe5d986b6d790bfcca7ed77871bca276155a5bc83212fcd6bbaf20');
+  assert.equal(createHash('sha256').update(sitemap).digest('hex'), '01abde4a09f5e9dff3d2942e42c975526d8467571a2ac5a57178b663e0b76fdf');
   assert.equal(createHash('sha256').update(layout).digest('hex'), 'e0d2ecdc24d76e0b2a9d1328c532b0b63f6223d28b35498b8da7ba3aab51457f');
   assert.equal(createHash('sha256').update(seo).digest('hex'), '5b7a4c9e26dede625ef02c39fc9e96fe779f128ec57bb6db283790d71a9f2b31');
   assert.equal(createHash('sha256').update(dto).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
@@ -3031,7 +3031,7 @@ test('Phase 5A.1 closes exactly two reciprocal guide discovery loops and freezes
   assert.equal(createHash('sha256').update(css).digest('hex'), '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb');
   assert.equal(createHash('sha256').update(atlasSource).digest('hex'), '261c069c3d269ceb4679e9ce98a05093c048ad5e0b3bef25b632e2e7dff22aca');
   assert.equal(createHash('sha256').update(dto).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
-  assert.equal(createHash('sha256').update(sitemap).digest('hex'), '1231fd8a9bfe5d986b6d790bfcca7ed77871bca276155a5bc83212fcd6bbaf20');
+  assert.equal(createHash('sha256').update(sitemap).digest('hex'), '01abde4a09f5e9dff3d2942e42c975526d8467571a2ac5a57178b663e0b76fdf');
   assert.equal(createHash('sha256').update(packageSource).digest('hex'), 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d');
   assert.equal(createHash('sha256').update(packageLock).digest('hex'), '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56');
   assert.doesNotMatch(`${page}\n${packageSource}`, /"use client"|useState|useEffect|useMemo|fetch\(|\/api\/|\/prototypes\/|framer-motion|lottie|three/i);
@@ -3119,7 +3119,7 @@ test('Phase 5A.2 compresses the mobile directory filter with one native accessib
   assert.equal(createHash('sha256').update(atlasSource).digest('hex'), '261c069c3d269ceb4679e9ce98a05093c048ad5e0b3bef25b632e2e7dff22aca');
   assert.equal(createHash('sha256').update(dto).digest('hex'), 'e3950b813213b93bbd700d354b45797a2cf3540637e1417c14f6e577747fccf8');
   assert.equal(createHash('sha256').update(directoryPage).digest('hex'), 'd0eb0a675d432754bf9eaf9dddb6a997492e54073356ddea69b5254748b84230');
-  assert.equal(createHash('sha256').update(sitemap).digest('hex'), '1231fd8a9bfe5d986b6d790bfcca7ed77871bca276155a5bc83212fcd6bbaf20');
+  assert.equal(createHash('sha256').update(sitemap).digest('hex'), '01abde4a09f5e9dff3d2942e42c975526d8467571a2ac5a57178b663e0b76fdf');
   assert.equal(createHash('sha256').update(packageSource).digest('hex'), 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d');
   assert.equal(createHash('sha256').update(packageLock).digest('hex'), '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56');
   assert.doesNotMatch(`${browser}\n${directoryPage}`, /fetch\(|\/api\/|prisma|supabase|mongodb|\bauth\b|\bcms\b|\bdatabase\b|scraping|geocod|latitude|longitude|map UI/i);
@@ -3243,18 +3243,19 @@ test('Phase 5B.2 publishes the selected European guide through the Guides Hub an
   const europeanRoute = '/guides/european-goth-darkwave-industrial-festivals';
   const ticketRoute = '/guides/how-to-verify-festival-tickets-official-sources';
   const firstTimeRoute = '/guides/first-time-dark-alternative-festival-guide';
+  const tripRoute = '/guides/planning-a-dark-alternative-festival-trip';
   const previousGuideOrder = [
     '/guides/west-coast-pacific-northwest-dark-alternative-festivals',
     '/guides/north-american-goth-darkwave-festivals',
     '/guides/industrial-ebm-dark-electronic-festivals-north-america',
     '/guides/new-wave-post-punk-retro-alternative-festivals-north-america',
   ];
-  const expectedGuideOrder = [previousGuideOrder[0], europeanRoute, ...previousGuideOrder.slice(1), ticketRoute, firstTimeRoute];
+  const expectedGuideOrder = [previousGuideOrder[0], europeanRoute, ...previousGuideOrder.slice(1), ticketRoute, firstTimeRoute, tripRoute];
   const guideHrefs = [...guidesHub.matchAll(/href: "(\/guides\/[^"]+)"/g)].map((match) => match[1]);
 
   assert.deepEqual(guideHrefs, expectedGuideOrder, 'the European guide should remain issue 02 without reordering existing discovery cards');
-  assert.deepEqual(guideHrefs.filter((href) => href !== europeanRoute && href !== ticketRoute && href !== firstTimeRoute), previousGuideOrder, 'the four pre-European cards should retain exact relative order');
-  assert.equal(guideHrefs.length, 7, 'the Guides Hub should expose seven guide cards after approved publication wiring');
+  assert.deepEqual(guideHrefs.filter((href) => href !== europeanRoute && href !== ticketRoute && href !== firstTimeRoute && href !== tripRoute), previousGuideOrder, 'the four pre-European cards should retain exact relative order');
+  assert.equal(guideHrefs.length, 8, 'the Guides Hub should expose eight guide cards after approved publication wiring');
   assert.equal(guideHrefs.filter((href) => href === europeanRoute).length, 1, 'the European guide card should occur once');
 
   const europeanCard = guidesHub.match(/\{\s*title: "Selected Goth, Darkwave & Industrial Festivals in Europe",[\s\S]*?\n  \},/)?.[0] ?? '';
@@ -3266,7 +3267,7 @@ test('Phase 5B.2 publishes the selected European guide through the Guides Hub an
   assert.match(europeanCard, /selected/i);
   assert.match(europeanCard, /source-aware/i);
   assert.doesNotMatch(europeanCard, /\b(best|top|ultimate|complete|definitive|comprehensive)\b|every European festival|ticket|travel|hotel|affiliate|map|coordinates|Amphi/i);
-  assert.match(guidesHub, /<em>02—07<\/em>/);
+  assert.match(guidesHub, /<em>02—08<\/em>/);
 
   const staticRoutesBlock = sitemap.match(/const staticRoutes:[\s\S]*?\n  \];/)?.[0] ?? '';
   const staticSuffixes = [...staticRoutesBlock.matchAll(/url: (?:SITE_URL|`\$\{SITE_URL\}([^`]+)`)/g)].map((match) => match[1] ?? '');
@@ -3278,13 +3279,13 @@ test('Phase 5B.2 publishes the selected European guide through the Guides Hub an
     '/guides/west-coast-pacific-northwest-dark-alternative-festivals',
     '/guides/how-to-verify-festival-tickets-official-sources',
   ];
-  assert.equal(staticSuffixes.length, 12, 'the sitemap should contain twelve static routes after approved publication wiring');
+  assert.equal(staticSuffixes.length, 13, 'the sitemap should contain thirteen static routes after approved publication wiring');
   assert.equal(new Set(staticSuffixes).size, staticSuffixes.length, 'the static sitemap URLs should be unique');
   assert.equal(staticSuffixes.filter((suffix) => suffix === europeanRoute).length, 1, 'the European canonical should occur once');
   for (const suffix of previousStaticSuffixes) assert.ok(staticSuffixes.includes(suffix), `${suffix || '/'} should remain in the sitemap`);
-  assert.equal(staticSuffixes.filter((suffix) => suffix.startsWith('/guides/')).length, 7, 'seven guide article URLs should be listed');
+  assert.equal(staticSuffixes.filter((suffix) => suffix.startsWith('/guides/')).length, 8, 'eight guide article URLs should be listed');
   assert.equal(atlas.festivals.length, 15, 'festival route count should remain 15');
-  assert.equal(staticSuffixes.length + atlas.festivals.length, 27, 'the generated sitemap should contain 27 URLs');
+  assert.equal(staticSuffixes.length + atlas.festivals.length, 28, 'the generated sitemap should contain 28 URLs');
   assert.equal((sitemap.match(/`\$\{SITE_URL\}\/guides\/european-goth-darkwave-industrial-festivals`/g) ?? []).length, 1);
 
   assert.match(guidesHub, /title:\s*{\s*absolute: "RetroAltFest Guides \| Goth, Darkwave, Industrial & Retro Alternative Festivals"/);
@@ -3425,6 +3426,7 @@ test('Phase 5C.2 publishes the ticket verification guide through the Guides Hub 
   const ticketGuideCssPath = 'src/app/guides/how-to-verify-festival-tickets-official-sources/GuideArticle.module.css';
   const ticketRoute = '/guides/how-to-verify-festival-tickets-official-sources';
   const firstTimeRoute = '/guides/first-time-dark-alternative-festival-guide';
+  const tripRoute = '/guides/planning-a-dark-alternative-festival-trip';
   const ticketCanonical = `https://retroaltfest.com${ticketRoute}`;
   const ticketTitle = 'How to Verify Festival Tickets and Official Sources';
   const ticketCopy = 'A practical pre-purchase guide to checking current-edition festival dates, organizer websites, authorized ticket paths, resale listings, and official sources before paying. These checks cannot establish that a ticket is authentic.';
@@ -3435,7 +3437,7 @@ test('Phase 5C.2 publishes the ticket verification guide through the Guides Hub 
     '/guides/industrial-ebm-dark-electronic-festivals-north-america',
     '/guides/new-wave-post-punk-retro-alternative-festivals-north-america',
   ];
-  const expectedGuideOrder = [...previousGuideOrder, ticketRoute, firstTimeRoute];
+  const expectedGuideOrder = [...previousGuideOrder, ticketRoute, firstTimeRoute, tripRoute];
   const guideHrefs = [...guidesHub.matchAll(/href: "(\/guides\/[^"]+)"/g)].map((match) => match[1]);
   const ticketCard = guidesHub.match(/\{\s*title: "How to Verify Festival Tickets and Official Sources",[\s\S]*?\n  \},/)?.[0] ?? '';
 
@@ -3454,10 +3456,10 @@ test('Phase 5C.2 publishes the ticket verification guide through the Guides Hub 
   assert.doesNotMatch(ticketCard, /Ticketmaster|StubHub|SeatGeek|Vivid Seats|AXS|Eventbrite|Viagogo|PayPal|affiliate|commission|sponsored/i);
 
   assert.deepEqual(guideHrefs, expectedGuideOrder, 'the ticket guide should be issue 06 after the five discovery guides');
-  assert.deepEqual(guideHrefs.filter((href) => href !== ticketRoute && href !== firstTimeRoute), previousGuideOrder, 'all five existing cards should retain exact relative order');
-  assert.equal(guideHrefs.length, 7, 'the Guides Hub should expose seven guide cards');
+  assert.deepEqual(guideHrefs.filter((href) => href !== ticketRoute && href !== firstTimeRoute && href !== tripRoute), previousGuideOrder, 'all five existing cards should retain exact relative order');
+  assert.equal(guideHrefs.length, 8, 'the Guides Hub should expose eight guide cards');
   assert.equal(guideHrefs.filter((href) => href === ticketRoute).length, 1, 'the ticket guide card should occur once');
-  assert.match(guidesHub, /<em>02—07<\/em>/);
+  assert.match(guidesHub, /<em>02—08<\/em>/);
 
   const staticRoutesBlock = sitemap.match(/const staticRoutes:[\s\S]*?\n  \];/)?.[0] ?? '';
   const staticSuffixes = [...staticRoutesBlock.matchAll(/url: (?:SITE_URL|`\$\{SITE_URL\}([^`]+)`)/g)].map((match) => match[1] ?? '');
@@ -3469,15 +3471,15 @@ test('Phase 5C.2 publishes the ticket verification guide through the Guides Hub 
     '/guides/west-coast-pacific-northwest-dark-alternative-festivals',
     '/guides/european-goth-darkwave-industrial-festivals',
   ];
-  assert.equal(staticSuffixes.length, 12, 'the sitemap should contain twelve static routes');
+  assert.equal(staticSuffixes.length, 13, 'the sitemap should contain thirteen static routes');
   assert.equal(new Set(staticSuffixes).size, staticSuffixes.length, 'the sitemap must have zero duplicate URLs');
   assert.equal(staticSuffixes.filter((suffix) => suffix === ticketRoute).length, 1, 'the ticket-guide canonical should occur once');
   assert.equal(staticSuffixes.filter((suffix) => suffix === '/guides/european-goth-darkwave-industrial-festivals').length, 1, 'the European canonical should remain once');
   for (const suffix of previousStaticSuffixes) assert.ok(staticSuffixes.includes(suffix), `${suffix || '/'} should remain in the sitemap`);
-  assert.deepEqual(staticSuffixes.filter((suffix) => suffix !== ticketRoute && suffix !== firstTimeRoute), previousStaticSuffixes, 'existing sitemap relative order should remain exact');
-  assert.equal(staticSuffixes.filter((suffix) => suffix.startsWith('/guides/')).length, 7, 'seven guide article URLs should be listed');
+  assert.deepEqual(staticSuffixes.filter((suffix) => suffix !== ticketRoute && suffix !== firstTimeRoute && suffix !== tripRoute), previousStaticSuffixes, 'existing sitemap relative order should remain exact');
+  assert.equal(staticSuffixes.filter((suffix) => suffix.startsWith('/guides/')).length, 8, 'eight guide article URLs should be listed');
   assert.equal(atlas.festivals.length, 15, 'festival route count should remain 15');
-  assert.equal(staticSuffixes.length + atlas.festivals.length, 27, 'the generated sitemap should contain 27 URLs');
+  assert.equal(staticSuffixes.length + atlas.festivals.length, 28, 'the generated sitemap should contain 28 URLs');
   assert.equal((sitemap.match(/`\$\{SITE_URL\}\/guides\/how-to-verify-festival-tickets-official-sources`/g) ?? []).length, 1);
   assert.equal(ticketCanonical, 'https://retroaltfest.com/guides/how-to-verify-festival-tickets-official-sources');
 
@@ -3754,16 +3756,16 @@ test('Phase 5E.1 trip-planning guide is distinct, source-safe, non-commercial, a
   assert.doesNotMatch(guide, /safe neighborhood|safest area|guaranteed safety|guaranteed transit|guaranteed availability|guaranteed refund|visa required|visa-free|eligible for entry/i);
   assert.doesNotMatch(guide, /date_pending|source_status|map_phase0_category|core_anchor|watchlist|Phase 0|map-readiness|needs_review|geocoding_source|geocoding_query|geocoding_confidence|latitude|longitude/i);
 
-  assert.doesNotMatch(guidesHub, /planning-a-dark-alternative-festival-trip/, 'the local route should not be wired into the Guides Hub');
-  assert.doesNotMatch(sitemap, /planning-a-dark-alternative-festival-trip/, 'the local route should not be wired into the sitemap');
   const guideHrefs = [...guidesHub.matchAll(/href: "(\/guides\/[^"]+)"/g)].map((match) => match[1]);
   const staticRoutesBlock = sitemap.match(/const staticRoutes:[\s\S]*?\n  \];/)?.[0] ?? '';
   const staticSuffixes = [...staticRoutesBlock.matchAll(/url: (?:SITE_URL|`\$\{SITE_URL\}([^`]+)`)/g)].map((match) => match[1] ?? '');
-  assert.equal(guideHrefs.length, 7, 'the Guides Hub should remain at seven published guide cards');
-  assert.equal(staticSuffixes.length, 12, 'the sitemap should retain twelve static routes');
-  assert.equal(staticSuffixes.filter((suffix) => suffix.startsWith('/guides/')).length, 7, 'the sitemap should retain seven published guide routes');
+  assert.equal(guideHrefs.length, 8, 'the Guides Hub should expose eight published guide cards after approved Phase 5E.2 wiring');
+  assert.equal(guideHrefs.filter((href) => href === pagePath).length, 1, 'the Trip-Planning Guide should appear once in the Hub');
+  assert.equal(staticSuffixes.length, 13, 'the sitemap should contain thirteen static routes after approved Phase 5E.2 wiring');
+  assert.equal(staticSuffixes.filter((suffix) => suffix.startsWith('/guides/')).length, 8, 'the sitemap should contain eight published guide routes');
+  assert.equal(staticSuffixes.filter((suffix) => suffix === pagePath).length, 1, 'the Trip-Planning canonical should appear once');
   assert.equal(atlas.festivals.length, 15, 'festival route count should remain 15');
-  assert.equal(staticSuffixes.length + atlas.festivals.length, 27, 'the sitemap should remain at 27 URLs');
+  assert.equal(staticSuffixes.length + atlas.festivals.length, 28, 'the sitemap should contain 28 URLs');
   const mappingBlock = detailPage.match(/const FESTIVAL_DETAIL_GUIDE_LINKS:[\s\S]*?Object\.freeze\(\{[\s\S]*?\n\}\);/)?.[0] ?? '';
   assert.equal((mappingBlock.match(/^\s+href:/gm) ?? []).length, 4, 'exactly four route-specific destinations should remain');
   assert.equal((mappingBlock.match(/^\s+label:/gm) ?? []).length, 4, 'exactly four route-specific labels should remain');
@@ -3772,22 +3774,19 @@ test('Phase 5E.1 trip-planning guide is distinct, source-safe, non-commercial, a
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const approvedFreshnessPaths = new Set([
-    'src/data/atlas-festivals.json',
-    'src/app/guides/north-american-goth-darkwave-festivals/page.tsx',
-    'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx',
+  const approvedPublicationPaths = new Set([
+    'src/app/guides/page.tsx',
+    'src/app/sitemap.ts',
     'tests/homepage-mvp.test.mjs',
   ]);
   assert.equal(
-    changedPaths.every((path) => approvedFreshnessPaths.has(path)),
+    changedPaths.every((path) => approvedPublicationPaths.has(path)),
     true,
-    `the active worktree must stay inside the approved freshness allowlist: ${changedPaths.join(', ')}`,
+    `the active worktree must stay inside the approved Phase 5E.2 publication allowlist: ${changedPaths.join(', ')}`,
   );
 
   const protectedHashes = new Map([
-    ['src/app/guides/page.tsx', 'aeabf34d9266b46489018a21c365984c9bbdf7fe75c36b22cc22edc06d2a693e'],
     ['src/app/guides/GuidesHub.module.css', 'aef54b1c097f166f8118a0e8b2f08c07e46928f85c67f27b88fce08c344ea6e3'],
-    ['src/app/sitemap.ts', '1231fd8a9bfe5d986b6d790bfcca7ed77871bca276155a5bc83212fcd6bbaf20'],
     ['src/app/festivals/[slug]/page.tsx', 'b571123e645db94a8962b1618ba268068d9b1a101ef798b283c8dadc6c7b2c3f'],
     ['src/app/festivals/[slug]/FestivalDetail.module.css', '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb'],
     ['src/app/verification/page.tsx', '28946389175da89f6cd91444f6693b29d21dbcfe0f4a88fa92acf8d471003f14'],
@@ -3819,6 +3818,7 @@ test('Phase 5C.3B publishes the first-time guide and Phase 5D.3 maps only M’er
   const firstTimePath = 'src/app/guides/first-time-dark-alternative-festival-guide/page.tsx';
   const firstTimeCssPath = 'src/app/guides/first-time-dark-alternative-festival-guide/GuideArticle.module.css';
   const firstTimeRoute = '/guides/first-time-dark-alternative-festival-guide';
+  const tripRoute = '/guides/planning-a-dark-alternative-festival-trip';
   const firstTimeCanonical = `https://retroaltfest.com${firstTimeRoute}`;
   const firstTimeTitle = 'First-Time Dark Alternative Festival Guide';
   const firstTimeCopy = 'A practical guide for preparing after you choose a festival, covering event formats, clothing and conditions, hearing and energy, schedules and movement, venue rules, solo attendance, and week-of rechecks.';
@@ -3830,7 +3830,7 @@ test('Phase 5C.3B publishes the first-time guide and Phase 5D.3 maps only M’er
     '/guides/new-wave-post-punk-retro-alternative-festivals-north-america',
     '/guides/how-to-verify-festival-tickets-official-sources',
   ];
-  const expectedGuideOrder = [...previousGuideOrder, firstTimeRoute];
+  const expectedGuideOrder = [...previousGuideOrder, firstTimeRoute, tripRoute];
   const guideHrefs = [...guidesHub.matchAll(/href: "(\/guides\/[^"]+)"/g)].map((match) => match[1]);
   const firstTimeCard = guidesHub.match(/\{\s*title: "First-Time Dark Alternative Festival Guide",[\s\S]*?\n  \},/)?.[0] ?? '';
 
@@ -3845,10 +3845,10 @@ test('Phase 5C.3B publishes the first-time guide and Phase 5D.3 maps only M’er
   assert.doesNotMatch(firstTimeCard, /Ticketmaster|StubHub|SeatGeek|Vivid Seats|AXS|Eventbrite|Viagogo|Hilton|Marriott|Delta|United|American Airlines/i);
 
   assert.deepEqual(guideHrefs, expectedGuideOrder, 'the first-time guide should be issue 07 after the ticket-verification guide');
-  assert.deepEqual(guideHrefs.filter((href) => href !== firstTimeRoute), previousGuideOrder, 'all six existing guide cards should retain exact relative order');
-  assert.equal(guideHrefs.length, 7, 'the Guides Hub should expose seven guide cards');
+  assert.deepEqual(guideHrefs.filter((href) => href !== firstTimeRoute && href !== tripRoute), previousGuideOrder, 'all six existing guide cards should retain exact relative order');
+  assert.equal(guideHrefs.length, 8, 'the Guides Hub should expose eight guide cards');
   assert.equal(guideHrefs.filter((href) => href === firstTimeRoute).length, 1, 'the first-time guide card should occur once');
-  assert.match(guidesHub, /<em>02—07<\/em>/);
+  assert.match(guidesHub, /<em>02—08<\/em>/);
 
   const staticRoutesBlock = sitemap.match(/const staticRoutes:[\s\S]*?\n  \];/)?.[0] ?? '';
   const staticSuffixes = [...staticRoutesBlock.matchAll(/url: (?:SITE_URL|`\$\{SITE_URL\}([^`]+)`)/g)].map((match) => match[1] ?? '');
@@ -3863,15 +3863,15 @@ test('Phase 5C.3B publishes the first-time guide and Phase 5D.3 maps only M’er
   ];
   const atlasSource = read('src/data/atlas-festivals.json');
   const atlas = JSON.parse(atlasSource);
-  assert.deepEqual(staticSuffixes, [...previousStaticSuffixes, firstTimeRoute], 'the first-time canonical should append without reordering or removing existing URLs');
-  assert.equal(staticSuffixes.length, 12, 'the sitemap should contain twelve static routes');
+  assert.deepEqual(staticSuffixes, [...previousStaticSuffixes, firstTimeRoute, tripRoute], 'the first-time and Trip-Planning canonicals should append without reordering or removing existing URLs');
+  assert.equal(staticSuffixes.length, 13, 'the sitemap should contain thirteen static routes');
   assert.equal(new Set(staticSuffixes).size, staticSuffixes.length, 'the sitemap must have zero duplicate URLs');
   assert.equal(staticSuffixes.filter((suffix) => suffix === firstTimeRoute).length, 1, 'the first-time canonical should occur once');
   assert.equal(staticSuffixes.filter((suffix) => suffix === '/guides/how-to-verify-festival-tickets-official-sources').length, 1, 'the ticket-guide canonical should remain once');
   assert.equal(staticSuffixes.filter((suffix) => suffix === '/guides/european-goth-darkwave-industrial-festivals').length, 1, 'the European canonical should remain once');
-  assert.equal(staticSuffixes.filter((suffix) => suffix.startsWith('/guides/')).length, 7, 'seven guide article URLs should be listed');
+  assert.equal(staticSuffixes.filter((suffix) => suffix.startsWith('/guides/')).length, 8, 'eight guide article URLs should be listed');
   assert.equal(atlas.festivals.length, 15, 'festival route count should remain 15');
-  assert.equal(staticSuffixes.length + atlas.festivals.length, 27, 'the generated sitemap should contain 27 URLs');
+  assert.equal(staticSuffixes.length + atlas.festivals.length, 28, 'the generated sitemap should contain 28 URLs');
   assert.equal((sitemap.match(/`\$\{SITE_URL\}\/guides\/first-time-dark-alternative-festival-guide`/g) ?? []).length, 1);
   assert.equal(firstTimeCanonical, 'https://retroaltfest.com/guides/first-time-dark-alternative-festival-guide');
 
@@ -3986,4 +3986,90 @@ test('Phase 5C.3B publishes the first-time guide and Phase 5D.3 maps only M’er
     assert.equal(createHash('sha256').update(readFileSync(join(root, protectedPath))).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
   }
   assert.deepEqual(hashTree('public'), { count: 20, hash: 'fdb685b14899493dad0a63d1d0500cbfb975065880f97931020bc0590f36c81b' }, 'public assets should not change');
+});
+
+test('Phase 5E.2 publishes the trip-planning guide through the Guides Hub and sitemap only', () => {
+  const checkpoint = '1d61b3b688af1470035c47f836b6b96cb1b3ae5d';
+  const tripPagePath = 'src/app/guides/planning-a-dark-alternative-festival-trip/page.tsx';
+  const tripCssPath = 'src/app/guides/planning-a-dark-alternative-festival-trip/GuideArticle.module.css';
+  const hubPath = 'src/app/guides/page.tsx';
+  const sitemapPath = 'src/app/sitemap.ts';
+  const detailPath = 'src/app/festivals/[slug]/page.tsx';
+  const route = '/guides/planning-a-dark-alternative-festival-trip';
+  const canonical = `https://retroaltfest.com${route}`;
+  const title = 'Planning a Dark Alternative Festival Trip';
+  const copy = 'A practical framework for testing whether the journey around a selected festival can work, including event footprint, arrival and departure timing, accommodation search areas, late-night returns, flexibility, and final official-source checks.';
+  const baseline = (path) => execFileSync('git', ['show', `${checkpoint}:${path}`], { cwd: root, encoding: 'utf8' });
+  const cardBlocks = (source) => source.match(/  \{\n    title: "[^"]+",[\s\S]*?\n  \},/g) ?? [];
+  const sitemapSuffixes = (source) => {
+    const block = source.match(/const staticRoutes:[\s\S]*?\n  \];/)?.[0] ?? '';
+    return [...block.matchAll(/url: (?:SITE_URL|`\$\{SITE_URL\}([^`]+)`)/g)].map((match) => match[1] ?? '');
+  };
+
+  const guidesHub = read(hubPath);
+  const sitemap = read(sitemapPath);
+  const baselineHub = baseline(hubPath);
+  const baselineSitemap = baseline(sitemapPath);
+  const currentCards = cardBlocks(guidesHub);
+  const baselineCards = cardBlocks(baselineHub);
+  const currentSuffixes = sitemapSuffixes(sitemap);
+  const baselineSuffixes = sitemapSuffixes(baselineSitemap);
+  const atlas = JSON.parse(read('src/data/atlas-festivals.json'));
+
+  assert.equal(baselineCards.length, 7, 'the approved production baseline should contain seven guide cards');
+  assert.equal(currentCards.length, 8, 'the Guides Hub should contain exactly eight cards');
+  assert.deepEqual(currentCards.slice(0, 7), baselineCards, 'all seven existing card objects must remain byte-identical and in exact relative order');
+
+  const tripCard = currentCards.at(-1) ?? '';
+  assert.match(tripCard, new RegExp(`title: "${title}"`));
+  assert.match(tripCard, /href: "\/guides\/planning-a-dark-alternative-festival-trip"/);
+  assert.match(tripCard, new RegExp(copy.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.match(tripCard, /trip-feasibility planning guide/);
+  assert.match(tripCard, /event footprint/);
+  assert.match(tripCard, /late returns/);
+  assert.match(tripCard, /official-source checks/);
+  assert.equal(currentCards.filter((card) => card.includes(`href: "${route}"`)).length, 1, 'the Trip-Planning card should occur exactly once');
+  assert.deepEqual(Array.from({ length: currentCards.length }, (_, index) => String(index + 1).padStart(2, '0')), ['01', '02', '03', '04', '05', '06', '07', '08']);
+  assert.match(guidesHub, /<em>02—08<\/em>/);
+  assert.doesNotMatch(tripCard, /\b(?:best|top|ultimate|complete|definitive|comprehensive)\b|booking recommendation|book now|buy now|hotel|airline|flight|rail provider|bus provider|rideshare|taxi|insurance|price|availability|affiliate|commission|sponsored|tracking/i);
+
+  assert.deepEqual(currentSuffixes, [...baselineSuffixes, route], 'the new guide canonical should append after the established guide source order without moving or removing any URL');
+  assert.equal(currentSuffixes.length, 13, 'the sitemap should contain thirteen static routes');
+  assert.equal(new Set(currentSuffixes).size, currentSuffixes.length, 'the sitemap should contain no duplicate URL');
+  assert.equal(currentSuffixes.filter((suffix) => suffix.startsWith('/guides/')).length, 8, 'the sitemap should contain eight guide article URLs');
+  assert.equal(currentSuffixes.filter((suffix) => suffix === route).length, 1, 'the new canonical should occur exactly once');
+  assert.equal((sitemap.match(/`\$\{SITE_URL\}\/guides\/planning-a-dark-alternative-festival-trip`/g) ?? []).length, 1);
+  assert.equal(canonical, 'https://retroaltfest.com/guides/planning-a-dark-alternative-festival-trip');
+  assert.equal(atlas.festivals.length, 15, 'festival-detail count should remain 15');
+  assert.equal(currentSuffixes.length + atlas.festivals.length, 28, 'the generated sitemap should contain 28 unique URLs');
+
+  for (const path of [
+    tripPagePath,
+    tripCssPath,
+    detailPath,
+    'src/data/atlas-festivals.json',
+    'src/lib/public-festivals.ts',
+    'src/app/guides/GuidesHub.module.css',
+    'src/app/globals.css',
+    'package.json',
+    'package-lock.json',
+  ]) {
+    assert.equal(read(path), baseline(path), `${path} should remain byte-identical to the revised checkpoint`);
+  }
+
+  const tripSource = read(tripPagePath);
+  assert.match(tripSource, /title: "Planning a Dark Alternative Festival Trip"/);
+  assert.match(tripSource, /description:\s*"Plan a dark alternative festival trip after choosing an event: confirm the edition, interpret its footprint, choose a search area, plan late returns, and preserve flexibility\."/);
+  assert.match(tripSource, /path: pagePath/);
+  assert.match(tripSource, /type: "article"/);
+  assert.doesNotMatch(`${guidesHub}\n${sitemap}`, /"use client"|useState|useEffect|useMemo|fetch\(|\/api\//);
+  assert.doesNotMatch(`${guidesHub}\n${sitemap}`, /[?&](?:aff|affiliate|ref|utm_|click|partner)=|affiliate|commission|sponsored|hotel|airline|flight|insurance|booking platform|analytics|current price|live availability/i);
+  assert.doesNotMatch(`${guidesHub}\n${sitemap}`, /date_pending|source_status|map_phase0_category|core_anchor|watchlist|Phase 0|map-readiness|needs_review|geocoding_source|geocoding_query|geocoding_confidence|latitude|longitude/i);
+
+  const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' })
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => line.slice(3));
+  const allowlist = new Set([hubPath, sitemapPath, 'tests/homepage-mvp.test.mjs']);
+  assert.equal(changedPaths.every((path) => allowlist.has(path)), true, `Phase 5E.2 must stay inside the exact three-file allowlist: ${changedPaths.join(', ')}`);
 });

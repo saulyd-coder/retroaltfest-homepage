@@ -103,6 +103,15 @@ const guides: GuideCard[] = [
     tags: ["event preparation", "conditions", "venue rules", "week-of checks"],
     accent: "cyan",
   },
+  {
+    title: "Planning a Dark Alternative Festival Trip",
+    href: "/guides/planning-a-dark-alternative-festival-trip",
+    role: "trip-feasibility planning guide",
+    description:
+      "A practical framework for testing whether the journey around a selected festival can work, including event footprint, arrival and departure timing, accommodation search areas, late-night returns, flexibility, and final official-source checks.",
+    tags: ["trip feasibility", "event footprint", "late returns", "official-source checks"],
+    accent: "violet",
+  },
 ];
 
 function issueNumber(index: number) {
@@ -176,7 +185,7 @@ export default function GuidesPage() {
         <div className={styles.sectionDivider} aria-hidden="true">
           <span />
           <b>Curated guide index</b>
-          <em>02—07</em>
+          <em>02—08</em>
         </div>
 
         <section className={styles.guideList} aria-label="RetroAltFest curated scene guides">
