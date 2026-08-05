@@ -40,6 +40,16 @@ function normalizePhase5A1GuideDiscoveryPilot(source) {
     .replace('          label: guideDiscoveryLink.label,', '          label: "Read curated guides",');
 }
 
+function normalizePhase5E3WgtGuideMapping(source) {
+  return source.replace([
+    '  "wave-gotik-treffen": Object.freeze({',
+    '    href: "/guides/planning-a-dark-alternative-festival-trip",',
+    '    label: "Planning a Dark Alternative Festival Trip",',
+    '  }),',
+    '',
+  ].join('\n'), '');
+}
+
 test('ships the curated festival app data for the homepage vertical slice', () => {
   const dataPath = 'src/data/atlas-festivals.json';
   assert.equal(existsSync(join(root, dataPath)), true, 'seed data should be available in src/data');
@@ -546,6 +556,7 @@ test('Terminus preserves the ended-ticket removal while applying the approved fr
   const approvedActivePaths = [
     'src/app/guides/page.tsx',
     'src/app/sitemap.ts',
+    'src/app/festivals/[slug]/page.tsx',
     'tests/homepage-mvp.test.mjs',
   ];
   assert.equal(
@@ -2972,7 +2983,7 @@ test('Phase 5A.1 closes exactly two reciprocal guide discovery loops and freezes
       reciprocalSource: gothGuide,
     },
   };
-  const contextualTargets = new Set(['mera-luna-festival', 'ncn-festival-nocturnal-culture-night']);
+  const contextualTargets = new Set(['mera-luna-festival', 'ncn-festival-nocturnal-culture-night', 'wave-gotik-treffen']);
 
   const mappingBlock = page.match(/const FESTIVAL_DETAIL_GUIDE_LINKS:[\s\S]*?Object\.freeze\(\{[\s\S]*?\n\}\);/)?.[0] ?? '';
   assert.ok(mappingBlock, 'the explicit immutable Phase 5A.1 mapping should exist');
@@ -2988,8 +2999,8 @@ test('Phase 5A.1 closes exactly two reciprocal guide discovery loops and freezes
     assert.equal((mappingBlock.match(new RegExp(contract.label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) ?? []).length, 1, `${slug} should have one frozen label`);
     assert.match(contract.reciprocalSource, new RegExp(`/festivals/${slug}`), `${contract.href} should already link back to ${slug}`);
   }
-  assert.equal((mappingBlock.match(/^\s+href:/gm) ?? []).length, 4, 'the mapping should contain the two reciprocal links plus the two approved contextual links');
-  assert.equal((mappingBlock.match(/^\s+label:/gm) ?? []).length, 4, 'the mapping should contain exactly four frozen labels');
+  assert.equal((mappingBlock.match(/^\s+href:/gm) ?? []).length, 5, 'the mapping should contain the four Phase 5A.1 links plus the approved WGT Trip-Planning link');
+  assert.equal((mappingBlock.match(/^\s+label:/gm) ?? []).length, 5, 'the mapping should contain exactly five frozen labels after Phase 5E.3');
 
   for (const festival of atlas.festivals) {
     if (targets[festival.slug] || contextualTargets.has(festival.slug)) continue;
@@ -3767,8 +3778,8 @@ test('Phase 5E.1 trip-planning guide is distinct, source-safe, non-commercial, a
   assert.equal(atlas.festivals.length, 15, 'festival route count should remain 15');
   assert.equal(staticSuffixes.length + atlas.festivals.length, 28, 'the sitemap should contain 28 URLs');
   const mappingBlock = detailPage.match(/const FESTIVAL_DETAIL_GUIDE_LINKS:[\s\S]*?Object\.freeze\(\{[\s\S]*?\n\}\);/)?.[0] ?? '';
-  assert.equal((mappingBlock.match(/^\s+href:/gm) ?? []).length, 4, 'exactly four route-specific destinations should remain');
-  assert.equal((mappingBlock.match(/^\s+label:/gm) ?? []).length, 4, 'exactly four route-specific labels should remain');
+  assert.equal((mappingBlock.match(/^\s+href:/gm) ?? []).length, 5, 'exactly five route-specific destinations should remain after the WGT pilot');
+  assert.equal((mappingBlock.match(/^\s+label:/gm) ?? []).length, 5, 'exactly five route-specific labels should remain after the WGT pilot');
 
   const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' })
     .split('\n')
@@ -3777,17 +3788,17 @@ test('Phase 5E.1 trip-planning guide is distinct, source-safe, non-commercial, a
   const approvedPublicationPaths = new Set([
     'src/app/guides/page.tsx',
     'src/app/sitemap.ts',
+    'src/app/festivals/[slug]/page.tsx',
     'tests/homepage-mvp.test.mjs',
   ]);
   assert.equal(
     changedPaths.every((path) => approvedPublicationPaths.has(path)),
     true,
-    `the active worktree must stay inside the approved Phase 5E.2 publication allowlist: ${changedPaths.join(', ')}`,
+    `the active worktree must stay inside the combined Phase 5E.2 publication and Phase 5E.3 WGT allowlists: ${changedPaths.join(', ')}`,
   );
 
   const protectedHashes = new Map([
     ['src/app/guides/GuidesHub.module.css', 'aef54b1c097f166f8118a0e8b2f08c07e46928f85c67f27b88fce08c344ea6e3'],
-    ['src/app/festivals/[slug]/page.tsx', 'b571123e645db94a8962b1618ba268068d9b1a101ef798b283c8dadc6c7b2c3f'],
     ['src/app/festivals/[slug]/FestivalDetail.module.css', '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb'],
     ['src/app/verification/page.tsx', '28946389175da89f6cd91444f6693b29d21dbcfe0f4a88fa92acf8d471003f14'],
     ['src/app/verification/VerificationPage.module.css', 'b370b6781237df419a1920128d0849d24345aecab57b624826275521239f3bb1'],
@@ -3809,6 +3820,11 @@ test('Phase 5E.1 trip-planning guide is distinct, source-safe, non-commercial, a
   for (const [protectedPath, expectedHash] of protectedHashes) {
     assert.equal(createHash('sha256').update(readFileSync(join(root, protectedPath))).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
   }
+  assert.equal(
+    createHash('sha256').update(normalizePhase5E3WgtGuideMapping(detailPage)).digest('hex'),
+    'b571123e645db94a8962b1618ba268068d9b1a101ef798b283c8dadc6c7b2c3f',
+    'the detail page should retain the Phase 5E.1 source after normalizing only the approved WGT mapping',
+  );
   assert.deepEqual(hashTree('public'), { count: 20, hash: 'fdb685b14899493dad0a63d1d0500cbfb975065880f97931020bc0590f36c81b' }, 'public assets should not change');
 });
 
@@ -3889,10 +3905,14 @@ test('Phase 5C.3B publishes the first-time guide and Phase 5D.3 maps only M’er
       href: '/guides/north-american-goth-darkwave-festivals',
       label: 'North American Goth & Darkwave Guide',
     },
+    'wave-gotik-treffen': {
+      href: '/guides/planning-a-dark-alternative-festival-trip',
+      label: 'Planning a Dark Alternative Festival Trip',
+    },
   };
   const genericSlugs = [
     'absolution-fest', 'terminus-festival', 'infest-festival', 'cold-waves',
-    'mutek-montreal', 'wave-gotik-treffen', 'castle-party-festival', 'amphi-festival',
+    'mutek-montreal', 'castle-party-festival', 'amphi-festival',
     'just-like-heaven', 'levitation', 'the-new-colossus-festival',
   ];
   const ncn = atlas.festivals.find((festival) => festival.slug === ncnSlug);
@@ -3916,11 +3936,11 @@ test('Phase 5C.3B publishes the first-time guide and Phase 5D.3 maps only M’er
   assert.deepEqual(
     new Set(atlas.festivals.map((festival) => festival.slug)),
     new Set([...targetSlugs, ...Object.keys(existingSpecificMappings), ...genericSlugs]),
-    'the two First-Time Guide targets, two existing specific routes, and eleven generic routes should account for the complete atlas',
+    'the two First-Time Guide targets, three existing specific routes, and ten generic routes should account for the complete atlas',
   );
-  assert.equal((mappingBlock.match(/^\s+href:/gm) ?? []).length, 4, 'exactly four route-specific destinations should exist');
-  assert.equal((mappingBlock.match(/^\s+label:/gm) ?? []).length, 4, 'exactly four route-specific labels should exist');
-  assert.equal(genericSlugs.length, 11, 'exactly eleven routes should retain the generic Guides Hub tuple');
+  assert.equal((mappingBlock.match(/^\s+href:/gm) ?? []).length, 5, 'exactly five route-specific destinations should exist');
+  assert.equal((mappingBlock.match(/^\s+label:/gm) ?? []).length, 5, 'exactly five route-specific labels should exist');
+  assert.equal(genericSlugs.length, 10, 'exactly ten routes should retain the generic Guides Hub tuple');
 
   assert.ok(ncn, 'NCN should remain present in the atlas');
   assert.equal(ncn.official_url, 'https://www.ncn-festival.de');
@@ -4046,7 +4066,6 @@ test('Phase 5E.2 publishes the trip-planning guide through the Guides Hub and si
   for (const path of [
     tripPagePath,
     tripCssPath,
-    detailPath,
     'src/data/atlas-festivals.json',
     'src/lib/public-festivals.ts',
     'src/app/guides/GuidesHub.module.css',
@@ -4056,6 +4075,11 @@ test('Phase 5E.2 publishes the trip-planning guide through the Guides Hub and si
   ]) {
     assert.equal(read(path), baseline(path), `${path} should remain byte-identical to the revised checkpoint`);
   }
+  assert.equal(
+    normalizePhase5E3WgtGuideMapping(read(detailPath)),
+    baseline(detailPath),
+    `${detailPath} should differ from the revised checkpoint only by the exact WGT Trip-Planning mapping`,
+  );
 
   const tripSource = read(tripPagePath);
   assert.match(tripSource, /title: "Planning a Dark Alternative Festival Trip"/);
@@ -4070,6 +4094,123 @@ test('Phase 5E.2 publishes the trip-planning guide through the Guides Hub and si
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const allowlist = new Set([hubPath, sitemapPath, 'tests/homepage-mvp.test.mjs']);
+  const allowlist = new Set([hubPath, sitemapPath, detailPath, 'tests/homepage-mvp.test.mjs']);
   assert.equal(changedPaths.every((path) => allowlist.has(path)), true, `Phase 5E.2 must stay inside the exact three-file allowlist: ${changedPaths.join(', ')}`);
+});
+
+test('Phase 5E.3 maps only Wave-Gotik-Treffen to the Trip-Planning Guide and freezes every other contract', () => {
+  const checkpoint = '659d52ddc010ed087e265a4d57b7a280f5a645af';
+  const pagePath = 'src/app/festivals/[slug]/page.tsx';
+  const testPath = 'tests/homepage-mvp.test.mjs';
+  const tripPath = 'src/app/guides/planning-a-dark-alternative-festival-trip/page.tsx';
+  const tripCssPath = 'src/app/guides/planning-a-dark-alternative-festival-trip/GuideArticle.module.css';
+  const tripRoute = '/guides/planning-a-dark-alternative-festival-trip';
+  const tripLabel = 'Planning a Dark Alternative Festival Trip';
+  const targetSlug = 'wave-gotik-treffen';
+  const baseline = (path) => execFileSync('git', ['show', `${checkpoint}:${path}`], { cwd: root, encoding: 'utf8' });
+  const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const page = read(pagePath);
+  const mappingBlock = page.match(/const FESTIVAL_DETAIL_GUIDE_LINKS:[\s\S]*?Object\.freeze\(\{[\s\S]*?\n\}\);/)?.[0] ?? '';
+  const wgtEntry = [
+    '  "wave-gotik-treffen": Object.freeze({',
+    '    href: "/guides/planning-a-dark-alternative-festival-trip",',
+    '    label: "Planning a Dark Alternative Festival Trip",',
+    '  }),',
+    '',
+  ].join('\n');
+  const wgtPattern = new RegExp(`"${targetSlug}":[\\s\\S]*?href: "${escapeRegex(tripRoute)}"[\\s\\S]*?label: "${escapeRegex(tripLabel)}"`);
+
+  assert.match(mappingBlock, wgtPattern, 'WGT still uses the generic Guides Hub mapping; the approved Phase 5E.3 tuple is absent');
+  assert.equal((mappingBlock.match(new RegExp(`"${targetSlug}"`, 'g')) ?? []).length, 1, 'the WGT key should occur exactly once');
+  assert.equal((mappingBlock.match(new RegExp(escapeRegex(tripRoute), 'g')) ?? []).length, 1, 'the Trip-Planning destination should occur once among festival mappings');
+  assert.equal((mappingBlock.match(new RegExp(escapeRegex(tripLabel), 'g')) ?? []).length, 1, 'the Trip-Planning label should occur once among festival mappings');
+
+  const specificMappings = {
+    'mera-luna-festival': {
+      href: '/guides/first-time-dark-alternative-festival-guide',
+      label: 'First-Time Dark Alternative Festival Guide',
+    },
+    'ncn-festival-nocturnal-culture-night': {
+      href: '/guides/first-time-dark-alternative-festival-guide',
+      label: 'First-Time Dark Alternative Festival Guide',
+    },
+    'darker-waves': {
+      href: '/guides/new-wave-post-punk-retro-alternative-festivals-north-america',
+      label: 'New Wave, Post-Punk & Retro Alternative Guide',
+    },
+    'a-murder-of-crows-xi-nyc-goth-post-punk-festival': {
+      href: '/guides/north-american-goth-darkwave-festivals',
+      label: 'North American Goth & Darkwave Guide',
+    },
+    [targetSlug]: { href: tripRoute, label: tripLabel },
+  };
+  const genericSlugs = [
+    'absolution-fest', 'terminus-festival', 'infest-festival', 'cold-waves', 'mutek-montreal',
+    'castle-party-festival', 'amphi-festival', 'just-like-heaven', 'levitation', 'the-new-colossus-festival',
+  ];
+
+  for (const [slug, contract] of Object.entries(specificMappings)) {
+    const pattern = new RegExp(`"${slug}":[\\s\\S]*?href: "${escapeRegex(contract.href)}"[\\s\\S]*?label: "${escapeRegex(contract.label)}"`);
+    assert.match(mappingBlock, pattern, `${slug} should retain its exact approved specific mapping`);
+    assert.equal((mappingBlock.match(new RegExp(`"${slug}"`, 'g')) ?? []).length, 1, `${slug} should occur once in the mapping`);
+  }
+  for (const slug of genericSlugs) {
+    assert.doesNotMatch(mappingBlock, new RegExp(`"${slug}"`), `${slug} should retain the generic Guides Hub tuple`);
+  }
+  assert.equal((mappingBlock.match(/^\s+href:/gm) ?? []).length, 5, 'exactly five route-specific destinations should exist');
+  assert.equal((mappingBlock.match(/^\s+label:/gm) ?? []).length, 5, 'exactly five route-specific labels should exist');
+  assert.equal(genericSlugs.length, 10, 'exactly ten routes should remain generic');
+
+  const atlasSource = read('src/data/atlas-festivals.json');
+  const atlas = JSON.parse(atlasSource);
+  assert.equal(atlas.festivals.length, 15, 'the atlas should remain at 15 records');
+  assert.deepEqual(new Set(atlas.festivals.map((festival) => festival.slug)), new Set([...Object.keys(specificMappings), ...genericSlugs]));
+  assert.equal(atlas.festivals.every((festival) => festival.latitude === null && festival.longitude === null), true, 'all coordinates should remain null');
+
+  const discoveryBlock = page.match(/const discoveryLinks = \([\s\S]*?\n  \);/)?.[0] ?? '';
+  assert.equal((discoveryBlock.match(/href:/g) ?? []).length, 3, 'discovery-card count should remain three');
+  const discoveryOrder = [
+    discoveryBlock.indexOf('href: "/festivals"'),
+    discoveryBlock.indexOf('href: guideDiscoveryLink.href'),
+    discoveryBlock.indexOf('href: "/verification"'),
+  ];
+  assert.equal(discoveryOrder.every((position) => position >= 0), true);
+  assert.deepEqual(discoveryOrder, [...discoveryOrder].sort((a, b) => a - b), 'Festival Directory, Guide, Verification order must remain exact');
+  const activationBlock = page.match(/const NIGHT_TRANSMISSION_DETAIL_SLUGS[\s\S]*?\]\);/)?.[0] ?? '';
+  assert.doesNotMatch(activationBlock, new RegExp(`"${targetSlug}"`), 'WGT must remain a legacy-presentation route');
+
+  assert.equal(page.replace(wgtEntry, ''), baseline(pagePath), 'the detail route may differ from the approved checkpoint only by the exact WGT mapping entry');
+  assert.equal(atlasSource, baseline('src/data/atlas-festivals.json'), 'atlas data, WGT source fields, dates, status, coordinates, and related festivals must remain exact');
+  for (const protectedPath of [
+    'src/lib/public-festivals.ts',
+    'src/app/sitemap.ts',
+    'src/app/guides/page.tsx',
+    tripPath,
+    tripCssPath,
+    'src/app/festivals/[slug]/FestivalDetail.module.css',
+    'src/components/site/DiscoveryLinks.tsx',
+    'src/app/layout.tsx',
+    'src/app/globals.css',
+    'src/lib/seo.ts',
+    'package.json',
+    'package-lock.json',
+  ]) assert.equal(read(protectedPath), baseline(protectedPath), `${protectedPath} should remain byte-identical`);
+
+  const hub = read('src/app/guides/page.tsx');
+  const sitemap = read('src/app/sitemap.ts');
+  assert.equal((hub.match(/href: "\/guides\//g) ?? []).length, 8, 'Guides Hub should remain at eight cards');
+  const staticRoutes = sitemap.match(/const staticRoutes:[\s\S]*?\n  \];/)?.[0] ?? '';
+  assert.equal((staticRoutes.match(/url:/g) ?? []).length, 13, 'thirteen static sitemap entries plus 15 atlas routes should remain 28 URLs');
+  assert.equal((staticRoutes.match(/`\$\{SITE_URL\}\/guides\//g) ?? []).length, 8, 'the sitemap should retain eight guide URLs');
+  assert.match(read(tripPath), /title: "Planning a Dark Alternative Festival Trip"/);
+
+  assert.doesNotMatch(wgtEntry, /fetch\(|"use client"|useState|useEffect|\/api\/|[?&](?:aff|affiliate|ref|utm_|click|partner)=|hotel|airline|flight|rail provider|bus provider|booking platform|insurance|sponsored|commission|analytics|price|availability/i);
+  assert.doesNotMatch(wgtEntry, /date_pending|source_status|map_phase0_category|core_anchor|watchlist|Phase 0|map-readiness|needs_review|geocoding_source|geocoding_query|geocoding_confidence|latitude|longitude/i);
+
+  const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' })
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => line.slice(3));
+  const allowlist = new Set([pagePath, testPath]);
+  assert.equal(changedPaths.every((path) => allowlist.has(path)), true, `Phase 5E.3 must stay inside the exact two-file allowlist: ${changedPaths.join(', ')}`);
 });

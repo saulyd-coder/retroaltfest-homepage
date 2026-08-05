@@ -43,6 +43,10 @@ const FESTIVAL_DETAIL_GUIDE_LINKS: Readonly<Record<string, Readonly<{ href: stri
     href: "/guides/north-american-goth-darkwave-festivals",
     label: "North American Goth & Darkwave Guide",
   }),
+  "wave-gotik-treffen": Object.freeze({
+    href: "/guides/planning-a-dark-alternative-festival-trip",
+    label: "Planning a Dark Alternative Festival Trip",
+  }),
 });
 const festivalMetadataTitleOverrides: Readonly<Record<string, string>> = {
   [FESTIVAL_DETAIL_REFERENCE_SLUG]: "M'era Luna Festival guide",
