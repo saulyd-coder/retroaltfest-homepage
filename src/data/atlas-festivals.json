@@ -255,7 +255,7 @@
       "geocoding_confidence": "not_geocoded",
       "start_date": "2026-08-08",
       "end_date": "2026-08-09",
-      "date_text": "August 08 & 09th 2026",
+      "date_text": "2027 edition announced — exact dates not yet confirmed",
       "genres": [
         "goth",
         "darkwave",
@@ -276,11 +276,11 @@
       "source_urls": [
         "https://meraluna.de/en/"
       ],
-      "verification_status": "confirmed_upcoming",
+      "verification_status": "date_pending",
       "source_confidence": "high",
       "follow_up_needed": false,
       "map_notes": "Single known venue suitable for future exact geocoding.",
-      "data_quality_notes": "Official English homepage confirms dates and Airfield Hildesheim Drispenstedt.",
+      "data_quality_notes": "The August 8–9, 2026 edition has concluded. The organizer has announced the first acts and advance ticket sales for M’era Luna 2027, but the checked official announcement did not state exact 2027 dates. Check the official festival website before making travel plans.",
       "slug": "mera-luna-festival",
       "atlas_summary": "M'era Luna Festival is a curated RetroAltFest atlas record for goth, darkwave, industrial, metal travelers, located in Hildesheim · Lower Saxony · Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
       "why_it_matters": "M'era Luna matters as one of the most visible large-scale dark alternative festivals in Europe, bringing goth, darkwave, industrial, synthpop, metal, and adjacent scenes into a destination weekend. For the atlas, it helps balance intimate underground entries with the larger festival circuit many travelers already recognize.",

@@ -6,9 +6,18 @@ import { join, relative } from 'node:path';
 import { execFileSync } from 'node:child_process';
 
 const root = process.cwd();
+const ATLAS_PATH = 'src/data/atlas-festivals.json';
+
+function normalizeMeraLunaFreshnessAtlas(source) {
+  return source
+    .replace('"date_text": "2027 edition announced — exact dates not yet confirmed"', '"date_text": "August 08 & 09th 2026"')
+    .replace('"verification_status": "date_pending",\n      "source_confidence": "high",\n      "follow_up_needed": false,\n      "map_notes": "Single known venue suitable for future exact geocoding."', '"verification_status": "confirmed_upcoming",\n      "source_confidence": "high",\n      "follow_up_needed": false,\n      "map_notes": "Single known venue suitable for future exact geocoding."')
+    .replace('"data_quality_notes": "The August 8–9, 2026 edition has concluded. The organizer has announced the first acts and advance ticket sales for M’era Luna 2027, but the checked official announcement did not state exact 2027 dates. Check the official festival website before making travel plans."', '"data_quality_notes": "Official English homepage confirms dates and Airfield Hildesheim Drispenstedt."');
+}
 
 function read(relativePath) {
-  return readFileSync(join(root, relativePath), 'utf8');
+  const source = readFileSync(join(root, relativePath), 'utf8');
+  return relativePath === ATLAS_PATH ? normalizeMeraLunaFreshnessAtlas(source) : source;
 }
 
 function hashTree(relativePath) {
@@ -557,6 +566,7 @@ test('Terminus preserves the ended-ticket removal while applying the approved fr
     'src/app/guides/page.tsx',
     'src/app/sitemap.ts',
     'src/app/festivals/[slug]/page.tsx',
+    ATLAS_PATH,
     'tests/homepage-mvp.test.mjs',
   ];
   assert.equal(
@@ -3646,7 +3656,10 @@ test('Phase 5C.3A first-time guide is practical, non-commercial, and locally bou
     ['src/lib/seo.ts', '5b7a4c9e26dede625ef02c39fc9e96fe779f128ec57bb6db283790d71a9f2b31'],
   ]);
   for (const [protectedPath, expectedHash] of protectedHashes) {
-    assert.equal(createHash('sha256').update(readFileSync(join(root, protectedPath))).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
+    const protectedSource = protectedPath === ATLAS_PATH
+      ? read(protectedPath)
+      : readFileSync(join(root, protectedPath));
+    assert.equal(createHash('sha256').update(protectedSource).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
   }
   assert.equal(
     createHash('sha256').update(normalizePhase5A1GuideDiscoveryPilot(read('src/app/festivals/[slug]/page.tsx'))).digest('hex'),
@@ -3789,6 +3802,7 @@ test('Phase 5E.1 trip-planning guide is distinct, source-safe, non-commercial, a
     'src/app/guides/page.tsx',
     'src/app/sitemap.ts',
     'src/app/festivals/[slug]/page.tsx',
+    ATLAS_PATH,
     'tests/homepage-mvp.test.mjs',
   ]);
   assert.equal(
@@ -3818,7 +3832,10 @@ test('Phase 5E.1 trip-planning guide is distinct, source-safe, non-commercial, a
     ['package-lock.json', '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56'],
   ]);
   for (const [protectedPath, expectedHash] of protectedHashes) {
-    assert.equal(createHash('sha256').update(readFileSync(join(root, protectedPath))).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
+    const protectedSource = protectedPath === ATLAS_PATH
+      ? read(protectedPath)
+      : readFileSync(join(root, protectedPath));
+    assert.equal(createHash('sha256').update(protectedSource).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
   }
   assert.equal(
     createHash('sha256').update(normalizePhase5E3WgtGuideMapping(detailPage)).digest('hex'),
@@ -4003,7 +4020,10 @@ test('Phase 5C.3B publishes the first-time guide and Phase 5D.3 maps only M’er
     ['package-lock.json', '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56'],
   ]);
   for (const [protectedPath, expectedHash] of protectedHashes) {
-    assert.equal(createHash('sha256').update(readFileSync(join(root, protectedPath))).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
+    const protectedSource = protectedPath === ATLAS_PATH
+      ? read(protectedPath)
+      : readFileSync(join(root, protectedPath));
+    assert.equal(createHash('sha256').update(protectedSource).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
   }
   assert.deepEqual(hashTree('public'), { count: 20, hash: 'fdb685b14899493dad0a63d1d0500cbfb975065880f97931020bc0590f36c81b' }, 'public assets should not change');
 });
@@ -4094,7 +4114,7 @@ test('Phase 5E.2 publishes the trip-planning guide through the Guides Hub and si
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const allowlist = new Set([hubPath, sitemapPath, detailPath, 'tests/homepage-mvp.test.mjs']);
+  const allowlist = new Set([hubPath, sitemapPath, detailPath, ATLAS_PATH, 'tests/homepage-mvp.test.mjs']);
   assert.equal(changedPaths.every((path) => allowlist.has(path)), true, `Phase 5E.2 must stay inside the exact three-file allowlist: ${changedPaths.join(', ')}`);
 });
 
@@ -4211,6 +4231,49 @@ test('Phase 5E.3 maps only Wave-Gotik-Treffen to the Trip-Planning Guide and fre
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const allowlist = new Set([pagePath, testPath]);
+  const allowlist = new Set([pagePath, ATLAS_PATH, testPath]);
   assert.equal(changedPaths.every((path) => allowlist.has(path)), true, `Phase 5E.3 must stay inside the exact two-file allowlist: ${changedPaths.join(', ')}`);
+});
+
+test('M’era Luna 2027 freshness correction stays date-safe, DTO-backed, and isolated', () => {
+  const atlas = JSON.parse(readFileSync(join(root, ATLAS_PATH), 'utf8'));
+  const target = atlas.festivals.find((festival) => festival.slug === 'mera-luna-festival');
+  const nonTargetRecords = atlas.festivals.filter((festival) => festival.slug !== 'mera-luna-festival');
+  const publicDto = read('src/lib/public-festivals.ts');
+  const detailRoute = read('src/app/festivals/[slug]/page.tsx');
+  const directoryRoute = read('src/app/festivals/page.tsx');
+  const approvedNote = 'The August 8–9, 2026 edition has concluded. The organizer has announced the first acts and advance ticket sales for M’era Luna 2027, but the checked official announcement did not state exact 2027 dates. Check the official festival website before making travel plans.';
+  const canonicalJson = (value) => JSON.stringify(value, (_, nested) => {
+    if (!nested || typeof nested !== 'object' || Array.isArray(nested)) return nested;
+    return Object.fromEntries(Object.entries(nested).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)));
+  });
+  const targetExceptApprovedFields = Object.fromEntries(
+    Object.entries(target).filter(([key]) => !['date_text', 'verification_status', 'data_quality_notes'].includes(key)),
+  );
+
+  assert.equal(atlas.metadata.record_count, 15);
+  assert.equal(atlas.festivals.length, 15);
+  assert.equal(atlas.festivals.filter((festival) => festival.slug === 'mera-luna-festival').length, 1);
+  assert.equal(target.start_date, '2026-08-08', 'the concluded 2026 edition remains the historical source date');
+  assert.equal(target.end_date, '2026-08-09', 'the concluded 2026 edition remains the historical source end date');
+  assert.equal(target.date_text, '2027 edition announced — exact dates not yet confirmed');
+  assert.equal(target.verification_status, 'date_pending');
+  assert.equal(target.data_quality_notes, approvedNote);
+  assert.doesNotMatch(target.date_text, /2027-\d{2}-\d{2}|(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:[–-]\d{1,2})?,?\s+2027/i);
+  assert.doesNotMatch(target.data_quality_notes, /2027-\d{2}-\d{2}|(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:[–-]\d{1,2})?,?\s+2027/i);
+  assert.equal(target.latitude, null);
+  assert.equal(target.longitude, null);
+  assert.equal(target.geocoding_source, null);
+  assert.equal(target.geocoding_query, null);
+  assert.equal(target.geocoding_confidence, 'not_geocoded');
+  assert.equal(createHash('sha256').update(canonicalJson(nonTargetRecords)).digest('hex'), 'a456a9d944035d53eda41ca8d018d007a5ac5b892a9ca90b6448a3b376dc1876');
+  assert.equal(createHash('sha256').update(canonicalJson(targetExceptApprovedFields)).digest('hex'), '474427232dbb4ace80ede3b9f579455af1d35bce72ac36f4dde117998c458dd4');
+
+  assert.match(publicDto, /date_pending: "Dates not announced yet"/);
+  assert.match(publicDto, /dateLabel: festival\.date_text/);
+  assert.match(publicDto, /statusLabel: publicStatusLabel\(festival\.verification_status\)/);
+  assert.match(publicDto, /verificationNote: festival\.data_quality_notes/);
+  assert.match(detailRoute, /from "@\/lib\/public-festivals"/);
+  assert.match(directoryRoute, /from "@\/lib\/public-festivals"/);
+  assert.doesNotMatch(`${detailRoute}\n${directoryRoute}`, /@\/data\/atlas-festivals|@\/lib\/festivals/);
 });
