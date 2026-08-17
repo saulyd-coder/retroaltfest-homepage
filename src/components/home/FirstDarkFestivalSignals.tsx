@@ -20,7 +20,7 @@ export function FirstDarkFestivalSignals() {
   return (
     <section
       aria-labelledby="first-dark-festival-signals-heading"
-      className="relative mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-18"
+      className="relative mx-auto max-w-7xl px-5 py-14 max-[430px]:px-[16px] sm:px-8 sm:py-18"
     >
       <div className="section-shadow-well pointer-events-none absolute inset-x-4 top-0 h-40 rounded-full opacity-80 blur-3xl" />
 
@@ -45,7 +45,7 @@ export function FirstDarkFestivalSignals() {
         {signals.map((signal) => (
           <article
             key={signal.id}
-            className="editorial-card-glow group relative min-h-full overflow-hidden rounded-3xl border border-[rgba(168,85,247,0.18)] p-5 transition duration-500 hover:-translate-y-0.5 hover:border-[var(--raf-cyan)]/40"
+            className="editorial-card-glow group relative min-h-full min-w-0 overflow-hidden rounded-3xl border border-[rgba(168,85,247,0.18)] p-5 transition duration-500 max-[430px]:p-[16px] hover:-translate-y-0.5 hover:border-[var(--raf-cyan)]/40"
           >
             <div
               className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${
@@ -55,7 +55,7 @@ export function FirstDarkFestivalSignals() {
             <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[var(--raf-cyan)]/40 to-[var(--raf-ultraviolet)]/20" />
             <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[var(--raf-ultraviolet)]/10 blur-2xl transition duration-500 group-hover:bg-[var(--raf-cyan)]/10" />
 
-            <div className="relative z-10 flex min-h-full flex-col">
+            <div className="relative z-10 flex min-h-full min-w-0 flex-col">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <span
                   className={`inline-flex rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] ${
@@ -69,7 +69,7 @@ export function FirstDarkFestivalSignals() {
                 </span>
               </div>
 
-              <h3 className="mt-5 font-display text-2xl font-semibold leading-tight tracking-[-0.02em] text-white">
+              <h3 className="mt-5 min-w-0 max-w-full font-display text-2xl font-semibold leading-tight tracking-[-0.02em] text-white [overflow-wrap:anywhere] [word-break:normal]">
                 {signal.name}
               </h3>
               <p className="mt-2 text-sm leading-6 text-[var(--raf-text-muted)]">{signal.region_label}</p>

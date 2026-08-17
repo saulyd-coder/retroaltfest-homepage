@@ -697,7 +697,15 @@
 
   .mastheadCopy {
     width: 100%;
+    min-width: 0;
     min-height: 540px;
+  }
+
+  .masthead h1 {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: normal;
   }
 
   .issueIndex {

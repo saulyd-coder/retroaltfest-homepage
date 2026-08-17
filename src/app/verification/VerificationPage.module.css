@@ -701,6 +701,18 @@
     width: min(calc(100% - 24px), 1260px);
   }
 
+  .breadcrumb {
+    min-width: 0;
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
+
+  .breadcrumb > * {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
   .mastheadInner,
   .panel,
   .panelAccent,

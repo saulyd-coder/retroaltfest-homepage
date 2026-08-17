@@ -25,8 +25,9 @@ const NIGHT_TRANSMISSION_DETAIL_SLUGS: readonly string[] = Object.freeze([
 const GENERIC_GUIDE_DISCOVERY_LINK = Object.freeze({
   href: "/guides",
   label: "Read curated guides",
+  description: "Use scene and regional guides for context around goth, darkwave, industrial, EBM, new wave, and post-punk discovery.",
 });
-const FESTIVAL_DETAIL_GUIDE_LINKS: Readonly<Record<string, Readonly<{ href: string; label: string }>>> = Object.freeze({
+const FESTIVAL_DETAIL_GUIDE_LINKS: Readonly<Record<string, Readonly<{ href: string; label: string; description?: string }>>> = Object.freeze({
   "mera-luna-festival": Object.freeze({
     href: "/guides/first-time-dark-alternative-festival-guide",
     label: "First-Time Dark Alternative Festival Guide",
@@ -46,6 +47,7 @@ const FESTIVAL_DETAIL_GUIDE_LINKS: Readonly<Record<string, Readonly<{ href: stri
   "wave-gotik-treffen": Object.freeze({
     href: "/guides/planning-a-dark-alternative-festival-trip",
     label: "Planning a Dark Alternative Festival Trip",
+    description: "Plan around a chosen festival by checking its footprint, arrival window, late-night returns, and final pre-departure details.",
   }),
 });
 const festivalMetadataTitleOverrides: Readonly<Record<string, string>> = {
@@ -140,6 +142,9 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
   const isMeraLunaReferenceRoute = festival.slug === FESTIVAL_DETAIL_REFERENCE_SLUG;
   const usesNightTransmissionPresentation = NIGHT_TRANSMISSION_DETAIL_SLUGS.includes(festival.slug);
   const guideDiscoveryLink = FESTIVAL_DETAIL_GUIDE_LINKS[festival.slug] ?? GENERIC_GUIDE_DISCOVERY_LINK;
+  const legacyDetailReflowClasses = usesNightTransmissionPresentation
+    ? ""
+    : "min-w-0 [&_*]:min-w-0 [&_h1]:max-w-full [&_h1]:[overflow-wrap:anywhere] [&_h1]:[word-break:normal] [&_h2]:max-w-full [&_h2]:[overflow-wrap:anywhere] [&_h2]:[word-break:normal] [&_h3]:max-w-full [&_h3]:[overflow-wrap:anywhere] [&_h3]:[word-break:normal] [&_a]:max-w-full [&_a]:[overflow-wrap:anywhere] [&_a]:[word-break:normal]";
 
   const discoveryLinks = (
     <DiscoveryLinks
@@ -154,7 +159,7 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
         {
           href: guideDiscoveryLink.href,
           label: guideDiscoveryLink.label,
-          description: "Use scene and regional guides for context around goth, darkwave, industrial, EBM, new wave, and post-punk discovery.",
+          description: guideDiscoveryLink.description ?? GENERIC_GUIDE_DISCOVERY_LINK.description,
         },
         {
           href: "/verification",
@@ -187,16 +192,16 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
       <Header />
 
       <article
-        className={referenceClass(usesNightTransmissionPresentation, "relative mx-auto max-w-7xl px-5 pb-20 pt-10 sm:px-8 lg:pb-28 lg:pt-16", styles.content)}
+        className={referenceClass(usesNightTransmissionPresentation, `relative mx-auto max-w-7xl px-5 pb-20 pt-10 sm:px-8 lg:pb-28 lg:pt-16 ${legacyDetailReflowClasses}`, styles.content)}
         data-phase4a-article-contract={isMeraLunaReferenceRoute ? PHASE4A_ARTICLE_CONTENT_HASH : undefined}
         data-browser-article-contract={isMeraLunaReferenceRoute ? BROWSER_ARTICLE_CONTENT_HASH : undefined}
       >
-        <nav className={referenceClass(usesNightTransmissionPresentation, "mb-8 font-mono text-xs uppercase tracking-[0.24em] text-[var(--raf-text-dim)]", styles.breadcrumb)} aria-label="Breadcrumb">
-          <Link className="transition hover:text-[var(--raf-cyan)]" href="/">
+        <nav className={referenceClass(usesNightTransmissionPresentation, "mb-8 flex min-w-0 flex-wrap items-center font-mono text-xs uppercase tracking-[0.24em] text-[var(--raf-text-dim)]", styles.breadcrumb)} aria-label="Breadcrumb">
+          <Link className="min-w-0 [overflow-wrap:anywhere] [word-break:normal] transition hover:text-[var(--raf-cyan)]" href="/">
             RetroAltFest
           </Link>
-          <span className="mx-3 text-[var(--raf-violet)]">/</span>
-          <span className="text-[var(--raf-text-muted)]">Festival atlas</span>
+          <span className="mx-3 min-w-0 [overflow-wrap:anywhere] [word-break:normal] text-[var(--raf-violet)]">/</span>
+          <span className="min-w-0 [overflow-wrap:anywhere] [word-break:normal] text-[var(--raf-text-muted)]">Festival atlas</span>
         </nav>
 
         <section className={referenceClass(usesNightTransmissionPresentation, "grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start", styles.masthead)} data-detail-section={usesNightTransmissionPresentation ? "masthead" : undefined}>

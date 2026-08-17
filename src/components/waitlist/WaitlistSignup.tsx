@@ -48,13 +48,13 @@ export function WaitlistSignup() {
   }
 
   return (
-    <section id="waitlist" className="mx-auto max-w-5xl px-5 py-16 sm:px-8">
-      <div className="raf-panel relative overflow-hidden rounded-[2rem] p-5 sm:p-8 lg:p-10">
+    <section id="waitlist" className="mx-auto max-w-5xl px-5 py-16 max-[430px]:px-[16px] sm:px-8">
+      <div className="raf-panel relative overflow-hidden rounded-[2rem] p-5 max-[430px]:p-[16px] sm:p-8 lg:p-10">
         <div className="pointer-events-none absolute -right-24 -top-24 h-56 w-56 rounded-full bg-[var(--raf-cyan)]/10 blur-3xl" />
         <div className="relative z-10 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-center">
           <div className="min-w-0">
             <p className="font-mono text-xs uppercase tracking-[0.32em] text-[var(--raf-cyan)]">Festival discovery digest</p>
-            <h2 className="mt-3 font-display text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+            <h2 className="mt-3 min-w-0 max-w-full font-display text-4xl font-semibold tracking-tight text-white [overflow-wrap:anywhere] [word-break:normal] sm:text-5xl">
               Join the RetroAltFest festival discovery digest.
             </h2>
             <p className="mt-4 max-w-2xl leading-8 text-[var(--raf-text-muted)]">

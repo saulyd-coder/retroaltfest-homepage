@@ -691,6 +691,14 @@
     line-height: 0.94;
   }
 
+  .mastheadTitle,
+  .sectionTitle {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
   .sectionTitle,
   .relatedPaths h2 {
     font-size: clamp(1.6rem, 8vw, 2.6rem) !important;

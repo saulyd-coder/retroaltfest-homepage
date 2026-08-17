@@ -195,6 +195,7 @@
 }
 
 .referencePage .title {
+  min-width: 0;
   max-width: 840px;
   margin: 28px 0 0;
   color: #f4f1ff;
@@ -202,6 +203,8 @@
   font-weight: 700;
   letter-spacing: -0.075em;
   line-height: 0.87;
+  overflow-wrap: anywhere;
+  word-break: normal;
   text-wrap: balance;
   text-transform: uppercase;
 }
@@ -369,8 +372,12 @@
 .referencePage .contentPanel h2,
 .referencePage .sourcesPanel h2,
 .referencePage .sidePanel h2 {
+  min-width: 0;
+  max-width: 100%;
   color: var(--nt-bone-text);
   letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 .referencePage .contentPanel > p:last-child,

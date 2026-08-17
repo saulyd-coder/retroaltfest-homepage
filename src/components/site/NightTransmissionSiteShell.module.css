@@ -412,6 +412,22 @@
   outline-offset: 3px;
 }
 
+@media (max-width: 1120px) {
+  .headerInner {
+    flex-wrap: wrap;
+  }
+
+  .wordmarkChannel,
+  .desktopNavigation {
+    display: none;
+  }
+
+  .mobileNavigation {
+    position: relative;
+    display: block;
+  }
+}
+
 @media (max-width: 767px) {
   .headerInner {
     min-height: 58px;

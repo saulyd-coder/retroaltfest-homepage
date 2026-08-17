@@ -7,6 +7,32 @@ import { execFileSync } from 'node:child_process';
 
 const root = process.cwd();
 const ATLAS_PATH = 'src/data/atlas-festivals.json';
+const PHASE_5E4I_ACTIVE_PATHS = [
+  'src/app/festivals/[slug]/FestivalDetail.module.css',
+  'src/app/festivals/[slug]/page.tsx',
+  'src/app/guides/GuidesHub.module.css',
+  'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/GuideArticle.module.css',
+  'src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css',
+  'src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/GuideArticle.module.css',
+  'src/app/suggest/SuggestPage.module.css',
+  'src/app/verification/VerificationPage.module.css',
+  'src/components/festivals/FestivalDirectory.module.css',
+  'src/components/home/FeaturedFestivals.tsx',
+  'src/components/home/FirstDarkFestivalSignals.tsx',
+  'src/components/home/MapPreview.tsx',
+  'src/components/home/SubmitFestivalCta.tsx',
+  'src/components/site/DiscoveryLinks.tsx',
+  'src/components/site/NightTransmissionSiteShell.module.css',
+  'src/components/waitlist/WaitlistSignup.tsx',
+  'tests/homepage-mvp.test.mjs',
+];
+const PHASE_5E4I_HASH_NORMALIZED_PATHS = new Set([
+  'src/app/festivals/[slug]/FestivalDetail.module.css',
+  'src/app/festivals/[slug]/page.tsx',
+  'src/app/guides/GuidesHub.module.css',
+  'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/GuideArticle.module.css',
+  'src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/GuideArticle.module.css',
+]);
 
 function normalizeMeraLunaFreshnessAtlas(source) {
   return source
@@ -17,7 +43,14 @@ function normalizeMeraLunaFreshnessAtlas(source) {
 
 function read(relativePath) {
   const source = readFileSync(join(root, relativePath), 'utf8');
-  return relativePath === ATLAS_PATH ? normalizeMeraLunaFreshnessAtlas(source) : source;
+  const freshnessNormalized = relativePath === ATLAS_PATH ? normalizeMeraLunaFreshnessAtlas(source) : source;
+  return normalizePhase5E4IAccessibility(relativePath, freshnessNormalized);
+}
+
+function readPhase5E4IProtected(relativePath) {
+  return PHASE_5E4I_HASH_NORMALIZED_PATHS.has(relativePath)
+    ? read(relativePath)
+    : readFileSync(join(root, relativePath));
 }
 
 function hashTree(relativePath) {
@@ -42,15 +75,95 @@ function hashTree(relativePath) {
 }
 
 function normalizePhase5A1GuideDiscoveryPilot(source) {
-  return source
+  return normalizePhase5E4WgtGuideCopy(source)
     .replace(/const GENERIC_GUIDE_DISCOVERY_LINK[\s\S]*?\nconst festivalMetadataTitleOverrides/, 'const festivalMetadataTitleOverrides')
     .replace('  const guideDiscoveryLink = FESTIVAL_DETAIL_GUIDE_LINKS[festival.slug] ?? GENERIC_GUIDE_DISCOVERY_LINK;\n', '')
     .replace('          href: guideDiscoveryLink.href,', '          href: "/guides",')
     .replace('          label: guideDiscoveryLink.label,', '          label: "Read curated guides",');
 }
 
+const PHASE_5E4_GENERIC_GUIDE_COPY = 'Use scene and regional guides for context around goth, darkwave, industrial, EBM, new wave, and post-punk discovery.';
+const PHASE_5E4_WGT_GUIDE_COPY = 'Plan around a chosen festival by checking its footprint, arrival window, late-night returns, and final pre-departure details.';
+
+function normalizePhase5E4WgtGuideCopy(source) {
+  return source
+    .replace(`  description: "${PHASE_5E4_GENERIC_GUIDE_COPY}",\n`, '')
+    .replace('Readonly<{ href: string; label: string; description?: string }>', 'Readonly<{ href: string; label: string }>')
+    .replace(`    description: "${PHASE_5E4_WGT_GUIDE_COPY}",\n`, '')
+    .replace('          description: guideDiscoveryLink.description ?? GENERIC_GUIDE_DISCOVERY_LINK.description,', `          description: "${PHASE_5E4_GENERIC_GUIDE_COPY}",`);
+}
+
+function normalizePhase5E4BDiscoveryLinks(source) {
+  return source
+    .replace(
+      '<section className="mt-10 min-w-0 rounded-[2rem] border border-[var(--raf-border-soft)] bg-[linear-gradient(135deg,rgba(34,211,238,0.09),rgba(168,85,247,0.1),rgba(0,0,0,0.42))] p-[clamp(16px,4vw,2.5rem)] shadow-[0_20px_80px_rgba(0,0,0,0.24)]">',
+      '<section className="mt-10 rounded-[2rem] border border-[var(--raf-border-soft)] bg-[linear-gradient(135deg,rgba(34,211,238,0.09),rgba(168,85,247,0.1),rgba(0,0,0,0.42))] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.24)] sm:p-8 lg:p-10">',
+    )
+    .replace('className="mt-3 min-w-0 font-display text-3xl font-semibold tracking-tight text-white [overflow-wrap:anywhere] sm:text-4xl"', 'className="mt-3 font-display text-3xl font-semibold tracking-tight text-white sm:text-4xl"')
+    .replace('className="mt-4 min-w-0 text-base leading-7 text-[var(--raf-text-muted)] [overflow-wrap:anywhere]"', 'className="mt-4 text-base leading-7 text-[var(--raf-text-muted)]"')
+    .replace('className="mt-7 grid grid-cols-[repeat(auto-fit,minmax(min(100%,12rem),1fr))] gap-4"', 'className="mt-7 grid gap-4 md:grid-cols-3"')
+    .replace('className="group min-w-0 rounded-[1.5rem] border border-[var(--raf-border-soft)] bg-black/25 p-[clamp(16px,2vw,1.25rem)] transition', 'className="group rounded-[1.5rem] border border-[var(--raf-border-soft)] bg-black/25 p-5 transition')
+    .replace('className="block min-w-0 font-display text-2xl font-semibold leading-tight text-white [overflow-wrap:anywhere]"', 'className="block font-display text-2xl font-semibold leading-tight text-white"')
+    .replace('className="mt-3 block min-w-0 text-sm leading-6 text-[var(--raf-text-muted)] [overflow-wrap:anywhere]"', 'className="mt-3 block text-sm leading-6 text-[var(--raf-text-muted)]"');
+}
+
+function normalizePhase5E4ENorthAmericanGuideCss(source) {
+  return source.replace(
+    '  .recordTitle,\n  .sectionTitle {\n    min-width: 0;\n    overflow-wrap: anywhere;\n    word-break: normal;\n  }',
+    '  .recordTitle,\n  .sectionTitle {\n    overflow-wrap: normal;\n    word-break: normal;\n  }',
+  );
+}
+
+function normalizePhase5E4FVerificationCss(source) {
+  return source.replace(
+    '\n  .breadcrumb {\n    min-width: 0;\n    flex-wrap: wrap;\n    row-gap: 0;\n  }\n\n  .breadcrumb > * {\n    min-width: 0;\n    overflow-wrap: anywhere;\n    word-break: normal;\n  }\n',
+    '',
+  );
+}
+
+function normalizePhase5E4IAccessibility(relativePath, source) {
+  if (relativePath === 'src/app/guides/GuidesHub.module.css') {
+    return source.replace(
+      '  .mastheadCopy {\n    width: 100%;\n    min-width: 0;\n    min-height: 540px;\n  }\n\n  .masthead h1 {\n    min-width: 0;\n    max-width: 100%;\n    overflow-wrap: anywhere;\n    word-break: normal;\n  }',
+      '  .mastheadCopy {\n    width: 100%;\n    min-height: 540px;\n  }',
+    );
+  }
+
+  if (
+    relativePath === 'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/GuideArticle.module.css'
+    || relativePath === 'src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/GuideArticle.module.css'
+  ) {
+    return source.replace(
+      '\n  .mastheadTitle,\n  .sectionTitle {\n    min-width: 0;\n    max-width: 100%;\n    overflow-wrap: anywhere;\n    word-break: normal;\n  }\n',
+      '',
+    );
+  }
+
+  if (relativePath === 'src/app/festivals/[slug]/FestivalDetail.module.css') {
+    return source
+      .replace('.referencePage .title {\n  min-width: 0;\n  max-width: 840px;', '.referencePage .title {\n  max-width: 840px;')
+      .replace('  line-height: 0.87;\n  overflow-wrap: anywhere;\n  word-break: normal;\n  text-wrap: balance;', '  line-height: 0.87;\n  text-wrap: balance;')
+      .replace(
+        '.referencePage .contentPanel h2,\n.referencePage .sourcesPanel h2,\n.referencePage .sidePanel h2 {\n  min-width: 0;\n  max-width: 100%;\n  color: var(--nt-bone-text);\n  letter-spacing: -0.03em;\n  overflow-wrap: anywhere;\n  word-break: normal;\n}',
+        '.referencePage .contentPanel h2,\n.referencePage .sourcesPanel h2,\n.referencePage .sidePanel h2 {\n  color: var(--nt-bone-text);\n  letter-spacing: -0.03em;\n}',
+      );
+  }
+
+  if (relativePath === 'src/app/festivals/[slug]/page.tsx') {
+    return source
+      .replace('  const legacyDetailReflowClasses = usesNightTransmissionPresentation\n    ? ""\n    : "min-w-0 [&_*]:min-w-0 [&_h1]:max-w-full [&_h1]:[overflow-wrap:anywhere] [&_h1]:[word-break:normal] [&_h2]:max-w-full [&_h2]:[overflow-wrap:anywhere] [&_h2]:[word-break:normal] [&_h3]:max-w-full [&_h3]:[overflow-wrap:anywhere] [&_h3]:[word-break:normal] [&_a]:max-w-full [&_a]:[overflow-wrap:anywhere] [&_a]:[word-break:normal]";\n', '')
+      .replace('className={referenceClass(usesNightTransmissionPresentation, `relative mx-auto max-w-7xl px-5 pb-20 pt-10 sm:px-8 lg:pb-28 lg:pt-16 ${legacyDetailReflowClasses}`, styles.content)}', 'className={referenceClass(usesNightTransmissionPresentation, "relative mx-auto max-w-7xl px-5 pb-20 pt-10 sm:px-8 lg:pb-28 lg:pt-16", styles.content)}')
+      .replace('className={referenceClass(usesNightTransmissionPresentation, "mb-8 flex min-w-0 flex-wrap items-center font-mono text-xs uppercase tracking-[0.24em] text-[var(--raf-text-dim)]", styles.breadcrumb)}', 'className={referenceClass(usesNightTransmissionPresentation, "mb-8 font-mono text-xs uppercase tracking-[0.24em] text-[var(--raf-text-dim)]", styles.breadcrumb)}')
+      .replace('className="min-w-0 [overflow-wrap:anywhere] [word-break:normal] transition hover:text-[var(--raf-cyan)]"', 'className="transition hover:text-[var(--raf-cyan)]"')
+      .replace('className="mx-3 min-w-0 [overflow-wrap:anywhere] [word-break:normal] text-[var(--raf-violet)]"', 'className="mx-3 text-[var(--raf-violet)]"')
+      .replace('className="min-w-0 [overflow-wrap:anywhere] [word-break:normal] text-[var(--raf-text-muted)]"', 'className="text-[var(--raf-text-muted)]"');
+  }
+
+  return source;
+}
+
 function normalizePhase5E3WgtGuideMapping(source) {
-  return source.replace([
+  return normalizePhase5E4WgtGuideCopy(source).replace([
     '  "wave-gotik-treffen": Object.freeze({',
     '    href: "/guides/planning-a-dark-alternative-festival-trip",',
     '    label: "Planning a Dark Alternative Festival Trip",',
@@ -562,13 +675,7 @@ test('Terminus preserves the ended-ticket removal while applying the approved fr
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const approvedActivePaths = [
-    'src/app/guides/page.tsx',
-    'src/app/sitemap.ts',
-    'src/app/festivals/[slug]/page.tsx',
-    ATLAS_PATH,
-    'tests/homepage-mvp.test.mjs',
-  ];
+  const approvedActivePaths = PHASE_5E4I_ACTIVE_PATHS;
   assert.equal(
     changedPaths.every((path) => approvedActivePaths.includes(path)),
     true,
@@ -1514,7 +1621,10 @@ test('Night Transmission Phase 3D New Wave guide stays route-local, square, and 
     ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/GuideArticle.module.css', 'c3cbaf0c651fa3544495a7f125def2be0708214d1dd6112775d847aecb5a559e'],
   ]);
   for (const [protectedPath, expectedHash] of protectedGuideHashes) {
-    const actualHash = createHash('sha256').update(read(protectedPath)).digest('hex');
+    const protectedSource = protectedPath === 'src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css'
+      ? normalizePhase5E4ENorthAmericanGuideCss(read(protectedPath))
+      : read(protectedPath);
+    const actualHash = createHash('sha256').update(protectedSource).digest('hex');
     assert.equal(actualHash, expectedHash, `${protectedPath} should remain hash-identical`);
   }
 });
@@ -2997,7 +3107,7 @@ test('Phase 5A.1 closes exactly two reciprocal guide discovery loops and freezes
 
   const mappingBlock = page.match(/const FESTIVAL_DETAIL_GUIDE_LINKS:[\s\S]*?Object\.freeze\(\{[\s\S]*?\n\}\);/)?.[0] ?? '';
   assert.ok(mappingBlock, 'the explicit immutable Phase 5A.1 mapping should exist');
-  assert.match(page, /const GENERIC_GUIDE_DISCOVERY_LINK = Object\.freeze\(\{\s*href: "\/guides",\s*label: "Read curated guides",\s*\}\)/);
+  assert.match(page, new RegExp(`const GENERIC_GUIDE_DISCOVERY_LINK = Object\\.freeze\\(\\{\\s*href: "\\/guides",\\s*label: "Read curated guides",\\s*description: "${PHASE_5E4_GENERIC_GUIDE_COPY.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}",\\s*\\}\\)`));
   assert.match(page, /const guideDiscoveryLink = FESTIVAL_DETAIL_GUIDE_LINKS\[festival\.slug\] \?\? GENERIC_GUIDE_DISCOVERY_LINK/);
   assert.equal((page.match(/FESTIVAL_DETAIL_GUIDE_LINKS\[festival\.slug\]/g) ?? []).length, 1);
   assert.match(page, /href: guideDiscoveryLink\.href/);
@@ -3027,7 +3137,7 @@ test('Phase 5A.1 closes exactly two reciprocal guide discovery loops and freezes
   ];
   assert.equal(discoveryOrder.every((position) => position >= 0), true);
   assert.deepEqual(discoveryOrder, [...discoveryOrder].sort((a, b) => a - b), 'Atlas, guide, and Verification order must remain exact');
-  assert.match(discoveryBlock, /description: "Use scene and regional guides for context around goth, darkwave, industrial, EBM, new wave, and post-punk discovery\."/);
+  assert.match(discoveryBlock, /description: guideDiscoveryLink\.description \?\? GENERIC_GUIDE_DISCOVERY_LINK\.description/);
 
   assert.equal(
     createHash('sha256').update(normalizePhase5A1GuideDiscoveryPilot(page)).digest('hex'),
@@ -3246,7 +3356,10 @@ test('Phase 5B.1 selected European festivals guide is bounded, source-safe, and 
     ['src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/GuideArticle.module.css', '6a614afd8fabf76a8e13301940958d655ddbe9931d1583ce20af45fe42406b54'],
   ]);
   for (const [protectedPath, expectedHash] of protectedHashes) {
-    assert.equal(createHash('sha256').update(read(protectedPath)).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
+    const protectedSource = protectedPath === 'src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css'
+      ? normalizePhase5E4ENorthAmericanGuideCss(read(protectedPath))
+      : read(protectedPath);
+    assert.equal(createHash('sha256').update(protectedSource).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical outside the approved Phase 5E.4E route-local correction`);
   }
 });
 
@@ -3329,7 +3442,10 @@ test('Phase 5B.2 publishes the selected European guide through the Guides Hub an
     ['src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/GuideArticle.module.css', '6a614afd8fabf76a8e13301940958d655ddbe9931d1583ce20af45fe42406b54'],
   ]);
   for (const [protectedPath, expectedHash] of protectedGuideHashes) {
-    assert.equal(createHash('sha256').update(read(protectedPath)).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
+    const protectedSource = protectedPath === 'src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css'
+      ? normalizePhase5E4ENorthAmericanGuideCss(read(protectedPath))
+      : read(protectedPath);
+    assert.equal(createHash('sha256').update(protectedSource).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical outside the approved Phase 5E.4E route-local correction`);
   }
   assert.equal(createHash('sha256').update(guidesCss).digest('hex'), 'aef54b1c097f166f8118a0e8b2f08c07e46928f85c67f27b88fce08c344ea6e3', 'Guides Hub CSS should not change');
   assert.deepEqual(hashTree('public'), { count: 20, hash: 'fdb685b14899493dad0a63d1d0500cbfb975065880f97931020bc0590f36c81b' }, 'public assets should not change');
@@ -3431,7 +3547,10 @@ test('Phase 5C.1 ticket verification guide is reader-facing, non-commercial, and
     ['package-lock.json', '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56'],
   ]);
   for (const [protectedPath, expectedHash] of protectedHashes) {
-    assert.equal(createHash('sha256').update(read(protectedPath)).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
+    const protectedSource = protectedPath === 'src/app/verification/VerificationPage.module.css'
+      ? normalizePhase5E4FVerificationCss(read(protectedPath))
+      : read(protectedPath);
+    assert.equal(createHash('sha256').update(protectedSource).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical outside the approved Phase 5E.4F route-local correction`);
   }
   assert.equal(JSON.parse(atlasSource).festivals.length, 15);
   assert.doesNotMatch(dto, /how-to-verify-festival-tickets-official-sources/);
@@ -3524,7 +3643,10 @@ test('Phase 5C.2 publishes the ticket verification guide through the Guides Hub 
     ['package-lock.json', '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56'],
   ]);
   for (const [protectedPath, expectedHash] of protectedHashes) {
-    assert.equal(createHash('sha256').update(read(protectedPath)).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
+    const protectedSource = protectedPath === 'src/app/verification/VerificationPage.module.css'
+      ? normalizePhase5E4FVerificationCss(read(protectedPath))
+      : read(protectedPath);
+    assert.equal(createHash('sha256').update(protectedSource).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical outside the approved Phase 5E.4F route-local correction`);
   }
   assert.deepEqual(hashTree('public'), { count: 20, hash: 'fdb685b14899493dad0a63d1d0500cbfb975065880f97931020bc0590f36c81b' }, 'public assets should not change');
 });
@@ -3656,10 +3778,16 @@ test('Phase 5C.3A first-time guide is practical, non-commercial, and locally bou
     ['src/lib/seo.ts', '5b7a4c9e26dede625ef02c39fc9e96fe779f128ec57bb6db283790d71a9f2b31'],
   ]);
   for (const [protectedPath, expectedHash] of protectedHashes) {
-    const protectedSource = protectedPath === ATLAS_PATH
-      ? read(protectedPath)
-      : readFileSync(join(root, protectedPath));
-    assert.equal(createHash('sha256').update(protectedSource).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
+    const protectedSource = protectedPath === 'src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css'
+      ? normalizePhase5E4ENorthAmericanGuideCss(read(protectedPath))
+      : protectedPath === 'src/components/site/DiscoveryLinks.tsx'
+      ? normalizePhase5E4BDiscoveryLinks(read(protectedPath))
+      : protectedPath === 'src/app/verification/VerificationPage.module.css'
+        ? normalizePhase5E4FVerificationCss(read(protectedPath))
+      : protectedPath === ATLAS_PATH
+        ? read(protectedPath)
+        : readPhase5E4IProtected(protectedPath);
+    assert.equal(createHash('sha256').update(protectedSource).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical outside the approved Phase 5E.4B class changes`);
   }
   assert.equal(
     createHash('sha256').update(normalizePhase5A1GuideDiscoveryPilot(read('src/app/festivals/[slug]/page.tsx'))).digest('hex'),
@@ -3798,13 +3926,7 @@ test('Phase 5E.1 trip-planning guide is distinct, source-safe, non-commercial, a
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const approvedPublicationPaths = new Set([
-    'src/app/guides/page.tsx',
-    'src/app/sitemap.ts',
-    'src/app/festivals/[slug]/page.tsx',
-    ATLAS_PATH,
-    'tests/homepage-mvp.test.mjs',
-  ]);
+  const approvedPublicationPaths = new Set(PHASE_5E4I_ACTIVE_PATHS);
   assert.equal(
     changedPaths.every((path) => approvedPublicationPaths.has(path)),
     true,
@@ -3832,10 +3954,14 @@ test('Phase 5E.1 trip-planning guide is distinct, source-safe, non-commercial, a
     ['package-lock.json', '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56'],
   ]);
   for (const [protectedPath, expectedHash] of protectedHashes) {
-    const protectedSource = protectedPath === ATLAS_PATH
-      ? read(protectedPath)
-      : readFileSync(join(root, protectedPath));
-    assert.equal(createHash('sha256').update(protectedSource).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
+    const protectedSource = protectedPath === 'src/components/site/DiscoveryLinks.tsx'
+      ? normalizePhase5E4BDiscoveryLinks(read(protectedPath))
+      : protectedPath === 'src/app/verification/VerificationPage.module.css'
+        ? normalizePhase5E4FVerificationCss(read(protectedPath))
+      : protectedPath === ATLAS_PATH
+        ? read(protectedPath)
+        : readPhase5E4IProtected(protectedPath);
+    assert.equal(createHash('sha256').update(protectedSource).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical outside the approved Phase 5E.4B class changes`);
   }
   assert.equal(
     createHash('sha256').update(normalizePhase5E3WgtGuideMapping(detailPage)).digest('hex'),
@@ -3976,8 +4102,9 @@ test('Phase 5C.3B publishes the first-time guide and Phase 5D.3 maps only M’er
   ];
   assert.equal(discoveryOrder.every((position) => position >= 0), true);
   assert.deepEqual(discoveryOrder, [...discoveryOrder].sort((a, b) => a - b), 'Atlas, guide, and Verification order must remain exact');
-  assert.match(page, /const GENERIC_GUIDE_DISCOVERY_LINK = Object\.freeze\(\{\s*href: "\/guides",\s*label: "Read curated guides",\s*\}\)/);
+  assert.match(page, new RegExp(`const GENERIC_GUIDE_DISCOVERY_LINK = Object\\.freeze\\(\\{\\s*href: "\\/guides",\\s*label: "Read curated guides",\\s*description: "${PHASE_5E4_GENERIC_GUIDE_COPY.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}",\\s*\\}\\)`));
   assert.match(page, /const guideDiscoveryLink = FESTIVAL_DETAIL_GUIDE_LINKS\[festival\.slug\] \?\? GENERIC_GUIDE_DISCOVERY_LINK/);
+  assert.match(page, /description: guideDiscoveryLink\.description \?\? GENERIC_GUIDE_DISCOVERY_LINK\.description/);
 
   const activationBlock = page.match(/const NIGHT_TRANSMISSION_DETAIL_SLUGS[\s\S]*?\]\);/)?.[0] ?? '';
   assert.deepEqual([...activationBlock.matchAll(/"([a-z0-9-]+)"/g)].map((match) => match[1]), [
@@ -3991,7 +4118,7 @@ test('Phase 5C.3B publishes the first-time guide and Phase 5D.3 maps only M’er
     'metadata, canonicals, sources, related festivals, activation, content, and rendering must remain frozen outside the centralized mapping',
   );
   assert.equal(createHash('sha256').update(read('src/app/festivals/[slug]/FestivalDetail.module.css')).digest('hex'), '903b3d9ad627afeec4023f543321cf6a9efbdc9663b26f419b69109a1b831dbb');
-  assert.equal(createHash('sha256').update(read('src/components/site/DiscoveryLinks.tsx')).digest('hex'), '69e9783aa619c7904e4f45e70b20eb837788a2020200f5c5fbbb53a9f79ddee4');
+  assert.equal(createHash('sha256').update(normalizePhase5E4BDiscoveryLinks(read('src/components/site/DiscoveryLinks.tsx'))).digest('hex'), '69e9783aa619c7904e4f45e70b20eb837788a2020200f5c5fbbb53a9f79ddee4');
   assert.doesNotMatch(read(firstTimePath), /mera-luna-festival|ncn-festival-nocturnal-culture-night/, 'the First-Time Guide must remain event-neutral');
   assert.doesNotMatch(mappingBlock, /[?&](?:aff|affiliate|ref|utm_|click|partner)=|Ticketmaster|StubHub|SeatGeek|Vivid Seats|AXS|Eventbrite|Viagogo|hotel|product|sponsored|commission|analytics/i);
   assert.doesNotMatch(`${page}\n${read('package.json')}`, /"use client"|useState|useEffect|useMemo|fetch\(|\/api\/|framer-motion|lottie|three/i);
@@ -4020,10 +4147,12 @@ test('Phase 5C.3B publishes the first-time guide and Phase 5D.3 maps only M’er
     ['package-lock.json', '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56'],
   ]);
   for (const [protectedPath, expectedHash] of protectedHashes) {
-    const protectedSource = protectedPath === ATLAS_PATH
-      ? read(protectedPath)
-      : readFileSync(join(root, protectedPath));
-    assert.equal(createHash('sha256').update(protectedSource).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical`);
+    const protectedSource = protectedPath === 'src/app/verification/VerificationPage.module.css'
+      ? normalizePhase5E4FVerificationCss(read(protectedPath))
+      : protectedPath === ATLAS_PATH
+        ? read(protectedPath)
+        : readPhase5E4IProtected(protectedPath);
+    assert.equal(createHash('sha256').update(protectedSource).digest('hex'), expectedHash, `${protectedPath} should remain byte-identical outside the approved Phase 5E.4F route-local correction`);
   }
   assert.deepEqual(hashTree('public'), { count: 20, hash: 'fdb685b14899493dad0a63d1d0500cbfb975065880f97931020bc0590f36c81b' }, 'public assets should not change');
 });
@@ -4114,14 +4243,13 @@ test('Phase 5E.2 publishes the trip-planning guide through the Guides Hub and si
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const allowlist = new Set([hubPath, sitemapPath, detailPath, ATLAS_PATH, 'tests/homepage-mvp.test.mjs']);
-  assert.equal(changedPaths.every((path) => allowlist.has(path)), true, `Phase 5E.2 must stay inside the exact three-file allowlist: ${changedPaths.join(', ')}`);
+  const allowlist = new Set(PHASE_5E4I_ACTIVE_PATHS);
+  assert.equal(changedPaths.every((path) => allowlist.has(path)), true, `the combined approved worktree must include no path outside the current Phase 5E.4B boundary: ${changedPaths.join(', ')}`);
 });
 
 test('Phase 5E.3 maps only Wave-Gotik-Treffen to the Trip-Planning Guide and freezes every other contract', () => {
   const checkpoint = '659d52ddc010ed087e265a4d57b7a280f5a645af';
   const pagePath = 'src/app/festivals/[slug]/page.tsx';
-  const testPath = 'tests/homepage-mvp.test.mjs';
   const tripPath = 'src/app/guides/planning-a-dark-alternative-festival-trip/page.tsx';
   const tripCssPath = 'src/app/guides/planning-a-dark-alternative-festival-trip/GuideArticle.module.css';
   const tripRoute = '/guides/planning-a-dark-alternative-festival-trip';
@@ -4199,7 +4327,7 @@ test('Phase 5E.3 maps only Wave-Gotik-Treffen to the Trip-Planning Guide and fre
   const activationBlock = page.match(/const NIGHT_TRANSMISSION_DETAIL_SLUGS[\s\S]*?\]\);/)?.[0] ?? '';
   assert.doesNotMatch(activationBlock, new RegExp(`"${targetSlug}"`), 'WGT must remain a legacy-presentation route');
 
-  assert.equal(page.replace(wgtEntry, ''), baseline(pagePath), 'the detail route may differ from the approved checkpoint only by the exact WGT mapping entry');
+  assert.equal(normalizePhase5E4WgtGuideCopy(page).replace(wgtEntry, ''), baseline(pagePath), 'the detail route may differ from the approved checkpoint only by the exact WGT mapping entry and normalized Phase 5E.4 copy additions');
   assert.equal(atlasSource, baseline('src/data/atlas-festivals.json'), 'atlas data, WGT source fields, dates, status, coordinates, and related festivals must remain exact');
   for (const protectedPath of [
     'src/lib/public-festivals.ts',
@@ -4214,7 +4342,12 @@ test('Phase 5E.3 maps only Wave-Gotik-Treffen to the Trip-Planning Guide and fre
     'src/lib/seo.ts',
     'package.json',
     'package-lock.json',
-  ]) assert.equal(read(protectedPath), baseline(protectedPath), `${protectedPath} should remain byte-identical`);
+  ]) {
+    const protectedSource = protectedPath === 'src/components/site/DiscoveryLinks.tsx'
+      ? normalizePhase5E4BDiscoveryLinks(read(protectedPath))
+      : read(protectedPath);
+    assert.equal(protectedSource, baseline(protectedPath), `${protectedPath} should remain byte-identical outside the approved Phase 5E.4B class changes`);
+  }
 
   const hub = read('src/app/guides/page.tsx');
   const sitemap = read('src/app/sitemap.ts');
@@ -4231,8 +4364,276 @@ test('Phase 5E.3 maps only Wave-Gotik-Treffen to the Trip-Planning Guide and fre
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const allowlist = new Set([pagePath, ATLAS_PATH, testPath]);
-  assert.equal(changedPaths.every((path) => allowlist.has(path)), true, `Phase 5E.3 must stay inside the exact two-file allowlist: ${changedPaths.join(', ')}`);
+  const allowlist = new Set(PHASE_5E4I_ACTIVE_PATHS);
+  assert.equal(changedPaths.every((path) => allowlist.has(path)), true, `the combined approved worktree must include no path outside the current Phase 5E.4B boundary: ${changedPaths.join(', ')}`);
+});
+
+test('Phase 5E.4 aligns only WGT supporting copy and freezes every other contract', () => {
+  const checkpoint = 'db8179676c70eaed710d737d4b611b690fb98c25';
+  const pagePath = 'src/app/festivals/[slug]/page.tsx';
+  const componentPath = 'src/components/site/DiscoveryLinks.tsx';
+  const targetSlug = 'wave-gotik-treffen';
+  const tripRoute = '/guides/planning-a-dark-alternative-festival-trip';
+  const tripLabel = 'Planning a Dark Alternative Festival Trip';
+  const baseline = (path) => execFileSync('git', ['show', `${checkpoint}:${path}`], { cwd: root, encoding: 'utf8' });
+  const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const page = read(pagePath);
+  const mappingBlock = page.match(/const FESTIVAL_DETAIL_GUIDE_LINKS:[\s\S]*?Object\.freeze\(\{[\s\S]*?\n\}\);/)?.[0] ?? '';
+  const wgtBlock = mappingBlock.match(/"wave-gotik-treffen": Object\.freeze\(\{[\s\S]*?\n  \}\),/)?.[0] ?? '';
+
+  assert.match(
+    wgtBlock,
+    new RegExp(`description: "${escapeRegex(PHASE_5E4_WGT_GUIDE_COPY)}"`),
+    'WGT still lacks the approved Phase 5E.4 supporting description',
+  );
+  assert.equal((mappingBlock.match(new RegExp(escapeRegex(PHASE_5E4_WGT_GUIDE_COPY), 'g')) ?? []).length, 1, 'the approved WGT copy should occur once in the mapping');
+  assert.match(wgtBlock, new RegExp(`href: "${escapeRegex(tripRoute)}"`));
+  assert.match(wgtBlock, new RegExp(`label: "${escapeRegex(tripLabel)}"`));
+
+  assert.match(page, new RegExp(`const GENERIC_GUIDE_DISCOVERY_LINK = Object\\.freeze\\(\\{[\\s\\S]*?description: "${escapeRegex(PHASE_5E4_GENERIC_GUIDE_COPY)}"[\\s\\S]*?\\}\\);`));
+  assert.match(page, /description: guideDiscoveryLink\.description \?\? GENERIC_GUIDE_DISCOVERY_LINK\.description/);
+  assert.equal((mappingBlock.match(/^\s+description:/gm) ?? []).length, 1, 'only WGT should receive a route-specific description');
+
+  const specificMappings = {
+    'mera-luna-festival': ['/guides/first-time-dark-alternative-festival-guide', 'First-Time Dark Alternative Festival Guide'],
+    'ncn-festival-nocturnal-culture-night': ['/guides/first-time-dark-alternative-festival-guide', 'First-Time Dark Alternative Festival Guide'],
+    'darker-waves': ['/guides/new-wave-post-punk-retro-alternative-festivals-north-america', 'New Wave, Post-Punk & Retro Alternative Guide'],
+    'a-murder-of-crows-xi-nyc-goth-post-punk-festival': ['/guides/north-american-goth-darkwave-festivals', 'North American Goth & Darkwave Guide'],
+    [targetSlug]: [tripRoute, tripLabel],
+  };
+  const genericSlugs = [
+    'absolution-fest', 'terminus-festival', 'infest-festival', 'cold-waves', 'mutek-montreal',
+    'castle-party-festival', 'amphi-festival', 'just-like-heaven', 'levitation', 'the-new-colossus-festival',
+  ];
+  for (const [slug, [href, label]] of Object.entries(specificMappings)) {
+    const block = mappingBlock.match(new RegExp(`"${slug}": Object\\.freeze\\(\\{[\\s\\S]*?\\n  \\}\\),`))?.[0] ?? '';
+    assert.match(block, new RegExp(`href: "${escapeRegex(href)}"`), `${slug} should retain its href`);
+    assert.match(block, new RegExp(`label: "${escapeRegex(label)}"`), `${slug} should retain its label`);
+    if (slug !== targetSlug) assert.doesNotMatch(block, /^\s+description:/m, `${slug} must retain the generic supporting copy`);
+  }
+  for (const slug of genericSlugs) assert.doesNotMatch(mappingBlock, new RegExp(`"${slug}"`), `${slug} should remain generic`);
+  assert.equal((mappingBlock.match(/^\s+href:/gm) ?? []).length, 5);
+  assert.equal((mappingBlock.match(/^\s+label:/gm) ?? []).length, 5);
+  assert.equal(genericSlugs.length, 10);
+
+  const discoveryBlock = page.match(/const discoveryLinks = \([\s\S]*?\n  \);/)?.[0] ?? '';
+  assert.equal((discoveryBlock.match(/href:/g) ?? []).length, 3);
+  const discoveryOrder = [
+    discoveryBlock.indexOf('href: "/festivals"'),
+    discoveryBlock.indexOf('href: guideDiscoveryLink.href'),
+    discoveryBlock.indexOf('href: "/verification"'),
+  ];
+  assert.equal(discoveryOrder.every((position) => position >= 0), true);
+  assert.deepEqual(discoveryOrder, [...discoveryOrder].sort((a, b) => a - b));
+  const activationBlock = page.match(/const NIGHT_TRANSMISSION_DETAIL_SLUGS[\s\S]*?\]\);/)?.[0] ?? '';
+  assert.doesNotMatch(activationBlock, new RegExp(`"${targetSlug}"`), 'WGT must remain a legacy-presentation route');
+
+  assert.equal(normalizePhase5E4WgtGuideCopy(page), baseline(pagePath), 'only the exact optional-description type, fallback, resolver, and WGT sentence may differ');
+  for (const protectedPath of [
+    componentPath,
+    'src/app/festivals/[slug]/FestivalDetail.module.css',
+    'src/data/atlas-festivals.json',
+    'src/lib/public-festivals.ts',
+    'src/app/sitemap.ts',
+    'src/app/guides/page.tsx',
+    'src/app/guides/planning-a-dark-alternative-festival-trip/page.tsx',
+    'src/app/guides/planning-a-dark-alternative-festival-trip/GuideArticle.module.css',
+    'src/app/layout.tsx',
+    'src/app/globals.css',
+    'src/lib/seo.ts',
+    'package.json',
+    'package-lock.json',
+  ]) {
+    const protectedSource = protectedPath === componentPath
+      ? normalizePhase5E4BDiscoveryLinks(read(protectedPath))
+      : read(protectedPath);
+    assert.equal(protectedSource, baseline(protectedPath), `${protectedPath} should remain byte-identical outside the approved Phase 5E.4B class changes`);
+  }
+
+  const atlas = JSON.parse(read('src/data/atlas-festivals.json'));
+  assert.equal(atlas.festivals.length, 15);
+  assert.equal(atlas.festivals.every((festival) => festival.latitude === null && festival.longitude === null), true);
+  const guidesHub = read('src/app/guides/page.tsx');
+  const sitemap = read('src/app/sitemap.ts');
+  assert.equal((guidesHub.match(/href: "\/guides\//g) ?? []).length, 8);
+  const staticRoutes = sitemap.match(/const staticRoutes:[\s\S]*?\n  \];/)?.[0] ?? '';
+  assert.equal((staticRoutes.match(/url:/g) ?? []).length + atlas.festivals.length, 28);
+
+  const approvedSource = `${wgtBlock}\n${discoveryBlock}`;
+  assert.doesNotMatch(approvedSource, /fetch\(|"use client"|useState|useEffect|\/api\/|[?&](?:aff|affiliate|ref|utm_|click|partner)=|hotel|airline|flight|rail provider|bus provider|booking platform|insurance|sponsored|commission|analytics|price|availability/i);
+  assert.doesNotMatch(page, /date_pending|source_status|map_phase0_category|core_anchor|watchlist|Phase 0|map-readiness|needs_review|geocoding_source|geocoding_query|geocoding_confidence|latitude|longitude/i);
+
+  const trackedChanges = execFileSync('git', ['diff', '--name-only', checkpoint, '--'], { cwd: root, encoding: 'utf8' }).trim().split('\n').filter(Boolean);
+  const staged = execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim();
+  const untracked = execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim();
+  assert.deepEqual(trackedChanges.sort(), [...PHASE_5E4I_ACTIVE_PATHS, ATLAS_PATH].sort());
+  assert.equal(staged, '');
+  assert.equal(untracked, '');
+});
+
+test('Phase 5E.4B / Phase 5E.4A makes the shared DiscoveryLinks grid intrinsically safe at true 200% text', () => {
+  const checkpoint = 'db8179676c70eaed710d737d4b611b690fb98c25';
+  const componentPath = 'src/components/site/DiscoveryLinks.tsx';
+  const pagePath = 'src/app/festivals/[slug]/page.tsx';
+  const component = read(componentPath);
+  const page = read(pagePath);
+  const baseline = (path) => execFileSync('git', ['show', `${checkpoint}:${path}`], { cwd: root, encoding: 'utf8' });
+
+  assert.doesNotMatch(component, /\bmd:grid-cols-3\b/, 'the fixed 768px three-column breakpoint still causes the true-200%-text collision');
+  assert.match(component, /grid-cols-\[repeat\(auto-fit,minmax\(min\(100%,12rem\),1fr\)\)\]/, 'the shared grid still lacks the approved intrinsic auto-fit/minmax contract');
+  assert.match(component, /p-\[clamp\(16px,4vw,2\.5rem\)\]/, 'the discovery section still lacks approved fluid spacing');
+  assert.match(component, /p-\[clamp\(16px,2vw,1\.25rem\)\]/, 'discovery cards still lack approved fluid spacing');
+  assert.equal((component.match(/\[overflow-wrap:anywhere\]/g) ?? []).length, 4, 'heading, introduction, card title, and supporting copy all need emergency wrapping');
+  assert.ok((component.match(/\bmin-w-0\b/g) ?? []).length >= 5, 'section, cards, and text need min-width protections');
+
+  const gridBlock = component.match(/<div className="mt-7 grid[\s\S]*?<\/div>\n    <\/section>/)?.[0] ?? '';
+  assert.match(gridBlock, /links\.map\(\(link\) =>/);
+  assert.match(gridBlock, /key=\{link\.href\}/);
+  assert.match(gridBlock, /href=\{link\.href\}/);
+  assert.match(gridBlock, /\{link\.label\}/);
+  assert.match(gridBlock, /\{link\.description\}/);
+  assert.match(gridBlock, /Explore <span aria-hidden="true"/);
+  assert.doesNotMatch(component, /"use client"|useState|useEffect|useMemo|fetch\(|\/api\//);
+  assert.equal(normalizePhase5E4BDiscoveryLinks(component), baseline(componentPath), 'only the seven approved class changes may differ from the checkpoint component');
+
+  const discoveryBlock = page.match(/const discoveryLinks = \([\s\S]*?\n  \);/)?.[0] ?? '';
+  assert.equal((discoveryBlock.match(/href:/g) ?? []).length, 3, 'festival detail must retain exactly three cards');
+  const order = [discoveryBlock.indexOf('href: "/festivals"'), discoveryBlock.indexOf('href: guideDiscoveryLink.href'), discoveryBlock.indexOf('href: "/verification"')];
+  assert.equal(order.every((position) => position >= 0), true);
+  assert.deepEqual(order, [...order].sort((a, b) => a - b), 'Festival Directory, Guide, Verification order must remain exact');
+  assert.match(page, new RegExp(PHASE_5E4_WGT_GUIDE_COPY.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.equal(normalizePhase5E4WgtGuideCopy(page), baseline(pagePath), 'the existing Phase 5E.4 WGT copy implementation must remain exact');
+
+  const callSitePaths = [
+    'src/app/page.tsx',
+    'src/app/festivals/page.tsx',
+    'src/app/festivals/[slug]/page.tsx',
+    'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx',
+    'src/app/guides/north-american-goth-darkwave-festivals/page.tsx',
+    'src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/page.tsx',
+    'src/app/guides/european-goth-darkwave-industrial-festivals/page.tsx',
+    'src/app/guides/new-wave-post-punk-retro-alternative-festivals-north-america/page.tsx',
+  ];
+  assert.equal(callSitePaths.reduce((count, path) => count + (read(path).match(/<DiscoveryLinks\b/g) ?? []).length, 0), 8);
+
+  const packageSource = read('package.json');
+  assert.equal(packageSource, baseline('package.json'), 'dependencies and scripts must remain exact');
+  assert.doesNotMatch(`${component}\n${packageSource}`, /[?&](?:aff|affiliate|ref|utm_|click|partner)=|sponsored|commission|analytics|fetch\(|XMLHttpRequest|WebSocket/i);
+
+  const changed = execFileSync('git', ['diff', '--name-only', checkpoint, '--'], { cwd: root, encoding: 'utf8' }).trim().split('\n').filter(Boolean);
+  const staged = execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim();
+  const untracked = execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim();
+  assert.deepEqual(changed.sort(), [...PHASE_5E4I_ACTIVE_PATHS, ATLAS_PATH].sort(), 'checkpoint-to-worktree history must contain only the released atlas plus the exact 17-path Phase 5E.4F + Phase 5E.4I inventory');
+  assert.equal(staged, '');
+  assert.equal(untracked, '');
+});
+
+test('Phase 5E.4E switches the shared header to the existing mobile navigation before true-200% text overflows', () => {
+  const shellPath = 'src/components/site/NightTransmissionSiteShell.module.css';
+  const shell = read(shellPath);
+  const handoff = shell.match(/@media \(max-width: 1120px\) \{[\s\S]*?\n\}/)?.[0] ?? '';
+
+  assert.ok(handoff, 'the shared shell still lacks the approved 1120px navigation handoff');
+  assert.match(handoff, /\.wordmarkChannel,\s*\.desktopNavigation\s*\{\s*display:\s*none;/, 'desktop navigation remains active too long under true 200% text');
+  assert.match(handoff, /\.mobileNavigation\s*\{[\s\S]*?display:\s*block;/, 'the existing keyboard-accessible mobile navigation must replace the desktop navigation');
+  assert.match(handoff, /\.headerInner\s*\{[\s\S]*?flex-wrap:\s*wrap;/, 'the mobile header row must wrap safely when enlarged text needs another line');
+  assert.doesNotMatch(handoff, /overflow:\s*(?:hidden|clip)|font-size:\s*(?:0|[0-9.]+(?:px|rem|em|%))/i, 'the handoff must not clip content or reduce typography');
+});
+
+test('Phase 5E.4E gives the North American guide an emergency narrow true-200% heading wrap', () => {
+  const guideCssPath = 'src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css';
+  const css = read(guideCssPath);
+  const narrow = css.match(/@media \(max-width: 360px\) \{[\s\S]*?\n\}/)?.[0] ?? '';
+  const headingRule = narrow.match(/\.recordTitle,\s*\.sectionTitle\s*\{[\s\S]*?\}/)?.[0] ?? '';
+
+  assert.ok(headingRule, 'the route-local narrow heading rule should remain explicit');
+  assert.match(headingRule, /min-width:\s*0;/, 'the #status-language heading still retains an unsafe minimum inline size');
+  assert.match(headingRule, /overflow-wrap:\s*anywhere;/, 'the #status-language heading still cannot emergency-wrap at narrow true 200% text');
+  assert.match(headingRule, /word-break:\s*normal;/, 'ordinary word-breaking semantics must remain intact');
+  assert.doesNotMatch(headingRule, /font-size|overflow:\s*(?:hidden|clip)|text-overflow|white-space:\s*nowrap/i, 'the route-local correction must not shrink, clip, or truncate the heading');
+});
+
+test('Phase 5E.4F makes the Verification breadcrumb reflow safely at 320px true 200% text', () => {
+  const verificationCssPath = 'src/app/verification/VerificationPage.module.css';
+  const verificationPagePath = 'src/app/verification/page.tsx';
+  const css = read(verificationCssPath);
+  const page = read(verificationPagePath);
+  const narrow = css.match(/@media \(max-width: 340px\) \{[\s\S]*?\n\}/)?.[0] ?? '';
+  const breadcrumbRule = narrow.match(/\.breadcrumb\s*\{[\s\S]*?\}/)?.[0] ?? '';
+  const breadcrumbChildrenRule = narrow.match(/\.breadcrumb > \*\s*\{[\s\S]*?\}/)?.[0] ?? '';
+
+  assert.ok(breadcrumbRule, 'the Verification route still lacks a narrow breadcrumb reflow rule');
+  assert.match(breadcrumbRule, /min-width:\s*0;/, 'the breadcrumb must be allowed to shrink within the 296px route container');
+  assert.match(breadcrumbRule, /flex-wrap:\s*wrap;/, 'the two breadcrumb segments must wrap instead of forcing a 330px document');
+  assert.match(breadcrumbRule, /row-gap:\s*0;/, 'wrapped breadcrumb lines should preserve the existing compact presentation');
+  assert.match(breadcrumbChildrenRule, /min-width:\s*0;/, 'breadcrumb children must not retain unsafe automatic minimum widths');
+  assert.match(breadcrumbChildrenRule, /overflow-wrap:\s*anywhere;/, 'breadcrumb text needs an emergency wrap fallback at true 200% text');
+  assert.match(breadcrumbChildrenRule, /word-break:\s*normal;/, 'ordinary word-breaking semantics must remain intact');
+  assert.doesNotMatch(`${breadcrumbRule}\n${breadcrumbChildrenRule}`, /font-size|overflow:\s*(?:hidden|clip|scroll|auto)|text-overflow|white-space:\s*nowrap/i, 'the correction must not shrink, hide, clip, truncate, or scroll breadcrumb text');
+
+  assert.match(page, /<nav aria-label="Breadcrumb" className=\{styles\.breadcrumb\}>\s*<Link href="\/">RetroAltFest<\/Link>\s*<span>\/ Verification<\/span>\s*<\/nav>/, 'breadcrumb wording and semantics must remain exact');
+  assert.match(page, /<h1>How RetroAltFest verifies festivals<\/h1>/, 'the Verification H1 must remain unchanged');
+
+  const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' })
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => line.slice(3));
+  assert.deepEqual(changedPaths.sort(), [
+    'src/app/festivals/[slug]/FestivalDetail.module.css',
+    'src/app/festivals/[slug]/page.tsx',
+    'src/app/guides/GuidesHub.module.css',
+    'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/GuideArticle.module.css',
+    'src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css',
+    'src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/GuideArticle.module.css',
+    'src/app/suggest/SuggestPage.module.css',
+    verificationCssPath,
+    'src/components/festivals/FestivalDirectory.module.css',
+    'src/components/home/FeaturedFestivals.tsx',
+    'src/components/home/FirstDarkFestivalSignals.tsx',
+    'src/components/home/MapPreview.tsx',
+    'src/components/home/SubmitFestivalCta.tsx',
+    'src/components/site/DiscoveryLinks.tsx',
+    'src/components/site/NightTransmissionSiteShell.module.css',
+    'src/components/waitlist/WaitlistSignup.tsx',
+    'tests/homepage-mvp.test.mjs',
+  ].sort(), 'Phase 5E.4F must remain preserved inside the exact 17-path Phase 5E.4F + Phase 5E.4I boundary');
+  assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
+  assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
+});
+
+test('Phase 5E.4I closes every remaining true-200% text owner without shrinking or clipping content', () => {
+  const cssContracts = new Map([
+    ['src/app/guides/GuidesHub.module.css', [/\.mastheadCopy\s*\{[\s\S]*?min-width:\s*0;/, /\.masthead h1\s*\{[\s\S]*?overflow-wrap:\s*anywhere;[\s\S]*?word-break:\s*normal;/]],
+    ['src/components/festivals/FestivalDirectory.module.css', [/\.mastheadCopy\s*\{[\s\S]*?min-width:\s*0;/, /\.masthead h1[\s\S]*?overflow-wrap:\s*anywhere;/, /\.controlHeading h2[\s\S]*?overflow-wrap:\s*anywhere;/]],
+    ['src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/GuideArticle.module.css', [/\.mastheadTitle,\s*\.sectionTitle\s*\{[\s\S]*?min-width:\s*0;[\s\S]*?overflow-wrap:\s*anywhere;[\s\S]*?word-break:\s*normal;/]],
+    ['src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/GuideArticle.module.css', [/\.mastheadTitle,\s*\.sectionTitle\s*\{[\s\S]*?min-width:\s*0;[\s\S]*?overflow-wrap:\s*anywhere;[\s\S]*?word-break:\s*normal;/]],
+    ['src/app/festivals/[slug]/FestivalDetail.module.css', [/\.referencePage \.title\s*\{[\s\S]*?min-width:\s*0;[\s\S]*?overflow-wrap:\s*anywhere;/, /\.referencePage \.contentPanel h2,[\s\S]*?\.referencePage \.sidePanel h2\s*\{[\s\S]*?min-width:\s*0;[\s\S]*?overflow-wrap:\s*anywhere;/]],
+    ['src/app/suggest/SuggestPage.module.css', [/@media \(max-width: 430px\) \{[\s\S]*?\.panel h2,[\s\S]*?\.ctaPanel h2\s*\{[\s\S]*?overflow-wrap:\s*anywhere;[\s\S]*?word-break:\s*normal;/]],
+  ]);
+
+  for (const [path, patterns] of cssContracts) {
+    const source = readFileSync(join(root, path), 'utf8');
+    for (const pattern of patterns) assert.match(source, pattern, `${path} is missing a sealed Phase 5E.4I owner contract`);
+  }
+
+  const detailPage = readFileSync(join(root, 'src/app/festivals/[slug]/page.tsx'), 'utf8');
+  assert.match(detailPage, /\[&_\*\]:min-w-0/);
+  assert.match(detailPage, /\[&_h1\]:\[overflow-wrap:anywhere\]/);
+  assert.match(detailPage, /\[&_h2\]:\[overflow-wrap:anywhere\]/);
+  assert.match(detailPage, /\[&_a\]:\[overflow-wrap:anywhere\]/);
+  assert.match(detailPage, /flex min-w-0 flex-wrap/);
+
+  const homepageContracts = new Map([
+    ['src/components/home/FeaturedFestivals.tsx', ['max-[430px]:px-[16px]', '[overflow-wrap:anywhere]']],
+    ['src/components/home/FirstDarkFestivalSignals.tsx', ['max-[430px]:px-[16px]', '[overflow-wrap:anywhere]']],
+    ['src/components/home/MapPreview.tsx', ['max-[430px]:px-[16px]', '[overflow-wrap:anywhere]']],
+    ['src/components/waitlist/WaitlistSignup.tsx', ['max-[430px]:px-[16px]', '[overflow-wrap:anywhere]']],
+    ['src/components/home/SubmitFestivalCta.tsx', ['max-[430px]:px-[8px]', '[overflow-wrap:anywhere]']],
+  ]);
+  for (const [path, requiredFragments] of homepageContracts) {
+    const source = readFileSync(join(root, path), 'utf8');
+    for (const fragment of requiredFragments) assert.equal(source.includes(fragment), true, `${path} is missing ${fragment}`);
+  }
 });
 
 test('M’era Luna 2027 freshness correction stays date-safe, DTO-backed, and isolated', () => {

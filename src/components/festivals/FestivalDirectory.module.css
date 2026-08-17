@@ -769,12 +769,17 @@
   }
 
   .mastheadCopy {
+    min-width: 0;
     padding: 38px 14px 54px;
   }
 
   .masthead h1 {
+    min-width: 0;
+    max-width: 100%;
     font-size: clamp(2.85rem, 14vw, 4.3rem);
     line-height: 0.9;
+    overflow-wrap: anywhere;
+    word-break: normal;
   }
 
   .intro {
@@ -818,8 +823,12 @@
   }
 
   .controlHeading h2 {
+    min-width: 0;
+    max-width: 100%;
     margin-top: 0;
     font-size: 2.05rem;
+    overflow-wrap: anywhere;
+    word-break: normal;
   }
 
   .filterDisclosure {
