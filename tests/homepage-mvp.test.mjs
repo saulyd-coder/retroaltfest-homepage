@@ -26,6 +26,10 @@ const PHASE_5E4I_ACTIVE_PATHS = [
   'src/components/waitlist/WaitlistSignup.tsx',
   'tests/homepage-mvp.test.mjs',
 ];
+const PHASE_5E5_ACTIVE_PATHS = [
+  'src/app/festivals/[slug]/page.tsx',
+  'tests/homepage-mvp.test.mjs',
+];
 const PHASE_5E4I_HASH_NORMALIZED_PATHS = new Set([
   'src/app/festivals/[slug]/FestivalDetail.module.css',
   'src/app/festivals/[slug]/page.tsx',
@@ -84,11 +88,13 @@ function normalizePhase5A1GuideDiscoveryPilot(source) {
 
 const PHASE_5E4_GENERIC_GUIDE_COPY = 'Use scene and regional guides for context around goth, darkwave, industrial, EBM, new wave, and post-punk discovery.';
 const PHASE_5E4_WGT_GUIDE_COPY = 'Plan around a chosen festival by checking its footprint, arrival window, late-night returns, and final pre-departure details.';
+const PHASE_5E5_FIRST_TIME_GUIDE_COPY = 'Prepare for a dark alternative festival with practical guidance on conditions, venue rules, pacing, sound, and event-day readiness.';
 
 function normalizePhase5E4WgtGuideCopy(source) {
   return source
     .replace(`  description: "${PHASE_5E4_GENERIC_GUIDE_COPY}",\n`, '')
     .replace('Readonly<{ href: string; label: string; description?: string }>', 'Readonly<{ href: string; label: string }>')
+    .replaceAll(`    description: "${PHASE_5E5_FIRST_TIME_GUIDE_COPY}",\n`, '')
     .replace(`    description: "${PHASE_5E4_WGT_GUIDE_COPY}",\n`, '')
     .replace('          description: guideDiscoveryLink.description ?? GENERIC_GUIDE_DISCOVERY_LINK.description,', `          description: "${PHASE_5E4_GENERIC_GUIDE_COPY}",`);
 }
@@ -4378,7 +4384,8 @@ test('Phase 5E.4 aligns only WGT supporting copy and freezes every other contrac
   const baseline = (path) => execFileSync('git', ['show', `${checkpoint}:${path}`], { cwd: root, encoding: 'utf8' });
   const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const page = read(pagePath);
-  const mappingBlock = page.match(/const FESTIVAL_DETAIL_GUIDE_LINKS:[\s\S]*?Object\.freeze\(\{[\s\S]*?\n\}\);/)?.[0] ?? '';
+  const mappingBlock = (page.match(/const FESTIVAL_DETAIL_GUIDE_LINKS:[\s\S]*?Object\.freeze\(\{[\s\S]*?\n\}\);/)?.[0] ?? '')
+    .replaceAll(`    description: "${PHASE_5E5_FIRST_TIME_GUIDE_COPY}",\n`, '');
   const wgtBlock = mappingBlock.match(/"wave-gotik-treffen": Object\.freeze\(\{[\s\S]*?\n  \}\),/)?.[0] ?? '';
 
   assert.match(
@@ -4578,25 +4585,11 @@ test('Phase 5E.4F makes the Verification breadcrumb reflow safely at 320px true 
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  assert.deepEqual(changedPaths.sort(), [
-    'src/app/festivals/[slug]/FestivalDetail.module.css',
-    'src/app/festivals/[slug]/page.tsx',
-    'src/app/guides/GuidesHub.module.css',
-    'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/GuideArticle.module.css',
-    'src/app/guides/north-american-goth-darkwave-festivals/GuideArticle.module.css',
-    'src/app/guides/west-coast-pacific-northwest-dark-alternative-festivals/GuideArticle.module.css',
-    'src/app/suggest/SuggestPage.module.css',
-    verificationCssPath,
-    'src/components/festivals/FestivalDirectory.module.css',
-    'src/components/home/FeaturedFestivals.tsx',
-    'src/components/home/FirstDarkFestivalSignals.tsx',
-    'src/components/home/MapPreview.tsx',
-    'src/components/home/SubmitFestivalCta.tsx',
-    'src/components/site/DiscoveryLinks.tsx',
-    'src/components/site/NightTransmissionSiteShell.module.css',
-    'src/components/waitlist/WaitlistSignup.tsx',
-    'tests/homepage-mvp.test.mjs',
-  ].sort(), 'Phase 5E.4F must remain preserved inside the exact 17-path Phase 5E.4F + Phase 5E.4I boundary');
+  const releasedPhase5E4IPaths = execFileSync('git', ['diff-tree', '--no-commit-id', '--name-only', '-r', '0a4872350184accc284a8ee5fae6b3caaa1a811e'], { cwd: root, encoding: 'utf8' })
+    .trim()
+    .split('\n');
+  assert.deepEqual(releasedPhase5E4IPaths.sort(), [...PHASE_5E4I_ACTIVE_PATHS].sort(), 'the released Phase 5E.4I commit must preserve the exact approved 17-path boundary');
+  assert.deepEqual(changedPaths.sort(), [...PHASE_5E5_ACTIVE_PATHS].sort(), 'the current Phase 5E.5 worktree must contain only its exact two-file boundary');
   assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
   assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
 });
@@ -4677,4 +4670,90 @@ test('M’era Luna 2027 freshness correction stays date-safe, DTO-backed, and is
   assert.match(detailRoute, /from "@\/lib\/public-festivals"/);
   assert.match(directoryRoute, /from "@\/lib\/public-festivals"/);
   assert.doesNotMatch(`${detailRoute}\n${directoryRoute}`, /@\/data\/atlas-festivals|@\/lib\/festivals/);
+});
+
+test('Phase 5E.5 aligns only M’era Luna and NCN supporting copy with the First-Time Guide', () => {
+  const checkpoint = '0a4872350184accc284a8ee5fae6b3caaa1a811e';
+  const pagePath = 'src/app/festivals/[slug]/page.tsx';
+  const testPath = 'tests/homepage-mvp.test.mjs';
+  const firstTimeRoute = '/guides/first-time-dark-alternative-festival-guide';
+  const firstTimeLabel = 'First-Time Dark Alternative Festival Guide';
+  const targetSlugs = ['mera-luna-festival', 'ncn-festival-nocturnal-culture-night'];
+  const baseline = (path) => execFileSync('git', ['show', `${checkpoint}:${path}`], { cwd: root });
+  const source = readFileSync(join(root, pagePath), 'utf8');
+  const mappingBlock = source.match(/const FESTIVAL_DETAIL_GUIDE_LINKS:[\s\S]*?Object\.freeze\(\{[\s\S]*?\n\}\);/)?.[0] ?? '';
+  const discoveryBlock = source.match(/const discoveryLinks = \([\s\S]*?\n  \);/)?.[0] ?? '';
+  const entryFor = (slug) => mappingBlock.match(new RegExp(`  "${slug}": Object\\.freeze\\(\\{[\\s\\S]*?\\n  \\}\\),`))?.[0] ?? '';
+  const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  assert.ok(mappingBlock, 'the centralized route-specific mapping must remain extractable');
+  for (const slug of targetSlugs) {
+    const entry = entryFor(slug);
+    assert.ok(entry, `${slug} should retain one route-specific mapping`);
+    assert.match(entry, new RegExp(`href: "${escapeRegex(firstTimeRoute)}"`));
+    assert.match(entry, new RegExp(`label: "${escapeRegex(firstTimeLabel)}"`));
+    assert.match(entry, new RegExp(`description: "${escapeRegex(PHASE_5E5_FIRST_TIME_GUIDE_COPY)}"`), `${slug} still exposes the generic scene/regional copy instead of the approved First-Time Guide description`);
+  }
+  assert.equal((mappingBlock.match(new RegExp(escapeRegex(PHASE_5E5_FIRST_TIME_GUIDE_COPY), 'g')) ?? []).length, 2, 'the approved First-Time supporting sentence must appear exactly twice');
+
+  const wgtEntry = entryFor('wave-gotik-treffen');
+  assert.match(wgtEntry, /href: "\/guides\/planning-a-dark-alternative-festival-trip"/);
+  assert.match(wgtEntry, /label: "Planning a Dark Alternative Festival Trip"/);
+  assert.match(wgtEntry, new RegExp(`description: "${escapeRegex(PHASE_5E4_WGT_GUIDE_COPY)}"`));
+  assert.equal((source.match(new RegExp(escapeRegex(PHASE_5E4_WGT_GUIDE_COPY), 'g')) ?? []).length, 1);
+
+  assert.match(source, new RegExp(`const GENERIC_GUIDE_DISCOVERY_LINK = Object\\.freeze\\(\\{\\s*href: "\\/guides",\\s*label: "Read curated guides",\\s*description: "${escapeRegex(PHASE_5E4_GENERIC_GUIDE_COPY)}",\\s*\\}\\)`));
+  assert.equal((source.match(new RegExp(escapeRegex(PHASE_5E4_GENERIC_GUIDE_COPY), 'g')) ?? []).length, 1);
+  for (const slug of ['darker-waves', 'a-murder-of-crows-xi-nyc-goth-post-punk-festival']) {
+    assert.doesNotMatch(entryFor(slug), /description:/, `${slug} must continue using the exact generic scene/regional fallback`);
+  }
+
+  const specificSlugs = [...mappingBlock.matchAll(/^  "([a-z0-9-]+)": Object\.freeze/gm)].map((match) => match[1]);
+  const atlas = JSON.parse(readFileSync(join(root, ATLAS_PATH), 'utf8'));
+  assert.deepEqual(specificSlugs, [
+    'mera-luna-festival',
+    'ncn-festival-nocturnal-culture-night',
+    'darker-waves',
+    'a-murder-of-crows-xi-nyc-goth-post-punk-festival',
+    'wave-gotik-treffen',
+  ]);
+  assert.equal(specificSlugs.length, 5);
+  assert.equal(atlas.festivals.length - specificSlugs.length, 10);
+  assert.equal(atlas.festivals.length, 15);
+
+  assert.equal((discoveryBlock.match(/href:/g) ?? []).length, 3);
+  const cardOrder = [
+    discoveryBlock.indexOf('href: "/festivals"'),
+    discoveryBlock.indexOf('href: guideDiscoveryLink.href'),
+    discoveryBlock.indexOf('href: "/verification"'),
+  ];
+  assert.equal(cardOrder.every((position) => position >= 0), true);
+  assert.deepEqual(cardOrder, [...cardOrder].sort((a, b) => a - b), 'Festival Directory → Guide → Verification order must remain exact');
+  assert.match(discoveryBlock, /description: guideDiscoveryLink\.description \?\? GENERIC_GUIDE_DISCOVERY_LINK\.description/);
+
+  const mera = atlas.festivals.find((festival) => festival.slug === 'mera-luna-festival');
+  assert.equal(mera.start_date, '2026-08-08');
+  assert.equal(mera.end_date, '2026-08-09');
+  assert.equal(mera.date_text, '2027 edition announced — exact dates not yet confirmed');
+  assert.equal(mera.verification_status, 'date_pending');
+  assert.match(mera.data_quality_notes, /exact 2027 dates/);
+  assert.match(readFileSync(join(root, 'src/lib/public-festivals.ts'), 'utf8'), /date_pending: "Dates not announced yet"/);
+
+  const normalizedPage = source.replaceAll(`    description: "${PHASE_5E5_FIRST_TIME_GUIDE_COPY}",\n`, '');
+  assert.deepEqual(Buffer.from(normalizedPage), baseline(pagePath), 'the detail route may differ from production only by the two exact approved description lines');
+
+  const trackedPaths = execFileSync('git', ['ls-tree', '-r', '--name-only', checkpoint], { cwd: root, encoding: 'utf8' }).trim().split('\n');
+  for (const protectedPath of trackedPaths.filter((path) => path !== pagePath && path !== testPath)) {
+    assert.deepEqual(readFileSync(join(root, protectedPath)), baseline(protectedPath), `${protectedPath} must remain byte-identical to the Phase 5E.5 checkpoint`);
+  }
+
+  const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' })
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => line.slice(3));
+  assert.equal(changedPaths.every((path) => PHASE_5E5_ACTIVE_PATHS.includes(path)), true, `Phase 5E.5 permits only two repository paths: ${changedPaths.join(', ')}`);
+  assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
+  assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
+  assert.doesNotMatch(mappingBlock, /[?&](?:aff|affiliate|ref|utm_|click|partner)=|Ticketmaster|StubHub|SeatGeek|Vivid Seats|AXS|Eventbrite|Viagogo|hotel|product|sponsored|commission|analytics/i);
+  assert.doesNotMatch(`${source}\n${readFileSync(join(root, 'package.json'), 'utf8')}`, /"use client"|useState|useEffect|useMemo|fetch\(|\/api\/|framer-motion|lottie|three/i);
 });
