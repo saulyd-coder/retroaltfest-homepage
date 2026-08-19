@@ -100,12 +100,12 @@ const activeAtlasRecords: GuideRecord[] = [
     genreTags: ["darkwave", "EBM", "industrial", "synth", "post-punk"],
     officialUrl: "https://terminus-festival.com/",
     sceneFit: "Darkwave, EBM, industrial, synth, and post-punk.",
-    statusLabel: "Active atlas record — next edition details need official confirmation",
+    statusLabel: "Active atlas record — 2027 dates not announced",
     summary:
-      "Terminus Festival remains a source-supported active atlas record for Calgary’s darkwave, EBM, industrial, synth, and post-punk scene. The July 23–26, 2026 edition has concluded, and next edition details need official confirmation.",
+      "Terminus Festival remains a source-supported active atlas record for Calgary’s darkwave, EBM, industrial, synth, and post-punk scene. The July 23–26, 2026 edition has concluded. The official festival website now presents Terminus Festival 2027, but exact dates and venue have not been announced.",
     sourceCaveat:
       "The official site can be image-heavy, so RetroAltFest keeps poster, lineup, and logistics details restrained unless the text source trail clearly supports them.",
-    confirmedDetails: "Official and organizer-controlled sources support the concluded July 23–26, 2026 edition in Calgary.",
+    confirmedDetails: "Official and organizer-controlled sources support the concluded July 23–26, 2026 edition in Calgary, and the official festival website now presents Terminus Festival 2027.",
     recheckDetails: "A future edition’s dates, venue, ticketing, lineup, and logistics need official confirmation before travel planning.",
   },
 ];
@@ -219,7 +219,7 @@ export default function NorthAmericanGothDarkwaveGuidePage() {
           id="active-atlas-records"
           eyebrow="Source-supported active atlas records"
           title="Four active atlas records with source-aware status."
-          description="These are the guide cards with direct RetroAltFest atlas links. Three have official or organizer-controlled support for future 2026 dates; Terminus remains linked for discovery after its 2026 edition concluded, while next edition details need official confirmation."
+          description="These are the guide cards with direct RetroAltFest atlas links. Three have official or organizer-controlled support for future 2026 dates; Terminus now has an official 2027 edition announcement, while exact dates, venue, ticketing, lineup, and logistics still need official confirmation."
           records={activeAtlasRecords}
           startIndex={1}
           variant="active"

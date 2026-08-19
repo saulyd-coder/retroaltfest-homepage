@@ -206,19 +206,19 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
           <span className="min-w-0 [overflow-wrap:anywhere] [word-break:normal] text-[var(--raf-text-muted)]">Festival atlas</span>
         </nav>
 
-        <section className={referenceClass(usesNightTransmissionPresentation, "grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start", styles.masthead)} data-detail-section={usesNightTransmissionPresentation ? "masthead" : undefined}>
-          <div className={referenceClass(usesNightTransmissionPresentation, "relative overflow-hidden rounded-[2rem] border border-[rgba(168,85,247,0.2)] bg-[linear-gradient(145deg,rgba(35,24,57,0.82),rgba(8,7,14,0.92)_58%,rgba(3,3,6,0.96))] p-6 shadow-[0_34px_120px_rgba(0,0,0,0.55),0_0_70px_rgba(88,28,135,0.16)] sm:p-8 lg:p-10", styles.mastheadPanel)}>
+        <section className={referenceClass(usesNightTransmissionPresentation, "grid grid-cols-[repeat(auto-fit,minmax(min(100%,22rem),1fr))] items-start gap-8", styles.masthead)} data-detail-section={usesNightTransmissionPresentation ? "masthead" : undefined}>
+          <div className={referenceClass(usesNightTransmissionPresentation, "relative overflow-hidden rounded-[2rem] border border-[rgba(168,85,247,0.2)] bg-[linear-gradient(145deg,rgba(35,24,57,0.82),rgba(8,7,14,0.92)_58%,rgba(3,3,6,0.96))] p-[clamp(16px,4vw,2.5rem)] shadow-[0_34px_120px_rgba(0,0,0,0.55),0_0_70px_rgba(88,28,135,0.16)]", styles.mastheadPanel)}>
             <div className={referenceClass(usesNightTransmissionPresentation, "map-panel-bloom pointer-events-none absolute -inset-16 opacity-55 blur-2xl", styles.mastheadBloom)} />
             <div className={referenceClass(usesNightTransmissionPresentation, "relative z-10", styles.mastheadCopy)}>
               <p className={referenceClass(usesNightTransmissionPresentation, "font-mono text-xs uppercase tracking-[0.32em] text-[var(--raf-cyan)]", styles.telemetry)}>Curated atlas entry</p>
               <h1 className={referenceClass(usesNightTransmissionPresentation, "mt-5 text-balance font-display text-4xl font-semibold tracking-[-0.045em] text-white sm:text-5xl lg:text-7xl", styles.title)}>
                 {festival.name}
               </h1>
-              <p className={referenceClass(usesNightTransmissionPresentation, "mt-5 max-w-3xl text-lg leading-8 text-[var(--raf-text-muted)] sm:text-xl", styles.summary)}>
+              <p className={referenceClass(usesNightTransmissionPresentation, "mt-5 min-w-0 max-w-3xl text-lg leading-8 text-[var(--raf-text-muted)] [overflow-wrap:anywhere] [word-break:normal] sm:text-xl", styles.summary)}>
                 {heroSummary}
               </p>
 
-              <dl className={referenceClass(usesNightTransmissionPresentation, "mt-8 grid gap-3 sm:grid-cols-3", styles.factGrid)} data-detail-section={usesNightTransmissionPresentation ? "essential-facts" : undefined}>
+              <dl className={referenceClass(usesNightTransmissionPresentation, "mt-8 grid grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-3", styles.factGrid)} data-detail-section={usesNightTransmissionPresentation ? "essential-facts" : undefined}>
                 <AtlasFact label="Location" value={festival.locationLabel} referenceMode={usesNightTransmissionPresentation} />
                 <AtlasFact label="Dates" value={festival.dateLabel} referenceMode={usesNightTransmissionPresentation} />
                 <AtlasFact label="Venue" value={festival.venueLabel} referenceMode={usesNightTransmissionPresentation} />
@@ -337,9 +337,9 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
 
 function AtlasFact({ label, value, referenceMode = false }: { label: string; value: string; referenceMode?: boolean }) {
   return (
-    <div className={referenceClass(referenceMode, "rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-4", styles.fact)}>
+    <div className={referenceClass(referenceMode, "min-w-0 rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-[clamp(16px,2vw,1.25rem)]", styles.fact)}>
       <dt className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--raf-text-dim)]">{label}</dt>
-      <dd className="mt-2 text-sm leading-6 text-white">{value}</dd>
+      <dd className="mt-2 min-w-0 max-w-full text-sm leading-6 text-white [overflow-wrap:anywhere] [word-break:normal]">{value}</dd>
     </div>
   );
 }
