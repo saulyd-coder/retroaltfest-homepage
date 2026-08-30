@@ -34,6 +34,7 @@ const PHASE_5F2_ACTIVE_PATHS = [
 ];
 const PHASE_5F2A_LAYOUT_PATH = 'src/app/festivals/[slug]/page.tsx';
 const PHASE_5F2A_ACTIVE_PATHS = [...PHASE_5F2_ACTIVE_PATHS, PHASE_5F2A_LAYOUT_PATH];
+const POST_DATE_ROLLOVER_ACTIVE_PATHS = [ATLAS_PATH, 'tests/homepage-mvp.test.mjs'];
 const PHASE_5E4I_HASH_NORMALIZED_PATHS = new Set([
   'src/data/atlas-festivals.json',
   'src/app/festivals/[slug]/FestivalDetail.module.css',
@@ -62,6 +63,10 @@ const PHASE_5F2A_SUMMARY_CLASS = 'mt-5 min-w-0 max-w-3xl text-lg leading-8 text-
 const PHASE_5F2A_FACT_GRID_CLASS = 'mt-8 grid grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-3';
 const PHASE_5F2A_FACT_CLASS = 'min-w-0 rounded-2xl border border-[var(--raf-border-soft)] bg-black/25 p-[clamp(16px,2vw,1.25rem)]';
 const PHASE_5F2A_FACT_VALUE_CLASS = 'mt-2 min-w-0 max-w-full text-sm leading-6 text-white [overflow-wrap:anywhere] [word-break:normal]';
+const ROLLOVER_JLH_DATE = 'August 22, 2026 — past edition; next edition details need official confirmation';
+const ROLLOVER_JLH_NOTE = 'The August 22, 2026 edition at Brookside at the Rose Bowl has concluded. The official site now displays “THANK YOU, JUST LIKE HEAVEN,” and no later edition was announced on the official pages checked on August 29, 2026.';
+const ROLLOVER_INFEST_DATE = '21–23 August 2026 — past edition; next edition details need official confirmation';
+const ROLLOVER_INFEST_NOTE = 'Official Infest pages list the 2026 festival for 21–23 August at Manchester Academy. Those dates have passed, and no later edition was announced on the official website when checked on August 29, 2026.';
 
 function normalizePhase5F2ALayout(relativePath, source) {
   if (relativePath !== PHASE_5F2A_LAYOUT_PATH) return source;
@@ -79,6 +84,18 @@ function normalizePhase5F2Atlas(source) {
     .replace('"venue_name": null', '"venue_name": "Dickens / Dickens Lower"')
     .replace(`"date_text": "${PHASE_5F2_TERMINUS_DATE_TEXT}"`, '"date_text": "July 23–26, 2026 — past edition; next edition details need official confirmation."')
     .replace(`"data_quality_notes": "${PHASE_5F2_TERMINUS_NOTE}"`, '"data_quality_notes": "The July 23–26, 2026 edition has concluded. Official sources checked on July 27, 2026 did not confirm a later edition; check the official festival website for future updates."'));
+}
+
+function normalizePostDateRolloverAtlas(source) {
+  return source
+    .replace(/\{\n      "record_id": "raf-2026-007",[\s\S]*?\n    \}/, (block) => block
+      .replace(`"date_text": "${ROLLOVER_INFEST_DATE}"`, '"date_text": "21-23 August 2026"')
+      .replace('"verification_status": "historical_reference"', '"verification_status": "confirmed_upcoming"')
+      .replace(`"data_quality_notes": "${ROLLOVER_INFEST_NOTE}"`, '"data_quality_notes": "Official pages confirm 2026 dates and venue. Festival moved from Bradford to Manchester."'))
+    .replace(/\{\n      "record_id": "raf-2026-016",[\s\S]*?\n    \}/, (block) => block
+      .replace(`"date_text": "${ROLLOVER_JLH_DATE}"`, '"date_text": "August 22, 2026"')
+      .replace('"verification_status": "historical_reference"', '"verification_status": "confirmed_upcoming"')
+      .replace(`"data_quality_notes": "${ROLLOVER_JLH_NOTE}"`, '"data_quality_notes": "Confirmed upcoming date/city and Brookside at the Rose Bowl venue. Adjacent bridge, not core goth/darkwave/synthpop."'));
 }
 
 function normalizePhase5F2NorthAmericanGuide(source) {
@@ -108,7 +125,7 @@ function normalizeMeraLunaFreshnessAtlas(source) {
 function read(relativePath) {
   const source = readFileSync(join(root, relativePath), 'utf8');
   const freshnessNormalized = relativePath === ATLAS_PATH
-    ? normalizePhase5F2Atlas(normalizeMeraLunaFreshnessAtlas(source))
+    ? normalizePhase5F2Atlas(normalizeMeraLunaFreshnessAtlas(normalizePostDateRolloverAtlas(source)))
     : relativePath === 'src/app/guides/north-american-goth-darkwave-festivals/page.tsx'
       ? normalizePhase5F2NorthAmericanGuide(source)
       : relativePath === 'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx'
@@ -747,7 +764,7 @@ test('Terminus preserves the ended-ticket removal while applying the approved fr
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const approvedActivePaths = PHASE_5F2A_ACTIVE_PATHS;
+  const approvedActivePaths = POST_DATE_ROLLOVER_ACTIVE_PATHS;
   assert.equal(
     changedPaths.every((path) => approvedActivePaths.includes(path)),
     true,
@@ -3998,7 +4015,7 @@ test('Phase 5E.1 trip-planning guide is distinct, source-safe, non-commercial, a
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const approvedPublicationPaths = new Set(PHASE_5F2A_ACTIVE_PATHS);
+  const approvedPublicationPaths = new Set(POST_DATE_ROLLOVER_ACTIVE_PATHS);
   assert.equal(
     changedPaths.every((path) => approvedPublicationPaths.has(path)),
     true,
@@ -4315,8 +4332,8 @@ test('Phase 5E.2 publishes the trip-planning guide through the Guides Hub and si
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const allowlist = new Set(PHASE_5F2A_ACTIVE_PATHS);
-  assert.equal(changedPaths.every((path) => allowlist.has(path)), true, `the combined approved worktree must include no path outside the current Phase 5F.2A boundary: ${changedPaths.join(', ')}`);
+  const allowlist = new Set(POST_DATE_ROLLOVER_ACTIVE_PATHS);
+  assert.equal(changedPaths.every((path) => allowlist.has(path)), true, `the combined approved worktree must include no path outside the current post-date rollover boundary: ${changedPaths.join(', ')}`);
 });
 
 test('Phase 5E.3 maps only Wave-Gotik-Treffen to the Trip-Planning Guide and freezes every other contract', () => {
@@ -4436,8 +4453,8 @@ test('Phase 5E.3 maps only Wave-Gotik-Treffen to the Trip-Planning Guide and fre
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const allowlist = new Set(PHASE_5F2A_ACTIVE_PATHS);
-  assert.equal(changedPaths.every((path) => allowlist.has(path)), true, `the combined approved worktree must include no path outside the current Phase 5F.2A boundary: ${changedPaths.join(', ')}`);
+  const allowlist = new Set(POST_DATE_ROLLOVER_ACTIVE_PATHS);
+  assert.equal(changedPaths.every((path) => allowlist.has(path)), true, `the combined approved worktree must include no path outside the current post-date rollover boundary: ${changedPaths.join(', ')}`);
 });
 
 test('Phase 5E.4 aligns only WGT supporting copy and freezes every other contract', () => {
@@ -4655,7 +4672,7 @@ test('Phase 5E.4F makes the Verification breadcrumb reflow safely at 320px true 
     .trim()
     .split('\n');
   assert.deepEqual(releasedPhase5E4IPaths.sort(), [...PHASE_5E4I_ACTIVE_PATHS].sort(), 'the released Phase 5E.4I commit must preserve the exact approved 17-path boundary');
-  assert.deepEqual(changedPaths.sort(), [...PHASE_5F2A_ACTIVE_PATHS].sort(), 'the current Phase 5F.2A worktree must contain only its exact five-file boundary');
+  assert.deepEqual(changedPaths.sort(), [...POST_DATE_ROLLOVER_ACTIVE_PATHS].sort(), 'the current post-date rollover worktree must contain only its exact two-file boundary');
   assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
   assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
 });
@@ -4696,7 +4713,7 @@ test('Phase 5E.4I closes every remaining true-200% text owner without shrinking 
 });
 
 test('M’era Luna 2027 freshness correction stays date-safe, DTO-backed, and isolated', () => {
-  const atlas = JSON.parse(normalizePhase5F2Atlas(readFileSync(join(root, ATLAS_PATH), 'utf8')));
+  const atlas = JSON.parse(normalizePhase5F2Atlas(normalizePostDateRolloverAtlas(readFileSync(join(root, ATLAS_PATH), 'utf8'))));
   const target = atlas.festivals.find((festival) => festival.slug === 'mera-luna-festival');
   const nonTargetRecords = atlas.festivals.filter((festival) => festival.slug !== 'mera-luna-festival');
   const publicDto = read('src/lib/public-festivals.ts');
@@ -4818,7 +4835,7 @@ test('Phase 5E.5 aligns only M’era Luna and NCN supporting copy with the First
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  assert.equal(changedPaths.every((path) => PHASE_5F2A_ACTIVE_PATHS.includes(path)), true, `Phase 5F.2A permits only five repository paths: ${changedPaths.join(', ')}`);
+  assert.equal(changedPaths.every((path) => POST_DATE_ROLLOVER_ACTIVE_PATHS.includes(path)), true, `the post-date rollover permits only two repository paths: ${changedPaths.join(', ')}`);
   assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
   assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
   assert.doesNotMatch(mappingBlock, /[?&](?:aff|affiliate|ref|utm_|click|partner)=|Ticketmaster|StubHub|SeatGeek|Vivid Seats|AXS|Eventbrite|Viagogo|hotel|product|sponsored|commission|analytics/i);
@@ -4829,7 +4846,7 @@ test('Phase 5F.2 aligns Terminus 2027 freshness and only its two direct guide re
   const checkpoint = '7c1eb37c37143006a129af59b8ca98287c568ff9';
   const northPath = 'src/app/guides/north-american-goth-darkwave-festivals/page.tsx';
   const industrialPath = 'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx';
-  const atlasSource = readFileSync(join(root, ATLAS_PATH), 'utf8');
+  const atlasSource = normalizePostDateRolloverAtlas(readFileSync(join(root, ATLAS_PATH), 'utf8'));
   const atlas = JSON.parse(atlasSource);
   const baselineAtlas = JSON.parse(execFileSync('git', ['show', `${checkpoint}:${ATLAS_PATH}`], { cwd: root, encoding: 'utf8' }));
   const target = atlas.festivals.find((festival) => festival.slug === 'terminus-festival');
@@ -4901,7 +4918,7 @@ test('Phase 5F.2 aligns Terminus 2027 freshness and only its two direct guide re
     assert.deepEqual(readFileSync(join(root, protectedPath)), execFileSync('git', ['show', `${checkpoint}:${protectedPath}`], { cwd: root }));
   }
   const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).map((line) => line.slice(3));
-  assert.deepEqual(changedPaths.sort(), [...PHASE_5F2A_ACTIVE_PATHS].sort(), 'Phase 5F.2A must remain inside the exact five-file boundary');
+  assert.deepEqual(changedPaths.sort(), [...POST_DATE_ROLLOVER_ACTIVE_PATHS].sort(), 'the post-date rollover must remain inside the exact two-file boundary');
   assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
   assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
   assert.doesNotMatch(`${north}\n${industrial}`, /date_pending|source_status|map_phase0_category|core_anchor|watchlist|Phase 0|map-readiness|needs_review|geocoding_source|geocoding_query|geocoding_confidence|latitude|longitude/i);
@@ -4923,7 +4940,67 @@ test('Phase 5F.2A gives the shared legacy festival detail an intrinsic true-200%
   assert.doesNotMatch(page, /truncate|text-ellipsis|whitespace-nowrap|overflow-x-(?:auto|scroll)|line-clamp|text-(?:xs|sm).*Phase 5F\.2A/i);
 
   const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).map((line) => line.slice(3));
-  assert.deepEqual(changedPaths.sort(), [...PHASE_5F2A_ACTIVE_PATHS].sort(), 'Phase 5F.2A must add exactly one shared layout owner to the preserved four-file Phase 5F.2 candidate');
+  assert.deepEqual(changedPaths.sort(), [...POST_DATE_ROLLOVER_ACTIVE_PATHS].sort(), 'the current post-date rollover worktree must contain only atlas data and regression tests');
+  assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
+  assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
+});
+
+test('targeted post-date rollover makes only Just Like Heaven and Infest historical references', () => {
+  const checkpoint = '6da93d884c51b4a7afbc82e44fcb1e2800fc0f8e';
+  const atlas = JSON.parse(readFileSync(join(root, ATLAS_PATH), 'utf8'));
+  const baselineAtlas = JSON.parse(execFileSync('git', ['show', `${checkpoint}:${ATLAS_PATH}`], { cwd: root, encoding: 'utf8' }));
+  const bySlug = new Map(atlas.festivals.map((record) => [record.slug, record]));
+  const baselineBySlug = new Map(baselineAtlas.festivals.map((record) => [record.slug, record]));
+  const approvedFields = new Set(['date_text', 'verification_status', 'data_quality_notes']);
+
+  assert.equal(atlas.metadata.record_count, 15);
+  assert.equal(atlas.festivals.length, 15);
+  assert.equal(new Set(atlas.festivals.map((record) => record.slug)).size, 15);
+
+  for (const [slug, dateText, note, startDate, endDate] of [
+    ['just-like-heaven', ROLLOVER_JLH_DATE, ROLLOVER_JLH_NOTE, '2026-08-22', '2026-08-22'],
+    ['infest-festival', ROLLOVER_INFEST_DATE, ROLLOVER_INFEST_NOTE, '2026-08-21', '2026-08-23'],
+  ]) {
+    const record = bySlug.get(slug);
+    const baselineRecord = baselineBySlug.get(slug);
+    assert.ok(record);
+    assert.equal(atlas.festivals.filter((candidate) => candidate.slug === slug).length, 1);
+    assert.equal(record.date_text, dateText, `${slug} still presents its concluded edition as current/upcoming`);
+    assert.equal(record.verification_status, 'historical_reference');
+    assert.equal(record.data_quality_notes, note);
+    assert.equal(record.start_date, startDate);
+    assert.equal(record.end_date, endDate);
+    assert.deepEqual(record.source_urls, baselineRecord.source_urls);
+    assert.deepEqual(record.source_links, baselineRecord.source_links);
+    assert.equal(record.latitude, null);
+    assert.equal(record.longitude, null);
+    assert.equal(record.geocoding_source, null);
+    assert.equal(record.geocoding_query, null);
+    assert.equal(record.geocoding_confidence, 'not_geocoded');
+    assert.deepEqual(
+      Object.fromEntries(Object.entries(record).filter(([key]) => !approvedFields.has(key))),
+      Object.fromEntries(Object.entries(baselineRecord).filter(([key]) => !approvedFields.has(key))),
+      `${slug} may change only date_text, verification_status, and data_quality_notes`,
+    );
+    assert.doesNotMatch(`${record.date_text}\n${record.data_quality_notes}`, /cancel(?:led|ed|ation)|discontinued|inactive|permanent(?:ly)? ended|final edition/i);
+  }
+
+  assert.deepEqual(
+    atlas.festivals.filter((record) => !['just-like-heaven', 'infest-festival'].includes(record.slug)),
+    baselineAtlas.festivals.filter((record) => !['just-like-heaven', 'infest-festival'].includes(record.slug)),
+    'the other 13 atlas records must remain field-identical',
+  );
+  for (const protectedSlug of ['mutek-montreal', 'a-murder-of-crows-xi-nyc-goth-post-punk-festival', 'ncn-festival-nocturnal-culture-night', 'levitation']) {
+    assert.deepEqual(bySlug.get(protectedSlug), baselineBySlug.get(protectedSlug));
+  }
+
+  const publicDtoPath = 'src/lib/public-festivals.ts';
+  const publicDto = readFileSync(join(root, publicDtoPath), 'utf8');
+  assert.deepEqual(readFileSync(join(root, publicDtoPath)), execFileSync('git', ['show', `${checkpoint}:${publicDtoPath}`], { cwd: root }));
+  assert.match(publicDto, /historical_reference: "Historical \/ reference"/);
+
+  const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).map((line) => line.slice(3));
+  assert.deepEqual(changedPaths.sort(), [...POST_DATE_ROLLOVER_ACTIVE_PATHS].sort(), 'only atlas data and the regression test may change');
   assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
   assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
 });
