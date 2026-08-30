@@ -67,6 +67,7 @@ const ROLLOVER_JLH_DATE = 'August 22, 2026 — past edition; next edition detail
 const ROLLOVER_JLH_NOTE = 'The August 22, 2026 edition at Brookside at the Rose Bowl has concluded. The official site now displays “THANK YOU, JUST LIKE HEAVEN,” and no later edition was announced on the official pages checked on August 29, 2026.';
 const ROLLOVER_INFEST_DATE = '21–23 August 2026 — past edition; next edition details need official confirmation';
 const ROLLOVER_INFEST_NOTE = 'Official Infest pages list the 2026 festival for 21–23 August at Manchester Academy. Those dates have passed, and no later edition was announced on the official website when checked on August 29, 2026.';
+const INFEST_VISITOR_VENUE_NOTE = 'Manchester Academy is the confirmed festival venue for the represented edition.';
 
 function normalizePhase5F2ALayout(relativePath, source) {
   if (relativePath !== PHASE_5F2A_LAYOUT_PATH) return source;
@@ -91,6 +92,7 @@ function normalizePostDateRolloverAtlas(source) {
     .replace(/\{\n      "record_id": "raf-2026-007",[\s\S]*?\n    \}/, (block) => block
       .replace(`"date_text": "${ROLLOVER_INFEST_DATE}"`, '"date_text": "21-23 August 2026"')
       .replace('"verification_status": "historical_reference"', '"verification_status": "confirmed_upcoming"')
+      .replace(`"map_notes": "${INFEST_VISITOR_VENUE_NOTE}"`, '"map_notes": "Single known venue suitable for future exact geocoding."')
       .replace(`"data_quality_notes": "${ROLLOVER_INFEST_NOTE}"`, '"data_quality_notes": "Official pages confirm 2026 dates and venue. Festival moved from Bradford to Manchester."'))
     .replace(/\{\n      "record_id": "raf-2026-016",[\s\S]*?\n    \}/, (block) => block
       .replace(`"date_text": "${ROLLOVER_JLH_DATE}"`, '"date_text": "August 22, 2026"')
@@ -4951,7 +4953,7 @@ test('targeted post-date rollover makes only Just Like Heaven and Infest histori
   const baselineAtlas = JSON.parse(execFileSync('git', ['show', `${checkpoint}:${ATLAS_PATH}`], { cwd: root, encoding: 'utf8' }));
   const bySlug = new Map(atlas.festivals.map((record) => [record.slug, record]));
   const baselineBySlug = new Map(baselineAtlas.festivals.map((record) => [record.slug, record]));
-  const approvedFields = new Set(['date_text', 'verification_status', 'data_quality_notes']);
+  const approvedFields = new Set(['date_text', 'verification_status', 'map_notes', 'data_quality_notes']);
 
   assert.equal(atlas.metadata.record_count, 15);
   assert.equal(atlas.festivals.length, 15);
@@ -4967,6 +4969,7 @@ test('targeted post-date rollover makes only Just Like Heaven and Infest histori
     assert.equal(atlas.festivals.filter((candidate) => candidate.slug === slug).length, 1);
     assert.equal(record.date_text, dateText, `${slug} still presents its concluded edition as current/upcoming`);
     assert.equal(record.verification_status, 'historical_reference');
+    if (slug === 'infest-festival') assert.equal(record.map_notes, INFEST_VISITOR_VENUE_NOTE);
     assert.equal(record.data_quality_notes, note);
     assert.equal(record.start_date, startDate);
     assert.equal(record.end_date, endDate);
@@ -5001,6 +5004,53 @@ test('targeted post-date rollover makes only Just Like Heaven and Infest histori
 
   const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).map((line) => line.slice(3));
   assert.deepEqual(changedPaths.sort(), [...POST_DATE_ROLLOVER_ACTIVE_PATHS].sort(), 'only atlas data and the regression test may change');
+  assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
+  assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
+});
+
+test('Infest public venue language removes internal geocoding wording only', () => {
+  const checkpoint = 'cec2294dc428578613353b1e98004e87d1b9c441';
+  const atlas = JSON.parse(readFileSync(join(root, ATLAS_PATH), 'utf8'));
+  const baselineAtlas = JSON.parse(execFileSync('git', ['show', `${checkpoint}:${ATLAS_PATH}`], { cwd: root, encoding: 'utf8' }));
+  const infest = atlas.festivals.find((record) => record.slug === 'infest-festival');
+  const baselineInfest = baselineAtlas.festivals.find((record) => record.slug === 'infest-festival');
+
+  assert.equal(atlas.metadata.record_count, 15);
+  assert.equal(atlas.festivals.length, 15);
+  assert.equal(new Set(atlas.festivals.map((record) => record.slug)).size, 15);
+  assert.equal(atlas.festivals.filter((record) => record.slug === 'infest-festival').length, 1);
+  assert.equal(infest.map_notes, INFEST_VISITOR_VENUE_NOTE);
+  assert.doesNotMatch(infest.map_notes, /geocod|coordinates?|latitude|longitude|map[_ -]?readiness|pin-safe/i);
+  assert.equal(infest.date_text, ROLLOVER_INFEST_DATE);
+  assert.equal(infest.verification_status, 'historical_reference');
+  assert.equal(infest.data_quality_notes, ROLLOVER_INFEST_NOTE);
+  assert.deepEqual(infest.source_urls, baselineInfest.source_urls);
+  assert.deepEqual(infest.source_links, baselineInfest.source_links);
+  assert.equal(infest.latitude, null);
+  assert.equal(infest.longitude, null);
+  assert.equal(infest.geocoding_source, null);
+  assert.equal(infest.geocoding_query, null);
+  assert.equal(infest.geocoding_confidence, 'not_geocoded');
+  assert.deepEqual(
+    Object.fromEntries(Object.entries(infest).filter(([key]) => key !== 'map_notes')),
+    Object.fromEntries(Object.entries(baselineInfest).filter(([key]) => key !== 'map_notes')),
+    'Infest may change only map_notes in this cleanup',
+  );
+  assert.deepEqual(
+    atlas.festivals.filter((record) => record.slug !== 'infest-festival'),
+    baselineAtlas.festivals.filter((record) => record.slug !== 'infest-festival'),
+    'the other 14 atlas records must remain field-identical',
+  );
+
+  const dtoPath = 'src/lib/public-festivals.ts';
+  const detailPath = 'src/app/festivals/[slug]/page.tsx';
+  assert.deepEqual(readFileSync(join(root, dtoPath)), execFileSync('git', ['show', `${checkpoint}:${dtoPath}`], { cwd: root }));
+  assert.deepEqual(readFileSync(join(root, detailPath)), execFileSync('git', ['show', `${checkpoint}:${detailPath}`], { cwd: root }));
+  assert.match(readFileSync(join(root, dtoPath), 'utf8'), /mappingNote: festival\.map_notes/);
+  assert.match(readFileSync(join(root, detailPath), 'utf8'), /<p>\{festival\.mappingNote\}<\/p>/);
+
+  const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).map((line) => line.slice(3));
+  assert.deepEqual(changedPaths.sort(), [...POST_DATE_ROLLOVER_ACTIVE_PATHS].sort(), 'only atlas data and regression tests may change');
   assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
   assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
 });
