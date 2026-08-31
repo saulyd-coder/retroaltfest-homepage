@@ -396,7 +396,7 @@
       "geocoding_confidence": "not_geocoded",
       "start_date": "2026-09-03",
       "end_date": "2026-09-05",
-      "date_text": "Opening Party: September 3, 2026; Night One: September 4, 2026; Night Two: September 5, 2026",
+      "date_text": "Opening Party: September 3, 2026; Night One: September 4, 2026; Night Two: September 5, 2026; Livestream Closing Party: September 6, 2026",
       "genres": [
         "goth",
         "post-punk",
@@ -420,7 +420,7 @@
       "source_confidence": "high",
       "follow_up_needed": true,
       "map_notes": "Parent record only. Opening party is listed at TV Eye and main nights at Bowery Ballroom; child venue records are needed before precise map display.",
-      "data_quality_notes": "Official Red Party/Nite Church page confirms dates and venues: TV Eye for opening party, Bowery Ballroom for nights one and two.",
+      "data_quality_notes": "The official Red Party page confirms the in-person opening party at TV Eye on September 3 and two Bowery Ballroom nights on September 4–5, followed by a separate livestream closing party on September 6 through the organizer’s Twitch channel.",
       "slug": "a-murder-of-crows-xi-nyc-goth-post-punk-festival",
       "atlas_summary": "A Murder of Crows XI NYC Goth & Post-punk Festival is a curated RetroAltFest atlas record for goth, post-punk, darkwave, deathrock travelers, located in New York · New York · United States. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
       "why_it_matters": "A Murder of Crows matters because it captures the New York goth and post-punk ecosystem through a festival-scale lens, connecting club culture, promoters, and multiple venues into one curated weekend. It gives the atlas a strong urban nightlife entry rather than only camping or destination-festival formats.",
@@ -805,7 +805,7 @@
       "geocoding_confidence": "not_geocoded",
       "start_date": "2026-08-25",
       "end_date": "2026-08-30",
-      "date_text": "August 25-30, 2026",
+      "date_text": "August 25–30, 2026 — past edition; next edition details need official confirmation.",
       "genres": [
         "electronic",
         "experimental",
@@ -825,11 +825,11 @@
       "source_urls": [
         "https://montreal.mutek.org/"
       ],
-      "verification_status": "confirmed_upcoming",
+      "verification_status": "historical_reference",
       "source_confidence": "high",
       "follow_up_needed": true,
       "map_notes": "Parent/multi-venue record only. Not safe as a single venue pin; coordinates and geocoding fields remain null.",
-      "data_quality_notes": "Confirmed upcoming; electronic/digital arts adjacent. Do not frame as goth/darkwave-specific.",
+      "data_quality_notes": "The scheduled August 25–30, 2026 MUTEK Montréal festival dates have passed. Separate MUTEK-associated Village Numérique programming continued through September 3, 2026, but did not extend the festival dates. No later Montréal edition was announced on the organizer-controlled pages checked on August 31, 2026.",
       "slug": "mutek-montreal",
       "atlas_summary": "MUTEK Montréal is a major Canadian electronic and digital arts event with experimental and dark-electronic relevance, included as an adjacent discovery anchor rather than a goth or darkwave-specific festival.",
       "why_it_matters": "MUTEK Montréal gives RetroAltFest a careful Canadian electronic/digital arts bridge. It belongs because experimental electronic scenes overlap with dark-electronic discovery, but the public copy needs to preserve that adjacency rather than overclaiming genre fit.",

@@ -68,6 +68,10 @@ const ROLLOVER_JLH_NOTE = 'The August 22, 2026 edition at Brookside at the Rose 
 const ROLLOVER_INFEST_DATE = '21–23 August 2026 — past edition; next edition details need official confirmation';
 const ROLLOVER_INFEST_NOTE = 'Official Infest pages list the 2026 festival for 21–23 August at Manchester Academy. Those dates have passed, and no later edition was announced on the official website when checked on August 29, 2026.';
 const INFEST_VISITOR_VENUE_NOTE = 'Manchester Academy is the confirmed festival venue for the represented edition.';
+const ROLLOVER_MUTEK_DATE = 'August 25–30, 2026 — past edition; next edition details need official confirmation.';
+const ROLLOVER_MUTEK_NOTE = 'The scheduled August 25–30, 2026 MUTEK Montréal festival dates have passed. Separate MUTEK-associated Village Numérique programming continued through September 3, 2026, but did not extend the festival dates. No later Montréal edition was announced on the organizer-controlled pages checked on August 31, 2026.';
+const MURDER_OF_CROWS_DATE = 'Opening Party: September 3, 2026; Night One: September 4, 2026; Night Two: September 5, 2026; Livestream Closing Party: September 6, 2026';
+const MURDER_OF_CROWS_NOTE = 'The official Red Party page confirms the in-person opening party at TV Eye on September 3 and two Bowery Ballroom nights on September 4–5, followed by a separate livestream closing party on September 6 through the organizer’s Twitch channel.';
 
 function normalizePhase5F2ALayout(relativePath, source) {
   if (relativePath !== PHASE_5F2A_LAYOUT_PATH) return source;
@@ -100,6 +104,17 @@ function normalizePostDateRolloverAtlas(source) {
       .replace(`"data_quality_notes": "${ROLLOVER_JLH_NOTE}"`, '"data_quality_notes": "Confirmed upcoming date/city and Brookside at the Rose Bowl venue. Adjacent bridge, not core goth/darkwave/synthpop."'));
 }
 
+function normalizeAugust31LifecycleCorrections(source) {
+  return source
+    .replace(/\{\n      "record_id": "raf-2026-008",[\s\S]*?\n    \}/, (block) => block
+      .replace(`"date_text": "${MURDER_OF_CROWS_DATE}"`, '"date_text": "Opening Party: September 3, 2026; Night One: September 4, 2026; Night Two: September 5, 2026"')
+      .replace(`"data_quality_notes": "${MURDER_OF_CROWS_NOTE}"`, '"data_quality_notes": "Official Red Party/Nite Church page confirms dates and venues: TV Eye for opening party, Bowery Ballroom for nights one and two."'))
+    .replace(/\{\n      "record_id": "raf-2026-015",[\s\S]*?\n    \}/, (block) => block
+      .replace(`"date_text": "${ROLLOVER_MUTEK_DATE}"`, '"date_text": "August 25-30, 2026"')
+      .replace('"verification_status": "historical_reference"', '"verification_status": "confirmed_upcoming"')
+      .replace(`"data_quality_notes": "${ROLLOVER_MUTEK_NOTE}"`, '"data_quality_notes": "Confirmed upcoming; electronic/digital arts adjacent. Do not frame as goth/darkwave-specific."'));
+}
+
 function normalizePhase5F2NorthAmericanGuide(source) {
   return source
     .replace(PHASE_5F2_NA_STATUS, 'Active atlas record — next edition details need official confirmation')
@@ -127,7 +142,7 @@ function normalizeMeraLunaFreshnessAtlas(source) {
 function read(relativePath) {
   const source = readFileSync(join(root, relativePath), 'utf8');
   const freshnessNormalized = relativePath === ATLAS_PATH
-    ? normalizePhase5F2Atlas(normalizeMeraLunaFreshnessAtlas(normalizePostDateRolloverAtlas(source)))
+    ? normalizePhase5F2Atlas(normalizeMeraLunaFreshnessAtlas(normalizePostDateRolloverAtlas(normalizeAugust31LifecycleCorrections(source))))
     : relativePath === 'src/app/guides/north-american-goth-darkwave-festivals/page.tsx'
       ? normalizePhase5F2NorthAmericanGuide(source)
       : relativePath === 'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx'
@@ -4715,7 +4730,7 @@ test('Phase 5E.4I closes every remaining true-200% text owner without shrinking 
 });
 
 test('M’era Luna 2027 freshness correction stays date-safe, DTO-backed, and isolated', () => {
-  const atlas = JSON.parse(normalizePhase5F2Atlas(normalizePostDateRolloverAtlas(readFileSync(join(root, ATLAS_PATH), 'utf8'))));
+  const atlas = JSON.parse(normalizePhase5F2Atlas(normalizePostDateRolloverAtlas(normalizeAugust31LifecycleCorrections(readFileSync(join(root, ATLAS_PATH), 'utf8')))));
   const target = atlas.festivals.find((festival) => festival.slug === 'mera-luna-festival');
   const nonTargetRecords = atlas.festivals.filter((festival) => festival.slug !== 'mera-luna-festival');
   const publicDto = read('src/lib/public-festivals.ts');
@@ -4848,7 +4863,7 @@ test('Phase 5F.2 aligns Terminus 2027 freshness and only its two direct guide re
   const checkpoint = '7c1eb37c37143006a129af59b8ca98287c568ff9';
   const northPath = 'src/app/guides/north-american-goth-darkwave-festivals/page.tsx';
   const industrialPath = 'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx';
-  const atlasSource = normalizePostDateRolloverAtlas(readFileSync(join(root, ATLAS_PATH), 'utf8'));
+  const atlasSource = normalizePostDateRolloverAtlas(normalizeAugust31LifecycleCorrections(readFileSync(join(root, ATLAS_PATH), 'utf8')));
   const atlas = JSON.parse(atlasSource);
   const baselineAtlas = JSON.parse(execFileSync('git', ['show', `${checkpoint}:${ATLAS_PATH}`], { cwd: root, encoding: 'utf8' }));
   const target = atlas.festivals.find((festival) => festival.slug === 'terminus-festival');
@@ -4949,7 +4964,7 @@ test('Phase 5F.2A gives the shared legacy festival detail an intrinsic true-200%
 
 test('targeted post-date rollover makes only Just Like Heaven and Infest historical references', () => {
   const checkpoint = '6da93d884c51b4a7afbc82e44fcb1e2800fc0f8e';
-  const atlas = JSON.parse(readFileSync(join(root, ATLAS_PATH), 'utf8'));
+  const atlas = JSON.parse(normalizeAugust31LifecycleCorrections(readFileSync(join(root, ATLAS_PATH), 'utf8')));
   const baselineAtlas = JSON.parse(execFileSync('git', ['show', `${checkpoint}:${ATLAS_PATH}`], { cwd: root, encoding: 'utf8' }));
   const bySlug = new Map(atlas.festivals.map((record) => [record.slug, record]));
   const baselineBySlug = new Map(baselineAtlas.festivals.map((record) => [record.slug, record]));
@@ -5010,7 +5025,7 @@ test('targeted post-date rollover makes only Just Like Heaven and Infest histori
 
 test('Infest public venue language removes internal geocoding wording only', () => {
   const checkpoint = 'cec2294dc428578613353b1e98004e87d1b9c441';
-  const atlas = JSON.parse(readFileSync(join(root, ATLAS_PATH), 'utf8'));
+  const atlas = JSON.parse(normalizeAugust31LifecycleCorrections(readFileSync(join(root, ATLAS_PATH), 'utf8')));
   const baselineAtlas = JSON.parse(execFileSync('git', ['show', `${checkpoint}:${ATLAS_PATH}`], { cwd: root, encoding: 'utf8' }));
   const infest = atlas.festivals.find((record) => record.slug === 'infest-festival');
   const baselineInfest = baselineAtlas.festivals.find((record) => record.slug === 'infest-festival');
@@ -5051,6 +5066,67 @@ test('Infest public venue language removes internal geocoding wording only', () 
 
   const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).map((line) => line.slice(3));
   assert.deepEqual(changedPaths.sort(), [...POST_DATE_ROLLOVER_ACTIVE_PATHS].sort(), 'only atlas data and regression tests may change');
+  assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
+  assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
+});
+
+test('August 31 lifecycle corrections change only MUTEK and A Murder of Crows', () => {
+  const checkpoint = 'b44c0e09de2eca7dd96fc56999f409422d309025';
+  const atlas = JSON.parse(readFileSync(join(root, ATLAS_PATH), 'utf8'));
+  const baselineAtlas = JSON.parse(execFileSync('git', ['show', `${checkpoint}:${ATLAS_PATH}`], { cwd: root, encoding: 'utf8' }));
+  const bySlug = new Map(atlas.festivals.map((record) => [record.slug, record]));
+  const baselineBySlug = new Map(baselineAtlas.festivals.map((record) => [record.slug, record]));
+  const mutekSlug = 'mutek-montreal';
+  const crowsSlug = 'a-murder-of-crows-xi-nyc-goth-post-punk-festival';
+  const mutek = bySlug.get(mutekSlug);
+  const crows = bySlug.get(crowsSlug);
+
+  assert.equal(atlas.metadata.record_count, 15);
+  assert.equal(atlas.festivals.length, 15);
+  assert.equal(new Set(atlas.festivals.map((record) => record.slug)).size, 15);
+
+  assert.equal(mutek.date_text, ROLLOVER_MUTEK_DATE);
+  assert.equal(mutek.verification_status, 'historical_reference');
+  assert.equal(mutek.data_quality_notes, ROLLOVER_MUTEK_NOTE);
+  assert.equal(mutek.start_date, '2026-08-25');
+  assert.equal(mutek.end_date, '2026-08-30');
+  assert.match(mutek.data_quality_notes, /Village Numérique programming continued through September 3, 2026, but did not extend the festival dates/);
+  assert.match(mutek.data_quality_notes, /No later Montréal edition was announced/);
+  assert.doesNotMatch(`${mutek.date_text}\n${mutek.data_quality_notes}`, /cancel(?:led|ed|ation)|discontinued|inactive|permanent(?:ly)? ended|final edition/i);
+  assert.deepEqual(
+    Object.fromEntries(Object.entries(mutek).filter(([key]) => !['date_text', 'verification_status', 'data_quality_notes'].includes(key))),
+    Object.fromEntries(Object.entries(baselineBySlug.get(mutekSlug)).filter(([key]) => !['date_text', 'verification_status', 'data_quality_notes'].includes(key))),
+    'MUTEK may change only date_text, verification_status, and data_quality_notes',
+  );
+
+  assert.equal(crows.date_text, MURDER_OF_CROWS_DATE);
+  assert.equal(crows.verification_status, 'confirmed_upcoming');
+  assert.equal(crows.data_quality_notes, MURDER_OF_CROWS_NOTE);
+  assert.equal(crows.start_date, '2026-09-03');
+  assert.equal(crows.end_date, '2026-09-05');
+  assert.match(crows.date_text, /Livestream Closing Party: September 6, 2026/);
+  assert.match(crows.data_quality_notes, /in-person opening party[\s\S]*separate livestream closing party/);
+  assert.deepEqual(
+    Object.fromEntries(Object.entries(crows).filter(([key]) => !['date_text', 'data_quality_notes'].includes(key))),
+    Object.fromEntries(Object.entries(baselineBySlug.get(crowsSlug)).filter(([key]) => !['date_text', 'data_quality_notes'].includes(key))),
+    'A Murder of Crows may change only date_text and data_quality_notes',
+  );
+
+  assert.deepEqual(
+    atlas.festivals.filter((record) => ![mutekSlug, crowsSlug].includes(record.slug)),
+    baselineAtlas.festivals.filter((record) => ![mutekSlug, crowsSlug].includes(record.slug)),
+    'the other 13 records must remain field-identical',
+  );
+  for (const protectedSlug of ['levitation', 'ncn-festival-nocturnal-culture-night']) {
+    assert.deepEqual(bySlug.get(protectedSlug), baselineBySlug.get(protectedSlug), `${protectedSlug} must remain unchanged`);
+  }
+
+  const dtoPath = 'src/lib/public-festivals.ts';
+  assert.deepEqual(readFileSync(join(root, dtoPath)), execFileSync('git', ['show', `${checkpoint}:${dtoPath}`], { cwd: root }));
+  assert.match(readFileSync(join(root, dtoPath), 'utf8'), /historical_reference: "Historical \/ reference"/);
+
+  const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).map((line) => line.slice(3));
+  assert.equal(changedPaths.every((path) => POST_DATE_ROLLOVER_ACTIVE_PATHS.includes(path)), true, `unexpected changed path: ${changedPaths.join(', ')}`);
   assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
   assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
 });
