@@ -72,6 +72,14 @@ const ROLLOVER_MUTEK_DATE = 'August 25–30, 2026 — past edition; next edition
 const ROLLOVER_MUTEK_NOTE = 'The scheduled August 25–30, 2026 MUTEK Montréal festival dates have passed. Separate MUTEK-associated Village Numérique programming continued through September 3, 2026, but did not extend the festival dates. No later Montréal edition was announced on the organizer-controlled pages checked on August 31, 2026.';
 const MURDER_OF_CROWS_DATE = 'Opening Party: September 3, 2026; Night One: September 4, 2026; Night Two: September 5, 2026; Livestream Closing Party: September 6, 2026';
 const MURDER_OF_CROWS_NOTE = 'The official Red Party page confirms the in-person opening party at TV Eye on September 3 and two Bowery Ballroom nights on September 4–5, followed by a separate livestream closing party on September 6 through the organizer’s Twitch channel.';
+const MUTEK_VISITOR_VENUE = 'Multiple venues across Montréal';
+const MUTEK_VISITOR_LOCATION_NOTE = 'MUTEK Montréal is presented as a multi-venue festival across Montréal; no single festival venue is represented.';
+const NCN_VISITOR_LOCATION_NOTE = 'Kulturpark Deutzen bei Leipzig is the documented festival location. The September 3 warm-up is separate from the September 4–6 main festival dates.';
+const NCN_VISITOR_SUMMARY = 'NCN Festival / Nocturnal Culture Night is a curated RetroAltFest atlas record for goth, darkwave, industrial, synthpop travelers, located in Deutzen · Saxony · Germany. This entry keeps official sources, status notes, and the documented festival location close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.';
+const LEVITATION_VISITOR_VENUE = 'Multiple venues across Austin';
+const LEVITATION_VISITOR_LOCATION_NOTE = 'LEVITATION is presented as a multi-venue event across Austin; individual venue details should be checked on the official festival page.';
+const LEVITATION_VISITOR_SUMMARY = 'LEVITATION is an Austin multi-venue alternative festival with psych, electronic, and darkwave-adjacent overlap. RetroAltFest presents it as a broad festival with selective scene relevance, not a pure goth or darkwave event.';
+const LEVITATION_VISITOR_WHY = 'LEVITATION adds an Austin discovery pathway for travelers whose tastes cross psych, electronic, post-punk-adjacent, and dark alternative edges. Its value here is its broad multi-venue format and selective overlap with the scenes covered by RetroAltFest.';
 
 function normalizePhase5F2ALayout(relativePath, source) {
   if (relativePath !== PHASE_5F2A_LAYOUT_PATH) return source;
@@ -115,6 +123,21 @@ function normalizeAugust31LifecycleCorrections(source) {
       .replace(`"data_quality_notes": "${ROLLOVER_MUTEK_NOTE}"`, '"data_quality_notes": "Confirmed upcoming; electronic/digital arts adjacent. Do not frame as goth/darkwave-specific."'));
 }
 
+function normalizePublicMapLanguageCleanup(source) {
+  return source
+    .replace(/\{\n      "record_id": "raf-2026-015",[\s\S]*?\n    \}/, (block) => block
+      .replace(`"venue_name": "${MUTEK_VISITOR_VENUE}"`, '"venue_name": "Multi-venue Montréal event; official festival venues not normalized here"')
+      .replace(`"map_notes": "${MUTEK_VISITOR_LOCATION_NOTE}"`, '"map_notes": "Parent/multi-venue record only. Not safe as a single venue pin; coordinates and geocoding fields remain null."'))
+    .replace(/\{\n      "record_id": "raf-2026-009",[\s\S]*?\n    \}/, (block) => block
+      .replace(`"map_notes": "${NCN_VISITOR_LOCATION_NOTE}"`, '"map_notes": "Single known venue suitable for future exact geocoding. Main festival dates only are represented in start_date and end_date."')
+      .replace(`"atlas_summary": "${NCN_VISITOR_SUMMARY}"`, '"atlas_summary": "NCN Festival / Nocturnal Culture Night is a curated RetroAltFest atlas record for goth, darkwave, industrial, synthpop travelers, located in Deutzen · Saxony · Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data."'))
+    .replace(/\{\n      "record_id": "raf-2026-014",[\s\S]*?\n    \}/, (block) => block
+      .replace(`"venue_name": "${LEVITATION_VISITOR_VENUE}"`, '"venue_name": "Austin multi-venue event; official 2026 page does not make this a single-pin record"')
+      .replace(`"map_notes": "${LEVITATION_VISITOR_LOCATION_NOTE}"`, '"map_notes": "Parent/multi-venue record only. No single map pin should be created from this record; child venue records would need separate source review."')
+      .replace(`"atlas_summary": "${LEVITATION_VISITOR_SUMMARY}"`, '"atlas_summary": "LEVITATION is an Austin multi-venue alternative discovery parent with psych, electronic, and darkwave-adjacent overlap. RetroAltFest should frame it as a broad festival with selective scene relevance, not a pure goth or darkwave event."')
+      .replace(`"why_it_matters": "${LEVITATION_VISITOR_WHY}"`, '"why_it_matters": "LEVITATION adds an Austin discovery pathway for travelers whose tastes cross psych, electronic, post-punk-adjacent, and dark alternative edges. Its value is as a parent record, with future child venue records only after separate verification."'));
+}
+
 function normalizePhase5F2NorthAmericanGuide(source) {
   return source
     .replace(PHASE_5F2_NA_STATUS, 'Active atlas record — next edition details need official confirmation')
@@ -142,7 +165,7 @@ function normalizeMeraLunaFreshnessAtlas(source) {
 function read(relativePath) {
   const source = readFileSync(join(root, relativePath), 'utf8');
   const freshnessNormalized = relativePath === ATLAS_PATH
-    ? normalizePhase5F2Atlas(normalizeMeraLunaFreshnessAtlas(normalizePostDateRolloverAtlas(normalizeAugust31LifecycleCorrections(source))))
+    ? normalizePhase5F2Atlas(normalizeMeraLunaFreshnessAtlas(normalizePostDateRolloverAtlas(normalizeAugust31LifecycleCorrections(normalizePublicMapLanguageCleanup(source)))))
     : relativePath === 'src/app/guides/north-american-goth-darkwave-festivals/page.tsx'
       ? normalizePhase5F2NorthAmericanGuide(source)
       : relativePath === 'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx'
@@ -4756,7 +4779,7 @@ test('Phase 5E.4I closes every remaining true-200% text owner without shrinking 
 });
 
 test('M’era Luna 2027 freshness correction stays date-safe, DTO-backed, and isolated', () => {
-  const atlas = JSON.parse(normalizePhase5F2Atlas(normalizePostDateRolloverAtlas(normalizeAugust31LifecycleCorrections(readFileSync(join(root, ATLAS_PATH), 'utf8')))));
+  const atlas = JSON.parse(normalizePhase5F2Atlas(normalizePostDateRolloverAtlas(normalizeAugust31LifecycleCorrections(normalizePublicMapLanguageCleanup(readFileSync(join(root, ATLAS_PATH), 'utf8'))))));
   const target = atlas.festivals.find((festival) => festival.slug === 'mera-luna-festival');
   const nonTargetRecords = atlas.festivals.filter((festival) => festival.slug !== 'mera-luna-festival');
   const publicDto = read('src/lib/public-festivals.ts');
@@ -4889,7 +4912,7 @@ test('Phase 5F.2 aligns Terminus 2027 freshness and only its two direct guide re
   const checkpoint = '7c1eb37c37143006a129af59b8ca98287c568ff9';
   const northPath = 'src/app/guides/north-american-goth-darkwave-festivals/page.tsx';
   const industrialPath = 'src/app/guides/industrial-ebm-dark-electronic-festivals-north-america/page.tsx';
-  const atlasSource = normalizePostDateRolloverAtlas(normalizeAugust31LifecycleCorrections(readFileSync(join(root, ATLAS_PATH), 'utf8')));
+  const atlasSource = normalizePostDateRolloverAtlas(normalizeAugust31LifecycleCorrections(normalizePublicMapLanguageCleanup(readFileSync(join(root, ATLAS_PATH), 'utf8'))));
   const atlas = JSON.parse(atlasSource);
   const baselineAtlas = JSON.parse(execFileSync('git', ['show', `${checkpoint}:${ATLAS_PATH}`], { cwd: root, encoding: 'utf8' }));
   const target = atlas.festivals.find((festival) => festival.slug === 'terminus-festival');
@@ -4984,7 +5007,7 @@ test('Phase 5F.2A gives the shared legacy festival detail an intrinsic true-200%
 
 test('targeted post-date rollover makes only Just Like Heaven and Infest historical references', () => {
   const checkpoint = '6da93d884c51b4a7afbc82e44fcb1e2800fc0f8e';
-  const atlas = JSON.parse(normalizeAugust31LifecycleCorrections(readFileSync(join(root, ATLAS_PATH), 'utf8')));
+  const atlas = JSON.parse(normalizeAugust31LifecycleCorrections(normalizePublicMapLanguageCleanup(readFileSync(join(root, ATLAS_PATH), 'utf8'))));
   const baselineAtlas = JSON.parse(execFileSync('git', ['show', `${checkpoint}:${ATLAS_PATH}`], { cwd: root, encoding: 'utf8' }));
   const bySlug = new Map(atlas.festivals.map((record) => [record.slug, record]));
   const baselineBySlug = new Map(baselineAtlas.festivals.map((record) => [record.slug, record]));
@@ -5040,9 +5063,64 @@ test('targeted post-date rollover makes only Just Like Heaven and Infest histori
   assertNoUnapprovedPathsSinceHead(POST_DATE_ROLLOVER_ACTIVE_PATHS, 'only atlas data and the regression test may differ from HEAD');
 });
 
+test('MUTEK, NCN, and LEVITATION expose visitor-safe location language only', () => {
+  const atlas = JSON.parse(readFileSync(join(root, ATLAS_PATH), 'utf8'));
+  const baselineAtlas = JSON.parse(execFileSync('git', ['show', `HEAD:${ATLAS_PATH}`], { cwd: root, encoding: 'utf8' }));
+  const bySlug = new Map(atlas.festivals.map((record) => [record.slug, record]));
+  const baselineBySlug = new Map(baselineAtlas.festivals.map((record) => [record.slug, record]));
+  const targets = {
+    'mutek-montreal': { venue_name: MUTEK_VISITOR_VENUE, map_notes: MUTEK_VISITOR_LOCATION_NOTE, allowed: new Set(['venue_name', 'map_notes']) },
+    'ncn-festival-nocturnal-culture-night': { venue_name: 'Kulturpark Deutzen bei Leipzig', map_notes: NCN_VISITOR_LOCATION_NOTE, atlas_summary: NCN_VISITOR_SUMMARY, allowed: new Set(['map_notes', 'atlas_summary']) },
+    levitation: { venue_name: LEVITATION_VISITOR_VENUE, map_notes: LEVITATION_VISITOR_LOCATION_NOTE, atlas_summary: LEVITATION_VISITOR_SUMMARY, why_it_matters: LEVITATION_VISITOR_WHY, allowed: new Set(['venue_name', 'map_notes', 'atlas_summary', 'why_it_matters']) },
+  };
+
+  assert.equal(atlas.metadata.record_count, 15);
+  assert.equal(atlas.festivals.length, 15);
+  assert.equal(new Set(atlas.festivals.map((record) => record.slug)).size, 15);
+
+  for (const [slug, expected] of Object.entries(targets)) {
+    const record = bySlug.get(slug);
+    const baseline = baselineBySlug.get(slug);
+    assert.ok(record);
+    assert.equal(record.venue_name, expected.venue_name);
+    assert.equal(record.map_notes, expected.map_notes);
+    if (expected.atlas_summary) assert.equal(record.atlas_summary, expected.atlas_summary);
+    if (expected.why_it_matters) assert.equal(record.why_it_matters, expected.why_it_matters);
+    assert.doesNotMatch(
+      [record.venue_name, record.map_notes, record.atlas_summary, record.why_it_matters].join('\n'),
+      /coordinates?|geocod|map(?:ping)?|single[- ]?pin|\bpins?\b|parent(?: record)?|child(?: venue)? records?|map[- ]?readiness/i,
+    );
+    assert.equal(record.date_text, baseline.date_text);
+    assert.equal(record.start_date, baseline.start_date);
+    assert.equal(record.end_date, baseline.end_date);
+    assert.equal(record.verification_status, baseline.verification_status);
+    assert.deepEqual(record.source_urls, baseline.source_urls);
+    assert.deepEqual(record.source_links, baseline.source_links);
+    assert.equal(record.latitude, null);
+    assert.equal(record.longitude, null);
+    assert.equal(record.geocoding_source, null);
+    assert.equal(record.geocoding_query, null);
+    assert.equal(record.geocoding_confidence, 'not_geocoded');
+    assert.deepEqual(
+      Object.fromEntries(Object.entries(record).filter(([key]) => !expected.allowed.has(key))),
+      Object.fromEntries(Object.entries(baseline).filter(([key]) => !expected.allowed.has(key))),
+      `${slug} may change only ${[...expected.allowed].join(' and ')}`,
+    );
+  }
+
+  assert.deepEqual(
+    atlas.festivals.filter((record) => !Object.hasOwn(targets, record.slug)),
+    baselineAtlas.festivals.filter((record) => !Object.hasOwn(targets, record.slug)),
+    'the other 12 atlas records must remain field-identical',
+  );
+  assert.match(readFileSync(join(root, 'src/lib/public-festivals.ts'), 'utf8'), /venueLabel: festival\.venue_name \|\| "Venue not published yet"[\s\S]*mappingNote: festival\.map_notes/);
+  assert.match(readFileSync(join(root, 'src/app/festivals/[slug]/page.tsx'), 'utf8'), /<AtlasFact label="Venue" value=\{festival\.venueLabel\}[\s\S]*<p>\{festival\.mappingNote\}<\/p>/);
+  assertNoUnapprovedPathsSinceHead(POST_DATE_ROLLOVER_ACTIVE_PATHS, 'only atlas data and the regression test may differ from HEAD');
+});
+
 test('Infest public venue language removes internal geocoding wording only', () => {
   const checkpoint = 'cec2294dc428578613353b1e98004e87d1b9c441';
-  const atlas = JSON.parse(normalizeAugust31LifecycleCorrections(readFileSync(join(root, ATLAS_PATH), 'utf8')));
+  const atlas = JSON.parse(normalizeAugust31LifecycleCorrections(normalizePublicMapLanguageCleanup(readFileSync(join(root, ATLAS_PATH), 'utf8'))));
   const baselineAtlas = JSON.parse(execFileSync('git', ['show', `${checkpoint}:${ATLAS_PATH}`], { cwd: root, encoding: 'utf8' }));
   const infest = atlas.festivals.find((record) => record.slug === 'infest-festival');
   const baselineInfest = baselineAtlas.festivals.find((record) => record.slug === 'infest-festival');
@@ -5086,7 +5164,7 @@ test('Infest public venue language removes internal geocoding wording only', () 
 
 test('August 31 lifecycle corrections change only MUTEK and A Murder of Crows', () => {
   const checkpoint = 'b44c0e09de2eca7dd96fc56999f409422d309025';
-  const atlas = JSON.parse(readFileSync(join(root, ATLAS_PATH), 'utf8'));
+  const atlas = JSON.parse(normalizePublicMapLanguageCleanup(readFileSync(join(root, ATLAS_PATH), 'utf8')));
   const baselineAtlas = JSON.parse(execFileSync('git', ['show', `${checkpoint}:${ATLAS_PATH}`], { cwd: root, encoding: 'utf8' }));
   const bySlug = new Map(atlas.festivals.map((record) => [record.slug, record]));
   const baselineBySlug = new Map(baselineAtlas.festivals.map((record) => [record.slug, record]));
