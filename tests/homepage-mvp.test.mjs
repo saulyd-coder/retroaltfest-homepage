@@ -178,6 +178,28 @@ function hashTree(relativePath) {
   return { count: files.length, hash: hash.digest('hex') };
 }
 
+function pathsChangedSinceHead() {
+  const trackedPaths = execFileSync('git', ['diff', '--name-only', 'HEAD', '--'], { cwd: root, encoding: 'utf8' })
+    .split('\n')
+    .filter(Boolean);
+  const untrackedPaths = execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' })
+    .split('\n')
+    .filter(Boolean);
+  return [...new Set([...trackedPaths, ...untrackedPaths])];
+}
+
+function assertOnlyApprovedPaths(changedPaths, approvedPaths, message) {
+  assert.equal(
+    changedPaths.every((path) => approvedPaths.includes(path)),
+    true,
+    `${message}: ${changedPaths.join(', ')}`,
+  );
+}
+
+function assertNoUnapprovedPathsSinceHead(approvedPaths, message) {
+  assertOnlyApprovedPaths(pathsChangedSinceHead(), approvedPaths, message);
+}
+
 function normalizePhase5A1GuideDiscoveryPilot(source) {
   return normalizePhase5E4WgtGuideCopy(source)
     .replace(/const GENERIC_GUIDE_DISCOVERY_LINK[\s\S]*?\nconst festivalMetadataTitleOverrides/, 'const festivalMetadataTitleOverrides')
@@ -4660,6 +4682,16 @@ test('Phase 5E.4E gives the North American guide an emergency narrow true-200% h
   assert.doesNotMatch(headingRule, /font-size|overflow:\s*(?:hidden|clip)|text-overflow|white-space:\s*nowrap/i, 'the route-local correction must not shrink, clip, or truncate the heading');
 });
 
+test('repository scope guard accepts clean and approved lifecycle deltas but rejects unrelated paths', () => {
+  assertOnlyApprovedPaths([], POST_DATE_ROLLOVER_ACTIVE_PATHS, 'a clean committed checkout must pass');
+  assertOnlyApprovedPaths(['tests/homepage-mvp.test.mjs'], POST_DATE_ROLLOVER_ACTIVE_PATHS, 'a test-only repair must pass');
+  assertOnlyApprovedPaths([...POST_DATE_ROLLOVER_ACTIVE_PATHS], POST_DATE_ROLLOVER_ACTIVE_PATHS, 'the approved local two-file delta must pass');
+  assert.throws(
+    () => assertOnlyApprovedPaths(['src/app/page.tsx'], POST_DATE_ROLLOVER_ACTIVE_PATHS, 'an unrelated source delta must fail'),
+    /src\/app\/page\.tsx/,
+  );
+});
+
 test('Phase 5E.4F makes the Verification breadcrumb reflow safely at 320px true 200% text', () => {
   const verificationCssPath = 'src/app/verification/VerificationPage.module.css';
   const verificationPagePath = 'src/app/verification/page.tsx';
@@ -4681,17 +4713,11 @@ test('Phase 5E.4F makes the Verification breadcrumb reflow safely at 320px true 
   assert.match(page, /<nav aria-label="Breadcrumb" className=\{styles\.breadcrumb\}>\s*<Link href="\/">RetroAltFest<\/Link>\s*<span>\/ Verification<\/span>\s*<\/nav>/, 'breadcrumb wording and semantics must remain exact');
   assert.match(page, /<h1>How RetroAltFest verifies festivals<\/h1>/, 'the Verification H1 must remain unchanged');
 
-  const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' })
-    .split('\n')
-    .filter(Boolean)
-    .map((line) => line.slice(3));
   const releasedPhase5E4IPaths = execFileSync('git', ['diff-tree', '--no-commit-id', '--name-only', '-r', '0a4872350184accc284a8ee5fae6b3caaa1a811e'], { cwd: root, encoding: 'utf8' })
     .trim()
     .split('\n');
   assert.deepEqual(releasedPhase5E4IPaths.sort(), [...PHASE_5E4I_ACTIVE_PATHS].sort(), 'the released Phase 5E.4I commit must preserve the exact approved 17-path boundary');
-  assert.deepEqual(changedPaths.sort(), [...POST_DATE_ROLLOVER_ACTIVE_PATHS].sort(), 'the current post-date rollover worktree must contain only its exact two-file boundary');
-  assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
-  assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
+  assertNoUnapprovedPathsSinceHead(POST_DATE_ROLLOVER_ACTIVE_PATHS, 'the current source delta must contain no unapproved paths');
 });
 
 test('Phase 5E.4I closes every remaining true-200% text owner without shrinking or clipping content', () => {
@@ -4934,10 +4960,7 @@ test('Phase 5F.2 aligns Terminus 2027 freshness and only its two direct guide re
   for (const protectedPath of ['src/app/sitemap.ts', 'src/app/guides/page.tsx', 'src/lib/seo.ts', 'package.json', 'package-lock.json']) {
     assert.deepEqual(readFileSync(join(root, protectedPath)), execFileSync('git', ['show', `${checkpoint}:${protectedPath}`], { cwd: root }));
   }
-  const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).map((line) => line.slice(3));
-  assert.deepEqual(changedPaths.sort(), [...POST_DATE_ROLLOVER_ACTIVE_PATHS].sort(), 'the post-date rollover must remain inside the exact two-file boundary');
-  assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
-  assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
+  assertNoUnapprovedPathsSinceHead(POST_DATE_ROLLOVER_ACTIVE_PATHS, 'the current source delta must remain inside the approved two-file boundary');
   assert.doesNotMatch(`${north}\n${industrial}`, /date_pending|source_status|map_phase0_category|core_anchor|watchlist|Phase 0|map-readiness|needs_review|geocoding_source|geocoding_query|geocoding_confidence|latitude|longitude/i);
   assert.doesNotMatch(`${north}\n${industrial}\n${readFileSync(join(root, 'package.json'), 'utf8')}`, /"use client"|useState|useEffect|useMemo|fetch\(|XMLHttpRequest|WebSocket|\/api\/|framer-motion|lottie/i);
 });
@@ -4956,10 +4979,7 @@ test('Phase 5F.2A gives the shared legacy festival detail an intrinsic true-200%
   assert.deepEqual(normalizePhase5F2ALayout(PHASE_5F2A_LAYOUT_PATH, page), baselinePage, 'the shared detail owner may differ from the checkpoint only by the six exact Phase 5F.2A class replacements');
   assert.doesNotMatch(page, /truncate|text-ellipsis|whitespace-nowrap|overflow-x-(?:auto|scroll)|line-clamp|text-(?:xs|sm).*Phase 5F\.2A/i);
 
-  const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).map((line) => line.slice(3));
-  assert.deepEqual(changedPaths.sort(), [...POST_DATE_ROLLOVER_ACTIVE_PATHS].sort(), 'the current post-date rollover worktree must contain only atlas data and regression tests');
-  assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
-  assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
+  assertNoUnapprovedPathsSinceHead(POST_DATE_ROLLOVER_ACTIVE_PATHS, 'the current source delta must contain only atlas data and regression tests');
 });
 
 test('targeted post-date rollover makes only Just Like Heaven and Infest historical references', () => {
@@ -5017,10 +5037,7 @@ test('targeted post-date rollover makes only Just Like Heaven and Infest histori
   assert.deepEqual(readFileSync(join(root, publicDtoPath)), execFileSync('git', ['show', `${checkpoint}:${publicDtoPath}`], { cwd: root }));
   assert.match(publicDto, /historical_reference: "Historical \/ reference"/);
 
-  const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).map((line) => line.slice(3));
-  assert.deepEqual(changedPaths.sort(), [...POST_DATE_ROLLOVER_ACTIVE_PATHS].sort(), 'only atlas data and the regression test may change');
-  assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
-  assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
+  assertNoUnapprovedPathsSinceHead(POST_DATE_ROLLOVER_ACTIVE_PATHS, 'only atlas data and the regression test may differ from HEAD');
 });
 
 test('Infest public venue language removes internal geocoding wording only', () => {
@@ -5064,10 +5081,7 @@ test('Infest public venue language removes internal geocoding wording only', () 
   assert.match(readFileSync(join(root, dtoPath), 'utf8'), /mappingNote: festival\.map_notes/);
   assert.match(readFileSync(join(root, detailPath), 'utf8'), /<p>\{festival\.mappingNote\}<\/p>/);
 
-  const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).map((line) => line.slice(3));
-  assert.deepEqual(changedPaths.sort(), [...POST_DATE_ROLLOVER_ACTIVE_PATHS].sort(), 'only atlas data and regression tests may change');
-  assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
-  assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
+  assertNoUnapprovedPathsSinceHead(POST_DATE_ROLLOVER_ACTIVE_PATHS, 'only atlas data and regression tests may differ from HEAD');
 });
 
 test('August 31 lifecycle corrections change only MUTEK and A Murder of Crows', () => {
