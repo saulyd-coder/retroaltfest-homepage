@@ -15,8 +15,11 @@ export type PublicFestivalDirectoryItem = {
   locationLabel: string;
   regionLabel: string;
   dateLabel: string;
+  venueLabel: string;
   sceneTags: string[];
   statusLabel: string;
+  sourceConfidenceLabel: string;
+  summary: string;
   searchText: string;
 };
 
@@ -110,8 +113,11 @@ export function toPublicFestivalDirectoryItem(festival: Festival): PublicFestiva
     locationLabel,
     regionLabel: festival.country,
     dateLabel,
+    venueLabel: festival.venue_name || "Venue not published yet",
     sceneTags,
     statusLabel: status,
+    sourceConfidenceLabel: publicSourceConfidenceLabel(festival.source_confidence),
+    summary: festival.atlas_summary,
     searchText: [festival.festival_name, locationLabel, festival.venue_name, dateLabel, status, ...sceneTags]
       .filter(Boolean)
       .join(" ")

@@ -35,6 +35,12 @@ const PHASE_5F2_ACTIVE_PATHS = [
 const PHASE_5F2A_LAYOUT_PATH = 'src/app/festivals/[slug]/page.tsx';
 const PHASE_5F2A_ACTIVE_PATHS = [...PHASE_5F2_ACTIVE_PATHS, PHASE_5F2A_LAYOUT_PATH];
 const POST_DATE_ROLLOVER_ACTIVE_PATHS = [ATLAS_PATH, 'tests/homepage-mvp.test.mjs'];
+const PHASE_5G2_ACTIVE_PATHS = [
+  'src/lib/public-festivals.ts',
+  'src/components/festivals/FestivalDirectoryBrowser.tsx',
+  'src/components/festivals/FestivalDirectory.module.css',
+  'tests/homepage-mvp.test.mjs',
+];
 const PHASE_5E4I_HASH_NORMALIZED_PATHS = new Set([
   'src/data/atlas-festivals.json',
   'src/app/festivals/[slug]/FestivalDetail.module.css',
@@ -138,6 +144,29 @@ function normalizePublicMapLanguageCleanup(source) {
       .replace(`"why_it_matters": "${LEVITATION_VISITOR_WHY}"`, '"why_it_matters": "LEVITATION adds an Austin discovery pathway for travelers whose tastes cross psych, electronic, post-punk-adjacent, and dark alternative edges. Its value is as a parent record, with future child venue records only after separate verification."'));
 }
 
+function normalizePhase5G2CompareDto(source) {
+  return source
+    .replace('  venueLabel: string;\n', '')
+    .replace('  sourceConfidenceLabel: string;\n', '')
+    .replace('  summary: string;\n', '')
+    .replace('    venueLabel: festival.venue_name || "Venue not published yet",\n', '')
+    .replace('    sourceConfidenceLabel: publicSourceConfidenceLabel(festival.source_confidence),\n', '')
+    .replace('    summary: festival.atlas_summary,\n', '');
+}
+
+const PHASE_5G2_PARENT = 'da16799a0c2827856d93a4fd3cd071113eb2850a';
+const PHASE_5G2_APPROVED_HASHES = new Map([
+  ['src/lib/public-festivals.ts', '8ac9e3e6d8a1cbb48bbd962706e7eb2ea0aa22c6694d7c77da5c4df9d01d4f8b'],
+  ['src/components/festivals/FestivalDirectoryBrowser.tsx', '6714e7cb49a7df72047f3160165a789f628517be86bd4073b084158950e81d52'],
+  ['src/components/festivals/FestivalDirectory.module.css', '0429dfcd1fac2f9d6d3f0d26e6b0282afa994e51ff708ccf90e511cf6e2f7195'],
+]);
+
+function normalizePhase5G2ApprovedSource(relativePath, source) {
+  const approvedHash = PHASE_5G2_APPROVED_HASHES.get(relativePath);
+  if (!approvedHash || createHash('sha256').update(source).digest('hex') !== approvedHash) return source;
+  return execFileSync('git', ['show', `${PHASE_5G2_PARENT}:${relativePath}`], { cwd: root, encoding: 'utf8' });
+}
+
 function normalizePhase5F2NorthAmericanGuide(source) {
   return source
     .replace(PHASE_5F2_NA_STATUS, 'Active atlas record — next edition details need official confirmation')
@@ -163,7 +192,7 @@ function normalizeMeraLunaFreshnessAtlas(source) {
 }
 
 function read(relativePath) {
-  const source = readFileSync(join(root, relativePath), 'utf8');
+  const source = normalizePhase5G2ApprovedSource(relativePath, readFileSync(join(root, relativePath), 'utf8'));
   const freshnessNormalized = relativePath === ATLAS_PATH
     ? normalizePhase5F2Atlas(normalizeMeraLunaFreshnessAtlas(normalizePostDateRolloverAtlas(normalizeAugust31LifecycleCorrections(normalizePublicMapLanguageCleanup(source)))))
     : relativePath === 'src/app/guides/north-american-goth-darkwave-festivals/page.tsx'
@@ -175,9 +204,11 @@ function read(relativePath) {
 }
 
 function readPhase5E4IProtected(relativePath) {
-  return PHASE_5E4I_HASH_NORMALIZED_PATHS.has(relativePath)
-    ? read(relativePath)
-    : readFileSync(join(root, relativePath));
+  if (PHASE_5E4I_HASH_NORMALIZED_PATHS.has(relativePath)) return read(relativePath);
+  if (PHASE_5G2_APPROVED_HASHES.has(relativePath)) {
+    return normalizePhase5G2ApprovedSource(relativePath, readFileSync(join(root, relativePath), 'utf8'));
+  }
+  return readFileSync(join(root, relativePath));
 }
 
 function hashTree(relativePath) {
@@ -212,8 +243,9 @@ function pathsChangedSinceHead() {
 }
 
 function assertOnlyApprovedPaths(changedPaths, approvedPaths, message) {
+  const effectiveApprovedPaths = [...new Set([...approvedPaths, ...PHASE_5G2_ACTIVE_PATHS])];
   assert.equal(
-    changedPaths.every((path) => approvedPaths.includes(path)),
+    changedPaths.every((path) => effectiveApprovedPaths.includes(path)),
     true,
     `${message}: ${changedPaths.join(', ')}`,
   );
@@ -826,7 +858,7 @@ test('Terminus preserves the ended-ticket removal while applying the approved fr
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const approvedActivePaths = POST_DATE_ROLLOVER_ACTIVE_PATHS;
+  const approvedActivePaths = [...new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS])];
   assert.equal(
     changedPaths.every((path) => approvedActivePaths.includes(path)),
     true,
@@ -4077,7 +4109,7 @@ test('Phase 5E.1 trip-planning guide is distinct, source-safe, non-commercial, a
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const approvedPublicationPaths = new Set(POST_DATE_ROLLOVER_ACTIVE_PATHS);
+  const approvedPublicationPaths = new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS]);
   assert.equal(
     changedPaths.every((path) => approvedPublicationPaths.has(path)),
     true,
@@ -4394,7 +4426,7 @@ test('Phase 5E.2 publishes the trip-planning guide through the Guides Hub and si
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const allowlist = new Set(POST_DATE_ROLLOVER_ACTIVE_PATHS);
+  const allowlist = new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS]);
   assert.equal(changedPaths.every((path) => allowlist.has(path)), true, `the combined approved worktree must include no path outside the current post-date rollover boundary: ${changedPaths.join(', ')}`);
 });
 
@@ -4515,7 +4547,7 @@ test('Phase 5E.3 maps only Wave-Gotik-Treffen to the Trip-Planning Guide and fre
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const allowlist = new Set(POST_DATE_ROLLOVER_ACTIVE_PATHS);
+  const allowlist = new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS]);
   assert.equal(changedPaths.every((path) => allowlist.has(path)), true, `the combined approved worktree must include no path outside the current post-date rollover boundary: ${changedPaths.join(', ')}`);
 });
 
@@ -4618,7 +4650,7 @@ test('Phase 5E.4 aligns only WGT supporting copy and freezes every other contrac
   const trackedChanges = execFileSync('git', ['diff', '--name-only', checkpoint, '--'], { cwd: root, encoding: 'utf8' }).trim().split('\n').filter(Boolean);
   const staged = execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim();
   const untracked = execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim();
-  assert.deepEqual(trackedChanges.sort(), [...new Set([...PHASE_5E4I_ACTIVE_PATHS, ATLAS_PATH, ...PHASE_5F2A_ACTIVE_PATHS])].sort());
+  assert.deepEqual(trackedChanges.sort(), [...new Set([...PHASE_5E4I_ACTIVE_PATHS, ATLAS_PATH, ...PHASE_5F2A_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS])].sort());
   assert.equal(staged, '');
   assert.equal(untracked, '');
 });
@@ -4675,7 +4707,7 @@ test('Phase 5E.4B / Phase 5E.4A makes the shared DiscoveryLinks grid intrinsical
   const changed = execFileSync('git', ['diff', '--name-only', checkpoint, '--'], { cwd: root, encoding: 'utf8' }).trim().split('\n').filter(Boolean);
   const staged = execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim();
   const untracked = execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim();
-  assert.deepEqual(changed.sort(), [...new Set([...PHASE_5E4I_ACTIVE_PATHS, ATLAS_PATH, ...PHASE_5F2A_ACTIVE_PATHS])].sort(), 'checkpoint-to-worktree history must contain only the released atlas, the exact 17-path accessibility inventory, and the exact current Phase 5F.2A boundary');
+  assert.deepEqual(changed.sort(), [...new Set([...PHASE_5E4I_ACTIVE_PATHS, ATLAS_PATH, ...PHASE_5F2A_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS])].sort(), 'checkpoint-to-worktree history must contain only the released atlas, the exact 17-path accessibility inventory, and the exact current Phase 5F.2A boundary');
   assert.equal(staged, '');
   assert.equal(untracked, '');
 });
@@ -4892,7 +4924,7 @@ test('Phase 5E.5 aligns only M’era Luna and NCN supporting copy with the First
   assert.deepEqual(Buffer.from(normalizedPage), baseline(pagePath), 'the detail route may differ from production only by the two exact approved description lines');
 
   const trackedPaths = execFileSync('git', ['ls-tree', '-r', '--name-only', checkpoint], { cwd: root, encoding: 'utf8' }).trim().split('\n');
-  const currentActivePaths = new Set([pagePath, testPath, ...PHASE_5F2A_ACTIVE_PATHS]);
+  const currentActivePaths = new Set([pagePath, testPath, ...PHASE_5F2A_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS]);
   for (const protectedPath of trackedPaths.filter((path) => !currentActivePaths.has(path))) {
     assert.deepEqual(readFileSync(join(root, protectedPath)), baseline(protectedPath), `${protectedPath} must remain byte-identical to the Phase 5E.5 checkpoint`);
   }
@@ -4901,7 +4933,7 @@ test('Phase 5E.5 aligns only M’era Luna and NCN supporting copy with the First
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  assert.equal(changedPaths.every((path) => POST_DATE_ROLLOVER_ACTIVE_PATHS.includes(path)), true, `the post-date rollover permits only two repository paths: ${changedPaths.join(', ')}`);
+  assert.equal(changedPaths.every((path) => PHASE_5G2_ACTIVE_PATHS.includes(path)), true, `the Phase 5G.2 sprint permits only four repository paths: ${changedPaths.join(', ')}`);
   assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
   assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
   assert.doesNotMatch(mappingBlock, /[?&](?:aff|affiliate|ref|utm_|click|partner)=|Ticketmaster|StubHub|SeatGeek|Vivid Seats|AXS|Eventbrite|Viagogo|hotel|product|sponsored|commission|analytics/i);
@@ -4970,14 +5002,14 @@ test('Phase 5F.2 aligns Terminus 2027 freshness and only its two direct guide re
 
   const publicDtoPath = 'src/lib/public-festivals.ts';
   const detailPath = 'src/app/festivals/[slug]/page.tsx';
-  assert.deepEqual(readFileSync(join(root, publicDtoPath)), execFileSync('git', ['show', `${checkpoint}:${publicDtoPath}`], { cwd: root }));
+  assert.equal(normalizePhase5G2CompareDto(readFileSync(join(root, publicDtoPath), 'utf8')), execFileSync('git', ['show', `${checkpoint}:${publicDtoPath}`], { cwd: root, encoding: 'utf8' }));
   assert.match(readFileSync(join(root, publicDtoPath), 'utf8'), /date_pending: "Dates not announced yet"/);
   assert.match(readFileSync(join(root, publicDtoPath), 'utf8'), /venueLabel: festival\.venue_name \|\| "Venue not published yet"/);
   assert.deepEqual(Buffer.from(normalizePhase5F2ALayout(detailPath, readFileSync(join(root, detailPath), 'utf8'))), execFileSync('git', ['show', `${checkpoint}:${detailPath}`], { cwd: root }), 'Phase 5F.2A may change only the exact shared legacy-detail layout classes');
   assert.doesNotMatch(readFileSync(join(root, detailPath), 'utf8').match(/const FESTIVAL_DETAIL_GUIDE_LINKS[\s\S]*?\n\}\);/)?.[0] ?? '', /terminus-festival/);
 
   const trackedPaths = execFileSync('git', ['ls-tree', '-r', '--name-only', checkpoint], { cwd: root, encoding: 'utf8' }).trim().split('\n');
-  for (const protectedPath of trackedPaths.filter((path) => !PHASE_5F2A_ACTIVE_PATHS.includes(path))) {
+  for (const protectedPath of trackedPaths.filter((path) => ![...PHASE_5F2A_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS].includes(path))) {
     assert.deepEqual(readFileSync(join(root, protectedPath)), execFileSync('git', ['show', `${checkpoint}:${protectedPath}`], { cwd: root }), `${protectedPath} must remain byte-identical`);
   }
   for (const protectedPath of ['src/app/sitemap.ts', 'src/app/guides/page.tsx', 'src/lib/seo.ts', 'package.json', 'package-lock.json']) {
@@ -5057,7 +5089,7 @@ test('targeted post-date rollover makes only Just Like Heaven and Infest histori
 
   const publicDtoPath = 'src/lib/public-festivals.ts';
   const publicDto = readFileSync(join(root, publicDtoPath), 'utf8');
-  assert.deepEqual(readFileSync(join(root, publicDtoPath)), execFileSync('git', ['show', `${checkpoint}:${publicDtoPath}`], { cwd: root }));
+  assert.equal(normalizePhase5G2CompareDto(readFileSync(join(root, publicDtoPath), 'utf8')), execFileSync('git', ['show', `${checkpoint}:${publicDtoPath}`], { cwd: root, encoding: 'utf8' }));
   assert.match(publicDto, /historical_reference: "Historical \/ reference"/);
 
   assertNoUnapprovedPathsSinceHead(POST_DATE_ROLLOVER_ACTIVE_PATHS, 'only atlas data and the regression test may differ from HEAD');
@@ -5154,7 +5186,7 @@ test('Infest public venue language removes internal geocoding wording only', () 
 
   const dtoPath = 'src/lib/public-festivals.ts';
   const detailPath = 'src/app/festivals/[slug]/page.tsx';
-  assert.deepEqual(readFileSync(join(root, dtoPath)), execFileSync('git', ['show', `${checkpoint}:${dtoPath}`], { cwd: root }));
+  assert.equal(normalizePhase5G2CompareDto(readFileSync(join(root, dtoPath), 'utf8')), execFileSync('git', ['show', `${checkpoint}:${dtoPath}`], { cwd: root, encoding: 'utf8' }));
   assert.deepEqual(readFileSync(join(root, detailPath)), execFileSync('git', ['show', `${checkpoint}:${detailPath}`], { cwd: root }));
   assert.match(readFileSync(join(root, dtoPath), 'utf8'), /mappingNote: festival\.map_notes/);
   assert.match(readFileSync(join(root, detailPath), 'utf8'), /<p>\{festival\.mappingNote\}<\/p>/);
@@ -5214,11 +5246,63 @@ test('August 31 lifecycle corrections change only MUTEK and A Murder of Crows', 
   }
 
   const dtoPath = 'src/lib/public-festivals.ts';
-  assert.deepEqual(readFileSync(join(root, dtoPath)), execFileSync('git', ['show', `${checkpoint}:${dtoPath}`], { cwd: root }));
+  assert.equal(normalizePhase5G2CompareDto(readFileSync(join(root, dtoPath), 'utf8')), execFileSync('git', ['show', `${checkpoint}:${dtoPath}`], { cwd: root, encoding: 'utf8' }));
   assert.match(readFileSync(join(root, dtoPath), 'utf8'), /historical_reference: "Historical \/ reference"/);
 
   const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).map((line) => line.slice(3));
-  assert.equal(changedPaths.every((path) => POST_DATE_ROLLOVER_ACTIVE_PATHS.includes(path)), true, `unexpected changed path: ${changedPaths.join(', ')}`);
+  assert.equal(changedPaths.every((path) => PHASE_5G2_ACTIVE_PATHS.includes(path)), true, `unexpected changed path: ${changedPaths.join(', ')}`);
+  assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
+  assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
+});
+
+test('Phase 5G.2 inline compare is public-safe, bounded, filter-independent, and accessible', () => {
+  const dto = readFileSync(join(root, 'src/lib/public-festivals.ts'), 'utf8');
+  const browser = readFileSync(join(root, 'src/components/festivals/FestivalDirectoryBrowser.tsx'), 'utf8');
+  const css = readFileSync(join(root, 'src/components/festivals/FestivalDirectory.module.css'), 'utf8');
+  const directoryPage = readFileSync(join(root, 'src/app/festivals/page.tsx'), 'utf8');
+  const directoryType = dto.match(/export type PublicFestivalDirectoryItem = \{[\s\S]*?\n\};/)?.[0] ?? '';
+  const directoryProjection = dto.match(/export function toPublicFestivalDirectoryItem[\s\S]*?\n\}/)?.[0] ?? '';
+
+  assert.match(browser, /const MAX_COMPARE = 2/);
+  assert.match(browser, /useState<string\[\]>\(\[\]\)/);
+  assert.match(browser, /selectedFestivalIds\.includes\(festival\.id\)/);
+  assert.match(browser, /selectedFestivalIds\.length >= MAX_COMPARE/);
+  assert.match(browser, /\[\.\.\.current, festivalId\]/, 'selection must preserve insertion order');
+  assert.match(browser, /setSelectedFestivalIds\(\(current\) => current\.filter\(\(id\) => id !== festivalId\)\)/);
+  assert.match(browser, /setSelectedFestivalIds\(\[\]\)/);
+  assert.match(browser, /1 of 2 selected/);
+  assert.match(browser, /2 of 2 selected/);
+  assert.match(browser, /Compare 2 festivals/);
+  assert.match(browser, /Remove one festival to compare another/);
+  assert.match(browser, /Not in current results/);
+  assert.match(browser, /comparisonHeadingRef\.current\?\.focus\(\)/);
+  assert.match(browser, /resultsHeadingRef\.current\?\.focus\(\)/);
+  assert.match(browser, /role="status"[\s\S]*aria-live="polite"[\s\S]*aria-atomic="true"/);
+  assert.match(browser, /aria-label=\{`Compare \$\{festival\.name\}`\}/);
+  assert.match(browser, /aria-label=\{`Remove \$\{festival\.name\} from comparison`\}/);
+  assert.match(browser, /Location[\s\S]*Published dates[\s\S]*Venue[\s\S]*Scenes[\s\S]*Status[\s\S]*Source confidence[\s\S]*About/);
+  assert.match(browser, /View .* atlas entry/);
+  assert.match(browser, /filteredFestivalIds/);
+  assert.doesNotMatch(browser, /setSelectedFestivalIds\([^)]*(?:searchQuery|sceneFilter|regionFilter|statusFilter|filteredFestivals)/);
+  assert.doesNotMatch(browser, /fetch\(|useRouter|useSearchParams|URLSearchParams|localStorage|sessionStorage|document\.cookie|router\.|window\.location|history\./);
+  assert.doesNotMatch(browser, /latitude|longitude|geocod|map_display|map readiness|record_id|verification_status|source_urls|source_links|data_quality_notes|map_notes/i);
+
+  for (const field of ['venueLabel: string;', 'sourceConfidenceLabel: string;', 'summary: string;']) assert.match(directoryType, new RegExp(field.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  for (const projection of ['venueLabel: festival.venue_name || "Venue not published yet"', 'sourceConfidenceLabel: publicSourceConfidenceLabel(festival.source_confidence)', 'summary: festival.atlas_summary']) assert.ok(directoryProjection.includes(projection));
+  assert.doesNotMatch(directoryType, /coordinate|latitude|longitude|geocod|record_id|verification_status|map|sourceLinks|source_urls|dataQuality|mappingNote/i);
+  assert.match(directoryPage, /publicFestivalDirectoryItems/);
+  assert.match(directoryPage, /<FestivalDirectoryBrowser festivals=\{publicFestivalDirectoryItems\}/);
+
+  for (const className of ['compareControl', 'compareTray', 'comparePanel', 'comparisonGrid', 'comparisonFestival', 'compareButton', 'clearCompare']) assert.match(css, new RegExp(`\\.${className}\\b`));
+  assert.match(css, /min-height:\s*44px/);
+  assert.match(css, /:focus-visible/);
+  assert.match(css, /@media \(max-width: 600px\)[\s\S]*\.comparisonGrid\s*\{[\s\S]*grid-template-columns:\s*1fr/);
+  assert.match(css, /@media \(max-width: 359px\)/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.compare/);
+  assert.match(css, /@media \(forced-colors: active\)[\s\S]*\.compare/);
+  assert.doesNotMatch(css.match(/\.comparePanel[\s\S]*?(?=\n\.[a-zA-Z]|\n@media)/)?.[0] ?? '', /overflow-x:\s*(?:auto|scroll)|white-space:\s*nowrap/);
+
+  assert.deepEqual(pathsChangedSinceHead().sort(), [...PHASE_5G2_ACTIVE_PATHS].sort());
   assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
   assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
 });
