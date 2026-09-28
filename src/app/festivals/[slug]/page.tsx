@@ -52,6 +52,39 @@ const FESTIVAL_DETAIL_GUIDE_LINKS: Readonly<Record<string, Readonly<{ href: stri
     description: "Plan around a chosen festival by checking its footprint, arrival window, late-night returns, and final pre-departure details.",
   }),
 });
+const WGT_TRIP_PLANNING_SIGNAL_SLUG = "wave-gotik-treffen";
+type WgtTripPlanningSignal = Readonly<{
+  label: string;
+  value: string;
+  sourceHref: string;
+  sourceLabel: string;
+}>;
+const WGT_TRIP_PLANNING_SIGNALS: readonly WgtTripPlanningSignal[] = Object.freeze([
+  Object.freeze({
+    label: "Festival span",
+    value: "4 days · Friday–Monday · 14–17 May 2027",
+    sourceHref: "https://www.wave-gotik-treffen.de/english/info/info.php",
+    sourceLabel: "Official 2027 edition information",
+  }),
+  Object.freeze({
+    label: "Venue footprint",
+    value: "About 50 venues across Leipzig · 2027 venue roster pending",
+    sourceHref: "https://www.wave-gotik-treffen.de/english/info/az.php",
+    sourceLabel: "Official WGT festival FAQ",
+  }),
+  Object.freeze({
+    label: "Program status",
+    value: "2027 running order not published yet",
+    sourceHref: "https://www.wave-gotik-treffen.de/english/prog/programm.php",
+    sourceLabel: "Official WGT program page",
+  }),
+  Object.freeze({
+    label: "Entry process",
+    value: "Exchange ticket for a wristband on arrival · locations and hours need recheck",
+    sourceHref: "https://www.wave-gotik-treffen.de/english/info/az.php",
+    sourceLabel: "Official WGT wristband FAQ",
+  }),
+]);
 const festivalMetadataTitleOverrides: Readonly<Record<string, string>> = {
   [FESTIVAL_DETAIL_REFERENCE_SLUG]: "M'era Luna Festival guide",
   "a-murder-of-crows-xi-nyc-goth-post-punk-festival": "A Murder of Crows XI NYC Goth & Post-punk Festival guide",
@@ -263,6 +296,31 @@ export default async function FestivalDetailPage({ params }: FestivalPageProps) 
                 <p>{festival.mappingNote}</p>
               </div>
             </section>
+
+            {festival.slug === WGT_TRIP_PLANNING_SIGNAL_SLUG ? (
+              <section className={styles.tripSignalsSection} data-trip-planning-signals aria-labelledby="wgt-trip-planning-signals-heading">
+                <p className={styles.tripSignalsEyebrow}>Before you commit</p>
+                <h2 id="wgt-trip-planning-signals-heading" className={styles.tripSignalsHeading}>Trip Planning Signals</h2>
+                <p className={styles.tripSignalsIntro}>Four current, source-aware facts to factor into a WGT trip.</p>
+                <dl className={styles.tripSignalsGrid}>
+                  {WGT_TRIP_PLANNING_SIGNALS.map((signal) => (
+                    <div key={signal.label} className={styles.tripSignal}>
+                      <dt className={styles.tripSignalLabel}>{signal.label}</dt>
+                      <dd className={styles.tripSignalValue}>{signal.value}</dd>
+                      <dd>
+                        <a className={styles.tripSignalSource} href={signal.sourceHref} target="_blank" rel="noreferrer">
+                          {signal.sourceLabel}
+                        </a>
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+                <p className={styles.tripSignalsProvenance}>Checked 28 Sep 2026 · Official WGT sources · recheck changing details before booking</p>
+                <Link className={styles.tripSignalsGuideLink} href="/guides/planning-a-dark-alternative-festival-trip">
+                  Use these signals with the Trip-Planning Guide.
+                </Link>
+              </section>
+            ) : null}
 
             {polish ? (
               <section className="rounded-[2rem] border border-[rgba(34,211,238,0.18)] bg-[linear-gradient(180deg,rgba(14,26,38,0.62),rgba(0,0,0,0.32))] p-6 shadow-[0_20px_80px_rgba(0,0,0,0.22)] sm:p-8">

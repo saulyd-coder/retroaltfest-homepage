@@ -41,6 +41,11 @@ const PHASE_5G2_ACTIVE_PATHS = [
   'src/components/festivals/FestivalDirectory.module.css',
   'tests/homepage-mvp.test.mjs',
 ];
+const PHASE_5G4_ACTIVE_PATHS = [
+  'src/app/festivals/[slug]/page.tsx',
+  'src/app/festivals/[slug]/FestivalDetail.module.css',
+  'tests/homepage-mvp.test.mjs',
+];
 const PHASE_5E4I_HASH_NORMALIZED_PATHS = new Set([
   'src/data/atlas-festivals.json',
   'src/app/festivals/[slug]/FestivalDetail.module.css',
@@ -89,7 +94,7 @@ const LEVITATION_VISITOR_WHY = 'LEVITATION adds an Austin discovery pathway for 
 
 function normalizePhase5F2ALayout(relativePath, source) {
   if (relativePath !== PHASE_5F2A_LAYOUT_PATH) return source;
-  return source
+  return normalizePhase5G4WgtTripSignals(relativePath, source)
     .replace(PHASE_5F2A_MASTHEAD_CLASS, 'grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start')
     .replace(PHASE_5F2A_PANEL_CLASS, 'relative overflow-hidden rounded-[2rem] border border-[rgba(168,85,247,0.2)] bg-[linear-gradient(145deg,rgba(35,24,57,0.82),rgba(8,7,14,0.92)_58%,rgba(3,3,6,0.96))] p-6 shadow-[0_34px_120px_rgba(0,0,0,0.55),0_0_70px_rgba(88,28,135,0.16)] sm:p-8 lg:p-10')
     .replace(PHASE_5F2A_SUMMARY_CLASS, 'mt-5 max-w-3xl text-lg leading-8 text-[var(--raf-text-muted)] sm:text-xl')
@@ -167,6 +172,20 @@ function normalizePhase5G2ApprovedSource(relativePath, source) {
   return execFileSync('git', ['show', `${PHASE_5G2_PARENT}:${relativePath}`], { cwd: root, encoding: 'utf8' });
 }
 
+function normalizePhase5G4WgtTripSignals(relativePath, source) {
+  if (relativePath === 'src/app/festivals/[slug]/page.tsx') {
+    return source
+      .replace(/const WGT_TRIP_PLANNING_SIGNAL_SLUG[\s\S]*?(?=const festivalMetadataTitleOverrides)/, '')
+      .replace(/\n            \{festival\.slug === WGT_TRIP_PLANNING_SIGNAL_SLUG \? \([\s\S]*?\n            \) : null\}\n/, '');
+  }
+  if (relativePath === 'src/app/festivals/[slug]/FestivalDetail.module.css') {
+    return source
+      .replace(/\n\.tripSignalsSection[\s\S]*?(?=\n\.referencePage \.breadcrumb a:focus-visible)/, '')
+      .replace(/(@media \(forced-colors: active\) \{\n)[\s\S]*?(?=  \.referencePage \{)/, '$1');
+  }
+  return source;
+}
+
 function normalizePhase5F2NorthAmericanGuide(source) {
   return source
     .replace(PHASE_5F2_NA_STATUS, 'Active atlas record — next edition details need official confirmation')
@@ -192,7 +211,7 @@ function normalizeMeraLunaFreshnessAtlas(source) {
 }
 
 function read(relativePath) {
-  const source = normalizePhase5G2ApprovedSource(relativePath, readFileSync(join(root, relativePath), 'utf8'));
+  const source = normalizePhase5G4WgtTripSignals(relativePath, normalizePhase5G2ApprovedSource(relativePath, readFileSync(join(root, relativePath), 'utf8')));
   const freshnessNormalized = relativePath === ATLAS_PATH
     ? normalizePhase5F2Atlas(normalizeMeraLunaFreshnessAtlas(normalizePostDateRolloverAtlas(normalizeAugust31LifecycleCorrections(normalizePublicMapLanguageCleanup(source)))))
     : relativePath === 'src/app/guides/north-american-goth-darkwave-festivals/page.tsx'
@@ -243,7 +262,7 @@ function pathsChangedSinceHead() {
 }
 
 function assertOnlyApprovedPaths(changedPaths, approvedPaths, message) {
-  const effectiveApprovedPaths = [...new Set([...approvedPaths, ...PHASE_5G2_ACTIVE_PATHS])];
+  const effectiveApprovedPaths = [...new Set([...approvedPaths, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS])];
   assert.equal(
     changedPaths.every((path) => effectiveApprovedPaths.includes(path)),
     true,
@@ -858,7 +877,7 @@ test('Terminus preserves the ended-ticket removal while applying the approved fr
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const approvedActivePaths = [...new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS])];
+  const approvedActivePaths = [...new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS])];
   assert.equal(
     changedPaths.every((path) => approvedActivePaths.includes(path)),
     true,
@@ -4109,7 +4128,7 @@ test('Phase 5E.1 trip-planning guide is distinct, source-safe, non-commercial, a
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const approvedPublicationPaths = new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS]);
+  const approvedPublicationPaths = new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS]);
   assert.equal(
     changedPaths.every((path) => approvedPublicationPaths.has(path)),
     true,
@@ -4426,7 +4445,7 @@ test('Phase 5E.2 publishes the trip-planning guide through the Guides Hub and si
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const allowlist = new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS]);
+  const allowlist = new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS]);
   assert.equal(changedPaths.every((path) => allowlist.has(path)), true, `the combined approved worktree must include no path outside the current post-date rollover boundary: ${changedPaths.join(', ')}`);
 });
 
@@ -4547,7 +4566,7 @@ test('Phase 5E.3 maps only Wave-Gotik-Treffen to the Trip-Planning Guide and fre
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const allowlist = new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS]);
+  const allowlist = new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS]);
   assert.equal(changedPaths.every((path) => allowlist.has(path)), true, `the combined approved worktree must include no path outside the current post-date rollover boundary: ${changedPaths.join(', ')}`);
 });
 
@@ -4924,7 +4943,7 @@ test('Phase 5E.5 aligns only M’era Luna and NCN supporting copy with the First
   assert.deepEqual(Buffer.from(normalizedPage), baseline(pagePath), 'the detail route may differ from production only by the two exact approved description lines');
 
   const trackedPaths = execFileSync('git', ['ls-tree', '-r', '--name-only', checkpoint], { cwd: root, encoding: 'utf8' }).trim().split('\n');
-  const currentActivePaths = new Set([pagePath, testPath, ...PHASE_5F2A_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS]);
+  const currentActivePaths = new Set([pagePath, testPath, ...PHASE_5F2A_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS]);
   for (const protectedPath of trackedPaths.filter((path) => !currentActivePaths.has(path))) {
     assert.deepEqual(readFileSync(join(root, protectedPath)), baseline(protectedPath), `${protectedPath} must remain byte-identical to the Phase 5E.5 checkpoint`);
   }
@@ -4933,7 +4952,7 @@ test('Phase 5E.5 aligns only M’era Luna and NCN supporting copy with the First
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  assert.equal(changedPaths.every((path) => PHASE_5G2_ACTIVE_PATHS.includes(path)), true, `the Phase 5G.2 sprint permits only four repository paths: ${changedPaths.join(', ')}`);
+  assert.equal(changedPaths.every((path) => [...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS].includes(path)), true, `the active worktree must remain inside the combined Phase 5G.2 and Phase 5G.4 allowlists: ${changedPaths.join(', ')}`);
   assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
   assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
   assert.doesNotMatch(mappingBlock, /[?&](?:aff|affiliate|ref|utm_|click|partner)=|Ticketmaster|StubHub|SeatGeek|Vivid Seats|AXS|Eventbrite|Viagogo|hotel|product|sponsored|commission|analytics/i);
@@ -5009,7 +5028,7 @@ test('Phase 5F.2 aligns Terminus 2027 freshness and only its two direct guide re
   assert.doesNotMatch(readFileSync(join(root, detailPath), 'utf8').match(/const FESTIVAL_DETAIL_GUIDE_LINKS[\s\S]*?\n\}\);/)?.[0] ?? '', /terminus-festival/);
 
   const trackedPaths = execFileSync('git', ['ls-tree', '-r', '--name-only', checkpoint], { cwd: root, encoding: 'utf8' }).trim().split('\n');
-  for (const protectedPath of trackedPaths.filter((path) => ![...PHASE_5F2A_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS].includes(path))) {
+  for (const protectedPath of trackedPaths.filter((path) => ![...PHASE_5F2A_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS].includes(path))) {
     assert.deepEqual(readFileSync(join(root, protectedPath)), execFileSync('git', ['show', `${checkpoint}:${protectedPath}`], { cwd: root }), `${protectedPath} must remain byte-identical`);
   }
   for (const protectedPath of ['src/app/sitemap.ts', 'src/app/guides/page.tsx', 'src/lib/seo.ts', 'package.json', 'package-lock.json']) {
@@ -5187,7 +5206,7 @@ test('Infest public venue language removes internal geocoding wording only', () 
   const dtoPath = 'src/lib/public-festivals.ts';
   const detailPath = 'src/app/festivals/[slug]/page.tsx';
   assert.equal(normalizePhase5G2CompareDto(readFileSync(join(root, dtoPath), 'utf8')), execFileSync('git', ['show', `${checkpoint}:${dtoPath}`], { cwd: root, encoding: 'utf8' }));
-  assert.deepEqual(readFileSync(join(root, detailPath)), execFileSync('git', ['show', `${checkpoint}:${detailPath}`], { cwd: root }));
+  assert.deepEqual(Buffer.from(normalizePhase5G4WgtTripSignals(detailPath, readFileSync(join(root, detailPath), 'utf8'))), execFileSync('git', ['show', `${checkpoint}:${detailPath}`], { cwd: root }));
   assert.match(readFileSync(join(root, dtoPath), 'utf8'), /mappingNote: festival\.map_notes/);
   assert.match(readFileSync(join(root, detailPath), 'utf8'), /<p>\{festival\.mappingNote\}<\/p>/);
 
@@ -5250,7 +5269,7 @@ test('August 31 lifecycle corrections change only MUTEK and A Murder of Crows', 
   assert.match(readFileSync(join(root, dtoPath), 'utf8'), /historical_reference: "Historical \/ reference"/);
 
   const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).map((line) => line.slice(3));
-  assert.equal(changedPaths.every((path) => PHASE_5G2_ACTIVE_PATHS.includes(path)), true, `unexpected changed path: ${changedPaths.join(', ')}`);
+  assert.equal(changedPaths.every((path) => [...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS].includes(path)), true, `unexpected changed path: ${changedPaths.join(', ')}`);
   assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
   assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
 });
@@ -5302,7 +5321,75 @@ test('Phase 5G.2 inline compare is public-safe, bounded, filter-independent, and
   assert.match(css, /@media \(forced-colors: active\)[\s\S]*\.compare/);
   assert.doesNotMatch(css.match(/\.comparePanel[\s\S]*?(?=\n\.[a-zA-Z]|\n@media)/)?.[0] ?? '', /overflow-x:\s*(?:auto|scroll)|white-space:\s*nowrap/);
 
-  assert.deepEqual(pathsChangedSinceHead().sort(), [...PHASE_5G2_ACTIVE_PATHS].sort());
+  for (const path of PHASE_5G2_ACTIVE_PATHS.filter((candidate) => candidate !== 'tests/homepage-mvp.test.mjs')) {
+    assert.deepEqual(readFileSync(join(root, path)), execFileSync('git', ['show', `HEAD:${path}`], { cwd: root }), `${path} must remain byte-identical during Phase 5G.4`);
+  }
+  assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
+  assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
+});
+
+test('Phase 5G.4 adds exactly four source-aware WGT trip planning signals and preserves every frozen boundary', () => {
+  const pagePath = 'src/app/festivals/[slug]/page.tsx';
+  const cssPath = 'src/app/festivals/[slug]/FestivalDetail.module.css';
+  const page = readFileSync(join(root, pagePath), 'utf8');
+  const css = readFileSync(join(root, cssPath), 'utf8');
+  const checkpoint = 'e13b350afd6b0214c29932cb5f076ad23c715ea4';
+  const expectedSignals = [
+    ['Festival span', '4 days · Friday–Monday · 14–17 May 2027'],
+    ['Venue footprint', 'About 50 venues across Leipzig · 2027 venue roster pending'],
+    ['Program status', '2027 running order not published yet'],
+    ['Entry process', 'Exchange ticket for a wristband on arrival · locations and hours need recheck'],
+  ];
+  const signalArray = page.match(/const WGT_TRIP_PLANNING_SIGNALS[\s\S]*?\n\]\);/)?.[0] ?? '';
+  const signalSection = page.match(/\{festival\.slug === WGT_TRIP_PLANNING_SIGNAL_SLUG \? \([\s\S]*?\n\s*\) : null\}/)?.[0] ?? '';
+
+  assert.ok(signalArray, 'the typed WGT planning-signal array is missing');
+  assert.match(page, /type WgtTripPlanningSignal = Readonly<\{/);
+  assert.equal((signalArray.match(/label:/g) ?? []).length, 4);
+  for (const [label, value] of expectedSignals) {
+    assert.ok(signalArray.indexOf(`label: "${label}"`) >= 0, `${label} is missing`);
+    assert.ok(signalArray.indexOf(`value: "${value}"`) >= 0, `${label} value changed`);
+  }
+  assert.ok(expectedSignals.every(([label], index) => index === 0 || signalArray.indexOf(`label: "${expectedSignals[index - 1][0]}"`) < signalArray.indexOf(`label: "${label}"`)), 'signal order changed');
+  assert.match(signalArray, /About 50 venues across Leipzig · 2027 venue roster pending/);
+  assert.doesNotMatch(signalArray, /Exactly 50|50 confirmed|confirmed 2027 venues/i);
+  assert.match(signalArray, /2027 running order not published yet/);
+  assert.match(signalArray, /locations and hours need recheck/);
+
+  assert.ok(signalSection, 'the WGT-only signal section is missing');
+  assert.match(signalSection, /Trip Planning Signals/);
+  assert.match(signalSection, /Checked 28 Sep 2026 · Official WGT sources · recheck changing details before booking/);
+  assert.match(signalSection, /Use these signals with the Trip-Planning Guide\./);
+  assert.match(signalSection, /href="\/guides\/planning-a-dark-alternative-festival-trip"/);
+  assert.match(signalSection, /<dl[\s\S]*WGT_TRIP_PLANNING_SIGNALS\.map/);
+  assert.match(signalSection, /sourceLabel/);
+  assert.equal((page.match(/festival\.slug === WGT_TRIP_PLANNING_SIGNAL_SLUG/g) ?? []).length, 1);
+  assert.equal((page.match(/data-trip-planning-signals/g) ?? []).length, 1);
+
+  const urls = [...signalArray.matchAll(/sourceHref: "([^"]+)"/g)].map((match) => match[1]);
+  assert.equal(urls.length, 4);
+  assert.equal(urls.every((url) => /^https:\/\/www\.wave-gotik-treffen\.de\/english\//.test(url)), true);
+  assert.equal(urls.includes('https://www.wave-gotik-treffen.de/english/info/baendchen.php'), false, 'known wristband-detail 404 must not be linked');
+  assert.doesNotMatch(`${signalSection}\n${signalArray}`, /hotel|neighbou?rhood|airline|rail provider|taxi|rideshare|price|affiliate|sponsor|Ticketmaster|StubHub|SeatGeek|Eventbrite|Viagogo/i);
+  assert.doesNotMatch(`${signalSection}\n${signalArray}`, /late[- ]night|overnight|Thursday|pre-event|side event|side-event|ticket availability|transit availability|registration instructions|safety|travel documents/i);
+
+  const verificationIndex = page.indexOf('>Verification notes</h2>');
+  const signalsIndex = page.indexOf('data-trip-planning-signals');
+  const sourcesIndex = page.indexOf('>Official sources</h2>');
+  assert.ok(verificationIndex >= 0 && signalsIndex > verificationIndex && sourcesIndex > signalsIndex, 'signals must sit after Verification notes and before Official sources');
+  assert.doesNotMatch(page.match(/const NIGHT_TRANSMISSION_DETAIL_SLUGS[\s\S]*?\n\]\);/)?.[0] ?? '', /wave-gotik-treffen/);
+
+  for (const className of ['tripSignalsSection', 'tripSignalsGrid', 'tripSignal', 'tripSignalSource', 'tripSignalsProvenance', 'tripSignalsGuideLink']) assert.match(css, new RegExp(`\\.${className}\\b`));
+  assert.match(css, /\.tripSignalsGrid\s*\{[\s\S]*grid-template-columns:\s*repeat\(auto-fit, minmax\(min\(100%, 18rem\), 1fr\)\)/);
+  assert.match(css, /\.tripSignalSource[\s\S]*min-height:\s*44px/);
+  assert.match(css, /\.tripSignalsGuideLink[\s\S]*min-height:\s*44px/);
+  assert.match(css, /@media \(forced-colors: active\)[\s\S]*\.tripSignalsSection/);
+  assert.doesNotMatch(`${signalSection}\n${signalArray}\n${css}`, /"use client"|useState|useEffect|fetch\(|XMLHttpRequest|WebSocket|\/api\/|localStorage|sessionStorage|document\.cookie|latitude|longitude|geocod|analytics|framer-motion|lottie|mapbox/i);
+
+  for (const protectedPath of ['src/data/atlas-festivals.json', 'src/lib/public-festivals.ts', 'src/app/sitemap.ts', 'src/app/guides/page.tsx', 'src/components/festivals/FestivalDirectoryBrowser.tsx', 'src/components/festivals/FestivalDirectory.module.css', 'package.json', 'package-lock.json']) {
+    assert.deepEqual(readFileSync(join(root, protectedPath)), execFileSync('git', ['show', `${checkpoint}:${protectedPath}`], { cwd: root }), `${protectedPath} changed`);
+  }
+  assert.deepEqual(pathsChangedSinceHead().sort(), [...PHASE_5G4_ACTIVE_PATHS].sort());
   assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
   assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
 });

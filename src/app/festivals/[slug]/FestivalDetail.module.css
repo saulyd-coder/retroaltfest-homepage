@@ -499,6 +499,139 @@
   transform: none;
 }
 
+.tripSignalsSection {
+  min-width: 0;
+  padding: clamp(20px, 4vw, 32px);
+  border: 1px solid rgb(34 211 238 / 24%);
+  border-radius: 0;
+  background:
+    linear-gradient(135deg, rgb(34 211 238 / 7%), transparent 44%),
+    linear-gradient(315deg, rgb(168 85 247 / 8%), transparent 46%),
+    rgb(0 0 0 / 28%);
+  box-shadow: 12px 12px 0 rgb(0 0 0 / 18%);
+}
+
+.tripSignalsEyebrow,
+.tripSignalLabel,
+.tripSignalsProvenance {
+  font-family: var(--font-mono), monospace;
+  text-transform: uppercase;
+}
+
+.tripSignalsEyebrow {
+  color: var(--raf-cyan);
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+}
+
+.tripSignalsHeading {
+  margin-top: 0.75rem;
+  color: white;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  overflow-wrap: anywhere;
+}
+
+.tripSignalsIntro {
+  max-width: 46rem;
+  margin-top: 1rem;
+  color: var(--raf-text-muted);
+  line-height: 1.75;
+}
+
+.tripSignalsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 1px;
+  margin-top: 1.5rem;
+  padding: 1px;
+  background: rgb(255 255 255 / 12%);
+}
+
+.tripSignal {
+  min-width: 0;
+  padding: clamp(18px, 3vw, 24px);
+  border-top: 3px solid var(--raf-cyan);
+  background: rgb(7 7 12 / 94%);
+}
+
+.tripSignal:nth-child(2) {
+  border-top-color: var(--raf-violet);
+}
+
+.tripSignal:nth-child(3) {
+  border-top-color: var(--raf-acid);
+}
+
+.tripSignal:nth-child(4) {
+  border-top-color: var(--raf-magenta);
+}
+
+.tripSignalLabel {
+  color: var(--raf-text-dim);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+}
+
+.tripSignalValue {
+  min-width: 0;
+  margin-top: 0.85rem;
+  color: white;
+  font-size: 1rem;
+  font-weight: 650;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.tripSignalSource,
+.tripSignalsGuideLink {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 44px;
+  overflow-wrap: anywhere;
+  text-underline-offset: 0.22em;
+}
+
+.tripSignalSource {
+  margin-top: 0.7rem;
+  color: var(--raf-cyan);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  text-decoration: underline;
+}
+
+.tripSignalsProvenance {
+  margin-top: 1.25rem;
+  color: var(--raf-text-dim);
+  font-size: 0.68rem;
+  line-height: 1.7;
+  letter-spacing: 0.1em;
+  overflow-wrap: anywhere;
+}
+
+.tripSignalsGuideLink {
+  margin-top: 1rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid rgb(168 85 247 / 42%);
+  border-radius: 0;
+  color: white;
+  background: rgb(168 85 247 / 12%);
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.45;
+  text-decoration: none;
+}
+
+.tripSignalSource:focus-visible,
+.tripSignalsGuideLink:focus-visible {
+  outline: 3px solid var(--raf-cyan);
+  outline-offset: 4px;
+}
+
 .referencePage .breadcrumb a:focus-visible,
 .referencePage .verificationLink:focus-visible,
 .referencePage .officialCta:focus-visible,
@@ -658,6 +791,28 @@
 }
 
 @media (forced-colors: active) {
+  .tripSignalsSection,
+  .tripSignalsGrid,
+  .tripSignal,
+  .tripSignalsGuideLink {
+    border: 1px solid CanvasText;
+    color: CanvasText;
+    background: Canvas;
+    box-shadow: none;
+    forced-color-adjust: auto;
+  }
+
+  .tripSignalSource,
+  .tripSignalsGuideLink {
+    color: LinkText;
+    text-decoration: underline;
+  }
+
+  .tripSignalSource:focus-visible,
+  .tripSignalsGuideLink:focus-visible {
+    outline: 3px solid Highlight;
+  }
+
   .referencePage {
     color: CanvasText;
     background: Canvas;
