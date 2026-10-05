@@ -66,19 +66,19 @@
         "EBM",
         "dark electronic"
       ],
-      "status_label": "Confirmed upcoming",
-      "status_key": "confirmed_upcoming",
+      "status_label": "Reference only",
+      "status_key": "reference_only",
       "cultural_hook": "Chicago industrial gravity for listeners drawn to cold electronics and post-industrial sound.",
-      "source_cue": "Official source tracked",
+      "source_cue": "Official source tracked; next edition not confirmed",
       "official_url": "https://www.coldwaves.net/",
       "priority": "homepage_core",
       "art_direction": "Steel-blue industrial grid: colder blue-black structure, low violet haze, and a controlled mechanical texture.",
       "editorial_descriptor": "Chicago industrial/dark electronic anchor with cold synth atmosphere and post-industrial lineage.",
       "why_this_matters": "It shows RetroAltFest is not only goth/darkwave by name; the atlas understands the industrial, EBM, and dark electronic currents that shape North American dark scenes.",
       "pathway_concept": "Follow the industrial current",
-      "seasonal_relevance": "Fall-facing emotional fit; useful for Chicago / Great Lakes industrial-axis storytelling without asserting dates.",
+      "seasonal_relevance": "Past-edition Chicago industrial signal; do not imply active dates until a future official edition appears.",
       "scene_relationships": "Industrial, EBM, dark electronic, post-industrial, and coldwave-adjacent. Connects well to Dark Force Fest for industrial/goth crossover.",
-      "source_confidence_notes": "High confidence for homepage inclusion. Official source tracked. Normalize main festival identity separately from broader Cold Waves Presents activity."
+      "source_confidence_notes": "High confidence for 2026 historical context, but not active/upcoming-safe. Keep the signal separate from broader Cold Waves Presents activity and require a future official edition before current-cycle wording."
     },
     {
       "id": "verboden-music-festival",
@@ -114,19 +114,19 @@
         "deathrock",
         "post-punk"
       ],
-      "status_label": "Confirmed upcoming",
-      "status_key": "confirmed_upcoming",
+      "status_label": "Reference only",
+      "status_key": "reference_only",
       "cultural_hook": "A Southeast gothic outpost for deathrock, post-punk, darkwave, and warm-night scene discovery.",
-      "source_cue": "Official source tracked",
+      "source_cue": "Official source tracked; next edition not confirmed",
       "official_url": "https://www.absolutionfest.com/",
       "priority": "homepage_core",
       "art_direction": "Warm-night magenta shadow: humid Southeast nocturne, muted violet-black depth, and restrained red/magenta undertones.",
       "editorial_descriptor": "Southeast goth/deathrock/post-punk signal with warm-night atmosphere and niche-scene identity.",
       "why_this_matters": "It keeps the first packet from over-centering the West Coast, Northeast, and Chicago, giving the South / Southeast a visible but carefully labeled dark-scene foothold.",
       "pathway_concept": "Watch the Southeast gothic signal",
-      "seasonal_relevance": "Confirmed upcoming signal; avoid over-specific venue or schedule language unless refreshed from official sources.",
+      "seasonal_relevance": "Past-edition Southeast gothic signal; do not imply active dates or a future venue until official sources announce them.",
       "scene_relationships": "Goth, deathrock, post-punk, darkwave, and dark alternative. Connects to Dark Force Fest through goth/deathrock energy and to Darker Waves / Verboden through post-punk and darkwave adjacency.",
-      "source_confidence_notes": "High public source confidence after app-data integration planning. Official source tracked; keep venue/map wording cautious."
+      "source_confidence_notes": "High confidence for 2026 historical context, but not active/upcoming-safe. Official source tracked; keep future-edition and venue wording unconfirmed."
     },
     {
       "id": "cruel-world",

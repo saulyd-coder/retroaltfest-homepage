@@ -52,13 +52,13 @@ const activeAtlasRecords: GuideRecord[] = [
     officialUrl: "https://coldwaves.net/",
     industrialEbmRelevance: "Core industrial / dark electronic atlas record.",
     sceneFit: "Industrial, post-industrial, EBM-adjacent, dark electronic, and goth-adjacent.",
-    statusLabel: "Core industrial / dark electronic atlas record",
+    statusLabel: "Core industrial / dark electronic atlas record — next edition not confirmed",
     summary:
-      "Cold Waves is the clearest industrial/dark electronic anchor for this guide, with official 2026 site and ticketing support for Chicago dates in September.",
+      "Cold Waves is the clearest industrial/dark electronic anchor for this guide. Cold Waves’ 2026 edition has concluded, and next edition details need official confirmation.",
     sourceCaveat:
       "RetroAltFest does not overclaim every act as industrial or EBM. Lineup and day-by-day details should be checked against the official source before being repeated in detail.",
-    sourceSupport: "Official 2026 festival and ticketing sources support the Chicago date context used here.",
-    recheckDetails: "Specific daily programming, venues, and logistics should be verified from official sources before travel planning.",
+    sourceSupport: "Official and organizer-controlled sources support the concluded September 24–27, 2026 Chicago edition.",
+    recheckDetails: "Future dates, programming, venues, ticket availability, and logistics need official confirmation before travel planning.",
   },
   {
     festivalName: "Terminus Festival",
@@ -95,9 +95,9 @@ const relatedOverlapRecords: GuideRecord[] = [
     summary:
       "Absolution Fest is a related dark-scene atlas link for readers whose industrial/dark electronic interests overlap with electronic, goth, darkwave, and post-punk programming.",
     sourceCaveat:
-      "Event status is strong, but the genre fit for this page is adjacent. RetroAltFest does not frame Absolution Fest as a core industrial festival or primary EBM anchor.",
-    sourceSupport: "Official sources support Absolution Fest as an active RetroAltFest atlas record in a neighboring dark-scene lane.",
-    recheckDetails: "Industrial/EBM-specific claims should not be added unless later official copy supports that framing.",
+      "Absolution Fest’s 2026 edition has concluded, and its genre fit for this page remains adjacent. RetroAltFest does not frame Absolution Fest as a core industrial festival or primary EBM anchor.",
+    sourceSupport: "Official and organizer-controlled sources support the concluded October 1–3, 2026 edition in a neighboring dark-scene lane.",
+    recheckDetails: "A future edition and any Industrial/EBM-specific claims need official confirmation before stronger wording is used.",
   },
 ];
 
@@ -168,7 +168,7 @@ const heldRecords = [
 const statusLabels = [
   {
     label: "Core industrial / dark electronic atlas record",
-    description: "Used for Cold Waves, where official sources support a current industrial and dark electronic guide card with a RetroAltFest atlas link.",
+    description: "Used for Cold Waves as a linked industrial and dark electronic atlas record whose completed 2026 edition remains useful context while the next edition awaits official confirmation.",
   },
   {
     label: "Core industrial / EBM atlas record — 2027 dates not announced",
@@ -253,7 +253,7 @@ export default function IndustrialEbmDarkElectronicGuidePage() {
         <GuideSection
           eyebrow="Industrial / dark electronic atlas records"
           title="Core atlas records with source-aware status."
-          description="Cold Waves and Terminus Festival remain the two core Industrial/EBM/dark electronic atlas links in this guide. Terminus stays linked for discovery with a 2027 edition announced, while exact dates, venue, ticketing, lineup, and logistics still need official confirmation."
+          description="Cold Waves and Terminus Festival remain the two core Industrial/EBM/dark electronic atlas links in this guide. Cold Waves’ 2026 edition has concluded and its next edition is not confirmed. Terminus has a 2027 edition announced, while exact dates, venue, ticketing, lineup, and logistics still need official confirmation."
           records={activeAtlasRecords}
           startIndex={1}
           variant="active"

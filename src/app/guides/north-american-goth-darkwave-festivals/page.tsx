@@ -49,13 +49,13 @@ const activeAtlasRecords: GuideRecord[] = [
     genreTags: ["goth", "darkwave", "post-punk", "electronic"],
     officialUrl: "https://www.absolutionfest.com/",
     sceneFit: "Goth, darkwave, post-punk, and electronic.",
-    statusLabel: "Active atlas record with 2026 source support",
+    statusLabel: "Past edition — next edition not confirmed",
     summary:
-      "Absolution Fest is a source-supported active atlas record for Tampa’s goth, darkwave, post-punk, and electronic scene, with 2026 dates confirmed by official and ticketing sources.",
+      "Absolution Fest remains a source-supported atlas record for Tampa’s goth, darkwave, post-punk, and electronic scene. Its October 1–3, 2026 edition has concluded, and next edition details need official confirmation.",
     sourceCaveat:
       "RetroAltFest keeps venue, address, schedule, and ticket-tier details conservative unless those details are supported by the source trail being checked.",
-    confirmedDetails: "Official and ticketing sources support the 2026 date/status used for this guide card.",
-    recheckDetails: "Specific venue, address, schedule, and ticket-tier details need their own source check before travel planning.",
+    confirmedDetails: "Official and organizer-controlled sources support the concluded October 1–3, 2026 edition.",
+    recheckDetails: "Future dates, venue, schedule, and ticket availability need official confirmation before travel planning.",
   },
   {
     festivalName: "A Murder of Crows XI NYC Goth & Post-punk Festival",
@@ -66,13 +66,13 @@ const activeAtlasRecords: GuideRecord[] = [
     genreTags: ["goth", "post-punk"],
     officialUrl: "http://www.amurderofcrowsfestival.com/",
     sceneFit: "Goth and post-punk.",
-    statusLabel: "Active atlas record with 2026 source support",
+    statusLabel: "Past edition — next edition not confirmed",
     summary:
-      "A Murder of Crows XI NYC Goth & Post-punk Festival is a source-supported active atlas record for New York’s goth and post-punk scene, with 2026 dates and multi-venue structure confirmed by The Red Party’s official page.",
+      "A Murder of Crows XI remains a source-supported atlas record for New York’s goth and post-punk scene. Its September 3–6, 2026 edition has concluded, and next edition details need official confirmation.",
     sourceCaveat:
-      "The public title is aligned with the active atlas slug. Because this is a multi-night, multi-venue festival, RetroAltFest does not flatten the event into one simple venue claim.",
-    confirmedDetails: "The Red Party’s official page supports the 2026 dates and multi-venue structure.",
-    recheckDetails: "Night-by-night venues, lineups, and ticket details should be checked at the official source before planning around them.",
+      "The public title remains aligned with the atlas slug. The documented 2026 edition used multiple nights and venues; RetroAltFest does not carry those venues forward into an unannounced edition.",
+    confirmedDetails: "The Red Party’s official page supports the concluded 2026 dates and multi-venue structure.",
+    recheckDetails: "Future dates, venues, lineups, and ticket availability need official confirmation before travel planning.",
   },
   {
     festivalName: "Cold Waves",
@@ -83,13 +83,13 @@ const activeAtlasRecords: GuideRecord[] = [
     genreTags: ["industrial", "EBM", "dark electronic", "post-punk-adjacent"],
     officialUrl: "https://coldwaves.net/",
     sceneFit: "Industrial, EBM, dark electronic, and post-punk-adjacent.",
-    statusLabel: "Active atlas record with 2026 source support",
+    statusLabel: "Past edition — next edition not confirmed",
     summary:
-      "Cold Waves is a source-supported active atlas record and a major Chicago industrial / dark electronic anchor, with 2026 dates and official ticket links published by the festival.",
+      "Cold Waves remains a source-supported atlas record and a major Chicago industrial / dark electronic anchor. Its September 24–27, 2026 edition has concluded, and next edition details need official confirmation.",
     sourceCaveat:
       "RetroAltFest frames Cold Waves through its industrial, dark electronic, post-industrial, and goth-adjacent role instead of forcing it into a pure goth festival lane.",
-    confirmedDetails: "Official festival sources support the 2026 dates and official ticket links referenced for this guide card.",
-    recheckDetails: "Multi-night venue details and individual event logistics should be verified at the official source before travel planning.",
+    confirmedDetails: "Official and organizer-controlled sources support the concluded September 24–27, 2026 edition.",
+    recheckDetails: "Future dates, venues, programming, and ticket availability need official confirmation before travel planning.",
   },
   {
     festivalName: "Terminus Festival",
@@ -217,9 +217,9 @@ export default function NorthAmericanGothDarkwaveGuidePage() {
 
         <GuideSection
           id="active-atlas-records"
-          eyebrow="Source-supported active atlas records"
-          title="Four active atlas records with source-aware status."
-          description="These are the guide cards with direct RetroAltFest atlas links. Three have official or organizer-controlled support for future 2026 dates; Terminus now has an official 2027 edition announcement, while exact dates, venue, ticketing, lineup, and logistics still need official confirmation."
+          eyebrow="Source-supported atlas records"
+          title="Four atlas records with source-aware status."
+          description="These guide cards retain direct RetroAltFest atlas links. Three completed editions need future official confirmation: Absolution Fest, A Murder of Crows, and Cold Waves. Terminus has an official 2027 edition announcement, while exact dates, venue, ticketing, lineup, and logistics still need official confirmation."
           records={activeAtlasRecords}
           startIndex={1}
           variant="active"
@@ -417,7 +417,7 @@ function FestivalGuideCard({
 }
 
 function StatusCard({ label, description }: { label: string; description: string }) {
-  const isActive = label === "Active atlas record with 2026 source support";
+  const isActive = label === "Active atlas record with source-aware status";
 
   return (
     <div className={`${styles.statusCard} ${isActive ? styles.activeStatusCard : styles.contextStatusCard}`}>

@@ -107,7 +107,7 @@ const festivalProfiles: FestivalProfile[] = [
     atlasPath: "/festivals/ncn-festival-nocturnal-culture-night",
     city: "Deutzen",
     country: "Germany",
-    dateText: "4–6 September 2026; separate warm-up on 3 September",
+    dateText: "3–5 September 2027; separate warm-up on 2 September",
     format: "Scene-centered festival in a park setting",
     sceneFit: "Goth · darkwave · industrial · synthpop · post-punk · dark alternative",
     statusLabel: "Confirmed upcoming",
@@ -117,7 +117,7 @@ const festivalProfiles: FestivalProfile[] = [
     difference:
       "Its documented mix covers goth, darkwave, industrial, synthpop, post-punk, and broader dark alternative. Choose this profile when the appeal lies in several connected scenes sharing one concentrated setting rather than a single genre lane.",
     verificationNote:
-      "The festival dates are 4–6 September 2026. The official source identifies a warm-up on 3 September separately, so this guide does not merge that date into the festival span or imply an edition after 2026.",
+      "Official festival and ticket sources confirm 3–5 September 2027 at Kulturpark Deutzen, with a separate warm-up on 2 September. The full 2027 program remains pending, so this guide does not imply a complete lineup or running order.",
     comparisonSummary: "A mixed-scene park gathering with a separately identified warm-up date.",
   },
   {
@@ -226,7 +226,7 @@ export default function EuropeanGothDarkwaveIndustrialFestivalsGuidePage() {
               </Link>
             </div>
             <div className={styles.factGrid}>
-              <GuideFact label="Current records" value="Four source-supported festival profiles" />
+              <GuideFact label="Atlas records" value="Four source-supported festival profiles" />
               <GuideFact label="Reference context" value="One completed 2026 edition, clearly separated" />
               <GuideFact label="Guide lens" value="Region first · format and scene second" />
             </div>
@@ -248,9 +248,9 @@ export default function EuropeanGothDarkwaveIndustrialFestivalsGuidePage() {
         <section className={styles.guideSection} id="quick-orientation">
           <div className={styles.sectionHeader}>
             <p className={styles.sectionEyebrow}>Quick orientation</p>
-            <h2 className={styles.sectionTitle}>Four current records, plus one clearly historical reference.</h2>
+            <h2 className={styles.sectionTitle}>Four atlas records, plus one clearly historical reference.</h2>
             <p className={styles.sectionDescription}>
-              The current route begins with Wave-Gotik-Treffen in Leipzig, M’era Luna in Hildesheim, Infest in Manchester, and NCN in Deutzen. Each has a source-supported upcoming edition, but the experiences are structurally different enough that a simple genre list would hide the useful part of the comparison.
+              The atlas route begins with Wave-Gotik-Treffen in Leipzig, M’era Luna in Hildesheim, Infest in Manchester, and NCN in Deutzen. NCN now has exact 2027 dates and a separate warm-up confirmed; each record still needs its own current official-source check before travel planning.
             </p>
             <p className={styles.sectionDescription}>
               Castle Party appears separately as historical/reference context for its completed 2026 edition at Bolków Castle. It is not blended into the current set and should not be read as an announced future travel option. Dates, locations, and status should always be checked again against official sources before planning.

@@ -116,21 +116,21 @@ const detailPagePolish: Record<
   "absolution-fest": {
     metadataTitle: "Absolution Fest 2026 — Tampa Goth, Darkwave & Post-Punk Festival",
     metadataDescription:
-      "Source-aware RetroAltFest notes for Absolution Fest 2026 in Tampa, Florida, scheduled for October 1–3 with official and organizer-controlled source support.",
+      "Source-aware RetroAltFest notes for the concluded October 1–3, 2026 Absolution Fest edition in Tampa, Florida, with next edition details awaiting official confirmation.",
     heroSummary:
-      "Absolution Fest 2026 is scheduled for October 1–3, 2026 in Tampa, Florida, with official and organizer-controlled sources supporting the current date and city details. RetroAltFest keeps venue and map certainty cautious until each location detail is rechecked.",
+      "Absolution Fest 2026 has concluded. Official and organizer-controlled sources support the October 1–3, 2026 Tampa edition, while next edition details need official confirmation. The Orpheum is retained only as 2026 historical context.",
     sourceAwareNote:
-      "For current ticket and event details, check the official Absolution Fest site and the official-site-linked Eventbrite listing. RetroAltFest summarizes the source trail, but the organizer-controlled pages remain the best place for updates.",
+      "The official-site-linked 2026 ticket listing is ended. Check the official Absolution Fest site for a future edition announcement rather than treating the historical ticket page or venue as current.",
     verificationHighlights: [
-      "Official sources support Absolution Fest 2026 for October 1–3, 2026.",
-      "Official sources place the event in Tampa, Florida.",
-      "The organizer-controlled ticket page lists The Orpheum in Tampa, FL.",
-      "Venue and map certainty stay cautious until rechecked for any future placement work.",
+      "Official and organizer-controlled sources support the concluded October 1–3, 2026 edition.",
+      "The Orpheum in Tampa is retained only as the documented 2026 venue.",
+      "The official-site-linked 2026 ticket listing is marked ended.",
+      "No 2027 edition, dates, venue, ticket sales, or lineup were announced in the October 5 source check.",
     ],
     faq: {
-      question: "Is Absolution Fest 2026 officially announced?",
+      question: "What is the current status of Absolution Fest?",
       answer:
-        "Yes. Official and organizer-controlled sources support Absolution Fest 2026 for October 1–3, 2026 in Tampa, Florida. The official-site-linked Eventbrite listing names The Orpheum in Tampa, FL; visitors should check the official festival site and Eventbrite for the latest ticket and event details.",
+        "The October 1–3, 2026 Tampa edition has concluded, and its official-site-linked ticket listing is ended. No 2027 edition, dates, venue, ticket sales, or lineup were announced on the official sources checked October 5, 2026.",
     },
   },
 };
