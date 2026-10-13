@@ -33,7 +33,7 @@ export default function Home() {
             {
               href: "/festivals",
               label: "Browse the festival atlas",
-              description: "Open the 15 current source-checked festival records and filter by scene, region, or status.",
+              description: "Open 15 source-checked festival records and filter by scene, region, or status.",
             },
             {
               href: "/guides",
@@ -43,7 +43,7 @@ export default function Home() {
             {
               href: "/verification",
               label: "See how source checks work",
-              description: "Learn why RetroAltFest keeps verification notes visible and stays verified before mapped.",
+              description: "See how RetroAltFest keeps confirmed details and uncertainties clear before you make plans.",
             },
             {
               href: "/suggest",

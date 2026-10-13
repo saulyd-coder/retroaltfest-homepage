@@ -12,7 +12,7 @@ export function FeaturedFestivals() {
           <h2 className="mt-3 min-w-0 max-w-full font-display text-4xl font-semibold tracking-tight text-white [overflow-wrap:anywhere] [word-break:normal] sm:text-5xl">Start with 15 curated festivals.</h2>
         </div>
         <p className="max-w-xl text-[var(--raf-text-muted)]">
-          Built for fewer dead ends. This homepage is wired to a public-safe festival layer and ready to expand into directory pages, filters, and a careful travel atlas.
+          Start with 15 curated festivals, then compare them by scene, region, or current status.
         </p>
       </div>
 

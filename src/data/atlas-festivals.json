@@ -253,9 +253,9 @@
       "geocoding_source": null,
       "geocoding_query": null,
       "geocoding_confidence": "not_geocoded",
-      "start_date": "2026-08-08",
-      "end_date": "2026-08-09",
-      "date_text": "2027 edition announced — exact dates not yet confirmed",
+      "start_date": "2027-08-07",
+      "end_date": "2027-08-08",
+      "date_text": "August 7–8, 2027",
       "genres": [
         "goth",
         "darkwave",
@@ -276,13 +276,13 @@
       "source_urls": [
         "https://meraluna.de/en/"
       ],
-      "verification_status": "date_pending",
+      "verification_status": "confirmed_upcoming",
       "source_confidence": "high",
       "follow_up_needed": false,
-      "map_notes": "Single known venue suitable for future exact geocoding.",
-      "data_quality_notes": "The August 8–9, 2026 edition has concluded. The organizer has announced the first acts and advance ticket sales for M’era Luna 2027, but the checked official announcement did not state exact 2027 dates. Check the official festival website before making travel plans.",
+      "map_notes": "The festival is held at Airfield Hildesheim Drispenstedt.",
+      "data_quality_notes": "M’era Luna 2027 is officially announced for August 7–8, 2027 at Airfield Hildesheim Drispenstedt.",
       "slug": "mera-luna-festival",
-      "atlas_summary": "M'era Luna Festival is a curated RetroAltFest atlas record for goth, darkwave, industrial, metal travelers, located in Hildesheim · Lower Saxony · Germany. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
+      "atlas_summary": "M'era Luna Festival brings goth, darkwave, industrial, synthpop, metal, and adjacent dark alternative scenes to Airfield Hildesheim Drispenstedt in Hildesheim, Germany. Its 2027 edition is confirmed for August 7–8.",
       "why_it_matters": "M'era Luna matters as one of the most visible large-scale dark alternative festivals in Europe, bringing goth, darkwave, industrial, synthpop, metal, and adjacent scenes into a destination weekend. For the atlas, it helps balance intimate underground entries with the larger festival circuit many travelers already recognize.",
       "source_links": [
         {
@@ -311,16 +311,16 @@
       "city": "Manchester",
       "state_region": "England",
       "country": "United Kingdom",
-      "venue_name": "Manchester Academy, The University of Manchester Students' Union",
+      "venue_name": null,
       "venue_address": null,
       "latitude": null,
       "longitude": null,
       "geocoding_source": null,
       "geocoding_query": null,
       "geocoding_confidence": "not_geocoded",
-      "start_date": "2026-08-21",
-      "end_date": "2026-08-23",
-      "date_text": "21–23 August 2026 — past edition; next edition details need official confirmation",
+      "start_date": "2027-08-27",
+      "end_date": "2027-08-29",
+      "date_text": "August 27–29, 2027",
       "genres": [
         "EBM",
         "industrial",
@@ -336,21 +336,21 @@
         "United Kingdom"
       ],
       "festival_type": "music_festival",
-      "map_display_category": "single_venue",
+      "map_display_category": "city_level_candidate",
       "official_url": "https://infestuk.com",
       "source_urls": [
         "https://infestuk.com",
         "https://infestuk.com/2026/01/28/infest-2026-full-lineup-confirmed/",
         "https://infestuk.com/logistics/"
       ],
-      "verification_status": "historical_reference",
+      "verification_status": "confirmed_upcoming",
       "source_confidence": "high",
-      "follow_up_needed": false,
-      "map_notes": "Manchester Academy is the confirmed festival venue for the represented edition.",
-      "data_quality_notes": "Official Infest pages list the 2026 festival for 21–23 August at Manchester Academy. Those dates have passed, and no later edition was announced on the official website when checked on August 29, 2026.",
+      "follow_up_needed": true,
+      "map_notes": "Infest’s 2027 return is confirmed for Manchester, but the precise venue has not yet been announced.",
+      "data_quality_notes": "Infest returns to Manchester on August 27–29, 2027. The precise 2027 venue has not yet been announced.",
       "slug": "infest-festival",
-      "atlas_summary": "Infest Festival is a curated RetroAltFest atlas record for EBM, industrial, noise, synthpop travelers, located in Manchester · England · United Kingdom. This entry keeps official sources, status notes, and mapping cautions close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.",
-      "why_it_matters": "Infest is important because it carries a long-running UK identity around EBM, industrial, synthpop, noise, and dark electronic culture while now pointing travelers toward Manchester. The move note makes it exactly the kind of festival where source-aware curation prevents outdated venue assumptions.",
+      "atlas_summary": "Infest returns to Manchester on August 27–29, 2027 with its established focus on EBM, industrial, noise, synthpop, darkwave, and post-punk. The precise 2027 venue has not yet been announced.",
+      "why_it_matters": "Infest brings a long-running UK identity around EBM, industrial, synthpop, noise, and dark electronic culture to Manchester. Its focused scene mix makes it a useful destination for listeners drawn to the harder electronic side of the atlas.",
       "source_links": [
         {
           "label": "Official festival site",
@@ -686,7 +686,7 @@
       "tags": [
         "West Coast",
         "retro alternative",
-        "lineup pending",
+        "lineup published",
         "city-level candidate"
       ],
       "festival_type": "music_festival",
@@ -699,11 +699,11 @@
       "verification_status": "confirmed_upcoming",
       "source_confidence": "high",
       "follow_up_needed": true,
-      "map_notes": "City/location are source-backed, but no geocoding or address normalization was performed. Keep as city-level only.",
-      "data_quality_notes": "Confirmed upcoming date/location; lineup details pending. Do not make 2026 lineup claims until official lineup is public.",
+      "map_notes": "The 2026 festival is scheduled for Huntington Beach City Beach.",
+      "data_quality_notes": "The official festival site now publishes the 2026 lineup for November 14, 2026 at Huntington Beach City Beach. Check the official lineup page for the current artist list.",
       "slug": "darker-waves",
-      "atlas_summary": "Darker Waves is a high-visibility West Coast retro alternative and darkwave-adjacent discovery point in Huntington Beach, represented with confirmed date/location language and no artist claims until the current lineup is public.",
-      "why_it_matters": "Darker Waves helps RetroAltFest bridge new wave, darkwave, synth, and retro alternative discovery for West Coast travelers. The record is valuable because it is recognizable, but the copy stays restrained until lineup-specific facts are source-backed.",
+      "atlas_summary": "Darker Waves is a West Coast retro alternative and darkwave-adjacent festival scheduled for November 14, 2026 at Huntington Beach City Beach. The official festival site publishes the current lineup.",
+      "why_it_matters": "Darker Waves helps RetroAltFest bridge new wave, darkwave, synth, and retro alternative discovery for West Coast travelers. Its beach setting and familiar retro-alt lane make it an accessible route into darker post-punk and synth discovery.",
       "source_links": [
         {
           "label": "Official festival site",

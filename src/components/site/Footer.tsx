@@ -14,7 +14,7 @@ export function Footer() {
         <div className={styles.footerIdentity}>
           <p className={styles.footerWordmark}>RetroAltFest</p>
           <p className={styles.footerStatement}>Curated dark alternative festival discovery. Verified before mapped.</p>
-          <p className={styles.footerTelemetry}>MVP atlas · official-source first · no guessed pins</p>
+          <p className={styles.footerTelemetry}>Curated atlas · official sources checked · no guessed pins</p>
         </div>
 
         <nav className={styles.footerNavigation} aria-label="Footer navigation">

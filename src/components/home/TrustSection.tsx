@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 const trustItems = [
-  ["Official sources", "Each seed record includes source URLs and confidence notes so visitors can verify the trail."],
-  ["Clear status labels", "No scraped listings: confirmed upcoming, multi-venue parent, and follow-up-needed records are visually separated."],
-  ["Manual curation", "The MVP starts small on purpose: better signal, clearer status labels, and no dead-end listings."],
+  ["Official sources", "Each festival page links to official sources and explains what is confirmed, uncertain, or historical."],
+  ["Clear status labels", "Dates, current status, location details, and remaining uncertainties stay visible before you make plans."],
+  ["Manual curation", "RetroAltFest keeps the festival list focused so status labels stay clear and dead links are easier to avoid."],
 ];
 
 export function TrustSection() {

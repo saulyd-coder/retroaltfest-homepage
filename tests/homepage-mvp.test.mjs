@@ -59,6 +59,28 @@ const EUROPE_RECIPROCAL_RELEASE_PATHS = [
   'src/app/festivals/[slug]/page.tsx',
   'tests/homepage-mvp.test.mjs',
 ];
+const OCTOBER_FRESHNESS_ACTIVE_PATHS = [
+  'src/data/atlas-festivals.json',
+  'src/data/first_dark_festival_signals.json',
+  'src/app/guides/european-goth-darkwave-industrial-festivals/page.tsx',
+  'src/app/festivals/[slug]/page.tsx',
+  'src/app/page.tsx',
+  'src/components/home/TrustSection.tsx',
+  'src/components/home/FeaturedFestivals.tsx',
+  'src/components/home/Hero.tsx',
+  'src/components/site/Footer.tsx',
+  'tests/homepage-mvp.test.mjs',
+];
+const OCTOBER_FRESHNESS_EXPECTED_HASHES = new Map([
+  ['src/data/atlas-festivals.json', 'd8f8504aea7eecb23127edb01288445dd363b5652ecaa58d472e647832780906'],
+  ['src/data/first_dark_festival_signals.json', '012742b69257ecd3d208c73e521ff869c1c3eab2bf165b85351fa84b434dc27a'],
+  ['src/app/guides/european-goth-darkwave-industrial-festivals/page.tsx', 'be0d73e92ab96332c45d9fd808b7589715d8a0be60694857df73a183c3f6d136'],
+  ['src/app/page.tsx', 'f54bc1f7b39099612f074826aec9d3eb67a47ac923dca5d3834aab080f049946'],
+  ['src/components/home/TrustSection.tsx', 'd533c6c379d191948aa7518185590ccfd7d60251eeaed65cdca9085f5a26bf49'],
+  ['src/components/home/FeaturedFestivals.tsx', 'cf62656249b3af16edadf36fc1871a55340e67f511b151adf59100c7af62b963'],
+  ['src/components/home/Hero.tsx', 'e6f3602896ddd41a50124addd73423d771306e1adf4659c345b43822a6a3679a'],
+  ['src/components/site/Footer.tsx', '3efade3585bc2b3b027f9bf41f586e2f8dec545b635e723162a5e2195062e055'],
+]);
 const OCT5_FRESHNESS_PARENT = '9d0939ae8d8b3feb2d76cd8a871bf4fce6452bed';
 const OCT5_FRESHNESS_ACTIVE_PATH_SET = new Set(OCT5_FRESHNESS_ACTIVE_PATHS);
 const OCT5_FRESHNESS_EXPECTED_HASHES = new Map([
@@ -235,7 +257,19 @@ function normalizeMeraLunaFreshnessAtlas(source) {
     .replace('"data_quality_notes": "The August 8–9, 2026 edition has concluded. The organizer has announced the first acts and advance ticket sales for M’era Luna 2027, but the checked official announcement did not state exact 2027 dates. Check the official festival website before making travel plans."', '"data_quality_notes": "Official English homepage confirms dates and Airfield Hildesheim Drispenstedt."');
 }
 
+function normalizeOctoberFreshness(relativePath, source) {
+  const expectedHash = OCTOBER_FRESHNESS_EXPECTED_HASHES.get(relativePath);
+  if (!expectedHash) return source;
+  assert.equal(
+    createHash('sha256').update(source).digest('hex'),
+    expectedHash,
+    `${relativePath} must match the exact approved October freshness source before historical normalization`,
+  );
+  return execFileSync('git', ['show', `HEAD:${relativePath}`], { cwd: root, encoding: 'utf8' });
+}
+
 function normalizeOct5Freshness(relativePath, source) {
+  source = normalizeOctoberFreshness(relativePath, source);
   if (relativePath === 'src/app/festivals/[slug]/page.tsx') {
     source = source.replace([
       '  "castle-party-festival": Object.freeze({',
@@ -278,7 +312,7 @@ function read(relativePath) {
 }
 
 function readPhase5E4IProtected(relativePath) {
-  if (PHASE_5E4I_HASH_NORMALIZED_PATHS.has(relativePath) || OCT5_FRESHNESS_ACTIVE_PATH_SET.has(relativePath)) return read(relativePath);
+  if (PHASE_5E4I_HASH_NORMALIZED_PATHS.has(relativePath) || OCT5_FRESHNESS_ACTIVE_PATH_SET.has(relativePath) || OCTOBER_FRESHNESS_EXPECTED_HASHES.has(relativePath)) return read(relativePath);
   if (PHASE_5G2_APPROVED_HASHES.has(relativePath)) {
     return normalizePhase5G2ApprovedSource(relativePath, readFileSync(join(root, relativePath), 'utf8'));
   }
@@ -317,7 +351,7 @@ function pathsChangedSinceHead() {
 }
 
 function assertOnlyApprovedPaths(changedPaths, approvedPaths, message) {
-  const effectiveApprovedPaths = [...new Set([...approvedPaths, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS])];
+  const effectiveApprovedPaths = [...new Set([...approvedPaths, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS, ...OCTOBER_FRESHNESS_ACTIVE_PATHS])];
   assert.equal(
     changedPaths.every((path) => effectiveApprovedPaths.includes(path)),
     true,
@@ -335,8 +369,13 @@ function assertStagedPathsAreCleanOrExact(expectedPaths, message) {
     .filter(Boolean)
     .sort();
   const exactPaths = [...new Set(expectedPaths)].sort();
+  const octoberReleasePaths = OCTOBER_FRESHNESS_ACTIVE_PATHS
+    .filter((path) => path !== 'src/app/festivals/[slug]/page.tsx')
+    .sort();
+  const matchesExpected = stagedPaths.length === exactPaths.length && stagedPaths.every((path, index) => path === exactPaths[index]);
+  const matchesOctoberRelease = stagedPaths.length === octoberReleasePaths.length && stagedPaths.every((path, index) => path === octoberReleasePaths[index]);
   assert.equal(
-    stagedPaths.length === 0 || (stagedPaths.length === exactPaths.length && stagedPaths.every((path, index) => path === exactPaths[index])),
+    stagedPaths.length === 0 || matchesExpected || matchesOctoberRelease,
     true,
     `${message}: ${stagedPaths.join(', ')}`,
   );
@@ -945,7 +984,7 @@ test('Terminus preserves the ended-ticket removal while applying the approved fr
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const approvedActivePaths = [...new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS])];
+  const approvedActivePaths = [...new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS, ...OCTOBER_FRESHNESS_ACTIVE_PATHS])];
   assert.equal(
     changedPaths.every((path) => approvedActivePaths.includes(path)),
     true,
@@ -3533,7 +3572,6 @@ test('Phase 5A.1 closes exactly two reciprocal guide discovery loops and freezes
 
 test('October reciprocal Europe-guide sprint maps only Castle Party and Infest', () => {
   const pagePath = 'src/app/festivals/[slug]/page.tsx';
-  const testPath = 'tests/homepage-mvp.test.mjs';
   const page = readFileSync(join(root, pagePath), 'utf8');
   const europeGuidePath = 'src/app/guides/european-goth-darkwave-industrial-festivals/page.tsx';
   const europeGuide = readFileSync(join(root, europeGuidePath), 'utf8');
@@ -3603,18 +3641,18 @@ test('October reciprocal Europe-guide sprint maps only Castle Party and Infest',
       '',
     ].join('\n'), '');
   assert.equal(createHash('sha256').update(normalizedPage).digest('hex'), 'f56a11e5b6c7a8a05a002ed26842abb7ba36bbaaac31074599a255771d9ff628', 'only the exact two approved mapping entries may change the shared route');
-  assert.equal(createHash('sha256').update(europeGuide).digest('hex'), '9c00f2a4ac2f8b11d3845aaa432aa364939ab1156614d531164e78fd7d0220c6', 'the Europe guide must remain byte-identical');
-  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), '0b5a3c8e1eff0d5598d29804e535a492a0d0f9cd6919597b520b60e13029aae6', 'the 15-record atlas must remain byte-identical');
+  assert.equal(createHash('sha256').update(europeGuide).digest('hex'), 'be0d73e92ab96332c45d9fd808b7589715d8a0be60694857df73a183c3f6d136', 'the Europe guide must match the approved factual-freshness copy');
+  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), 'd8f8504aea7eecb23127edb01288445dd363b5652ecaa58d472e647832780906', 'the 15-record atlas must match the approved factual-freshness data');
   assert.equal(createHash('sha256').update(dto).digest('hex'), '8ac9e3e6d8a1cbb48bbd962706e7eb2ea0aa22c6694d7c77da5c4df9d01d4f8b', 'the public DTO must remain byte-identical');
   assert.equal(createHash('sha256').update(sitemap).digest('hex'), '01abde4a09f5e9dff3d2942e42c975526d8467571a2ac5a57178b663e0b76fdf', 'the sitemap source must remain byte-identical');
   assert.equal(atlas.festivals.length, 15, 'all 15 festival routes should remain present');
 
-  assertNoUnapprovedPathsSinceHead(new Set([pagePath, testPath]), 'the local reciprocal-link sprint must stay inside its exact two-file boundary');
+  assertNoUnapprovedPathsSinceHead(OCTOBER_FRESHNESS_ACTIVE_PATHS, 'the local cleanup must stay inside its exact approved eight-path boundary');
   const activeReleasePaths = pathsChangedSinceHead();
   assert.equal(
-    activeReleasePaths.every((path) => EUROPE_RECIPROCAL_RELEASE_PATHS.includes(path)),
+    activeReleasePaths.every((path) => OCTOBER_FRESHNESS_ACTIVE_PATHS.includes(path)),
     true,
-    `the reciprocal-link release may change only the shared route and its regression test: ${activeReleasePaths.join(', ')}`,
+    `the local cleanup may change only approved data, copy, route, component, and regression-test paths: ${activeReleasePaths.join(', ')}`,
   );
 });
 
@@ -4375,7 +4413,7 @@ test('Phase 5E.1 trip-planning guide is distinct, source-safe, non-commercial, a
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const approvedPublicationPaths = new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS]);
+  const approvedPublicationPaths = new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS, ...OCTOBER_FRESHNESS_ACTIVE_PATHS]);
   assert.equal(
     changedPaths.every((path) => approvedPublicationPaths.has(path)),
     true,
@@ -4692,7 +4730,7 @@ test('Phase 5E.2 publishes the trip-planning guide through the Guides Hub and si
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const allowlist = new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS]);
+  const allowlist = new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS, ...OCTOBER_FRESHNESS_ACTIVE_PATHS]);
   assert.equal(changedPaths.every((path) => allowlist.has(path)), true, `the combined approved worktree must include no path outside the current post-date rollover boundary: ${changedPaths.join(', ')}`);
 });
 
@@ -4813,7 +4851,7 @@ test('Phase 5E.3 maps only Wave-Gotik-Treffen to the Trip-Planning Guide and fre
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  const allowlist = new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS]);
+  const allowlist = new Set([...POST_DATE_ROLLOVER_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS, ...OCTOBER_FRESHNESS_ACTIVE_PATHS]);
   assert.equal(changedPaths.every((path) => allowlist.has(path)), true, `the combined approved worktree must include no path outside the current post-date rollover boundary: ${changedPaths.join(', ')}`);
 });
 
@@ -4915,7 +4953,7 @@ test('Phase 5E.4 aligns only WGT supporting copy and freezes every other contrac
 
   const trackedChanges = execFileSync('git', ['diff', '--name-only', checkpoint, '--'], { cwd: root, encoding: 'utf8' }).trim().split('\n').filter(Boolean);
   const untracked = execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim();
-  assert.deepEqual(trackedChanges.sort(), [...new Set([...PHASE_5E4I_ACTIVE_PATHS, ATLAS_PATH, ...PHASE_5F2A_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS])].sort());
+  assert.deepEqual(trackedChanges.sort(), [...new Set([...PHASE_5E4I_ACTIVE_PATHS, ATLAS_PATH, ...PHASE_5F2A_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS, ...OCTOBER_FRESHNESS_ACTIVE_PATHS])].sort());
   assertStagedPathsAreCleanOrExact(EUROPE_RECIPROCAL_RELEASE_PATHS, 'staging must be empty or contain the exact later approved two-file release');
   assert.equal(untracked, '');
 });
@@ -4971,7 +5009,7 @@ test('Phase 5E.4B / Phase 5E.4A makes the shared DiscoveryLinks grid intrinsical
 
   const changed = execFileSync('git', ['diff', '--name-only', checkpoint, '--'], { cwd: root, encoding: 'utf8' }).trim().split('\n').filter(Boolean);
   const untracked = execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim();
-  assert.deepEqual(changed.sort(), [...new Set([...PHASE_5E4I_ACTIVE_PATHS, ATLAS_PATH, ...PHASE_5F2A_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS])].sort(), 'checkpoint-to-worktree history must contain only the released atlas, accessibility inventory, and approved current boundaries');
+  assert.deepEqual(changed.sort(), [...new Set([...PHASE_5E4I_ACTIVE_PATHS, ATLAS_PATH, ...PHASE_5F2A_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS, ...OCTOBER_FRESHNESS_ACTIVE_PATHS])].sort(), 'checkpoint-to-worktree history must contain only the released atlas, accessibility inventory, and approved current boundaries');
   assertStagedPathsAreCleanOrExact(EUROPE_RECIPROCAL_RELEASE_PATHS, 'staging must be empty or contain the exact later approved two-file release');
   assert.equal(untracked, '');
 });
@@ -5005,9 +5043,10 @@ test('repository scope guard accepts clean and approved lifecycle deltas but rej
   assertOnlyApprovedPaths([], POST_DATE_ROLLOVER_ACTIVE_PATHS, 'a clean committed checkout must pass');
   assertOnlyApprovedPaths(['tests/homepage-mvp.test.mjs'], POST_DATE_ROLLOVER_ACTIVE_PATHS, 'a test-only repair must pass');
   assertOnlyApprovedPaths([...POST_DATE_ROLLOVER_ACTIVE_PATHS], POST_DATE_ROLLOVER_ACTIVE_PATHS, 'the approved local two-file delta must pass');
+  assertOnlyApprovedPaths(['src/app/page.tsx'], POST_DATE_ROLLOVER_ACTIVE_PATHS, 'the newly approved homepage route must pass');
   assert.throws(
-    () => assertOnlyApprovedPaths(['src/app/page.tsx'], POST_DATE_ROLLOVER_ACTIVE_PATHS, 'an unrelated source delta must fail'),
-    /src\/app\/page\.tsx/,
+    () => assertOnlyApprovedPaths(['README.md'], POST_DATE_ROLLOVER_ACTIVE_PATHS, 'an unrelated source delta must fail'),
+    /README\.md/,
   );
 });
 
@@ -5036,7 +5075,7 @@ test('Phase 5E.4F makes the Verification breadcrumb reflow safely at 320px true 
     .trim()
     .split('\n');
   assert.deepEqual(releasedPhase5E4IPaths.sort(), [...PHASE_5E4I_ACTIVE_PATHS].sort(), 'the released Phase 5E.4I commit must preserve the exact approved 17-path boundary');
-  assertNoUnapprovedPathsSinceHead(POST_DATE_ROLLOVER_ACTIVE_PATHS, 'the current source delta must contain no unapproved paths');
+  assertNoUnapprovedPathsSinceHead(OCTOBER_FRESHNESS_ACTIVE_PATHS, 'the current source delta must contain no unapproved paths');
 });
 
 test('Phase 5E.4I closes every remaining true-200% text owner without shrinking or clipping content', () => {
@@ -5154,7 +5193,7 @@ test('Phase 5E.5 aligns only M’era Luna and NCN supporting copy with the First
   }
 
   const specificSlugs = [...mappingBlock.matchAll(/^  "([a-z0-9-]+)": Object\.freeze/gm)].map((match) => match[1]);
-  const atlas = JSON.parse(readFileSync(join(root, ATLAS_PATH), 'utf8'));
+  const atlas = JSON.parse(normalizeOctoberFreshness(ATLAS_PATH, readFileSync(join(root, ATLAS_PATH), 'utf8')));
   assert.deepEqual(specificSlugs, [
     'mera-luna-festival',
     'ncn-festival-nocturnal-culture-night',
@@ -5188,7 +5227,7 @@ test('Phase 5E.5 aligns only M’era Luna and NCN supporting copy with the First
   assert.deepEqual(Buffer.from(normalizedPage), baseline(pagePath), 'the detail route may differ from production only by the two exact approved description lines');
 
   const trackedPaths = execFileSync('git', ['ls-tree', '-r', '--name-only', checkpoint], { cwd: root, encoding: 'utf8' }).trim().split('\n');
-  const currentActivePaths = new Set([pagePath, testPath, ...PHASE_5F2A_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS]);
+  const currentActivePaths = new Set([pagePath, testPath, ...PHASE_5F2A_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS, ...OCTOBER_FRESHNESS_ACTIVE_PATHS]);
   for (const protectedPath of trackedPaths.filter((path) => !currentActivePaths.has(path))) {
     assert.deepEqual(readFileSync(join(root, protectedPath)), baseline(protectedPath), `${protectedPath} must remain byte-identical to the Phase 5E.5 checkpoint`);
   }
@@ -5197,7 +5236,7 @@ test('Phase 5E.5 aligns only M’era Luna and NCN supporting copy with the First
     .split('\n')
     .filter(Boolean)
     .map((line) => line.slice(3));
-  assert.equal(changedPaths.every((path) => [...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS].includes(path)), true, `the active worktree must remain inside the combined approved allowlists: ${changedPaths.join(', ')}`);
+  assert.equal(changedPaths.every((path) => [...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS, ...OCTOBER_FRESHNESS_ACTIVE_PATHS].includes(path)), true, `the active worktree must remain inside the combined approved allowlists: ${changedPaths.join(', ')}`);
   assertStagedPathsAreCleanOrExact(EUROPE_RECIPROCAL_RELEASE_PATHS, 'staging must be empty or contain the exact later approved two-file release');
   assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
   assert.doesNotMatch(mappingBlock, /[?&](?:aff|affiliate|ref|utm_|click|partner)=|Ticketmaster|StubHub|SeatGeek|Vivid Seats|AXS|Eventbrite|Viagogo|hotel|product|sponsored|commission|analytics/i);
@@ -5273,13 +5312,13 @@ test('Phase 5F.2 aligns Terminus 2027 freshness and only its two direct guide re
   assert.doesNotMatch(readFileSync(join(root, detailPath), 'utf8').match(/const FESTIVAL_DETAIL_GUIDE_LINKS[\s\S]*?\n\}\);/)?.[0] ?? '', /terminus-festival/);
 
   const trackedPaths = execFileSync('git', ['ls-tree', '-r', '--name-only', checkpoint], { cwd: root, encoding: 'utf8' }).trim().split('\n');
-  for (const protectedPath of trackedPaths.filter((path) => ![...PHASE_5F2A_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS].includes(path))) {
+  for (const protectedPath of trackedPaths.filter((path) => ![...PHASE_5F2A_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS, ...OCTOBER_FRESHNESS_ACTIVE_PATHS].includes(path))) {
     assert.deepEqual(readFileSync(join(root, protectedPath)), execFileSync('git', ['show', `${checkpoint}:${protectedPath}`], { cwd: root }), `${protectedPath} must remain byte-identical`);
   }
   for (const protectedPath of ['src/app/sitemap.ts', 'src/app/guides/page.tsx', 'src/lib/seo.ts', 'package.json', 'package-lock.json']) {
     assert.deepEqual(readFileSync(join(root, protectedPath)), execFileSync('git', ['show', `${checkpoint}:${protectedPath}`], { cwd: root }));
   }
-  assertNoUnapprovedPathsSinceHead(POST_DATE_ROLLOVER_ACTIVE_PATHS, 'the current source delta must remain inside the approved two-file boundary');
+  assertNoUnapprovedPathsSinceHead(OCTOBER_FRESHNESS_ACTIVE_PATHS, 'the current source delta must remain inside the approved two-file boundary');
   assert.doesNotMatch(`${north}\n${industrial}`, /date_pending|source_status|map_phase0_category|core_anchor|watchlist|Phase 0|map-readiness|needs_review|geocoding_source|geocoding_query|geocoding_confidence|latitude|longitude/i);
   assert.doesNotMatch(`${north}\n${industrial}\n${readFileSync(join(root, 'package.json'), 'utf8')}`, /"use client"|useState|useEffect|useMemo|fetch\(|XMLHttpRequest|WebSocket|\/api\/|framer-motion|lottie/i);
 });
@@ -5298,7 +5337,7 @@ test('Phase 5F.2A gives the shared legacy festival detail an intrinsic true-200%
   assert.deepEqual(normalizePhase5F2ALayout(PHASE_5F2A_LAYOUT_PATH, page), baselinePage, 'the shared detail owner may differ from the checkpoint only by the six exact Phase 5F.2A class replacements');
   assert.doesNotMatch(page, /truncate|text-ellipsis|whitespace-nowrap|overflow-x-(?:auto|scroll)|line-clamp|text-(?:xs|sm).*Phase 5F\.2A/i);
 
-  assertNoUnapprovedPathsSinceHead(POST_DATE_ROLLOVER_ACTIVE_PATHS, 'the current source delta must contain only atlas data and regression tests');
+  assertNoUnapprovedPathsSinceHead(OCTOBER_FRESHNESS_ACTIVE_PATHS, 'the current source delta must contain only atlas data and regression tests');
 });
 
 test('targeted post-date rollover makes only Just Like Heaven and Infest historical references', () => {
@@ -5356,7 +5395,7 @@ test('targeted post-date rollover makes only Just Like Heaven and Infest histori
   assert.equal(normalizePhase5G2CompareDto(readFileSync(join(root, publicDtoPath), 'utf8')), execFileSync('git', ['show', `${checkpoint}:${publicDtoPath}`], { cwd: root, encoding: 'utf8' }));
   assert.match(publicDto, /historical_reference: "Historical \/ reference"/);
 
-  assertNoUnapprovedPathsSinceHead(POST_DATE_ROLLOVER_ACTIVE_PATHS, 'only atlas data and the regression test may differ from HEAD');
+  assertNoUnapprovedPathsSinceHead(OCTOBER_FRESHNESS_ACTIVE_PATHS, 'only atlas data and the regression test may differ from HEAD');
 });
 
 test('MUTEK, NCN, and LEVITATION expose visitor-safe location language only', () => {
@@ -5404,14 +5443,15 @@ test('MUTEK, NCN, and LEVITATION expose visitor-safe location language only', ()
     );
   }
 
+  const separatelyApprovedFreshnessSlugs = new Set(['mera-luna-festival', 'infest-festival', 'darker-waves']);
   assert.deepEqual(
-    atlas.festivals.filter((record) => !Object.hasOwn(targets, record.slug)),
-    baselineAtlas.festivals.filter((record) => !Object.hasOwn(targets, record.slug)),
-    'the other 12 atlas records must remain field-identical',
+    atlas.festivals.filter((record) => !Object.hasOwn(targets, record.slug) && !separatelyApprovedFreshnessSlugs.has(record.slug)),
+    baselineAtlas.festivals.filter((record) => !Object.hasOwn(targets, record.slug) && !separatelyApprovedFreshnessSlugs.has(record.slug)),
+    'the nine atlas records outside both approved corrections must remain field-identical',
   );
   assert.match(readFileSync(join(root, 'src/lib/public-festivals.ts'), 'utf8'), /venueLabel: festival\.venue_name \|\| "Venue not published yet"[\s\S]*mappingNote: festival\.map_notes/);
   assert.match(readFileSync(join(root, 'src/app/festivals/[slug]/page.tsx'), 'utf8'), /<AtlasFact label="Venue" value=\{festival\.venueLabel\}[\s\S]*<p>\{festival\.mappingNote\}<\/p>/);
-  assertNoUnapprovedPathsSinceHead(POST_DATE_ROLLOVER_ACTIVE_PATHS, 'only atlas data and the regression test may differ from HEAD');
+  assertNoUnapprovedPathsSinceHead(OCTOBER_FRESHNESS_ACTIVE_PATHS, 'only atlas data and the regression test may differ from HEAD');
 });
 
 test('Infest public venue language removes internal geocoding wording only', () => {
@@ -5455,7 +5495,7 @@ test('Infest public venue language removes internal geocoding wording only', () 
   assert.match(readFileSync(join(root, dtoPath), 'utf8'), /mappingNote: festival\.map_notes/);
   assert.match(readFileSync(join(root, detailPath), 'utf8'), /<p>\{festival\.mappingNote\}<\/p>/);
 
-  assertNoUnapprovedPathsSinceHead(POST_DATE_ROLLOVER_ACTIVE_PATHS, 'only atlas data and regression tests may differ from HEAD');
+  assertNoUnapprovedPathsSinceHead(OCTOBER_FRESHNESS_ACTIVE_PATHS, 'only atlas data and regression tests may differ from HEAD');
 });
 
 test('August 31 lifecycle corrections change only MUTEK and A Murder of Crows', () => {
@@ -5514,7 +5554,7 @@ test('August 31 lifecycle corrections change only MUTEK and A Murder of Crows', 
   assert.match(readFileSync(join(root, dtoPath), 'utf8'), /historical_reference: "Historical \/ reference"/);
 
   const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).map((line) => line.slice(3));
-  assert.equal(changedPaths.every((path) => [...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS].includes(path)), true, `unexpected changed path: ${changedPaths.join(', ')}`);
+  assert.equal(changedPaths.every((path) => [...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS, ...OCTOBER_FRESHNESS_ACTIVE_PATHS].includes(path)), true, `unexpected changed path: ${changedPaths.join(', ')}`);
   assertStagedPathsAreCleanOrExact(EUROPE_RECIPROCAL_RELEASE_PATHS, 'staging must be empty or contain the exact later approved two-file release');
   assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
 });
@@ -5636,7 +5676,121 @@ test('Phase 5G.4 adds exactly four source-aware WGT trip planning signals and pr
     const normalizedSource = normalizeOct5Freshness(protectedPath, currentSource);
     assert.deepEqual(Buffer.from(normalizedSource), execFileSync('git', ['show', `${checkpoint}:${protectedPath}`], { cwd: root }), `${protectedPath} changed`);
   }
-  assertNoUnapprovedPathsSinceHead(OCT5_FRESHNESS_ACTIVE_PATHS, 'later approved work may only extend the released Phase 5G.4 boundary through an explicitly approved path');
+  assertNoUnapprovedPathsSinceHead(OCTOBER_FRESHNESS_ACTIVE_PATHS, 'later approved work may only extend the released Phase 5G.4 boundary through an explicitly approved path');
   assertStagedPathsAreCleanOrExact(EUROPE_RECIPROCAL_RELEASE_PATHS, 'staging must be empty or contain the exact later approved two-file release');
   assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
+});
+
+test('October RED — Infest exposes the supported 2027 return without a venue claim', () => {
+  const atlas = JSON.parse(readFileSync(join(root, ATLAS_PATH), 'utf8'));
+  const infest = atlas.festivals.find((record) => record.slug === 'infest-festival');
+  assert.equal(infest.date_text, 'August 27–29, 2027');
+  assert.equal(infest.verification_status, 'confirmed_upcoming');
+  assert.equal(infest.venue_name, null);
+  assert.match(infest.data_quality_notes, /precise 2027 venue has not yet been announced/);
+});
+
+test('October RED — Darker Waves acknowledges the published 2026 lineup', () => {
+  const atlas = JSON.parse(readFileSync(join(root, ATLAS_PATH), 'utf8'));
+  const darker = atlas.festivals.find((record) => record.slug === 'darker-waves');
+  assert.match(darker.data_quality_notes, /official festival site now publishes the 2026 lineup/i);
+  assert.doesNotMatch(`${darker.tags.join(' ')}\n${darker.data_quality_notes}\n${darker.atlas_summary}`, /lineup pending|until the current lineup is public/i);
+});
+
+test('October RED — Europe guide presents four announced 2027 editions and one historical profile', () => {
+  const guide = readFileSync(join(root, 'src/app/guides/european-goth-darkwave-industrial-festivals/page.tsx'), 'utf8');
+  assert.match(guide, /dateText: "7–8 August 2027"/);
+  assert.match(guide, /dateText: "27–29 August 2027"/);
+  assert.match(guide, /Wave-Gotik-Treffen, M’era Luna, Infest, and NCN have officially announced 2027 editions\./);
+  assert.doesNotMatch(guide, /Manchester Academy|One completed 2026 edition, clearly separated/);
+});
+
+test('October RED — targeted homepage copy uses visitor language instead of internal product language', () => {
+  const home = readFileSync(join(root, 'src/app/page.tsx'), 'utf8');
+  const trust = readFileSync(join(root, 'src/components/home/TrustSection.tsx'), 'utf8');
+  const featured = readFileSync(join(root, 'src/components/home/FeaturedFestivals.tsx'), 'utf8');
+  const hero = readFileSync(join(root, 'src/components/home/Hero.tsx'), 'utf8');
+  const footer = readFileSync(join(root, 'src/components/site/Footer.tsx'), 'utf8');
+  assert.doesNotMatch(`${home}\n${trust}\n${featured}\n${hero}\n${footer}`, /seed record|\bMVP\b|public-safe festival layer|wired to|ready to expand|follow-up-needed records/i);
+  assert.match(hero, />Official sources checked<\/span>/);
+  assert.match(footer, />Curated atlas · official sources checked · no guessed pins<\/p>/);
+});
+
+test('October factual freshness and visitor-language cleanup is exact, current, and bounded', () => {
+  const atlasSource = readFileSync(join(root, ATLAS_PATH), 'utf8');
+  const atlas = JSON.parse(atlasSource);
+  const bySlug = new Map(atlas.festivals.map((record) => [record.slug, record]));
+  const signals = readFileSync(join(root, 'src/data/first_dark_festival_signals.json'), 'utf8');
+  const guide = readFileSync(join(root, 'src/app/guides/european-goth-darkwave-industrial-festivals/page.tsx'), 'utf8');
+  const detail = readFileSync(join(root, 'src/app/festivals/[slug]/page.tsx'), 'utf8');
+  const home = readFileSync(join(root, 'src/app/page.tsx'), 'utf8');
+  const trust = readFileSync(join(root, 'src/components/home/TrustSection.tsx'), 'utf8');
+  const featured = readFileSync(join(root, 'src/components/home/FeaturedFestivals.tsx'), 'utf8');
+  const hero = readFileSync(join(root, 'src/components/home/Hero.tsx'), 'utf8');
+  const footer = readFileSync(join(root, 'src/components/site/Footer.tsx'), 'utf8');
+  const dto = readFileSync(join(root, 'src/lib/public-festivals.ts'), 'utf8');
+  const sitemap = readFileSync(join(root, 'src/app/sitemap.ts'), 'utf8');
+  const packageSource = readFileSync(join(root, 'package.json'), 'utf8');
+  const packageLock = readFileSync(join(root, 'package-lock.json'), 'utf8');
+
+  assert.equal(atlas.metadata.record_count, 15);
+  assert.equal(atlas.festivals.length, 15);
+  assert.equal(new Set(atlas.festivals.map((record) => record.slug)).size, 15);
+
+  const mera = bySlug.get('mera-luna-festival');
+  assert.equal(mera.start_date, '2027-08-07');
+  assert.equal(mera.end_date, '2027-08-08');
+  assert.equal(mera.date_text, 'August 7–8, 2027');
+  assert.equal(mera.verification_status, 'confirmed_upcoming');
+  assert.equal(mera.venue_name, 'Airfield Hildesheim Drispenstedt');
+  assert.equal(mera.map_notes, 'The festival is held at Airfield Hildesheim Drispenstedt.');
+  assert.equal(mera.data_quality_notes, 'M’era Luna 2027 is officially announced for August 7–8, 2027 at Airfield Hildesheim Drispenstedt.');
+  assert.doesNotMatch(`${mera.date_text}\n${mera.map_notes}\n${mera.data_quality_notes}`, /exact dates (?:not yet confirmed|unknown)|future exact geocoding|2026 edition.*confirmed upcoming/i);
+
+  const infest = bySlug.get('infest-festival');
+  assert.equal(infest.start_date, '2027-08-27');
+  assert.equal(infest.end_date, '2027-08-29');
+  assert.equal(infest.date_text, 'August 27–29, 2027');
+  assert.equal(infest.verification_status, 'confirmed_upcoming');
+  assert.equal(infest.city, 'Manchester');
+  assert.equal(infest.venue_name, null);
+  assert.equal(infest.follow_up_needed, true);
+  assert.equal(infest.map_display_category, 'city_level_candidate');
+  assert.match(infest.data_quality_notes, /Infest returns to Manchester on August 27–29, 2027/);
+  assert.match(infest.data_quality_notes, /precise 2027 venue has not yet been announced/);
+  assert.doesNotMatch(`${infest.date_text}\n${infest.map_notes}\n${infest.data_quality_notes}\n${infest.atlas_summary}\n${infest.why_it_matters}`, /Manchester Academy|future edition unknown|no later edition/i);
+
+  const darker = bySlug.get('darker-waves');
+  assert.equal(darker.start_date, '2026-11-14');
+  assert.equal(darker.venue_name, 'Huntington Beach City Beach');
+  assert.match(darker.data_quality_notes, /official festival site now publishes the 2026 lineup/i);
+  assert.doesNotMatch(`${darker.tags.join(' ')}\n${darker.data_quality_notes}\n${darker.atlas_summary}\n${darker.why_it_matters}\n${signals}`, /lineup pending|lineup details pending|no artist claims until the current lineup is public|until lineup-specific facts are source-backed|avoid lineup, date, venue, ticket, or travel claims/i);
+  assert.doesNotMatch(`${darker.data_quality_notes}\n${darker.atlas_summary}\n${darker.why_it_matters}\n${signals}`, /Depeche Mode|New Order|The Cure|Pet Shop Boys|Erasure/i, 'the cleanup must not reproduce artist names');
+
+  assert.match(guide, /dateText: "7–8 August 2027"/);
+  assert.match(guide, /dateText: "27–29 August 2027"/);
+  assert.match(guide, /M’era Luna 2027 is officially announced for August 7–8, 2027 at Airfield Hildesheim Drispenstedt\./);
+  assert.match(guide, /Infest returns to Manchester on August 27–29, 2027\. The precise 2027 venue has not yet been announced\./);
+  assert.match(guide, /Reference context" value="One separate historical\/reference profile"/);
+  assert.match(guide, /Wave-Gotik-Treffen, M’era Luna, Infest, and NCN have officially announced 2027 editions\./);
+  assert.doesNotMatch(guide, /Manchester Academy|Students’ Union|academy-based|One completed 2026 edition, clearly separated|No edition after 2026 is implied here/);
+  assert.equal((guide.match(/statusKind: "current",/g) ?? []).length, 4);
+  assert.equal((guide.match(/statusKind: "historical",/g) ?? []).length, 1);
+
+  assert.doesNotMatch(`${home}\n${trust}\n${featured}\n${hero}\n${footer}`, /seed record|\bMVP\b|public-safe festival layer|wired to|ready to expand|follow-up-needed records/i);
+  assert.match(hero, />Official sources checked<\/span>/);
+  assert.match(footer, />Curated atlas · official sources checked · no guessed pins<\/p>/);
+  assert.match(trust, /Each festival page links to official sources and explains what is confirmed, uncertain, or historical\./);
+  assert.match(trust, /RetroAltFest keeps the festival list focused so status labels stay clear and dead links are easier to avoid\./);
+  assert.match(featured, /Start with 15 curated festivals, then compare them by scene, region, or current status\./);
+
+  const mappingBlock = detail.match(/const FESTIVAL_DETAIL_GUIDE_LINKS:[\s\S]*?Object\.freeze\(\{[\s\S]*?\n\}\);/)?.[0] ?? '';
+  for (const slug of ['castle-party-festival', 'infest-festival']) {
+    assert.match(mappingBlock, new RegExp(`"${slug}":[\\s\\S]*?href: "\\/guides\\/european-goth-darkwave-industrial-festivals"`));
+  }
+  assert.equal((mappingBlock.match(/href: "\/guides\/european-goth-darkwave-industrial-festivals"/g) ?? []).length, 2);
+  assert.equal(createHash('sha256').update(dto).digest('hex'), '8ac9e3e6d8a1cbb48bbd962706e7eb2ea0aa22c6694d7c77da5c4df9d01d4f8b');
+  assert.equal(createHash('sha256').update(sitemap).digest('hex'), '01abde4a09f5e9dff3d2942e42c975526d8467571a2ac5a57178b663e0b76fdf');
+  assert.equal(createHash('sha256').update(packageSource).digest('hex'), 'f2949d272e9cf34ed95bd904ab9b7579ab95b788ccd75e001ab971eb66a5c80d');
+  assert.equal(createHash('sha256').update(packageLock).digest('hex'), '49c3b1f37e957b7961825b121bbddb26d8e674c7e2efcb2ab29249c2891d4e56');
 });

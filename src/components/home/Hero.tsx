@@ -42,7 +42,7 @@ export function Hero() {
         <div className="relative flex h-full min-h-[32rem] flex-col justify-between overflow-hidden rounded-[1.5rem] p-5">
           <div className="flex items-center justify-between gap-3">
             <span className="font-mono text-xs uppercase tracking-[0.28em] text-[var(--raf-text-muted)]">Nocturnal Atlas</span>
-            <span className="verification-glyph rounded-full bg-[var(--raf-verified)]/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--raf-verified)]">Verified-first MVP</span>
+            <span className="verification-glyph rounded-full bg-[var(--raf-verified)]/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--raf-verified)]">Official sources checked</span>
           </div>
           <div className="relative my-10 flex-1" aria-hidden="true">
             <div className="atlas-node absolute left-[10%] top-[24%] h-2 w-2 rounded-full bg-[var(--raf-cyan)] shadow-[0_0_24px_var(--raf-cyan)]" />

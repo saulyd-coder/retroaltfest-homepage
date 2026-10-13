@@ -58,7 +58,7 @@ const festivalProfiles: FestivalProfile[] = [
     orientation:
       "Wave-Gotik-Treffen turns Leipzig into the festival setting rather than containing the experience inside one site. Its official information describes a distributed gathering across about 50 venues, so the route through clubs, halls, cultural spaces, and the city itself is part of what distinguishes it.",
     difference:
-      "Start here when the multi-venue format is the main attraction and a broad dark-alternative spectrum matters more than a single tightly defined sound. It is the clearest contrast in this guide to the airfield, academy, park, and castle settings below.",
+      "Start here when the multi-venue format is the main attraction and a broad dark-alternative spectrum matters more than a single tightly defined sound. It is the clearest contrast in this guide to the airfield, Manchester, park, and castle settings below.",
     verificationNote:
       "The 34th edition is officially announced for 14–17 May 2027. RetroAltFest preserves the Leipzig-wide model rather than reducing the festival to one venue.",
     comparisonSummary: "The widest geographic footprint in this selected set, spread across Leipzig venues.",
@@ -69,7 +69,7 @@ const festivalProfiles: FestivalProfile[] = [
     atlasPath: "/festivals/mera-luna-festival",
     city: "Hildesheim",
     country: "Germany",
-    dateText: "8–9 August 2026",
+    dateText: "7–8 August 2027",
     format: "Large destination festival at an airfield",
     sceneFit: "Goth · darkwave · industrial · synthpop · metal · dark alternative",
     statusLabel: "Confirmed upcoming",
@@ -79,7 +79,7 @@ const festivalProfiles: FestivalProfile[] = [
     difference:
       "Its scene range crosses goth, darkwave, industrial, synthpop, metal, and adjacent dark alternative. That makes it useful when a reader wants a broad mixed-scene setting without making a narrow industrial or post-punk preference the only deciding factor.",
     verificationNote:
-      "The official festival sources support 8–9 August 2026 and Airfield Hildesheim Drispenstedt. The edition is currently documented as confirmed upcoming.",
+      "M’era Luna 2027 is officially announced for August 7–8, 2027 at Airfield Hildesheim Drispenstedt.",
     comparisonSummary: "A broad mixed-scene destination weekend centered on the Hildesheim airfield.",
   },
   {
@@ -88,18 +88,18 @@ const festivalProfiles: FestivalProfile[] = [
     atlasPath: "/festivals/infest-festival",
     city: "Manchester",
     country: "United Kingdom",
-    dateText: "21–23 August 2026",
-    format: "Focused venue-based gathering",
+    dateText: "27–29 August 2027",
+    format: "Focused Manchester gathering; precise venue pending",
     sceneFit: "EBM · industrial · noise · synthpop · darkwave · post-punk",
     statusLabel: "Confirmed upcoming",
     statusKind: "current",
     orientation:
-      "Infest offers the most concentrated industrial-and-EBM starting point in this group. Its documented Manchester setting is Manchester Academy at The University of Manchester Students’ Union, giving the guide a focused venue-based format rather than another open festival campus or city-wide route.",
+      "Infest offers the most concentrated industrial-and-EBM starting point in this group. Its 2027 return is confirmed for Manchester, while the precise venue remains unannounced.",
     difference:
       "The supported scene mix includes EBM, industrial, noise, synthpop, darkwave, and post-punk. Readers drawn first to harder electronic and industrial currents can use Infest as the clearest sound-led comparison before opening the festival-specific record.",
     verificationNote:
-      "Official sources support Infest 2026 for 21–23 August at the documented Manchester venue. No edition after 2026 is implied here.",
-    comparisonSummary: "The most directly industrial-and-EBM-focused option in a concentrated venue setting.",
+      "Infest returns to Manchester on August 27–29, 2027. The precise 2027 venue has not yet been announced.",
+    comparisonSummary: "The most directly industrial-and-EBM-focused option, returning to Manchester with its precise venue still to be announced.",
   },
   {
     festivalName: "NCN Festival / Nocturnal Culture Night",
@@ -156,21 +156,21 @@ const formatPaths = [
     copy: "The Hildesheim airfield creates a defined destination-weekend setting for a broad mixture of goth, darkwave, industrial, synthpop, metal, and adjacent dark alternative.",
   },
   {
-    title: "Focused venue-based gathering",
+    title: "Focused Manchester gathering",
     festival: "Infest Festival",
-    copy: "The Manchester Academy setting gives Infest a concentrated shape, while its supported EBM, industrial, noise, synthpop, darkwave, and post-punk range makes the sound emphasis unusually clear.",
+    copy: "Infest’s Manchester return gives this guide a focused industrial-and-EBM route, while the precise 2027 venue remains unannounced.",
   },
   {
     title: "Scene-centered park setting",
     festival: "NCN Festival",
-    copy: "Kulturpark Deutzen brings several related nocturnal scenes into one focused setting. It offers a different sense of scale and movement from both the city-wide and academy-based formats.",
+    copy: "Kulturpark Deutzen brings several related nocturnal scenes into one focused setting. It offers a different sense of scale and movement from both the city-wide route and Infest’s Manchester return.",
   },
 ];
 
 const scenePaths = [
   {
     title: "Goth and darkwave",
-    copy: "All four current records can open this path, but they do so differently: through a city-wide gathering, an airfield destination, a harder electronic venue program, or a mixed-scene park setting.",
+    copy: "All four current records can open this path, but they do so differently: through a city-wide gathering, an airfield destination, a harder electronic Manchester program, or a mixed-scene park setting.",
   },
   {
     title: "Industrial and EBM",
@@ -215,7 +215,7 @@ export default function EuropeanGothDarkwaveIndustrialFestivalsGuidePage() {
               This is not a complete list of every European dark-alternative festival. It is a deliberately selected route through the current RetroAltFest records whose source state and festival format can be described carefully today.
             </p>
             <p className={styles.mastheadCopy}>
-              Use it to decide whether a city-spanning gathering, an airfield destination, a focused venue program, or a scene-centered park setting sounds closer to the experience you want. Then open the individual atlas record before making plans.
+              Use it to decide whether a city-spanning gathering, an airfield destination, a focused Manchester event, or a scene-centered park setting sounds closer to the experience you want. Then open the individual atlas record before making plans.
             </p>
             <div className={styles.mastheadActions}>
               <Link className={styles.primaryPath} href="/festivals">
@@ -227,7 +227,7 @@ export default function EuropeanGothDarkwaveIndustrialFestivalsGuidePage() {
             </div>
             <div className={styles.factGrid}>
               <GuideFact label="Atlas records" value="Four source-supported festival profiles" />
-              <GuideFact label="Reference context" value="One completed 2026 edition, clearly separated" />
+              <GuideFact label="Reference context" value="One separate historical/reference profile" />
               <GuideFact label="Guide lens" value="Region first · format and scene second" />
             </div>
           </div>
@@ -250,10 +250,7 @@ export default function EuropeanGothDarkwaveIndustrialFestivalsGuidePage() {
             <p className={styles.sectionEyebrow}>Quick orientation</p>
             <h2 className={styles.sectionTitle}>Four atlas records, plus one clearly historical reference.</h2>
             <p className={styles.sectionDescription}>
-              The atlas route begins with Wave-Gotik-Treffen in Leipzig, M’era Luna in Hildesheim, Infest in Manchester, and NCN in Deutzen. NCN now has exact 2027 dates and a separate warm-up confirmed; each record still needs its own current official-source check before travel planning.
-            </p>
-            <p className={styles.sectionDescription}>
-              Castle Party appears separately as historical/reference context for its completed 2026 edition at Bolków Castle. It is not blended into the current set and should not be read as an announced future travel option. Dates, locations, and status should always be checked again against official sources before planning.
+              Wave-Gotik-Treffen, M’era Luna, Infest, and NCN have officially announced 2027 editions. Castle Party remains separate historical/reference context for its completed 2026 edition. Open each festival record for current dates, location details, and remaining uncertainties.
             </p>
           </div>
           <div className={styles.orientationGrid}>
