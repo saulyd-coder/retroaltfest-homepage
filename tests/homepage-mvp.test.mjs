@@ -55,6 +55,11 @@ const OCT5_FRESHNESS_ACTIVE_PATHS = [
   'src/app/festivals/[slug]/page.tsx',
   'tests/homepage-mvp.test.mjs',
 ];
+const EUROPE_RECIPROCAL_RELEASE_PATHS = [
+  'src/app/festivals/[slug]/page.tsx',
+  'tests/homepage-mvp.test.mjs',
+];
+const OCT5_FRESHNESS_PARENT = '9d0939ae8d8b3feb2d76cd8a871bf4fce6452bed';
 const OCT5_FRESHNESS_ACTIVE_PATH_SET = new Set(OCT5_FRESHNESS_ACTIVE_PATHS);
 const OCT5_FRESHNESS_EXPECTED_HASHES = new Map([
   ['src/data/atlas-festivals.json', '0b5a3c8e1eff0d5598d29804e535a492a0d0f9cd6919597b520b60e13029aae6'],
@@ -104,8 +109,10 @@ const MURDER_OF_CROWS_NOTE = 'The official Red Party page confirms the in-person
 const MUTEK_VISITOR_VENUE = 'Multiple venues across Montréal';
 const MUTEK_VISITOR_LOCATION_NOTE = 'MUTEK Montréal is presented as a multi-venue festival across Montréal; no single festival venue is represented.';
 const NCN_VISITOR_LOCATION_NOTE = 'Kulturpark Deutzen bei Leipzig is the documented festival location. The September 3 warm-up is separate from the September 4–6 main festival dates.';
+const OCT5_NCN_VISITOR_LOCATION_NOTE = 'Kulturpark Deutzen bei Leipzig is the documented 2027 festival location. The September 2 warm-up is separate from the September 3–5 main festival dates.';
 const NCN_VISITOR_SUMMARY = 'NCN Festival / Nocturnal Culture Night is a curated RetroAltFest atlas record for goth, darkwave, industrial, synthpop travelers, located in Deutzen · Saxony · Germany. This entry keeps official sources, status notes, and the documented festival location close to the surface so visitors can evaluate the festival without relying on scraped or guessed data.';
 const LEVITATION_VISITOR_VENUE = 'Multiple venues across Austin';
+const OCT5_LEVITATION_VISITOR_VENUE = '2026 edition: Multiple venues across Austin';
 const LEVITATION_VISITOR_LOCATION_NOTE = 'LEVITATION is presented as a multi-venue event across Austin; individual venue details should be checked on the official festival page.';
 const LEVITATION_VISITOR_SUMMARY = 'LEVITATION is an Austin multi-venue alternative festival with psych, electronic, and darkwave-adjacent overlap. RetroAltFest presents it as a broad festival with selective scene relevance, not a pure goth or darkwave event.';
 const LEVITATION_VISITOR_WHY = 'LEVITATION adds an Austin discovery pathway for travelers whose tastes cross psych, electronic, post-punk-adjacent, and dark alternative edges. Its value here is its broad multi-venue format and selective overlap with the scenes covered by RetroAltFest.';
@@ -229,6 +236,19 @@ function normalizeMeraLunaFreshnessAtlas(source) {
 }
 
 function normalizeOct5Freshness(relativePath, source) {
+  if (relativePath === 'src/app/festivals/[slug]/page.tsx') {
+    source = source.replace([
+      '  "castle-party-festival": Object.freeze({',
+      '    href: "/guides/european-goth-darkwave-industrial-festivals",',
+      '    label: "Selected Goth, Darkwave & Industrial Festivals in Europe",',
+      '  }),',
+      '  "infest-festival": Object.freeze({',
+      '    href: "/guides/european-goth-darkwave-industrial-festivals",',
+      '    label: "Selected Goth, Darkwave & Industrial Festivals in Europe",',
+      '  }),',
+      '',
+    ].join('\n'), '');
+  }
   const expectedHash = OCT5_FRESHNESS_EXPECTED_HASHES.get(relativePath);
   if (!expectedHash) return source;
   assert.equal(
@@ -236,7 +256,7 @@ function normalizeOct5Freshness(relativePath, source) {
     expectedHash,
     `${relativePath} must match the exact approved Oct 5 freshness source before historical normalization`,
   );
-  return execFileSync('git', ['show', `HEAD:${relativePath}`], { cwd: root, encoding: 'utf8' });
+  return execFileSync('git', ['show', `${OCT5_FRESHNESS_PARENT}:${relativePath}`], { cwd: root, encoding: 'utf8' });
 }
 
 function read(relativePath) {
@@ -307,6 +327,19 @@ function assertOnlyApprovedPaths(changedPaths, approvedPaths, message) {
 
 function assertNoUnapprovedPathsSinceHead(approvedPaths, message) {
   assertOnlyApprovedPaths(pathsChangedSinceHead(), approvedPaths, message);
+}
+
+function assertStagedPathsAreCleanOrExact(expectedPaths, message) {
+  const stagedPaths = execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' })
+    .split('\n')
+    .filter(Boolean)
+    .sort();
+  const exactPaths = [...new Set(expectedPaths)].sort();
+  assert.equal(
+    stagedPaths.length === 0 || (stagedPaths.length === exactPaths.length && stagedPaths.every((path, index) => path === exactPaths[index])),
+    true,
+    `${message}: ${stagedPaths.join(', ')}`,
+  );
 }
 
 function normalizePhase5A1GuideDiscoveryPilot(source) {
@@ -3498,6 +3531,93 @@ test('Phase 5A.1 closes exactly two reciprocal guide discovery loops and freezes
   assert.doesNotMatch(page, /geocoding_source|geocoding_query|geocoding_confidence|map_phase0_category|source_status|date_pending|needs_review|core_anchor|watchlist|Phase 0|map-readiness|latitude|longitude/i);
 });
 
+test('October reciprocal Europe-guide sprint maps only Castle Party and Infest', () => {
+  const pagePath = 'src/app/festivals/[slug]/page.tsx';
+  const testPath = 'tests/homepage-mvp.test.mjs';
+  const page = readFileSync(join(root, pagePath), 'utf8');
+  const europeGuidePath = 'src/app/guides/european-goth-darkwave-industrial-festivals/page.tsx';
+  const europeGuide = readFileSync(join(root, europeGuidePath), 'utf8');
+  const atlasSource = readFileSync(join(root, 'src/data/atlas-festivals.json'), 'utf8');
+  const atlas = JSON.parse(atlasSource);
+  const dto = readFileSync(join(root, 'src/lib/public-festivals.ts'), 'utf8');
+  const sitemap = readFileSync(join(root, 'src/app/sitemap.ts'), 'utf8');
+  const targetHref = '/guides/european-goth-darkwave-industrial-festivals';
+  const targetLabel = 'Selected Goth, Darkwave & Industrial Festivals in Europe';
+  const targetSlugs = ['castle-party-festival', 'infest-festival'];
+  const existingMappings = {
+    'mera-luna-festival': ['/guides/first-time-dark-alternative-festival-guide', 'First-Time Dark Alternative Festival Guide'],
+    'ncn-festival-nocturnal-culture-night': ['/guides/first-time-dark-alternative-festival-guide', 'First-Time Dark Alternative Festival Guide'],
+    'darker-waves': ['/guides/new-wave-post-punk-retro-alternative-festivals-north-america', 'New Wave, Post-Punk & Retro Alternative Guide'],
+    'a-murder-of-crows-xi-nyc-goth-post-punk-festival': ['/guides/north-american-goth-darkwave-festivals', 'North American Goth & Darkwave Guide'],
+    'wave-gotik-treffen': ['/guides/planning-a-dark-alternative-festival-trip', 'Planning a Dark Alternative Festival Trip'],
+  };
+  const mappingBlock = page.match(/const FESTIVAL_DETAIL_GUIDE_LINKS:[\s\S]*?Object\.freeze\(\{[\s\S]*?\n\}\);/)?.[0] ?? '';
+  assert.ok(mappingBlock, 'the centralized guide-link mapping should remain extractable');
+
+  for (const slug of targetSlugs) {
+    const targetPattern = new RegExp(`"${slug}":[\\s\\S]*?href: "${targetHref}"[\\s\\S]*?label: "${targetLabel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`);
+    assert.match(mappingBlock, targetPattern, `${slug} should use the exact Selected Europe guide tuple`);
+    assert.equal((mappingBlock.match(new RegExp(`"${slug}"`, 'g')) ?? []).length, 1, `${slug} should occur exactly once`);
+    assert.match(europeGuide, new RegExp(`/festivals/${slug}`), `the Europe guide should retain its existing backlink to ${slug}`);
+  }
+  assert.equal((mappingBlock.match(new RegExp(targetHref, 'g')) ?? []).length, 2, 'only Castle Party and Infest should use the Europe guide destination');
+  assert.equal((mappingBlock.match(new RegExp(targetLabel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) ?? []).length, 2, 'the exact Europe guide label should occur twice');
+
+  for (const [slug, [href, label]] of Object.entries(existingMappings)) {
+    const entryPattern = new RegExp(`"${slug}":[\\s\\S]*?href: "${href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[\\s\\S]*?label: "${label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`);
+    assert.match(mappingBlock, entryPattern, `${slug} should retain its exact existing mapping`);
+  }
+
+  const genericSlugs = atlas.festivals
+    .map((festival) => festival.slug)
+    .filter((slug) => !targetSlugs.includes(slug) && !Object.hasOwn(existingMappings, slug));
+  assert.deepEqual(genericSlugs.sort(), [
+    'absolution-fest', 'amphi-festival', 'cold-waves', 'just-like-heaven',
+    'levitation', 'mutek-montreal', 'terminus-festival', 'the-new-colossus-festival',
+  ].sort(), 'exactly eight non-target routes should retain the generic Guides Hub tuple');
+  for (const slug of genericSlugs) {
+    assert.doesNotMatch(mappingBlock, new RegExp(`"${slug}"`), `${slug} should remain unmapped`);
+  }
+  assert.equal((mappingBlock.match(/^\s+href:/gm) ?? []).length, 7, 'exactly seven route-specific destinations should exist');
+  assert.equal((mappingBlock.match(/^\s+label:/gm) ?? []).length, 7, 'exactly seven route-specific labels should exist');
+
+  const discoveryBlock = page.match(/const discoveryLinks = \([\s\S]*?\n  \);/)?.[0] ?? '';
+  assert.equal((discoveryBlock.match(/href:/g) ?? []).length, 3, 'Atlas, guide, and Verification card count should remain three');
+  const discoveryOrder = [
+    discoveryBlock.indexOf('href: "/festivals"'),
+    discoveryBlock.indexOf('href: guideDiscoveryLink.href'),
+    discoveryBlock.indexOf('href: "/verification"'),
+  ];
+  assert.deepEqual(discoveryOrder, [...discoveryOrder].sort((a, b) => a - b), 'Atlas, guide, and Verification order should remain exact');
+
+  const normalizedPage = page
+    .replace([
+      '  "castle-party-festival": Object.freeze({',
+      `    href: "${targetHref}",`,
+      `    label: "${targetLabel}",`,
+      '  }),',
+      '  "infest-festival": Object.freeze({',
+      `    href: "${targetHref}",`,
+      `    label: "${targetLabel}",`,
+      '  }),',
+      '',
+    ].join('\n'), '');
+  assert.equal(createHash('sha256').update(normalizedPage).digest('hex'), 'f56a11e5b6c7a8a05a002ed26842abb7ba36bbaaac31074599a255771d9ff628', 'only the exact two approved mapping entries may change the shared route');
+  assert.equal(createHash('sha256').update(europeGuide).digest('hex'), '9c00f2a4ac2f8b11d3845aaa432aa364939ab1156614d531164e78fd7d0220c6', 'the Europe guide must remain byte-identical');
+  assert.equal(createHash('sha256').update(atlasSource).digest('hex'), '0b5a3c8e1eff0d5598d29804e535a492a0d0f9cd6919597b520b60e13029aae6', 'the 15-record atlas must remain byte-identical');
+  assert.equal(createHash('sha256').update(dto).digest('hex'), '8ac9e3e6d8a1cbb48bbd962706e7eb2ea0aa22c6694d7c77da5c4df9d01d4f8b', 'the public DTO must remain byte-identical');
+  assert.equal(createHash('sha256').update(sitemap).digest('hex'), '01abde4a09f5e9dff3d2942e42c975526d8467571a2ac5a57178b663e0b76fdf', 'the sitemap source must remain byte-identical');
+  assert.equal(atlas.festivals.length, 15, 'all 15 festival routes should remain present');
+
+  assertNoUnapprovedPathsSinceHead(new Set([pagePath, testPath]), 'the local reciprocal-link sprint must stay inside its exact two-file boundary');
+  const activeReleasePaths = pathsChangedSinceHead();
+  assert.equal(
+    activeReleasePaths.every((path) => EUROPE_RECIPROCAL_RELEASE_PATHS.includes(path)),
+    true,
+    `the reciprocal-link release may change only the shared route and its regression test: ${activeReleasePaths.join(', ')}`,
+  );
+});
+
 test('Phase 5A.2 compresses the mobile directory filter with one native accessible disclosure and freezes every protected contract', () => {
   const browserPath = 'src/components/festivals/FestivalDirectoryBrowser.tsx';
   const cssPath = 'src/components/festivals/FestivalDirectory.module.css';
@@ -4794,10 +4914,9 @@ test('Phase 5E.4 aligns only WGT supporting copy and freezes every other contrac
   assert.doesNotMatch(page, /date_pending|source_status|map_phase0_category|core_anchor|watchlist|Phase 0|map-readiness|needs_review|geocoding_source|geocoding_query|geocoding_confidence|latitude|longitude/i);
 
   const trackedChanges = execFileSync('git', ['diff', '--name-only', checkpoint, '--'], { cwd: root, encoding: 'utf8' }).trim().split('\n').filter(Boolean);
-  const staged = execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim();
   const untracked = execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim();
   assert.deepEqual(trackedChanges.sort(), [...new Set([...PHASE_5E4I_ACTIVE_PATHS, ATLAS_PATH, ...PHASE_5F2A_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS])].sort());
-  assert.equal(staged, '');
+  assertStagedPathsAreCleanOrExact(EUROPE_RECIPROCAL_RELEASE_PATHS, 'staging must be empty or contain the exact later approved two-file release');
   assert.equal(untracked, '');
 });
 
@@ -4851,10 +4970,9 @@ test('Phase 5E.4B / Phase 5E.4A makes the shared DiscoveryLinks grid intrinsical
   assert.doesNotMatch(`${component}\n${packageSource}`, /[?&](?:aff|affiliate|ref|utm_|click|partner)=|sponsored|commission|analytics|fetch\(|XMLHttpRequest|WebSocket/i);
 
   const changed = execFileSync('git', ['diff', '--name-only', checkpoint, '--'], { cwd: root, encoding: 'utf8' }).trim().split('\n').filter(Boolean);
-  const staged = execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim();
   const untracked = execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim();
   assert.deepEqual(changed.sort(), [...new Set([...PHASE_5E4I_ACTIVE_PATHS, ATLAS_PATH, ...PHASE_5F2A_ACTIVE_PATHS, ...PHASE_5G2_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS])].sort(), 'checkpoint-to-worktree history must contain only the released atlas, accessibility inventory, and approved current boundaries');
-  assert.equal(staged, '');
+  assertStagedPathsAreCleanOrExact(EUROPE_RECIPROCAL_RELEASE_PATHS, 'staging must be empty or contain the exact later approved two-file release');
   assert.equal(untracked, '');
 });
 
@@ -5080,7 +5198,7 @@ test('Phase 5E.5 aligns only M’era Luna and NCN supporting copy with the First
     .filter(Boolean)
     .map((line) => line.slice(3));
   assert.equal(changedPaths.every((path) => [...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS].includes(path)), true, `the active worktree must remain inside the combined approved allowlists: ${changedPaths.join(', ')}`);
-  assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
+  assertStagedPathsAreCleanOrExact(EUROPE_RECIPROCAL_RELEASE_PATHS, 'staging must be empty or contain the exact later approved two-file release');
   assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
   assert.doesNotMatch(mappingBlock, /[?&](?:aff|affiliate|ref|utm_|click|partner)=|Ticketmaster|StubHub|SeatGeek|Vivid Seats|AXS|Eventbrite|Viagogo|hotel|product|sponsored|commission|analytics/i);
   assert.doesNotMatch(`${source}\n${readFileSync(join(root, 'package.json'), 'utf8')}`, /"use client"|useState|useEffect|useMemo|fetch\(|\/api\/|framer-motion|lottie|three/i);
@@ -5242,14 +5360,14 @@ test('targeted post-date rollover makes only Just Like Heaven and Infest histori
 });
 
 test('MUTEK, NCN, and LEVITATION expose visitor-safe location language only', () => {
-  const atlas = JSON.parse(normalizeOct5Freshness(ATLAS_PATH, readFileSync(join(root, ATLAS_PATH), 'utf8')));
+  const atlas = JSON.parse(readFileSync(join(root, ATLAS_PATH), 'utf8'));
   const baselineAtlas = JSON.parse(execFileSync('git', ['show', `HEAD:${ATLAS_PATH}`], { cwd: root, encoding: 'utf8' }));
   const bySlug = new Map(atlas.festivals.map((record) => [record.slug, record]));
   const baselineBySlug = new Map(baselineAtlas.festivals.map((record) => [record.slug, record]));
   const targets = {
     'mutek-montreal': { venue_name: MUTEK_VISITOR_VENUE, map_notes: MUTEK_VISITOR_LOCATION_NOTE, allowed: new Set(['venue_name', 'map_notes']) },
-    'ncn-festival-nocturnal-culture-night': { venue_name: 'Kulturpark Deutzen bei Leipzig', map_notes: NCN_VISITOR_LOCATION_NOTE, atlas_summary: NCN_VISITOR_SUMMARY, allowed: new Set(['map_notes', 'atlas_summary']) },
-    levitation: { venue_name: LEVITATION_VISITOR_VENUE, map_notes: LEVITATION_VISITOR_LOCATION_NOTE, atlas_summary: LEVITATION_VISITOR_SUMMARY, why_it_matters: LEVITATION_VISITOR_WHY, allowed: new Set(['venue_name', 'map_notes', 'atlas_summary', 'why_it_matters']) },
+    'ncn-festival-nocturnal-culture-night': { venue_name: 'Kulturpark Deutzen bei Leipzig', map_notes: OCT5_NCN_VISITOR_LOCATION_NOTE, atlas_summary: NCN_VISITOR_SUMMARY, allowed: new Set(['map_notes', 'atlas_summary']) },
+    levitation: { venue_name: OCT5_LEVITATION_VISITOR_VENUE, map_notes: LEVITATION_VISITOR_LOCATION_NOTE, atlas_summary: LEVITATION_VISITOR_SUMMARY, why_it_matters: LEVITATION_VISITOR_WHY, allowed: new Set(['venue_name', 'map_notes', 'atlas_summary', 'why_it_matters']) },
   };
 
   assert.equal(atlas.metadata.record_count, 15);
@@ -5397,7 +5515,7 @@ test('August 31 lifecycle corrections change only MUTEK and A Murder of Crows', 
 
   const changedPaths = execFileSync('git', ['status', '--porcelain=v1', '--untracked-files=all'], { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean).map((line) => line.slice(3));
   assert.equal(changedPaths.every((path) => [...PHASE_5G2_ACTIVE_PATHS, ...PHASE_5G4_ACTIVE_PATHS, ...OCT5_FRESHNESS_ACTIVE_PATHS].includes(path)), true, `unexpected changed path: ${changedPaths.join(', ')}`);
-  assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
+  assertStagedPathsAreCleanOrExact(EUROPE_RECIPROCAL_RELEASE_PATHS, 'staging must be empty or contain the exact later approved two-file release');
   assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
 });
 
@@ -5451,7 +5569,7 @@ test('Phase 5G.2 inline compare is public-safe, bounded, filter-independent, and
   for (const path of PHASE_5G2_ACTIVE_PATHS.filter((candidate) => candidate !== 'tests/homepage-mvp.test.mjs')) {
     assert.deepEqual(readFileSync(join(root, path)), execFileSync('git', ['show', `HEAD:${path}`], { cwd: root }), `${path} must remain byte-identical during Phase 5G.4`);
   }
-  assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
+  assertStagedPathsAreCleanOrExact(EUROPE_RECIPROCAL_RELEASE_PATHS, 'staging must be empty or contain the exact later approved two-file release');
   assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
 });
 
@@ -5518,7 +5636,7 @@ test('Phase 5G.4 adds exactly four source-aware WGT trip planning signals and pr
     const normalizedSource = normalizeOct5Freshness(protectedPath, currentSource);
     assert.deepEqual(Buffer.from(normalizedSource), execFileSync('git', ['show', `${checkpoint}:${protectedPath}`], { cwd: root }), `${protectedPath} changed`);
   }
-  assert.deepEqual(pathsChangedSinceHead().sort(), [...OCT5_FRESHNESS_ACTIVE_PATHS].sort());
-  assert.equal(execFileSync('git', ['diff', '--cached', '--name-only'], { cwd: root, encoding: 'utf8' }).trim(), '');
+  assertNoUnapprovedPathsSinceHead(OCT5_FRESHNESS_ACTIVE_PATHS, 'later approved work may only extend the released Phase 5G.4 boundary through an explicitly approved path');
+  assertStagedPathsAreCleanOrExact(EUROPE_RECIPROCAL_RELEASE_PATHS, 'staging must be empty or contain the exact later approved two-file release');
   assert.equal(execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' }).trim(), '');
 });

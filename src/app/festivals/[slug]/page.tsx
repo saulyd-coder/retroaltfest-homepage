@@ -46,6 +46,14 @@ const FESTIVAL_DETAIL_GUIDE_LINKS: Readonly<Record<string, Readonly<{ href: stri
     href: "/guides/north-american-goth-darkwave-festivals",
     label: "North American Goth & Darkwave Guide",
   }),
+  "castle-party-festival": Object.freeze({
+    href: "/guides/european-goth-darkwave-industrial-festivals",
+    label: "Selected Goth, Darkwave & Industrial Festivals in Europe",
+  }),
+  "infest-festival": Object.freeze({
+    href: "/guides/european-goth-darkwave-industrial-festivals",
+    label: "Selected Goth, Darkwave & Industrial Festivals in Europe",
+  }),
   "wave-gotik-treffen": Object.freeze({
     href: "/guides/planning-a-dark-alternative-festival-trip",
     label: "Planning a Dark Alternative Festival Trip",
